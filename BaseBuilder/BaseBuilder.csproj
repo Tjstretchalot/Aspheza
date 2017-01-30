@@ -38,6 +38,8 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Engine\Math\Double\FiniteLineD2D.cs" />
+    <Compile Include="Engine\Math\Double\InfiniteLineD2D.cs" />
     <Compile Include="Engine\Math\Double\PointD2D.cs" />
     <Compile Include="Engine\Math\Int\PointI2D.cs" />
     <Compile Include="Game1.cs" />
