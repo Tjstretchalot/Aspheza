@@ -107,6 +107,31 @@ namespace BaseBuilder.Engine.Math2D.Double
             End = end;
         }
 
+        /// <summary>
+        /// Determines if this finite line intersects the specified other finite
+        /// line.
+        /// </summary>
+        /// <param name="other">The line to compare with.</param>
+        /// <param name="strict">True if touching constitutes intersection, false otherwise.</param>
+        /// <returns></returns>
+        public bool Intersects(FiniteLineD2D other, bool strict = false)
+        {
+            return false; // TODO
+        }
+
+        /// <summary>
+        /// Determines if this finite line intersects the specified other infinite line.
+        /// </summary>
+        /// <param name="other">The infinite line to compare with.</param>
+        /// <param name="strict">True if touching constitutes intersection, false otherwise.</param>
+        /// <returns></returns>
+        public bool Intersects(InfiniteLineD2D other, bool strict = false)
+        {
+            return false; // TODO
+        }
+
+        
+
         public override string ToString()
         {
             return $"Finite Line [{Start} to {End}]";

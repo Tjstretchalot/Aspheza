@@ -40,7 +40,9 @@
   <ItemGroup>
     <Compile Include="Engine\Math2D\Double\FiniteLineD2D.cs" />
     <Compile Include="Engine\Math2D\Double\InfiniteLineD2D.cs" />
+    <Compile Include="Engine\Math2D\Double\OneDimensionalLine.cs" />
     <Compile Include="Engine\Math2D\Double\PointD2D.cs" />
+    <Compile Include="Engine\Math2D\Double\PolygonD2D.cs" />
     <Compile Include="Engine\Math2D\Double\VectorD2D.cs" />
     <Compile Include="Engine\Math2D\Int\PointI2D.cs" />
     <Compile Include="Game1.cs" />
