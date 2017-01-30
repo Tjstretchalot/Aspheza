@@ -67,13 +67,36 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <summary>
         /// Determines if this polygon intersects the specified other polygon.
         /// </summary>
-        /// <param name="other"></param>
-        /// <param name="myPosition"></param>
-        /// <param name="otherPosition"></param>
-        /// <returns></returns>
-        public bool Intersects(PolygonD2D other, PointD2D myPosition = null, PointD2D otherPosition = null)
+        /// <param name="other">The polygon to compare with</param>
+        /// <param name="myPosition">Where this polygon is located, null for the origin</param>
+        /// <param name="otherPosition">Where the other polygon is located, null for the origin</param>
+        /// <param name="strict">False if touching constitutes intersection, false otherwise.</param>
+        /// <returns>True for intersection, false otherwise</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
+        public bool Intersects(PolygonD2D other, PointD2D myPosition = null, PointD2D otherPosition = null, bool strict = false)
         {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
             return false; // TODO
+        }
+
+        /// <summary>
+        /// Determines the minimum translation vector to push THIS INSTANCE in order for this instance to no 
+        /// longer intersect the other polygon. If this polygon does not strictly intersect the other polygon,
+        /// this simply returns null.
+        /// </summary>
+        /// <param name="other">The other polygon</param>
+        /// <param name="myPosition">Where this polygon is located, null for the origin</param>
+        /// <param name="otherPosition">Where the other polygon is located, null for the origin</param>
+        /// <returns>The minimum translation vector to be applied on this polygon to stop intersection</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
+        public VectorD2D IntersectionMTV(PolygonD2D other, PointD2D myPosition = null, PointD2D otherPosition = null)
+        {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
+            return null; // TODO
         }
         
         /// <summary>
@@ -82,6 +105,8 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <param name="normals">The list of vectors</param>
         protected void RemoveRedundantNormals(List<VectorD2D> normals)
         {
+            if (normals == null)
+                throw new ArgumentNullException(nameof(normals));
             // TODO
         }        
     }

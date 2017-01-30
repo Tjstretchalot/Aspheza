@@ -53,7 +53,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         public OneDimensionalLine(VectorD2D axis, double start, double end)
         {
             if (axis == null)
-                throw new ArgumentNullException("Axis cannot be null");
+                throw new ArgumentNullException(nameof(axis));
 
             if (start == end)
                 throw new InvalidProgramException($"Start cannot match end (both are {start})");

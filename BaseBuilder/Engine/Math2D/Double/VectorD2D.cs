@@ -129,7 +129,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         public bool IsParallel(VectorD2D other)
         {
             if (other == null)
-                throw new ArgumentNullException("Other cannot be null");
+                throw new ArgumentNullException(nameof(other));
             
             return Slope == other.Slope || Slope == -other.Slope;
         }
@@ -144,7 +144,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         public bool IsAntiParallel(VectorD2D other)
         {
             if (other == null)
-                throw new ArgumentNullException("Other cannot be null");
+                throw new ArgumentNullException(nameof(other));
 
             return Slope == -other.Slope;
         }
