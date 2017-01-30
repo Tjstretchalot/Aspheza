@@ -30,7 +30,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// Two normals are only considered unique if they are not parallel 
         /// to each other.
         /// </summary>
-        public List<VectorD2D> UniqueNormals { get; protected set; }
+        public List<VectorD2D> UniqueUnitNormals { get; protected set; }
 
         protected PointD2D _Midpoint;
 
@@ -57,11 +57,23 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <summary>
         /// Projects this polygon onto the specified axis.
         /// </summary>
-        /// <param name="axis">The axis to project this polygon onto.</param>
+        /// <param name="unitAxis">The axis to project this polygon onto.</param>
+        /// <param name="myPosition">The position of this polygon, or null for the origin.</param>
         /// <returns>The projection of this polygon along the specified axis.</returns>
-        public OneDimensionalLine ProjectOntoAxis(VectorD2D axis)
+        public OneDimensionalLine ProjectOntoAxis(VectorD2D unitAxis, PointD2D myPosition = null)
         {
-            return null; // TODO
+            var min = double.MaxValue;
+            var max = double.MinValue;
+
+            foreach(var line in Lines)
+            {
+                var proj = line.ProjectOntoAxis(unitAxis, myPosition);
+
+                min = Math.Min(min, Math.Min(proj.Start, proj.End));
+                max = Math.Max(max, Math.Max(proj.Start, proj.End));
+            }
+
+            return new OneDimensionalLine(unitAxis, min, max);
         }
 
         /// <summary>
@@ -78,7 +90,21 @@ namespace BaseBuilder.Engine.Math2D.Double
             if (other == null)
                 throw new ArgumentNullException(nameof(other));
 
-            return false; // TODO
+            var normals = new List<VectorD2D>();
+            normals.AddRange(UniqueUnitNormals);
+            normals.AddRange(other.UniqueUnitNormals);
+            RemoveRedundantNormals(normals);
+            
+            foreach (var normal in normals)
+            {
+                var myProj = ProjectOntoAxis(normal, myPosition);
+                var otherProj = other.ProjectOntoAxis(normal, otherPosition);
+
+                if (!myProj.Intersects(otherProj, strict))
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -96,7 +122,29 @@ namespace BaseBuilder.Engine.Math2D.Double
             if (other == null)
                 throw new ArgumentNullException(nameof(other));
 
-            return null; // TODO
+            var normals = new List<VectorD2D>();
+            normals.AddRange(UniqueUnitNormals);
+            normals.AddRange(other.UniqueUnitNormals);
+            RemoveRedundantNormals(normals);
+
+            OneDimensionalLine bestChoice = null;
+            foreach(var normal in normals)
+            {
+                var myProj = ProjectOntoAxis(normal, myPosition);
+                var otherProj = other.ProjectOntoAxis(normal, otherPosition);
+
+                var intersection = myProj.IntersectionLine(otherProj);
+
+                if (intersection == null)
+                    return null; // Polygons are seperated by this axis
+
+                if(bestChoice == null || intersection.Length < bestChoice.Length)
+                {
+                    bestChoice = intersection;
+                }
+            }
+
+            return bestChoice.AsFiniteLineD2D().Axis;
         }
         
         /// <summary>

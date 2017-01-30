@@ -42,6 +42,21 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         public double End;
 
+        protected double? _Length;
+
+        public double Length
+        {
+            get
+            {
+                if (!_Length.HasValue)
+                {
+                    _Length = Math.Abs(End - Start);
+                }
+
+                return _Length.Value;
+            }
+        }
+
         /// <summary>
         /// Initializes the one dimensional line from start to end. 
         /// </summary>
@@ -96,7 +111,13 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>Finite line representation.</returns>
         public FiniteLineD2D AsFiniteLineD2D()
         {
-            return null; // TODO
+            var cosTheta = Math.Cos(Axis.Theta);
+            var sinTheta = Math.Sin(Axis.Theta);
+
+            var start = new PointD2D(Start * cosTheta, Start * sinTheta);
+            var end = new PointD2D(End * cosTheta, End * sinTheta);
+
+            return new FiniteLineD2D(start, end);
         }
     }
 }

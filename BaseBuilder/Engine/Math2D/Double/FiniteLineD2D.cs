@@ -128,7 +128,8 @@ namespace BaseBuilder.Engine.Math2D.Double
         protected VectorD2D _Axis;
 
         /// <summary>
-        /// Gets the axis that this line is on. The length is arbitrary.
+        /// Gets the axis that this line is on. The length is the length
+        /// of this line.
         /// </summary>
         public VectorD2D Axis
         {
@@ -449,12 +450,16 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <summary>
         /// Projects this line onto the specified axis.
         /// </summary>
-        /// <param name="axis">The axis to project onto</param>
+        /// <param name="unitAxis">The axis to project onto</param>
+        /// <param name="shift">Optional shift of this line, null for no shift</param>
         /// <returns>The line created when projecting this line onto the specified axis</returns>
         /// <exception cref="ArgumentNullException">If axis is null</exception>
-        public OneDimensionalLine ProjectOntoAxis(VectorD2D axis)
+        public OneDimensionalLine ProjectOntoAxis(VectorD2D unitAxis, PointD2D shift = null)
         {
-            return null; // TODO
+            var start = unitAxis.DeltaX * Start.X + unitAxis.DeltaY * Start.Y;
+            var end = unitAxis.DeltaX * End.X + unitAxis.DeltaY * End.Y;
+
+            return new OneDimensionalLine(unitAxis, start, end);
         }
 
         public override string ToString()

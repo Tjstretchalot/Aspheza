@@ -69,6 +69,24 @@ namespace BaseBuilder.Engine.Math2D.Double
             }
         }
 
+        private double? _Theta;
+
+        /// <summary>
+        /// Gets the angle of this vector counter-clockwise from positive x.
+        /// </summary>
+        public double Theta
+        {
+            get
+            {
+                if(!_Theta.HasValue)
+                {
+                    _Theta = Math.Atan2(DeltaY, DeltaX);
+                }
+
+                return _Theta.Value;
+            }
+        }
+
         protected VectorD2D _UnitVector;
 
         /// <summary>
