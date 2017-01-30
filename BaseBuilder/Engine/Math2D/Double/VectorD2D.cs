@@ -90,7 +90,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>PointD2D representation</returns>
         public PointD2D AsPointD2D()
         {
-            return null; // TODO
+            return new PointD2D(DeltaX, DeltaY);
         }
 
         public override string ToString()
