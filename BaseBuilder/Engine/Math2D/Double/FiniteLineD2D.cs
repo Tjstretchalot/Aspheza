@@ -451,20 +451,10 @@ namespace BaseBuilder.Engine.Math2D.Double
             var tmp = YAt(point.X);
             if (tmp == null)
             {
-                if (point.X == Start.X)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return point.X == Start.X;
             }
-            else if (point.Y == tmp)
-            {
-                return true;
-            }
-            return false;
+
+            return point.Y == tmp;
         }
 
         /// <summary>
