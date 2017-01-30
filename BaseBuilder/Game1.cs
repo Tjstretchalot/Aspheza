@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+// Temporary comment to test my source control environment.
 namespace BaseBuilder
 {
     /// <summary>
