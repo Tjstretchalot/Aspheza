@@ -148,8 +148,57 @@ namespace BaseBuilder.Engine.Math2D.Double
                 return null; // TODO
             }
         }
-        
 
+        protected double _MinX;
+
+        /// <summary>
+        /// The smallest x value this line contains.
+        /// </summary>
+        public double MinX
+        {
+            get
+            {
+                return 0; // TODO
+            }
+        }
+
+        protected double _MaxX;
+
+        /// <summary>
+        /// The largest x value this line contains
+        /// </summary>
+        public double MaxX
+        {
+            get
+            {
+                return 0; // TODO
+            }
+        }
+        protected double _MinY;
+
+        /// <summary>
+        /// The smallest y value this line contains
+        /// </summary>
+        public double MinY
+        {
+            get
+            {
+                return 0; // TODO
+            }
+        }
+
+        protected double _MaxY;
+
+        /// <summary>
+        /// The largest y value this line contains
+        /// </summary>
+        public double MaxY
+        {
+            get
+            {
+                return 0; // TODO
+            }
+        }
         /// <summary>
         /// Creates a new finite line starting at start and ending at end.
         /// </summary>
@@ -246,6 +295,26 @@ namespace BaseBuilder.Engine.Math2D.Double
             return false; // TODO
         }
         
+        /// <summary>
+        /// Determines if this line contains any points with the specified x.
+        /// </summary>
+        /// <param name="x">The x</param>
+        /// <returns>True if this line contains any points with specified x, false otherwise</returns>
+        public bool ContainsX(double x)
+        {
+            return false; // TODO
+        }
+
+        /// <summary>
+        /// Determines if this line contains any points with the specified y.
+        /// </summary>
+        /// <param name="y">The y</param>
+        /// <returns>True if this line contains any points with specified y, false otherwise</returns>
+        public bool ContainsY(double y)
+        {
+            return false; // TODO
+        }
+
         /// <summary>
         /// Determines what x position corresponds to the specified
         /// y position on this line. This function is without regard
