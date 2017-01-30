@@ -64,8 +64,10 @@ namespace BaseBuilder.Engine.Math2D.Double
             {
                 if (!_Length.HasValue)
                 {
-                    _Length = 
+                    _Length = Math.Sqrt(LengthSquared);
                 }
+
+                return _Length.Value;
             }
         }
 
