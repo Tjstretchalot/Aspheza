@@ -65,7 +65,16 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return 0; // TODO
+                if (double.IsInfinity(Slope))
+                {
+                    return null;
+                }
+                else if (!_YIntercept.HasValue)
+                {
+                    _YIntercept = Start.Y - (Start.X * Slope);
+                }
+
+                return _YIntercept;
             }
         }
 
@@ -142,6 +151,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             }
         }
 
+        protected PointD2D _Midpoint;
         /// <summary>
         /// Returns the midpoint of this line.
         /// </summary>
@@ -149,7 +159,12 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return null; // TODO
+                if (_Midpoint == null)
+                {
+                    _Midpoint = new PointD2D((Start.X + ((End.X - Start.X) / 2)), (Start.Y + ((End.Y - Start.Y) / 2)));
+                }
+
+                return _Midpoint;
             }
         }
 
@@ -230,7 +245,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>A new line created by shifting this line the specified amount</returns>
         public FiniteLineD2D Shift(double dx, double dy)
         {
-            return null; // TODO
+            return new FiniteLineD2D(Start.Shift(dx, dy), End.Shift(dx, dy));
         }
 
         /// <summary>
@@ -242,7 +257,12 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="InvalidProgramException">If scalar is 0</exception>
         public FiniteLineD2D Stretch(double scalar)
         {
-            return null; // TODO
+            var result = Shift(-Midpoint.X, -Midpoint.Y);
+            result.Start = result.Start * scalar;
+            result.End = result.End * scalar;
+            result = Shift(Midpoint.X, Midpoint.Y);
+
+            return result;
         }
 
         /// <summary>
@@ -256,7 +276,18 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsParallel(FiniteLineD2D other)
         {
-            return false; // TODO
+            if (Slope == other.Slope)
+            {
+                return true;
+            }
+            else if (Slope == -other.Slope)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -270,7 +301,18 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsParallel(InfiniteLineD2D other)
         {
-            return false;
+            if (Slope == other.Slope)
+            {
+                return true;
+            }
+            else if(Slope == -other.Slope)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -283,7 +325,11 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(FiniteLineD2D other)
         {
-            return false; // TODO
+            if (Slope == -other.Slope)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -296,7 +342,11 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(InfiniteLineD2D other)
         {
-            return false; // TODO
+            if (Slope == -other.Slope)
+            {
+                return true;
+            }
+            return false;
         }
         
         /// <summary>
@@ -329,7 +379,14 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>X at y</returns>
         public double? XAt(double y)
         {
-            return 0; // TODO
+            if (double.IsInfinity(Slope))
+            {
+                return null;
+            }
+            else
+            {
+                return ((y - YIntercept) / Slope);
+            }
         }
 
         /// <summary>
@@ -342,7 +399,14 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>Y at x</returns>
         public double? YAt(double x)
         {
-            return 0; // TODO
+            if (double.IsInfinity(Slope))
+            {
+                return null;
+            }
+            else
+            {
+                return (Slope * x) + YIntercept;
+            }
         }
 
         /// <summary>

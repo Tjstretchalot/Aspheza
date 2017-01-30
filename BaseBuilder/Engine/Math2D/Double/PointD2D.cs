@@ -62,12 +62,12 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <remarks>
         /// If you want to shift by another point, simply add the points together.
         /// </remarks>
-        /// <param name="x">The x to shift this point by</param>
-        /// <param name="y">The y to shift this point by</param>
+        /// <param name="dx">The x to shift this point by</param>
+        /// <param name="dy">The y to shift this point by</param>
         /// <returns>The shifted point</returns>
-        public PointD2D Shift(double x, double y)
+        public PointD2D Shift(double dx, double dy)
         {
-            return null; // TODO
+            return new PointD2D((X + dx), (Y + dy));
         }
 
         public override string ToString()
