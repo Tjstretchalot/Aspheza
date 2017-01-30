@@ -15,12 +15,12 @@ namespace BaseBuilder.Engine.Math.Double
         /// <summary>
         /// Where this line starts. 
         /// </summary>
-        public PointD2D Start { get; }
+        public PointD2D Start { get; protected set; }
 
         /// <summary>
         /// Where this line ends.
         /// </summary>
-        public PointD2D End { get; }
+        public PointD2D End { get; protected set; }
 
         protected double _Slope;
 
@@ -61,13 +61,14 @@ namespace BaseBuilder.Engine.Math.Double
             }
         }
 
-        protected InfiniteLineD2D _Normal;
+        protected VectorD2D _Normal;
 
         /// <summary>
-        /// Returns a line that runs perpendicular/normal/orthogonal
-        /// to this line.
+        /// Returns a vector that is perpendicular/normal/orthogonal
+        /// to this line. The length of the resulting vector is 
+        /// arbitrary.
         /// </summary>
-        public InfiniteLineD2D Normal
+        public VectorD2D Normal
         {
             get
             {
