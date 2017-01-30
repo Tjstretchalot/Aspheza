@@ -48,10 +48,31 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <summary>
         /// Initializes this polygon from a list of vertices.
         /// </summary>
-        /// <param name="vertices"></param>
+        /// <param name="vertices">The ordered vertices</param>
+        /// <exception cref="ArgumentNullException">If vertices are null</exception>
         public PolygonD2D(List<PointD2D> vertices)
         {
-            // TODO init vertices, lines, and unique normals. Use RemoveRedundantNormals (bottom).
+            if (vertices == null)
+                throw new ArgumentNullException(nameof(vertices));
+
+            Vertices = vertices;
+            Lines = new List<FiniteLineD2D>();
+
+            for(int i = 0; i < Vertices.Count - 1; i++)
+            {
+                Lines.Add(new FiniteLineD2D(Vertices[i], Vertices[i + 1]));
+            }
+
+            Lines.Add(new FiniteLineD2D(Vertices[Vertices.Count - 1], Vertices[0]));
+
+            UniqueUnitNormals = new List<VectorD2D>();
+
+            foreach(var line in Lines)
+            {
+                UniqueUnitNormals.Add(line.Normal.UnitVector);
+            }
+
+            RemoveRedundantNormals(UniqueUnitNormals);
         }
 
         /// <summary>
@@ -60,8 +81,12 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <param name="unitAxis">The axis to project this polygon onto.</param>
         /// <param name="myPosition">The position of this polygon, or null for the origin.</param>
         /// <returns>The projection of this polygon along the specified axis.</returns>
+        /// <exception cref="ArgumentNullException">If unitAxis is null</exception>
         public OneDimensionalLine ProjectOntoAxis(VectorD2D unitAxis, PointD2D myPosition = null)
         {
+            if (unitAxis == null)
+                throw new ArgumentNullException(nameof(unitAxis));
+
             var min = double.MaxValue;
             var max = double.MinValue;
 
@@ -155,7 +180,19 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             if (normals == null)
                 throw new ArgumentNullException(nameof(normals));
-            // TODO
+            
+            // Work from the back to the front because we're removing elements.
+            for(int i = normals.Count - 1; i >= 1; i--)
+            {
+                for(int j = i - 1; j >= 0; j--)
+                {
+                    if(normals[i].IsParallel(normals[j]))
+                    {
+                        normals.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
         }        
     }
 }
