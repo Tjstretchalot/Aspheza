@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BaseBuilder.Engine.Math.Double
+namespace BaseBuilder.Engine.Math2D.Double
 {
     /// <summary>
     /// Describes a line, with a start and an end. Should be treated

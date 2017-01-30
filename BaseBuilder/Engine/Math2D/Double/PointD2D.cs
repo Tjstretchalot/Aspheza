@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BaseBuilder.Engine.Math.Double
+namespace BaseBuilder.Engine.Math2D.Double
 {
     public class PointD2D
     {

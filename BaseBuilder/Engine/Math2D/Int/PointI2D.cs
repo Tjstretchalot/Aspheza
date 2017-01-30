@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BaseBuilder.Engine.Math
+namespace BaseBuilder.Engine.Math2D
 {
     public class PointI2D
     {
