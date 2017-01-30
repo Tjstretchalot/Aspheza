@@ -33,7 +33,20 @@ namespace BaseBuilder.Engine.Math2D.Double
             {
                 if (!_Slope.HasValue)
                 {
-                    _Slope = (End.Y - Start.Y) / (End.X - Start.Y);
+                    if (End.X - Start.X == 0)
+                    {
+                        if (Start.Y > End.Y)
+                        {
+                            _Slope = double.NegativeInfinity;
+                            
+                        } else if (Start.Y < End.Y)
+                        {
+                            _Slope = double.PositiveInfinity;
+                        }
+                    }else
+                    {
+                        _Slope = (End.Y - Start.Y) / (End.X - Start.X);
+                    }
                 }
 
                 return _Slope.Value;
@@ -279,7 +292,56 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool Intersects(FiniteLineD2D other, bool strict = false)
         {
-            return false; // TODO
+            double dx = End.X - Start.X;
+            double dy = End.Y - Start.Y;
+            double otherdx = other.End.X - other.Start.X;
+            double otherdy = other.End.Y - other.Start.Y;
+            double rxs = (otherdy * dx) - (otherdx * dy);
+
+            if (Slope == other.Slope || Slope == -other.Slope)
+            {
+
+                if (rxs == 0)
+                {
+                    double qpr = ((Start.X - other.Start.X) * dy) - ((Start.Y - other.Start.Y) * dx);
+
+                    if (qpr == 0)
+                    {
+                        // collinear
+                        double TmpT0 = (((other.Start.X - Start.X) * dx) - ((other.Start.Y - Start.Y) * dy) / LengthSquared);
+                        double TmpT1 = (((other.End.X - Start.X) * dx) - ((other.End.Y - Start.Y) * dy) / LengthSquared);
+
+                        if (TmpT0 >= 0 && TmpT0 <= 1)
+                        {
+                            return true;
+                        }
+                        else if (TmpT1 >= 0 && TmpT1 <= 1)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+            }
+            double TmpT = (((other.Start.X - Start.X) * otherdy) - ((other.Start.Y - Start.Y) * otherdx) / rxs);
+            double TmpU = (((Start.X - other.Start.X) * dy) - ((Start.Y - other.Start.Y) * dx) / rxs);
+
+            if (TmpT >= 0 && TmpT <= 0 && TmpU >= 0 && TmpT <= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
