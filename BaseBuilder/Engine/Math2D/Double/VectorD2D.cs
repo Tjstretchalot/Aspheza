@@ -130,12 +130,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             if (other == null)
                 throw new ArgumentNullException("Other cannot be null");
-
-            if (double.IsInfinity(Slope))
-                return double.IsInfinity(other.Slope);
-            else if (double.IsInfinity(other.Slope))
-                return false;
-
+            
             return Slope == other.Slope || Slope == -other.Slope;
         }
 
@@ -150,14 +145,6 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             if (other == null)
                 throw new ArgumentNullException("Other cannot be null");
-
-            if (double.IsPositiveInfinity(Slope))
-                return double.IsNegativeInfinity(other.Slope);
-            else if (double.IsNegativeInfinity(Slope))
-                return double.IsPositiveInfinity(other.Slope);
-
-            if (double.IsInfinity(other.Slope))
-                return false;
 
             return Slope == -other.Slope;
         }
