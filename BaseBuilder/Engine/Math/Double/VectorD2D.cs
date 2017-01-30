@@ -23,5 +23,28 @@ namespace BaseBuilder.Engine.Math.Double
         /// at the origin
         /// </summary>
         public double DeltaY;
+
+        protected VectorD2D _UnitVector;
+        public VectorD2D UnitVector
+        {
+            get
+            {
+                return null; // TODO
+            }
+        }
+
+        /// <summary>
+        /// Constructs a new vector, described by the ending
+        /// point if it were positioned at the origin.
+        /// </summary>
+        /// <param name="dx">Delta x of the vector</param>
+        /// <param name="dy">Delta y of the vector</param>
+        public VectorD2D(double dx, double dy)
+        {
+            DeltaX = dx;
+            DeltaY = dy;
+        }
+        
+
     }
 }
