@@ -177,7 +177,11 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return 0; // TODO
+                if (Start.X > End.X)
+                {
+                    return End.X;
+                }
+                return Start.X;
             }
         }
 
@@ -190,7 +194,11 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return 0; // TODO
+                if (Start.X < End.X)
+                {
+                    return End.X;
+                }
+                return Start.X;
             }
         }
         protected double _MinY;
@@ -202,7 +210,11 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return 0; // TODO
+                if (Start.Y > End.Y)
+                {
+                    return End.Y;
+                }
+                return Start.Y;
             }
         }
 
@@ -215,7 +227,11 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return 0; // TODO
+                if (Start.Y < End.Y)
+                {
+                    return End.Y;
+                }
+                return Start.Y;
             }
         }
         /// <summary>
@@ -356,7 +372,15 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if this line contains any points with specified x, false otherwise</returns>
         public bool ContainsX(double x)
         {
-            return false; // TODO
+            if (Start.X > x && End.X < x)
+            {
+                return true;
+            }
+            else if (Start.X < x && End.X > x)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -366,7 +390,15 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if this line contains any points with specified y, false otherwise</returns>
         public bool ContainsY(double y)
         {
-            return false; // TODO
+            if (Start.Y > y && End.Y < y)
+            {
+                return true;
+            }
+            else if (Start.Y < y && End.Y > y)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
