@@ -51,9 +51,38 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <param name="vertices"></param>
         public PolygonD2D(List<PointD2D> vertices)
         {
-            // TODO init vertices, lines, and unique normals
+            // TODO init vertices, lines, and unique normals. Use RemoveRedundantNormals (bottom).
         }
 
-        public 
+        /// <summary>
+        /// Projects this polygon onto the specified axis.
+        /// </summary>
+        /// <param name="axis">The axis to project this polygon onto.</param>
+        /// <returns>The projection of this polygon along the specified axis.</returns>
+        public OneDimensionalLine ProjectOntoAxis(VectorD2D axis)
+        {
+            return null; // TODO
+        }
+
+        /// <summary>
+        /// Determines if this polygon intersects the specified other polygon.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <param name="myPosition"></param>
+        /// <param name="otherPosition"></param>
+        /// <returns></returns>
+        public bool Intersects(PolygonD2D other, PointD2D myPosition = null, PointD2D otherPosition = null)
+        {
+            return false; // TODO
+        }
+        
+        /// <summary>
+        /// Removes any vectors in the list that are parallel to each other.
+        /// </summary>
+        /// <param name="normals">The list of vectors</param>
+        protected void RemoveRedundantNormals(List<VectorD2D> normals)
+        {
+            // TODO
+        }        
     }
 }

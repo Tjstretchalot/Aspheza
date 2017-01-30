@@ -88,7 +88,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             return null; // TODO
         }
-
+        
         /// <summary>
         /// Converts this one dimensional line representation to the standard
         /// finite line representation.

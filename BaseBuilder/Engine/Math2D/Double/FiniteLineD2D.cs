@@ -96,6 +96,19 @@ namespace BaseBuilder.Engine.Math2D.Double
             }
         }
 
+        protected VectorD2D _Axis;
+
+        /// <summary>
+        /// Gets the axis that this line is on. The length is arbitrary.
+        /// </summary>
+        public VectorD2D Axis
+        {
+            get
+            {
+                return null; // TODO
+            }
+        }
+
         /// <summary>
         /// Returns the midpoint of this line.
         /// </summary>
@@ -202,8 +215,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             return false; // TODO
         }
-
-
+        
         /// <summary>
         /// Determines if this finite line intersects the specified other finite
         /// line.
@@ -215,6 +227,24 @@ namespace BaseBuilder.Engine.Math2D.Double
         public bool Intersects(FiniteLineD2D other, bool strict = false)
         {
             return false; // TODO
+        }
+
+        /// <summary>
+        /// Determines the longest line that both this line and other both include if
+        /// the lines strictly intersect. Otherwise returns null.
+        /// </summary>
+        /// <remarks>
+        /// Since two lines can only have an intersection line if they are aligned to 
+        /// the same axis, a OneDimensionalLine can be returned. If the actual location
+        /// of the intersection line is important, a OneDimensionalLine can be
+        /// converted to a FiniteLine using OneDimensionalLine#AsFiniteLineD2D.
+        /// </remarks>
+        /// <param name="other">The line to compare with</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
+        public OneDimensionalLine IntersectionLine(FiniteLineD2D other)
+        {
+            return null; // TODO
         }
 
         /// <summary>

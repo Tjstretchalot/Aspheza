@@ -24,6 +24,33 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         public double DeltaY { get; protected set; }
 
+        protected double? _Slope;
+
+        /// <summary>
+        /// The slope of this VectorD2D
+        /// </summary>
+        public double Slope
+        {
+            get
+            {
+                if(!_Slope.HasValue)
+                {
+                    if(DeltaX == 0)
+                    {
+                        if (DeltaY > 0)
+                            _Slope = double.PositiveInfinity;
+                        else
+                            _Slope = double.NegativeInfinity;
+                    }else
+                    {
+                        _Slope = DeltaY / DeltaX;
+                    }
+                }
+
+                return _Slope.Value;
+            }
+        }
+
         protected double? _Magnitude;
 
         /// <summary>
@@ -67,8 +94,12 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="dx">Delta x of the vector</param>
         /// <param name="dy">Delta y of the vector</param>
+        /// <exception cref="InvalidProgramException">If dx == dy == 0</exception>
         public VectorD2D(double dx, double dy)
         {
+            if (dx == 0 && dy == 0)
+                throw new InvalidProgramException("A 0-vector is not allowed.");
+
             DeltaX = dx;
             DeltaY = dy;
         }
@@ -79,9 +110,56 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="scalar">The amount to scale this vector by</param>
         /// <returns>A new vector scaled by scalar</returns>
+        /// <exception cref="InvalidProgramException">If scalar is 0</exception>
         public VectorD2D Scale(double scalar)
         {
+            if (scalar == 0)
+                throw new ArgumentNullException("Scalar cannot be 0 (a 0-vector is not allowed)");
+
             return new VectorD2D(DeltaX * scalar, DeltaY * scalar);
+        }
+
+        /// <summary>
+        /// Checks if this vector is parallel to the other vector. Note that two
+        /// vectors are considered parallel even if they are going in opposite directions.
+        /// </summary>
+        /// <param name="other">The other vector</param>
+        /// <returns>True if parallel, false otherwise</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
+        public bool IsParallel(VectorD2D other)
+        {
+            if (other == null)
+                throw new ArgumentNullException("Other cannot be null");
+
+            if (double.IsInfinity(Slope))
+                return double.IsInfinity(other.Slope);
+            else if (double.IsInfinity(other.Slope))
+                return false;
+
+            return Slope == other.Slope || Slope == -other.Slope;
+        }
+
+        /// <summary>
+        /// Returns true if this vector is going in the opposite direction of the other
+        /// vector. Otherwise, returns false.
+        /// </summary>
+        /// <param name="other">The vector to compare wtih</param>
+        /// <returns>True if this and other is antiparallel, false otherwise</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
+        public bool IsAntiParallel(VectorD2D other)
+        {
+            if (other == null)
+                throw new ArgumentNullException("Other cannot be null");
+
+            if (double.IsPositiveInfinity(Slope))
+                return double.IsNegativeInfinity(other.Slope);
+            else if (double.IsNegativeInfinity(Slope))
+                return double.IsPositiveInfinity(other.Slope);
+
+            if (double.IsInfinity(other.Slope))
+                return false;
+
+            return Slope == -other.Slope;
         }
 
         /// <summary>

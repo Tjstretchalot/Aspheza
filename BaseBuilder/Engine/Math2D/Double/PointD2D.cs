@@ -56,6 +56,20 @@ namespace BaseBuilder.Engine.Math2D.Double
             return new VectorD2D(X, Y);
         }
 
+        /// <summary>
+        /// Returns the point created by shifting this point x, y.
+        /// </summary>
+        /// <remarks>
+        /// If you want to shift by another point, simply add the points together.
+        /// </remarks>
+        /// <param name="x">The x to shift this point by</param>
+        /// <param name="y">The y to shift this point by</param>
+        /// <returns>The shifted point</returns>
+        public PointD2D Shift(double x, double y)
+        {
+            return null; // TODO
+        }
+
         public override string ToString()
         {
             return $"({X}, {Y})";
