@@ -35,7 +35,7 @@ namespace BaseBuilder.Engine.Math.Double
             }
         }
 
-        protected double _LengthSquared;
+        protected double? _LengthSquared;
 
         /// <summary>
         /// The length of the line (squared).
@@ -44,11 +44,16 @@ namespace BaseBuilder.Engine.Math.Double
         {
             get
             {
-                return 0; // TODO
+                if (!_LengthSquared.HasValue)
+                {
+                    _LengthSquared = (((End.X - Start.X) * (End.X - Start.X)) + ((End.Y - Start.Y) * (End.Y - Start.Y)));
+                }
+
+                return _LengthSquared.Value;
             }
         }
 
-        protected double _Length;
+        protected double? _Length;
 
         /// <summary>
         /// The length of the line.
@@ -57,7 +62,10 @@ namespace BaseBuilder.Engine.Math.Double
         {
             get
             {
-                return 0; // TODO
+                if (!_Length.HasValue)
+                {
+                    _Length = 
+                }
             }
         }
 
@@ -72,7 +80,12 @@ namespace BaseBuilder.Engine.Math.Double
         {
             get
             {
-                return null; // TODO
+                if (_Normal == null)
+                {
+                    _Normal = new VectorD2D(-(End.Y - Start.Y), (End.X - Start.X));
+                }
+
+                return _Normal;
             }
         }
 
