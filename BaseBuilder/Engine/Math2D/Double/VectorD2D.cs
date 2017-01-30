@@ -24,7 +24,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         public double DeltaY { get; protected set; }
 
-        protected double _Magnitude;
+        protected double? _Magnitude;
 
         /// <summary>
         /// The magnitude of this vector.
@@ -33,7 +33,12 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return 0; // TODO
+                if (!_Magnitude.HasValue)
+                {
+                    _Magnitude = Math.Sqrt(((DeltaX * DeltaX) + (DeltaY * DeltaY)));
+                }
+
+                return _Magnitude.Value;
             }
         }
 
@@ -47,7 +52,12 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return null; // TODO
+                if (_UnitVector == null)
+                {
+                    _UnitVector = new VectorD2D(DeltaX / Magnitude, DeltaY / Magnitude);
+                }
+
+                return _UnitVector;
             }
         }
            
@@ -71,7 +81,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>A new vector scaled by scalar</returns>
         public VectorD2D Scale(double scalar)
         {
-            return null; // TODO
+            return new VectorD2D(DeltaX * scalar, DeltaY * scalar);
         }
 
         /// <summary>
