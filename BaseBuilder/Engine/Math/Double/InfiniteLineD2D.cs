@@ -51,7 +51,12 @@ namespace BaseBuilder.Engine.Math.Double
         {
             get
             {
-                return null; // TODO
+                if (_Normal == null)
+                {
+                    _Normal = new VectorD2D(-(Point1.Y - Point2.Y), (Point1.X - Point2.X));
+                }
+
+                return _Normal; 
             }
         }
 
