@@ -134,7 +134,10 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return null; // TODO
+                if(_Axis == null)
+                   _Axis = (End - Start).AsVectorD2D();
+
+                return _Axis;
             }
         }
 
