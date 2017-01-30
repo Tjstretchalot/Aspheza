@@ -341,11 +341,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(FiniteLineD2D other)
         {
-            if (Slope == -other.Slope)
-            {
-                return true;
-            }
-            return false;
+            return (Slope == -other.Slope);
         }
 
         /// <summary>
@@ -358,11 +354,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(InfiniteLineD2D other)
         {
-            if (Slope == -other.Slope)
-            {
-                return true;
-            }
-            return false;
+            return (Slope == -other.Slope);            
         }
         
         /// <summary>
