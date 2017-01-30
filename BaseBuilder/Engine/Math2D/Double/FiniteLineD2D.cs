@@ -448,7 +448,23 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if the point is along the line, false otherwise</returns>
         public bool Intersects(PointD2D point)
         {
-            return false; // TODO
+            var tmp = YAt(point.X);
+            if (tmp == null)
+            {
+                if (point.X == Start.X)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (point.Y == tmp)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
