@@ -92,16 +92,63 @@ namespace BaseBuilder.Engine.Math2D.Double
 
         /// <summary>
         /// Returns the largest line that both this line and the other line 
-        /// include, if there is strict intersection between the lines.
+        /// include, if there is strict intersection between the lines. The
+        /// line will be in the direction that this line would need to move
+        /// in order for no collision to occur.
         /// 
-        /// Otherwise, returns null.
+        /// If the lines do not strictly intersect this returns null.
         /// </summary>
         /// <param name="other">The line to compare with</param>
         /// <returns>The largest line both this line and other include or null if no strict intersection.</returns>
         /// <exception cref="InvalidProgramException">If this line and other are not on the same axis</exception>
+        /// <example>
+        /// Case 1, partial intersection:
+        /// Line1 = [Start = 2, End = 3]
+        /// Line2 = [Start = 2.5, End = 4]
+        /// 
+        /// Line1.IntersectionLine(Line2) = [Start = 3, End = 2.5]
+        /// Line2.IntersectionLine(Line1) = [Start = 2.5, End = 3]
+        /// 
+        /// Case 2, complete intersection, same size:
+        /// Line1 = [Start = 4, End = 5]
+        /// Line2 = [Start = 4, End = 5]
+        /// 
+        /// Line1.IntersectionLine(Line2) = [Start = 4, End = 5]
+        /// Line2.IntersectionLine(Line1) = [Start = 4, End = 5]
+        /// 
+        /// Case 3, complete intersection, dissimiliar size
+        /// Line1 = [Start = 4, End = 5]
+        /// Line2 = [Start = 3, End = 5]
+        /// 
+        /// Line1.IntersectionLine(Line2) = [Start = 4, End = 5]
+        /// Line2.IntersectionLine(Line1) = [Start = 5, End = 4]
+        /// </example>
         public OneDimensionalLine IntersectionLine(OneDimensionalLine other)
         {
-            return null; // TODO
+            var myMin = Math.Min(Start, End);
+            var myMax = Math.Max(Start, End);
+            var otherMin = Math.Min(other.Start, other.End);
+            var otherMax = Math.Max(other.Start, other.End);
+
+            if (myMin > otherMax || myMax < otherMin)
+                return null;
+
+            var resultStart = myMin;
+            var resultEnd = otherMax;
+            var resultLen = Math.Abs(resultEnd - resultStart);
+
+            var opt2Start = myMax;
+            var opt2End = otherMin;
+            var opt2Len = Math.Abs(opt2End - opt2Start);
+
+            if(opt2Len < resultLen)
+            {
+                resultStart = opt2Start;
+                resultEnd = opt2End;
+                resultLen = opt2Len;
+            }
+            
+            return new OneDimensionalLine(Axis, resultStart, resultEnd); 
         }
         
         /// <summary>

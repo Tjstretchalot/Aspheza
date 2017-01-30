@@ -245,9 +245,9 @@ namespace BaseBuilder.Engine.Math2D.Double
             if(start == end)
                 throw new InvalidProgramException($"A line requires two unique points, but the two points given are identical as {start}");
             if (start == null)
-                throw new ArgumentNullException($"Start is null (start={start}, end={end})");
+                throw new ArgumentNullException(nameof(start));
             if (end == null)
-                throw new ArgumentNullException($"End is null (start={start}, end={end})");
+                throw new ArgumentNullException(nameof(end));
 
             Start = start;
             End = end;

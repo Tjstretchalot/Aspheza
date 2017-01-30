@@ -52,7 +52,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                         sumY += vertix.Y;
                     }
 
-                    _Midpoint = new PointD2D(sumX, sumY);
+                    _Midpoint = new PointD2D(sumX / Vertices.Count, sumY / Vertices.Count);
                 }
 
                 return _Midpoint;
