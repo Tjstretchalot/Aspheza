@@ -66,8 +66,17 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="p1">A point on the line.</param>
         /// <param name="p2">A different point on the line.</param>
+        /// <exception cref="InvalidProgramException">If the points are equal.</exception>
+        /// <exception cref="ArgumentNullException">If either point is null.</exception>
         public InfiniteLineD2D(PointD2D p1, PointD2D p2)
         {
+            if (p1 == p2)
+                throw new InvalidProgramException($"A line requires two unique points, but the two points given are identical as {p1}");
+            if (p1 == null)
+                throw new ArgumentNullException($"Point1 is null (Point1={Point1}, Point2={Point2})");
+            if (p2 == null)
+                throw new ArgumentNullException($"Point2 is null (Point1={Point1}, Point2={Point2})");
+
             Point1 = p1;
             Point2 = p2;
         }
@@ -80,6 +89,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="other">Line to compare with.</param>
         /// <returns>If this line is parallel with the other line.</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsParallel(InfiniteLineD2D other)
         {
             return false;
@@ -92,6 +102,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="other">Line to compare with.</param>
         /// <returns>If this line is anti-parallel with the other line</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(InfiniteLineD2D other)
         {
             return false; // TODO
@@ -101,8 +112,9 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// Determines if this infinite line intersects the specified other infinite line.
         /// </summary>
         /// <param name="other">The infinite line to compare with.</param>
-        /// <param name="strict">True if touching constitutes intersection, false otherwise.</param>
-        /// <returns></returns>
+        /// <param name="strict">False if touching constitutes intersection, true otherwise.</param>
+        /// <returns>True if this line intersects the other, false otherwise</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool Intersects(InfiniteLineD2D other, bool strict = false)
         {
             return false; // TODO

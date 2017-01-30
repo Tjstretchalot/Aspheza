@@ -108,16 +108,19 @@ namespace BaseBuilder.Engine.Math2D.Double
         }
 
         /// <summary>
-        /// 
+        /// Creates a new finite line starting at start and ending at end.
         /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
+        /// <param name="start">Start of the line.</param>
+        /// <param name="end">End of the line.</param>
+        /// <exception cref="ArgumentNullException">If start or end is null</exception>
         public FiniteLineD2D(PointD2D start, PointD2D end)
         {
             if(start == end)
-            {
                 throw new InvalidProgramException($"A line requires two unique points, but the two points given are identical as {start}");
-            }
+            if (start == null)
+                throw new ArgumentNullException($"Start is null (start={start}, end={end})");
+            if (end == null)
+                throw new ArgumentNullException($"End is null (start={start}, end={end})");
 
             Start = start;
             End = end;
@@ -140,6 +143,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="scalar">Multiplier that the resulting lines length is compared to this length</param>
         /// <returns>A new line created by stretching this line by the specified scalar</returns>
+        /// <exception cref="InvalidProgramException">If scalar is 0</exception>
         public FiniteLineD2D Stretch(double scalar)
         {
             return null; // TODO
@@ -153,6 +157,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="other">Line to compare with.</param>
         /// <returns>If this line is parallel with the other line.</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsParallel(FiniteLineD2D other)
         {
             return false; // TODO
@@ -166,6 +171,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="other">Line to compare with.</param>
         /// <returns>If this line is parallel with the other line.</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsParallel(InfiniteLineD2D other)
         {
             return false;
@@ -178,6 +184,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="other">Line to compare with.</param>
         /// <returns>If this line is anti-parallel with the other line</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(FiniteLineD2D other)
         {
             return false; // TODO
@@ -190,6 +197,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="other">Line to compare with.</param>
         /// <returns>If this line is anti-parallel with the other line</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(InfiniteLineD2D other)
         {
             return false; // TODO
@@ -201,8 +209,9 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// line.
         /// </summary>
         /// <param name="other">The line to compare with.</param>
-        /// <param name="strict">True if touching constitutes intersection, false otherwise.</param>
+        /// <param name="strict">False if touching constitutes intersection, true otherwise.</param>
         /// <returns>True on intersection, false otherwise</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool Intersects(FiniteLineD2D other, bool strict = false)
         {
             return false; // TODO
@@ -212,11 +221,23 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// Determines if this finite line intersects the specified other infinite line.
         /// </summary>
         /// <param name="other">The infinite line to compare with.</param>
-        /// <param name="strict">True if touching constitutes intersection, false otherwise.</param>
+        /// <param name="strict">False if touching constitutes intersection, true otherwise.</param>
         /// <returns>True on intersection, false otherwise</returns>
+        /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool Intersects(InfiniteLineD2D other, bool strict = false)
         {
             return false; // TODO
+        }
+
+        /// <summary>
+        /// Projects this line onto the specified axis.
+        /// </summary>
+        /// <param name="axis">The axis to project onto</param>
+        /// <returns>The line created when projecting this line onto the specified axis</returns>
+        /// <exception cref="ArgumentNullException">If axis is null</exception>
+        public OneDimensionalLine ProjectOntoAxis(VectorD2D axis)
+        {
+            return null; // TODO
         }
 
         public override string ToString()
