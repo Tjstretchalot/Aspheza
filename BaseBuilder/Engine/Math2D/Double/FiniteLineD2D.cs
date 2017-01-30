@@ -35,14 +35,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 {
                     if (End.X - Start.X == 0)
                     {
-                        if (Start.Y > End.Y)
-                        {
-                            _Slope = double.NegativeInfinity;
-                            
-                        } else if (Start.Y < End.Y)
-                        {
-                            _Slope = double.PositiveInfinity;
-                        }
+                         _Slope = double.PositiveInfinity;
                     }else
                     {
                         _Slope = (End.Y - Start.Y) / (End.X - Start.X);
@@ -292,18 +285,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsParallel(FiniteLineD2D other)
         {
-            if (Slope == other.Slope)
-            {
-                return true;
-            }
-            else if (Slope == -other.Slope)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return Slope == other.Slope;
         }
 
         /// <summary>
@@ -317,18 +299,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsParallel(InfiniteLineD2D other)
         {
-            if (Slope == other.Slope)
-            {
-                return true;
-            }
-            else if(Slope == -other.Slope)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return Slope == other.Slope;
         }
 
         /// <summary>
@@ -341,7 +312,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(FiniteLineD2D other)
         {
-            return (Slope == -other.Slope);
+            return (End - Start).AsVectorD2D().UnitVector == (other.End - other.Start).AsVectorD2D().UnitVector.Scale(-1);
         }
 
         /// <summary>
@@ -354,7 +325,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(InfiniteLineD2D other)
         {
-            return (Slope == -other.Slope);            
+            return (End - Start).AsVectorD2D().UnitVector == (other.Point2 - other.Point1).AsVectorD2D().UnitVector.Scale(-1);
         }
         
         /// <summary>
@@ -469,7 +440,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             double otherdy = other.End.Y - other.Start.Y;
             double rxs = (otherdy * dx) - (otherdx * dy);
 
-            if (Slope == other.Slope || Slope == -other.Slope)
+            if (IsParallel(other))
             {
 
                 if (rxs == 0)
@@ -554,9 +525,9 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If axis is null</exception>
         public OneDimensionalLine ProjectOntoAxis(VectorD2D unitAxis, PointD2D shift = null)
         {
-            var start = unitAxis.DeltaX * Start.X + unitAxis.DeltaY * Start.Y;
-            var end = unitAxis.DeltaX * End.X + unitAxis.DeltaY * End.Y;
-
+            var start = unitAxis.DeltaX * (Start.X + (shift == null ? 0 : shift.X)) + unitAxis.DeltaY * (Start.Y + (shift == null ? 0 : shift.Y));
+            var end = unitAxis.DeltaX * (End.X + (shift == null ? 0 : shift.X)) + unitAxis.DeltaY * (End.Y + (shift == null ? 0 : shift.Y));
+            
             return new OneDimensionalLine(unitAxis, start, end);
         }
 

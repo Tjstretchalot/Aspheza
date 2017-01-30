@@ -87,7 +87,17 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="InvalidProgramException">If this line and other are not on the same axis</exception>
         public bool Intersects(OneDimensionalLine other, bool strict = false)
         {
-            return false; // TODO
+            var myMin = Math.Min(Start, End);
+            var myMax = Math.Max(Start, End);
+            var otherMin = Math.Min(other.Start, other.End);
+            var otherMax = Math.Max(other.Start, other.End);
+
+            if (myMin < otherMax || (strict && myMin == otherMax))
+                return false;
+            if (otherMin < myMax || (strict && otherMin == myMax))
+                return false;
+
+            return true;
         }
 
         /// <summary>
@@ -130,7 +140,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             var otherMin = Math.Min(other.Start, other.End);
             var otherMax = Math.Max(other.Start, other.End);
 
-            if (myMin > otherMax || myMax < otherMin)
+            if (myMin >= otherMax || myMax <= otherMin)
                 return null;
 
             var resultStart = myMin;

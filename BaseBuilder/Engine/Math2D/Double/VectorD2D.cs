@@ -37,10 +37,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 {
                     if(DeltaX == 0)
                     {
-                        if (DeltaY > 0)
-                            _Slope = double.PositiveInfinity;
-                        else
-                            _Slope = double.NegativeInfinity;
+                        _Slope = double.PositiveInfinity;
                     }else
                     {
                         _Slope = DeltaY / DeltaX;
@@ -149,7 +146,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             if (other == null)
                 throw new ArgumentNullException(nameof(other));
             
-            return Slope == other.Slope || Slope == -other.Slope;
+            return Slope == other.Slope;
         }
 
         /// <summary>
@@ -164,7 +161,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             if (other == null)
                 throw new ArgumentNullException(nameof(other));
 
-            return Slope == -other.Slope;
+            return UnitVector == other.UnitVector.Scale(-1);
         }
 
         /// <summary>
@@ -174,6 +171,33 @@ namespace BaseBuilder.Engine.Math2D.Double
         public PointD2D AsPointD2D()
         {
             return new PointD2D(DeltaX, DeltaY);
+        }
+
+
+        public static bool operator ==(VectorD2D p1, VectorD2D p2)
+        {
+            if (ReferenceEquals(p1, null) || ReferenceEquals(p2, null))
+                return ReferenceEquals(p1, p2);
+
+            return p1.DeltaX == p2.DeltaX && p1.DeltaY == p2.DeltaY;
+        }
+
+        public static bool operator !=(VectorD2D p1, VectorD2D p2)
+        {
+            if (ReferenceEquals(p1, null) || ReferenceEquals(p2, null))
+                return !ReferenceEquals(p1, p2);
+
+            return p1.DeltaX != p2.DeltaX || p1.DeltaY != p2.DeltaY;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var v2 = obj as VectorD2D;
+
+            if (ReferenceEquals(v2, null))
+                return false;
+
+            return this == v2;
         }
 
         public override string ToString()

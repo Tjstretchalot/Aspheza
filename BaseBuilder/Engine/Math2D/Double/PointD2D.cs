@@ -85,7 +85,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             var p2 = obj as PointD2D;
 
-            if (p2 == null)
+            if (ReferenceEquals(p2, null))
                 return false;
 
             return this == p2;

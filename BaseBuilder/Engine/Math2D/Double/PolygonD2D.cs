@@ -106,6 +106,9 @@ namespace BaseBuilder.Engine.Math2D.Double
 
             foreach(var line in Lines)
             {
+                if (line.Normal.IsParallel(unitAxis))
+                    continue; // The line is completely orthogonal to this axis and will project to a dot, which can be ignored
+                
                 var proj = line.ProjectOntoAxis(unitAxis, myPosition);
 
                 min = Math.Min(min, Math.Min(proj.Start, proj.End));
@@ -176,7 +179,7 @@ namespace BaseBuilder.Engine.Math2D.Double
 
                 if (intersection == null)
                     return null; // Polygons are seperated by this axis
-
+                
                 if(bestChoice == null || intersection.Length < bestChoice.Length)
                 {
                     bestChoice = intersection;
