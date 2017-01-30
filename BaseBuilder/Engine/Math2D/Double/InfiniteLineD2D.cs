@@ -40,6 +40,19 @@ namespace BaseBuilder.Engine.Math2D.Double
             }
         }
 
+        protected double? _YIntercept;
+
+        /// <summary>
+        /// Calculates the y-intercept of the line, if the slope is finite.
+        /// </summary>
+        public double? YIntercept
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
         protected VectorD2D _Normal;
 
         /// <summary>
@@ -104,6 +117,16 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>If this line is anti-parallel with the other line</returns>
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(InfiniteLineD2D other)
+        {
+            return false; // TODO
+        }
+
+        /// <summary>
+        /// Determines if the specified point is along this line.
+        /// </summary>
+        /// <param name="point">The point to check</param>
+        /// <returns>True if the point is along the line, false otherwise</returns>
+        public bool Intersects(PointD2D point)
         {
             return false; // TODO
         }

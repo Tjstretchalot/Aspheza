@@ -40,6 +40,22 @@ namespace BaseBuilder.Engine.Math2D.Double
             }
         }
 
+        protected double? _YIntercept;
+
+        /// <summary>
+        /// The y-intercept of this line. This is calculated regardless of 
+        /// if the line would actually intercept the y-axis (i.e., without 
+        /// regard to length), but it still may not have a value if slope
+        /// is infinite.
+        /// </summary>
+        public double? YIntercept
+        {
+            get
+            {
+                return 0; // TODO
+            }
+        }
+
         protected double? _LengthSquared;
 
         /// <summary>
@@ -119,6 +135,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 return null; // TODO
             }
         }
+        
 
         /// <summary>
         /// Creates a new finite line starting at start and ending at end.
@@ -216,6 +233,42 @@ namespace BaseBuilder.Engine.Math2D.Double
             return false; // TODO
         }
         
+        /// <summary>
+        /// Determines what x position corresponds to the specified
+        /// y position on this line. This function is without regard
+        /// to the length of the line, however may still not have a
+        /// value if the line is horizontal.
+        /// </summary>
+        /// <param name="y">The y to calculate x at</param>
+        /// <returns>X at y</returns>
+        public double? XAt(double y)
+        {
+            return 0; // TODO
+        }
+
+        /// <summary>
+        /// Determines what y-position corresponds to the specified
+        /// x position on this line. This function is without regard
+        /// to the length of the line, however may still not have a 
+        /// value if the line is vertical.
+        /// </summary>
+        /// <param name="x">The x to calculate y at</param>
+        /// <returns>Y at x</returns>
+        public double? YAt(double x)
+        {
+            return 0; // TODO
+        }
+
+        /// <summary>
+        /// Determines if the specified point is along this line.
+        /// </summary>
+        /// <param name="point">The point to check</param>
+        /// <returns>True if the point is along the line, false otherwise</returns>
+        public bool Intersects(PointD2D point)
+        {
+            return false; // TODO
+        }
+
         /// <summary>
         /// Determines if this finite line intersects the specified other finite
         /// line.
