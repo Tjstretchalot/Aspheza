@@ -41,7 +41,21 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return null;
+                if(_Midpoint == null)
+                {
+                    var sumX = 0.0;
+                    var sumY = 0.0;
+
+                    foreach(var vertix in Vertices)
+                    {
+                        sumX += vertix.X;
+                        sumY += vertix.Y;
+                    }
+
+                    _Midpoint = new PointD2D(sumX, sumY);
+                }
+
+                return _Midpoint;
             }
         }
 
