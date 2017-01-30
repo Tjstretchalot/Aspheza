@@ -47,6 +47,15 @@ namespace BaseBuilder.Engine.Math.Double
             return p1.X != p2.X || p1.Y != p2.Y;
         }
 
+        /// <summary>
+        /// Returns the vector representation of this point. 
+        /// </summary>
+        /// <returns>This point as a vector.</returns>
+        public VectorD2D AsVectorD2D()
+        {
+            return new VectorD2D(X, Y);
+        }
+
         public override string ToString()
         {
             return $"({X}, {Y})";
