@@ -22,7 +22,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         public PointD2D End { get; protected set; }
 
-        protected double _Slope;
+        protected double? _Slope;
 
         /// <summary>
         /// The slope of the line (rise over run)
@@ -31,7 +31,12 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return 0; // TODO
+                if (!_Slope.HasValue)
+                {
+                    _Slope = (End.Y - Start.Y) / (End.X - Start.Y);
+                }
+
+                return _Slope.Value;
             }
         }
 
