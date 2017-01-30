@@ -372,11 +372,11 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if this line contains any points with specified x, false otherwise</returns>
         public bool ContainsX(double x)
         {
-            if (Start.X > x && End.X < x)
+            if (Start.X >= x && End.X <= x)
             {
                 return true;
             }
-            else if (Start.X < x && End.X > x)
+            else if (Start.X <= x && End.X >= x)
             {
                 return true;
             }
@@ -390,11 +390,11 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if this line contains any points with specified y, false otherwise</returns>
         public bool ContainsY(double y)
         {
-            if (Start.Y > y && End.Y < y)
+            if (Start.Y >= y && End.Y <= y)
             {
                 return true;
             }
-            else if (Start.Y < y && End.Y > y)
+            else if (Start.Y <= y && End.Y >= y)
             {
                 return true;
             }
@@ -448,10 +448,14 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if the point is along the line, false otherwise</returns>
         public bool Intersects(PointD2D point)
         {
+            if (!ContainsX(point.X))
+            {
+                return false;
+            }
             var tmp = YAt(point.X);
             if (tmp == null)
             {
-                return point.X == Start.X;
+                return ContainsY(point.Y);
             }
 
             return point.Y == tmp;
