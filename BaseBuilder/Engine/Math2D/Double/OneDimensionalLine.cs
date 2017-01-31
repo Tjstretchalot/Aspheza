@@ -1,4 +1,5 @@
 ﻿using System;
+using static BaseBuilder.Engine.Math2D.Double.MathUtilsD2D;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -119,9 +120,9 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="InvalidProgramException">If this line and other are not on the same axis</exception>
         public bool Intersects(OneDimensionalLine other, bool strict = false)
         {
-            if (Min > other.Max || (strict && Min == other.Max))
+            if (EpsilonGreaterThan(Min, other.Max) || (strict && Min == other.Max))
                 return false;
-            if (other.Min > Max || (strict && other.Min == Max))
+            if (EpsilonLessThan(other.Min, Max) || (strict && other.Min == Max))
                 return false;
 
             return true;
@@ -162,7 +163,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </example>
         public OneDimensionalLine IntersectionLine(OneDimensionalLine other)
         {
-            if (Min >= other.Max || Max <= other.Min)
+            if (EpsilonGreaterThanOrEqual(Min, other.Max) || EpsilonLessThanOrEqual(Max, other.Min))
                 return null;
 
             var resultStart = Min;
