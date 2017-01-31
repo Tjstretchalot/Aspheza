@@ -1,4 +1,5 @@
 ﻿using System;
+using static BaseBuilder.Engine.Math2D.Double.MathUtilsD2D;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +34,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             {
                 if (!_Slope.HasValue)
                 {
-                    if (End.X - Start.X == 0)
+                    if (EpsilonEqual(End.X, Start.X))
                     {
                          _Slope = double.PositiveInfinity;
                     }else
@@ -43,6 +44,38 @@ namespace BaseBuilder.Engine.Math2D.Double
                 }
 
                 return _Slope.Value;
+            }
+        }
+
+        protected bool? _Vertical;
+
+        /// <summary>
+        /// If this line is completely vertical
+        /// </summary>
+        public bool Vertical
+        {
+            get
+            {
+                if (!_Vertical.HasValue)
+                    _Vertical = double.IsInfinity(Slope);
+
+                return _Vertical.Value;
+            }
+        }
+
+        protected bool? _Horizontal;
+
+        /// <summary>
+        /// If this line is completely flat
+        /// </summary>
+        public bool Horizontal
+        {
+            get
+            {
+                if (!_Horizontal.HasValue)
+                    _Horizontal = EpsilonEqual(Slope, 0);
+
+                return _Horizontal.Value;
             }
         }
 
@@ -58,12 +91,13 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                if (double.IsInfinity(Slope))
+                if (Vertical)
                 {
                     return null;
                 }
                 else if (!_YIntercept.HasValue)
                 {
+                    // y = mx + b; b = y - mx
                     _YIntercept = Start.Y - (Start.X * Slope);
                 }
 
@@ -285,7 +319,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsParallel(FiniteLineD2D other)
         {
-            return Slope == other.Slope;
+            return EpsilonEqual(Slope, other.Slope);
         }
 
         /// <summary>
@@ -305,20 +339,22 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// Determines if this line contains any points with the specified x.
         /// </summary>
         /// <param name="x">The x</param>
+        /// <param name="strict">False if the edges are included, true otherwise</param>
         /// <returns>True if this line contains any points with specified x, false otherwise</returns>
-        public bool ContainsX(double x)
+        public bool ContainsX(double x, bool strict = false)
         {
-            return x >= MinX && x <= MaxX;
+            return (x > MinX && x < MaxX || (!strict && x >= MinX && x <= MaxX);
         }
 
         /// <summary>
         /// Determines if this line contains any points with the specified y.
         /// </summary>
         /// <param name="y">The y</param>
+        /// <param name="strict">False if the edges are included, true otherwise</param>
         /// <returns>True if this line contains any points with specified y, false otherwise</returns>
-        public bool ContainsY(double y)
+        public bool ContainsY(double y, bool strict = false)
         {
-            return y >= MinY && y <= MaxY;
+            return y > MinY && y < MaxY || (!strict && y >= MinY && y <= MaxY);
         }
 
         /// <summary>
@@ -331,7 +367,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>X at y</returns>
         public double? XAt(double y)
         {
-            if (double.IsInfinity(Slope))
+            if (Vertical)
             {
                 return null;
             }
@@ -351,7 +387,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>Y at x</returns>
         public double? YAt(double x)
         {
-            if (double.IsInfinity(Slope))
+            if (Horizontal)
             {
                 return null;
             }
@@ -378,7 +414,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 return ContainsY(point.Y);
             }
 
-            return point.Y == tmp;
+            return EpsilonEqual(point.Y, tmp.Value);
         }
 
         /// <summary>
@@ -390,6 +426,85 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True on intersection, false otherwise</returns>
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool Intersects(FiniteLineD2D other, bool strict = false)
+        {
+            if (Vertical && other.Vertical)
+            {
+                if (!EpsilonEqual(Start.X, other.Start.X))
+                    return false;
+                if ((strict && EpsilonGreaterThan(MinY, other.MaxY)) || (!strict && EpsilonGreaterThanOrEqual(MinY, other.MaxY)))
+                    return false;
+                if ((strict && EpsilonGreaterThan(other.MinY, MaxY)) || (!strict && EpsilonGreaterThanOrEqual(other.MinY, MaxY)))
+                    return false;
+                return true;
+            }
+
+            if (Horizontal && other.Horizontal)
+            {
+                if (!EpsilonEqual(Start.Y, other.Start.Y))
+                    return false;
+                if ((strict && EpsilonGreaterThan(MinX, other.MaxX)) || (!strict && EpsilonGreaterThanOrEqual(MinX, other.MaxX)))
+                    return false;
+                if ((strict && EpsilonGreaterThan(other.MinX, MaxX)) || (!strict && EpsilonGreaterThanOrEqual(other.MinX, MaxX)))
+                    return false;
+                return true;
+            }
+
+
+            if (Vertical)
+            {
+                if (!other.ContainsX(Start.X, strict))
+                    return false;
+
+                if (other.Horizontal)
+                    return ContainsY(other.Start.Y, strict);
+
+                var yat = other.YAt(Start.X);
+                return ContainsY(yat.Value, strict); // yat must have a value; their line is not horizontal
+            }
+            else if (other.Horizontal)
+                return other.Intersects(this);
+
+            if (Horizontal)
+            {
+                if (!other.ContainsY(Start.Y, strict))
+                    return false;
+
+                if (other.Vertical)
+                    return ContainsX(other.Start.X, strict);
+
+                var xat = other.XAt(Start.Y);
+                return ContainsX(xat.Value, strict); // xat must have a value; their line is not vertical
+            }
+            else if (other.Vertical)
+                return other.Intersects(this);
+
+            if(IsParallel(other))
+            {
+                if (!EpsilonEqual(YIntercept.Value, other.YIntercept.Value))
+                    return false;
+
+                var usProjected = ProjectOntoAxis(Axis.UnitVector);
+                var themProjected = other.ProjectOntoAxis(Axis.UnitVector);
+                
+                return usProjected.Intersects(themProjected, strict);
+            }
+
+            // Two standard non-parallel lines.
+
+            // y = m1x + b1 = m2x + b2
+            // m1x + b1 = m2x + b2
+            // m1x - m2x = b2 - b1
+            // 
+            //     b2 - b1
+            // x = -------
+            //     m1 - m2   
+
+            var x = (other.YIntercept.Value - YIntercept.Value) / (Slope - other.Slope);
+
+            return ContainsX(x, strict) && other.ContainsX(x, strict);
+        }
+
+        private bool OldIntersects(FiniteLineD2D other)
         {
             double dx = End.X - Start.X;
             double dy = End.Y - Start.Y;

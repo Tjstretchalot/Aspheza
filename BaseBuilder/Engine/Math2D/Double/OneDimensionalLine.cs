@@ -119,9 +119,9 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="InvalidProgramException">If this line and other are not on the same axis</exception>
         public bool Intersects(OneDimensionalLine other, bool strict = false)
         {
-            if (Min < other.Max || (strict && Min == other.Max))
+            if (Min > other.Max || (strict && Min == other.Max))
                 return false;
-            if (other.Min < Max || (strict && other.Min == Max))
+            if (other.Min > Max || (strict && other.Min == Max))
                 return false;
 
             return true;
@@ -197,6 +197,11 @@ namespace BaseBuilder.Engine.Math2D.Double
             var end = new PointD2D(End * cosTheta, End * sinTheta);
 
             return new FiniteLineD2D(start, end);
+        }
+
+        public override string ToString()
+        {
+            return $"1DLine [{Start} to {End}]";
         }
     }
 }
