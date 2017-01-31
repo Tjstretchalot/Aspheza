@@ -1,10 +1,14 @@
 ﻿using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D.Double;
+using BaseBuilder.Engine.World.WorldObject.Entities;
+using BaseBuilder.Engine.World.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities;
+using BaseBuilder.Engine.World.Entities.MobileEntities;
 
 namespace BaseBuilder.Engine.World
 { 
@@ -22,6 +26,10 @@ namespace BaseBuilder.Engine.World
     /// </summary>
     public class World
     {
+        protected List<Tile> Tiles;
+        protected List<MobileEntity> Entities;
+        protected List<ImmobileEntity> Environments;
+
         /// <summary>
         /// Renders the world in the given context.
         /// </summary>

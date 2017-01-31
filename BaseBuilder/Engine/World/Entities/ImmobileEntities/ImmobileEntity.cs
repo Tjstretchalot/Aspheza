@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BaseBuilder.Engine.World.Environment
+namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
-    public class Environment
+    public class ImmobileEntity
     {
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BaseBuilder.Engine.World.WorldObject.Entities
+namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
-    public class Entity
+    public class MobileEntity
     {
     }
 }
