@@ -34,7 +34,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if equal within epsilon or d1 &lt; d2</returns>
         public static bool EpsilonLessThanOrEqual(double d1, double d2, double epsilon = EPSILON)
         {
-            return d1 < d2 || EpsilonEqual(d1, d2);
+            return d1 < d2 || EpsilonEqual(d1, d2, epsilon);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if not equal within epsilon and d1 &lt; d2</returns>
         public static bool EpsilonLessThan(double d1, double d2, double epsilon = EPSILON)
         {
-            return d1 < d2 && !EpsilonEqual(d1, d2);
+            return d1 < d2 && !EpsilonEqual(d1, d2, epsilon);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if equal within epsilon or d1 &gt; d2</returns>
         public static bool EpsilonGreaterThanOrEqual(double d1, double d2, double epsilon = EPSILON)
         {
-            return d1 > d2 || EpsilonEqual(d1, d2);
+            return d1 > d2 || EpsilonEqual(d1, d2, epsilon);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if not equal within epsilon and d1 &gt; d2</returns>
         public static bool EpsilonGreaterThan(double d1, double d2, double epsilon = EPSILON)
         {
-            return d1 > d2 && !EpsilonEqual(d1, d2);
+            return d1 > d2 && !EpsilonEqual(d1, d2, epsilon);
         }
     }
 }

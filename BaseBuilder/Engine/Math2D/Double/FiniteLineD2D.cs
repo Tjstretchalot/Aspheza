@@ -343,7 +343,10 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if this line contains any points with specified x, false otherwise</returns>
         public bool ContainsX(double x, bool strict = false)
         {
-            return (x > MinX && x < MaxX || (!strict && x >= MinX && x <= MaxX);
+            if(strict)
+                return EpsilonGreaterThan(x, MinX) && EpsilonLessThan(x, MaxX);
+
+            return EpsilonGreaterThanOrEqual(x, MinX) && EpsilonLessThanOrEqual(x, MaxX);
         }
 
         /// <summary>
@@ -354,7 +357,10 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if this line contains any points with specified y, false otherwise</returns>
         public bool ContainsY(double y, bool strict = false)
         {
-            return y > MinY && y < MaxY || (!strict && y >= MinY && y <= MaxY);
+            if (strict)
+                return EpsilonGreaterThan(y, MinY) && EpsilonLessThan(y, MaxY);
+
+            return EpsilonGreaterThanOrEqual(y, MinY) && EpsilonLessThanOrEqual(y, MaxY);
         }
 
         /// <summary>
@@ -431,9 +437,9 @@ namespace BaseBuilder.Engine.Math2D.Double
             {
                 if (!EpsilonEqual(Start.X, other.Start.X))
                     return false;
-                if ((strict && EpsilonGreaterThan(MinY, other.MaxY)) || (!strict && EpsilonGreaterThanOrEqual(MinY, other.MaxY)))
+                if ((!strict && EpsilonGreaterThan(MinY, other.MaxY)) || (strict && EpsilonGreaterThanOrEqual(MinY, other.MaxY)))
                     return false;
-                if ((strict && EpsilonGreaterThan(other.MinY, MaxY)) || (!strict && EpsilonGreaterThanOrEqual(other.MinY, MaxY)))
+                if ((!strict && EpsilonGreaterThan(other.MinY, MaxY)) || (strict && EpsilonGreaterThanOrEqual(other.MinY, MaxY)))
                     return false;
                 return true;
             }
@@ -442,9 +448,9 @@ namespace BaseBuilder.Engine.Math2D.Double
             {
                 if (!EpsilonEqual(Start.Y, other.Start.Y))
                     return false;
-                if ((strict && EpsilonGreaterThan(MinX, other.MaxX)) || (!strict && EpsilonGreaterThanOrEqual(MinX, other.MaxX)))
+                if ((strict && !EpsilonGreaterThan(MinX, other.MaxX)) || (strict && EpsilonGreaterThanOrEqual(MinX, other.MaxX)))
                     return false;
-                if ((strict && EpsilonGreaterThan(other.MinX, MaxX)) || (!strict && EpsilonGreaterThanOrEqual(other.MinX, MaxX)))
+                if ((strict && !EpsilonGreaterThan(other.MinX, MaxX)) || (strict && EpsilonGreaterThanOrEqual(other.MinX, MaxX)))
                     return false;
                 return true;
             }
@@ -462,7 +468,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 return ContainsY(yat.Value, strict); // yat must have a value; their line is not horizontal
             }
             else if (other.Horizontal)
-                return other.Intersects(this);
+                return other.Intersects(this, strict);
 
             if (Horizontal)
             {
@@ -476,7 +482,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 return ContainsX(xat.Value, strict); // xat must have a value; their line is not vertical
             }
             else if (other.Vertical)
-                return other.Intersects(this);
+                return other.Intersects(this, strict);
 
             if(IsParallel(other))
             {
@@ -503,61 +509,7 @@ namespace BaseBuilder.Engine.Math2D.Double
 
             return ContainsX(x, strict) && other.ContainsX(x, strict);
         }
-
-        private bool OldIntersects(FiniteLineD2D other)
-        {
-            double dx = End.X - Start.X;
-            double dy = End.Y - Start.Y;
-            double otherdx = other.End.X - other.Start.X;
-            double otherdy = other.End.Y - other.Start.Y;
-            double rxs = (otherdy * dx) - (otherdx * dy);
-
-            if (IsParallel(other))
-            {
-
-                if (rxs == 0)
-                {
-                    double qpr = ((Start.X - other.Start.X) * dy) - ((Start.Y - other.Start.Y) * dx);
-
-                    if (qpr == 0)
-                    {
-                        // collinear
-                        double TmpT0 = (((other.Start.X - Start.X) * dx) - ((other.Start.Y - Start.Y) * dy) / LengthSquared);
-                        double TmpT1 = (((other.End.X - Start.X) * dx) - ((other.End.Y - Start.Y) * dy) / LengthSquared);
-
-                        if (TmpT0 >= 0 && TmpT0 <= 1)
-                        {
-                            return true;
-                        }
-                        else if (TmpT1 >= 0 && TmpT1 <= 1)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-
-            }
-            double TmpT = (((other.Start.X - Start.X) * otherdy) - ((other.Start.Y - Start.Y) * otherdx) / rxs);
-            double TmpU = (((Start.X - other.Start.X) * dy) - ((Start.Y - other.Start.Y) * dx) / rxs);
-
-            if (TmpT >= 0 && TmpT <= 0 && TmpU >= 0 && TmpT <= 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
+        
         /// <summary>
         /// Determines the longest line that both this line and other both include if
         /// the lines strictly intersect. Otherwise returns null.
