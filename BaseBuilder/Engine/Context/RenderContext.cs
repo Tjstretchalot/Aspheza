@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace BaseBuilder.Engine.Context
     /// </summary>
     public struct RenderContext
     {
+        public ContentManager Content;
         public GraphicsDeviceManager Graphics;
         public SpriteBatch SpriteBatch;
     }

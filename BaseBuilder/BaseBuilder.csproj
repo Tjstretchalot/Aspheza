@@ -53,6 +53,7 @@
     <Compile Include="Engine\World\Entities\Entity.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\ImmobileEntity.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\MobileEntity.cs" />
+    <Compile Include="Engine\World\Tiles\SpriteTile.cs" />
     <Compile Include="Engine\World\Tiles\Tile.cs" />
     <Compile Include="Engine\World\World.cs" />
     <Compile Include="Game1.cs" />
