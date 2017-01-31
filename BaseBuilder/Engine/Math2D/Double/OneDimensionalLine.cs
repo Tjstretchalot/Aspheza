@@ -122,7 +122,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             if (EpsilonGreaterThan(Min, other.Max) || (strict && Min == other.Max))
                 return false;
-            if (EpsilonLessThan(other.Min, Max) || (strict && other.Min == Max))
+            if (EpsilonGreaterThan(other.Min, Max) || (strict && other.Min == Max))
                 return false;
 
             return true;
