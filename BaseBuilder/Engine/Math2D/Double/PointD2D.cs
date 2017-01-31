@@ -37,6 +37,11 @@ namespace BaseBuilder.Engine.Math2D.Double
             return new PointD2D(p1.X / divisor, p1.Y / divisor);
         }
 
+        public static PointD2D operator -(PointD2D p)
+        {
+            return new PointD2D(-p.X, -p.Y);
+        }
+
         public static bool operator ==(PointD2D p1, PointD2D p2)
         {
             if (ReferenceEquals(p1, null) || ReferenceEquals(p2, null))

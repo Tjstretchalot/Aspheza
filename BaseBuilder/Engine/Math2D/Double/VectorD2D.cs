@@ -96,7 +96,10 @@ namespace BaseBuilder.Engine.Math2D.Double
             {
                 if (_UnitVector == null)
                 {
-                    _UnitVector = new VectorD2D(DeltaX / Magnitude, DeltaY / Magnitude);
+                    if (Magnitude == 1)
+                        _UnitVector = this;
+                    else
+                        _UnitVector = new VectorD2D(DeltaX / Magnitude, DeltaY / Magnitude);
                 }
 
                 return _UnitVector;
@@ -173,21 +176,45 @@ namespace BaseBuilder.Engine.Math2D.Double
             return new PointD2D(DeltaX, DeltaY);
         }
 
-
-        public static bool operator ==(VectorD2D p1, VectorD2D p2)
+        public static VectorD2D operator +(VectorD2D v1, VectorD2D v2)
         {
-            if (ReferenceEquals(p1, null) || ReferenceEquals(p2, null))
-                return ReferenceEquals(p1, p2);
-
-            return p1.DeltaX == p2.DeltaX && p1.DeltaY == p2.DeltaY;
+            return new VectorD2D(v1.DeltaX + v2.DeltaX, v1.DeltaY + v2.DeltaY);
         }
 
-        public static bool operator !=(VectorD2D p1, VectorD2D p2)
+        public static VectorD2D operator -(VectorD2D v1, VectorD2D v2)
         {
-            if (ReferenceEquals(p1, null) || ReferenceEquals(p2, null))
-                return !ReferenceEquals(p1, p2);
+            return new VectorD2D(v1.DeltaX + v2.DeltaX, v1.DeltaY + v2.DeltaY);
+        }
 
-            return p1.DeltaX != p2.DeltaX || p1.DeltaY != p2.DeltaY;
+        public static VectorD2D operator -(VectorD2D v)
+        {
+            return new VectorD2D(-v.DeltaX, -v.DeltaY);
+        }
+
+        public static VectorD2D operator *(VectorD2D v1, double scalar)
+        {
+            return new VectorD2D(v1.DeltaX * scalar, v1.DeltaY * scalar);
+        }
+
+        public static VectorD2D operator /(VectorD2D v1, double divisor)
+        {
+            return new VectorD2D(v1.DeltaX / divisor, v1.DeltaY / divisor);
+        }
+
+        public static bool operator ==(VectorD2D v1, VectorD2D v2)
+        {
+            if (ReferenceEquals(v1, null) || ReferenceEquals(v2, null))
+                return ReferenceEquals(v1, v2);
+
+            return v1.DeltaX == v2.DeltaX && v1.DeltaY == v2.DeltaY;
+        }
+
+        public static bool operator !=(VectorD2D v1, VectorD2D v2)
+        {
+            if (ReferenceEquals(v1, null) || ReferenceEquals(v2, null))
+                return !ReferenceEquals(v1, v2);
+
+            return v1.DeltaX != v2.DeltaX || v1.DeltaY != v2.DeltaY;
         }
 
         public override bool Equals(object obj)

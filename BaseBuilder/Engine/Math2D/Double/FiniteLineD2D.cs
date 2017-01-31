@@ -298,7 +298,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool IsAntiParallel(FiniteLineD2D other)
         {
-            return (End - Start).AsVectorD2D().UnitVector == (other.End - other.Start).AsVectorD2D().UnitVector.Scale(-1);
+            return Axis.UnitVector == -(other.Axis.UnitVector);
         }
         
         /// <summary>
@@ -308,15 +308,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if this line contains any points with specified x, false otherwise</returns>
         public bool ContainsX(double x)
         {
-            if (Start.X >= x && End.X <= x)
-            {
-                return true;
-            }
-            else if (Start.X <= x && End.X >= x)
-            {
-                return true;
-            }
-            return false;
+            return x >= MinX && x <= MaxX;
         }
 
         /// <summary>
@@ -326,15 +318,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>True if this line contains any points with specified y, false otherwise</returns>
         public bool ContainsY(double y)
         {
-            if (Start.Y >= y && End.Y <= y)
-            {
-                return true;
-            }
-            else if (Start.Y <= y && End.Y >= y)
-            {
-                return true;
-            }
-            return false;
+            return y >= MinY && y <= MaxY;
         }
 
         /// <summary>
