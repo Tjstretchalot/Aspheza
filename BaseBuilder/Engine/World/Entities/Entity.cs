@@ -33,10 +33,9 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// </summary>
         public PolygonD2D CollisionMesh { get; protected set; }
 
-
         /// <summary>
         /// See <see cref="Renderable"/>
         /// </summary>
-        public abstract void Render(RenderContext context, RectangleD2D bounds);
+        public abstract void Render(RenderContext context, PointD2D screenTopLeft);
     }
 }

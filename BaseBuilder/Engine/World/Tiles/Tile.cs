@@ -29,6 +29,6 @@ namespace BaseBuilder.Engine.World.Tiles
         /// <summary>
         /// See <see cref="Renderable"/>
         /// </summary>
-        public abstract void Render(RenderContext context, RectangleD2D bounds);
+        public abstract void Render(RenderContext context, PointD2D screenTopLeft);
     }
 }

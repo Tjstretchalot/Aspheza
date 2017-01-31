@@ -14,12 +14,12 @@ namespace BaseBuilder.Engine.Utility
     public interface Renderable
     {
         /// <summary>
-        /// Renders this instance inside the specified bounds. When rendering position
-        /// is not taken into account - a sprite or equivalent is rendered inside the 
-        /// bounds without regard to anything else.
+        /// Renders this instance at the specified location. When rendering any internal
+        /// position is not taken into account - a sprite or equivalent is rendered at the 
+        /// specified position on the screen.
         /// </summary>
         /// <param name="context">Render context.</param>
         /// <param name="bounds">Bounds to render in.</param>
-        void Render(RenderContext context, RectangleD2D bounds);
+        void Render(RenderContext context, PointD2D screenTopLeft);
     }
 }
