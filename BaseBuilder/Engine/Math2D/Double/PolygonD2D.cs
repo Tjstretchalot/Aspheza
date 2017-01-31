@@ -111,8 +111,8 @@ namespace BaseBuilder.Engine.Math2D.Double
                 
                 var proj = line.ProjectOntoAxis(unitAxis, myPosition);
 
-                min = Math.Min(min, Math.Min(proj.Start, proj.End));
-                max = Math.Max(max, Math.Max(proj.Start, proj.End));
+                min = Math.Min(min, proj.Min);
+                max = Math.Max(max, proj.Max);
             }
 
             return new OneDimensionalLine(unitAxis, min, max);

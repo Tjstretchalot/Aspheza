@@ -200,6 +200,16 @@ namespace BaseBuilder.Engine.Math2D.Double
             return this == v2;
         }
 
+        public override int GetHashCode()
+        {
+            var result = 31;
+
+            result = result * 17 + DeltaX.GetHashCode();
+            result = result * 17 + DeltaY.GetHashCode();
+
+            return result;
+        }
+
         public override string ToString()
         {
             return $"<{DeltaX}, {DeltaY}>";

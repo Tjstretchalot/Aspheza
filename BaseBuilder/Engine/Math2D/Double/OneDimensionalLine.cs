@@ -42,6 +42,38 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         public double End;
 
+        protected double? _Min;
+
+        /// <summary>
+        /// The smaller of start or end.
+        /// </summary>
+        public double Min
+        {
+            get
+            {
+                if (!_Min.HasValue)
+                    _Min = Math.Min(Start, End);
+
+                return _Min.Value;
+            }
+        }
+
+        protected double? _Max;
+
+        /// <summary>
+        /// The greater of start or end
+        /// </summary>
+        public double Max
+        {
+            get
+            {
+                if (!_Max.HasValue)
+                    _Max = Math.Max(Start, End);
+
+                return _Max.Value;
+            }
+        }
+
         protected double? _Length;
 
         public double Length
@@ -87,14 +119,9 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="InvalidProgramException">If this line and other are not on the same axis</exception>
         public bool Intersects(OneDimensionalLine other, bool strict = false)
         {
-            var myMin = Math.Min(Start, End);
-            var myMax = Math.Max(Start, End);
-            var otherMin = Math.Min(other.Start, other.End);
-            var otherMax = Math.Max(other.Start, other.End);
-
-            if (myMin < otherMax || (strict && myMin == otherMax))
+            if (Min < other.Max || (strict && Min == other.Max))
                 return false;
-            if (otherMin < myMax || (strict && otherMin == myMax))
+            if (other.Min < Max || (strict && other.Min == Max))
                 return false;
 
             return true;
@@ -135,20 +162,15 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </example>
         public OneDimensionalLine IntersectionLine(OneDimensionalLine other)
         {
-            var myMin = Math.Min(Start, End);
-            var myMax = Math.Max(Start, End);
-            var otherMin = Math.Min(other.Start, other.End);
-            var otherMax = Math.Max(other.Start, other.End);
-
-            if (myMin >= otherMax || myMax <= otherMin)
+            if (Min >= other.Max || Max <= other.Min)
                 return null;
 
-            var resultStart = myMin;
-            var resultEnd = otherMax;
+            var resultStart = Min;
+            var resultEnd = other.Max;
             var resultLen = Math.Abs(resultEnd - resultStart);
 
-            var opt2Start = myMax;
-            var opt2End = otherMin;
+            var opt2Start = Max;
+            var opt2End = other.Min;
             var opt2Len = Math.Abs(opt2End - opt2Start);
 
             if(opt2Len < resultLen)
