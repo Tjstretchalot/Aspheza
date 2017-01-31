@@ -12,6 +12,14 @@ namespace BaseBuilder.Engine.Math2D.Double
 
         public double Width { get; protected set; }
 
+        public double Top { get; protected set; }
+
+        public double Bottom { get; protected set; }
+
+        public double Left { get; protected set; }
+
+        public double Right { get; protected set; }
+
         /// <summary>
         /// Creates a new rectangle with the specified width and height.
         /// </summary>
@@ -29,6 +37,10 @@ namespace BaseBuilder.Engine.Math2D.Double
 
             Height = height;
             Width = width;
+            Top = y + height;
+            Bottom = y;
+            Left = x;
+            Right = x + width;
         }
     }
 }
