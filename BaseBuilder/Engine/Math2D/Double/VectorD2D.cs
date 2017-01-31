@@ -1,4 +1,5 @@
 ﻿using System;
+using static BaseBuilder.Engine.Math2D.Double.MathUtilsD2D;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             {
                 if(!_Slope.HasValue)
                 {
-                    if(DeltaX == 0)
+                    if(EpsilonEqual(DeltaX, 0))
                     {
                         _Slope = double.PositiveInfinity;
                     }else
@@ -96,7 +97,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             {
                 if (_UnitVector == null)
                 {
-                    if (Magnitude == 1)
+                    if (EpsilonEqual(Magnitude, 1))
                         _UnitVector = this;
                     else
                         _UnitVector = new VectorD2D(DeltaX / Magnitude, DeltaY / Magnitude);
@@ -115,7 +116,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="InvalidProgramException">If dx == dy == 0</exception>
         public VectorD2D(double dx, double dy)
         {
-            if (dx == 0 && dy == 0)
+            if (EpsilonEqual(dx, 0) && EpsilonEqual(dy, 0))
                 throw new InvalidProgramException("A 0-vector is not allowed.");
 
             DeltaX = dx;
@@ -131,7 +132,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="InvalidProgramException">If scalar is 0</exception>
         public VectorD2D Scale(double scalar)
         {
-            if (scalar == 0)
+            if (EpsilonEqual(scalar, 0))
                 throw new ArgumentNullException("Scalar cannot be 0 (a 0-vector is not allowed)");
 
             return new VectorD2D(DeltaX * scalar, DeltaY * scalar);
@@ -206,7 +207,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             if (ReferenceEquals(v1, null) || ReferenceEquals(v2, null))
                 return ReferenceEquals(v1, v2);
 
-            return v1.DeltaX == v2.DeltaX && v1.DeltaY == v2.DeltaY;
+            return EpsilonEqual(v1.DeltaX, v2.DeltaX) && EpsilonEqual(v1.DeltaY, v2.DeltaY);
         }
 
         public static bool operator !=(VectorD2D v1, VectorD2D v2)
@@ -214,7 +215,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             if (ReferenceEquals(v1, null) || ReferenceEquals(v2, null))
                 return !ReferenceEquals(v1, v2);
 
-            return v1.DeltaX != v2.DeltaX || v1.DeltaY != v2.DeltaY;
+            return !EpsilonEqual(v1.DeltaX, v2.DeltaX) || !EpsilonEqual(v1.DeltaY, v2.DeltaY);
         }
 
         public override bool Equals(object obj)
