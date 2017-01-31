@@ -45,6 +45,10 @@
     <Compile Include="Engine\Math2D\Double\PolygonD2D.cs" />
     <Compile Include="Engine\Math2D\Double\VectorD2D.cs" />
     <Compile Include="Engine\Math2D\Int\PointI2D.cs" />
+    <Compile Include="Engine\World\Entities\Entity.cs" />
+    <Compile Include="Engine\World\Environment\Environment.cs" />
+    <Compile Include="Engine\World\Tiles\Tile.cs" />
+    <Compile Include="Engine\World\World.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
