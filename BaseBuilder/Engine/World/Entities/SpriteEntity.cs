@@ -23,7 +23,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
             var texture = context.Content.Load<Texture2D>(SpriteName);
 
-            var TmpI = new VectorD2D(0, 0);
+            var TmpI = new VectorD2D(1, 0);
             var TmpJ = new VectorD2D(0, 1);
 
             var TmpLeft = CollisionMesh.ProjectOntoAxis(TmpI).Start;
