@@ -37,5 +37,11 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// See <see cref="Renderable"/>
         /// </summary>
         public abstract void Render(RenderContext context, PointD2D screenTopLeft);
+
+        protected void Init(PointD2D position, PolygonD2D collisionMesh)
+        {
+            Position = position;
+            CollisionMesh = collisionMesh;
+        }
     }
 }
