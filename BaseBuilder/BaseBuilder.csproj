@@ -38,11 +38,14 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Engine\Context\RenderContext.cs" />
+    <Compile Include="Engine\Context\UpdateContext.cs" />
     <Compile Include="Engine\Math2D\Double\FiniteLineD2D.cs" />
     <Compile Include="Engine\Math2D\Double\MathUtilsD2D.cs" />
     <Compile Include="Engine\Math2D\Double\OneDimensionalLine.cs" />
     <Compile Include="Engine\Math2D\Double\PointD2D.cs" />
     <Compile Include="Engine\Math2D\Double\PolygonD2D.cs" />
+    <Compile Include="Engine\Math2D\Double\RectangleD2D.cs" />
     <Compile Include="Engine\Math2D\Double\VectorD2D.cs" />
     <Compile Include="Engine\Math2D\Int\PointI2D.cs" />
     <Compile Include="Engine\World\Entities\Entity.cs" />

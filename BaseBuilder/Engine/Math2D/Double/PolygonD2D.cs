@@ -66,13 +66,30 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If vertices are null</exception>
         public PolygonD2D(List<PointD2D> vertices)
         {
+            Init(vertices);
+        }
+        
+        /// <summary>
+        /// Empty constructor for subclasses. Should call Init(Vertices) in the child
+        /// constructor!
+        /// </summary>
+        protected PolygonD2D()
+        {
+        }
+
+        /// <summary>
+        /// Sets up vertices, lines, and unique unit normals.
+        /// </summary>
+        /// <param name="vertices">The vertices of this polygon</param>
+        protected void Init(List<PointD2D> vertices)
+        {
             if (vertices == null)
                 throw new ArgumentNullException(nameof(vertices));
 
             Vertices = vertices;
             Lines = new List<FiniteLineD2D>();
 
-            for(int i = 0; i < Vertices.Count - 1; i++)
+            for (int i = 0; i < Vertices.Count - 1; i++)
             {
                 Lines.Add(new FiniteLineD2D(Vertices[i], Vertices[i + 1]));
             }
@@ -81,7 +98,7 @@ namespace BaseBuilder.Engine.Math2D.Double
 
             UniqueUnitNormals = new List<VectorD2D>();
 
-            foreach(var line in Lines)
+            foreach (var line in Lines)
             {
                 UniqueUnitNormals.Add(line.Normal.UnitVector);
             }
