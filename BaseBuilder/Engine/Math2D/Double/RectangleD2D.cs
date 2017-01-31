@@ -8,6 +8,10 @@ namespace BaseBuilder.Engine.Math2D.Double
 {
     public class RectangleD2D : PolygonD2D
     {
+        public double Height { get; protected set; }
+
+        public double Width { get; protected set; }
+
         /// <summary>
         /// Creates a new rectangle with the specified width and height.
         /// </summary>
@@ -22,6 +26,9 @@ namespace BaseBuilder.Engine.Math2D.Double
                 new PointD2D(x, y),             new PointD2D(x + width, y),
                 new PointD2D(x, y + height),    new PointD2D(x + width, y + height)
             });
+
+            Height = height;
+            Width = width;
         }
     }
 }
