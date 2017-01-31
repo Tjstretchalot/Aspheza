@@ -140,8 +140,8 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
 
             Assert.IsTrue(line1.Intersects(line2), "{0}.Intersects({1})", line1, line2);
             Assert.IsTrue(line2.Intersects(line1), "{0}.Intersects({1})", line2, line1);
-            Assert.IsFalse(line1.Intersects(line2, true), "{0}.Intersects({1}, true)", line1, line2);
-            Assert.IsFalse(line2.Intersects(line1, true), "{0}.Intersects({1}, true)", line2, line1);
+            Assert.IsFalse(line1.Intersects(line2, strict: true), "{0}.Intersects({1}, strict: true)", line1, line2);
+            Assert.IsFalse(line2.Intersects(line1, strict: true), "{0}.Intersects({1}, strict: true)", line2, line1);
             
             // Two horizontal lines
             line1 = new FiniteLineD2D(new PointD2D(-1, -1), new PointD2D(2, -1));
@@ -149,8 +149,8 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
 
             Assert.IsTrue(line1.Intersects(line2), "{0}.Intersects({1})", line1, line2);
             Assert.IsTrue(line2.Intersects(line1), "{0}.Intersects({1})", line2, line1);
-            Assert.IsFalse(line1.Intersects(line2, true), "{0}.Intersects({1}, true)", line1, line2);
-            Assert.IsFalse(line2.Intersects(line1, true), "{0}.Intersects({1}, true)", line2, line1);
+            Assert.IsFalse(line1.Intersects(line2, strict: true), "{0}.Intersects({1}, strict: true)", line1, line2);
+            Assert.IsFalse(line2.Intersects(line1, strict: true), "{0}.Intersects({1}, strict: true)", line2, line1);
 
             // Two vertical lines
             line1 = new FiniteLineD2D(new PointD2D(3, -1), new PointD2D(3, 1));
@@ -158,8 +158,8 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
 
             Assert.IsTrue(line1.Intersects(line2), "{0}.Intersects({1})", line1, line2);
             Assert.IsTrue(line2.Intersects(line1), "{0}.Intersects({1})", line2, line1);
-            Assert.IsFalse(line1.Intersects(line2, true), "{0}.Intersects({1}, true)", line1, line2);
-            Assert.IsFalse(line2.Intersects(line1, true), "{0}.Intersects({1}, true)", line2, line1);
+            Assert.IsFalse(line1.Intersects(line2, strict: true), "{0}.Intersects({1}, strict: true)", line1, line2);
+            Assert.IsFalse(line2.Intersects(line1, strict: true), "{0}.Intersects({1}, strict: true)", line2, line1);
         }
 
         [Test(Description = "Ensure Intersects handles strict for non-parallel lines")]
@@ -171,8 +171,8 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
 
             Assert.IsTrue(line1.Intersects(line2), "{0}.Intersects({1})", line1, line2);
             Assert.IsTrue(line2.Intersects(line1), "{0}.Intersects({1})", line2, line1);
-            Assert.IsFalse(line1.Intersects(line2, true), "{0}.Intersects({1}, true)", line1, line2);
-            Assert.IsFalse(line2.Intersects(line1, true), "{0}.Intersects({1}, true)", line2, line1);
+            Assert.IsFalse(line1.Intersects(line2, strict: true), "{0}.Intersects({1}, strict: true)", line1, line2);
+            Assert.IsFalse(line2.Intersects(line1, strict: true), "{0}.Intersects({1}, strict: true)", line2, line1);
 
             // One horizontal
             line1 = new FiniteLineD2D(new PointD2D(-1, 1), new PointD2D(4, 1));
@@ -180,8 +180,8 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
 
             Assert.IsTrue(line1.Intersects(line2), "{0}.Intersects({1})", line1, line2);
             Assert.IsTrue(line2.Intersects(line1), "{0}.Intersects({1})", line2, line1);
-            Assert.IsFalse(line1.Intersects(line2, true), "{0}.Intersects({1}, true)", line1, line2);
-            Assert.IsFalse(line2.Intersects(line1, true), "{0}.Intersects({1}, true)", line2, line1);
+            Assert.IsFalse(line1.Intersects(line2, strict: true), "{0}.Intersects({1}, strict: true)", line1, line2);
+            Assert.IsFalse(line2.Intersects(line1, strict: true), "{0}.Intersects({1}, strict: true)", line2, line1);
 
             // One vertical, one horizontal
             line1 = new FiniteLineD2D(new PointD2D(-1, 1), new PointD2D(4, 1));
@@ -189,8 +189,8 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
 
             Assert.IsTrue(line1.Intersects(line2), "{0}.Intersects({1})", line1, line2);
             Assert.IsTrue(line2.Intersects(line1), "{0}.Intersects({1})", line2, line1);
-            Assert.IsFalse(line1.Intersects(line2, true), "{0}.Intersects({1}, true)", line1, line2);
-            Assert.IsFalse(line2.Intersects(line1, true), "{0}.Intersects({1}, true)", line2, line1);
+            Assert.IsFalse(line1.Intersects(line2, strict: true), "{0}.Intersects({1}, strict: true)", line1, line2);
+            Assert.IsFalse(line2.Intersects(line1, strict: true), "{0}.Intersects({1}, strict: true)", line2, line1);
 
             // One vertical
             line1 = new FiniteLineD2D(new PointD2D(1, 0), new PointD2D(3, 1));
@@ -198,8 +198,8 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
 
             Assert.IsTrue(line1.Intersects(line2), "{0}.Intersects({1})", line1, line2);
             Assert.IsTrue(line2.Intersects(line1), "{0}.Intersects({1})", line2, line1);
-            Assert.IsFalse(line1.Intersects(line2, true), "{0}.Intersects({1}, true)", line1, line2);
-            Assert.IsFalse(line2.Intersects(line1, true), "{0}.Intersects({1}, true)", line2, line1);
+            Assert.IsFalse(line1.Intersects(line2, strict: true), "{0}.Intersects({1}, strict: true)", line1, line2);
+            Assert.IsFalse(line2.Intersects(line1, strict: true), "{0}.Intersects({1}, strict: true)", line2, line1);
         }
     }
 }

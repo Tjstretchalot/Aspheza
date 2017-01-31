@@ -428,11 +428,21 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// line.
         /// </summary>
         /// <param name="other">The line to compare with.</param>
+        /// <param name="shiftMe">The shift that should be applied to this line for intersection purposes. Null if origin</param>
+        /// <param name="shiftOther">The shift that should be applied to the other line for intersection purposes. Null if origin</param>
         /// <param name="strict">False if touching constitutes intersection, true otherwise.</param>
         /// <returns>True on intersection, false otherwise</returns>
         /// <exception cref="ArgumentNullException">If other is null</exception>
-        public bool Intersects(FiniteLineD2D other, bool strict = false)
+        public bool Intersects(FiniteLineD2D other, PointD2D shiftMe = null, PointD2D shiftOther = null, bool strict = false)
         {
+            if (shiftMe != null || shiftOther != null)
+            {
+                var me = (shiftMe == null ? this : Shift(shiftMe.X, shiftMe.Y));
+                var them = (shiftOther == null ? other : other.Shift(shiftOther.X, shiftOther.Y));
+
+                return me.Intersects(them);
+            }
+
             if (Vertical && other.Vertical)
             {
                 if (!EpsilonEqual(Start.X, other.Start.X))
@@ -468,7 +478,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 return ContainsY(yat.Value, strict); // yat must have a value; their line is not horizontal
             }
             else if (other.Horizontal)
-                return other.Intersects(this, strict);
+                return other.Intersects(this, strict: strict);
 
             if (Horizontal)
             {
@@ -482,7 +492,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 return ContainsX(xat.Value, strict); // xat must have a value; their line is not vertical
             }
             else if (other.Vertical)
-                return other.Intersects(this, strict);
+                return other.Intersects(this, strict: strict);
 
             if(IsParallel(other))
             {
@@ -525,7 +535,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public OneDimensionalLine IntersectionLine(FiniteLineD2D other)
         {
-            return null; // TODO
+            throw new NotImplementedException("This has not been implemented yet."); // TODO
         }
         
         /// <summary>
