@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
-    public abstract class MobileEntity : Entity
+    public abstract class MobileEntity : SpriteEntity
     {
     }
 }

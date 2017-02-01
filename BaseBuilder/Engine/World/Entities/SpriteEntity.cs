@@ -10,11 +10,14 @@ using Microsoft.Xna.Framework;
 
 namespace BaseBuilder.Engine.World.WorldObject.Entities
 {
-    class SpriteEntity : Entity
+    /// <summary>
+    /// Describes an entity that is rendered using a sprite.
+    /// </summary>
+    public class SpriteEntity : Entity
     {
         protected string SpriteName;
 
-        public SpriteEntity(string spriteName)
+        public SpriteEntity(PointD2D position, PolygonD2D collisionMesh, string spriteName) : base(position, collisionMesh)
         {
             SpriteName = spriteName;
         }

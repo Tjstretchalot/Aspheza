@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
-    public abstract class ImmobileEntity : Entity
+    public abstract class ImmobileEntity : SpriteEntity
     {
     }
 }

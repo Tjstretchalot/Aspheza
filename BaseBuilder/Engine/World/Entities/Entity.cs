@@ -33,6 +33,12 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// </summary>
         public PolygonD2D CollisionMesh { get; protected set; }
 
+        protected Entity(PointD2D position, PolygonD2D collisionMesh)
+        {
+            Position = position;
+            CollisionMesh = collisionMesh;
+        }
+
         /// <summary>
         /// See <see cref="Renderable"/>
         /// </summary>
