@@ -136,6 +136,24 @@ namespace BaseBuilder.Engine.Math2D.Double
         }
 
         /// <summary>
+        /// Determines if this line contains the point.
+        /// </summary>
+        /// <param name="point">The point to compare with</param>
+        /// <param name="strict">False if touching constitutes intersection, true otherwise.</param>
+        /// <returns></returns>
+        public bool ContainPoint(double point, bool strict = false)
+        {
+            
+            if (EpsilonGreaterThan(Max, point) || (strict && Max == point))
+                return false;
+            if (EpsilonLessThan(point, Min) || (strict && Min == point))
+                return false;
+
+            return true;
+
+        }
+
+        /// <summary>
         /// Returns the largest line that both this line and the other line 
         /// include, if there is strict intersection between the lines. The
         /// line will be in the direction that this line would need to move

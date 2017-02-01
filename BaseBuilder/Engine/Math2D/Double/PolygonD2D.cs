@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static BaseBuilder.Engine.Math2D.Double.MathUtilsD2D;
 
 namespace BaseBuilder.Engine.Math2D.Double
 {
@@ -181,7 +182,18 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns></returns>
         public bool Contains(PointD2D point, PointD2D myPosition = null)
         {
-            return false; // TODO
+            foreach (var normal in UniqueUnitNormals)
+            {
+                var myProjection = ProjectOntoAxis(normal, myPosition);
+                var pointProjection = PointD2D.DotProduct(point.X, point.Y, normal.DeltaX, normal.DeltaY);
+
+                if (!myProjection.ContainPoint(pointProjection))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
