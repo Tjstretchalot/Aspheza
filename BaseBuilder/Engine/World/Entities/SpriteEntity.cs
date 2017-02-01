@@ -23,7 +23,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
             var texture = context.Content.Load<Texture2D>(SpriteName);
 
-            var TmpI = new VectorD2D(1, 0);
+            var TmpI = new VectorD2D(0, 0);
             var TmpJ = new VectorD2D(0, 1);
 
             var TmpLeft = CollisionMesh.ProjectOntoAxis(TmpI).Start;
@@ -34,8 +34,8 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
             context.SpriteBatch.Draw(texture,
                 new Rectangle(
-                    (int)(screenTopLeft.X + TmpLeft), (int)(screenTopLeft.Y + TmpTop),
-                    (int)(TmpWidth), (int)(TmpHeight)
+                    (int)(screenTopLeft.X + CollisionMesh.Left), (int)(screenTopLeft.Y + CollisionMesh.Top),
+                    (int)(CollisionMesh.Right - CollisionMesh.Left), (int)(CollisionMesh.Bottom - CollisionMesh.Top)
                     ), Color.White);
         }
     }

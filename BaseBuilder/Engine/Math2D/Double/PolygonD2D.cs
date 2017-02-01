@@ -31,6 +31,26 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// to each other.
         /// </summary>
         public List<VectorD2D> UniqueUnitNormals { get; protected set; }
+        
+        /// <summary>
+        /// Lowest y value on this polygon
+        /// </summary>
+        public double Top { get; protected set; }
+
+        /// <summary>
+        /// Highest y value on this polygon
+        /// </summary>
+        public double Bottom { get; protected set; }
+
+        /// <summary>
+        /// Lowest x value on this polygon
+        /// </summary>
+        public double Left { get; protected set; }
+
+        /// <summary>
+        /// Highest x value on this polygon
+        /// </summary>
+        public double Right { get; protected set; }
 
         protected PointD2D _Midpoint;
 
@@ -101,6 +121,19 @@ namespace BaseBuilder.Engine.Math2D.Double
             foreach (var line in Lines)
             {
                 UniqueUnitNormals.Add(line.Normal.UnitVector);
+            }
+
+            Left = double.MaxValue;
+            Right = double.MinValue;
+            Top = double.MaxValue;
+            Bottom = double.MinValue;
+
+            foreach(var vertix in Vertices)
+            {
+                Left = Math.Min(Left, vertix.X);
+                Right = Math.Max(Right, vertix.X);
+                Top = Math.Min(Top, vertix.Y);
+                Bottom = Math.Max(Bottom, vertix.Y);
             }
 
             RemoveRedundantNormals(UniqueUnitNormals);
