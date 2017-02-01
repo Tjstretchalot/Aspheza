@@ -81,6 +81,39 @@ namespace BaseBuilder.Engine.Math2D.Double
             return new PointD2D((X + dx), (Y + dy));
         }
 
+        /// <summary>
+        /// Returns the dot product of this point with the thing specified by (x, y)
+        /// </summary>
+        /// <param name="x">The x</param>
+        /// <param name="y">The y</param>
+        /// <returns>this . (x, y)</returns>
+        public double DotProduct(double x, double y)
+        {
+            return X * x + Y * y;
+        }
+
+        /// <summary>
+        /// Returns the dot product of (x1 + shift1.X, y1 + shift1.Y) and (x2, shift2.X, y2 + shift2.Y). For shifts, null
+        /// is assumed to mean the origin.
+        /// </summary>
+        /// <param name="x1">X1</param>
+        /// <param name="y1">Y1</param>
+        /// <param name="x2">X2</param>
+        /// <param name="y2">Y2</param>
+        /// <param name="shift1">Shift of (x1, y1)</param>
+        /// <param name="shift2">Shift of (x2, y2)</param>
+        /// <returns></returns>
+        public static double DotProduct(double x1, double y1, double x2, double y2, PointD2D shift1 = null, PointD2D shift2 = null)
+        {
+            x1 = x1 + (shift1 == null ? 0 : shift1.X);
+            x2 = x2 + (shift2 == null ? 0 : shift2.X);
+
+            y1 = y1 + (shift1 == null ? 0 : shift1.Y);
+            y2 = y2 + (shift2 == null ? 0 : shift2.Y);
+
+            return x1 * x2 + y1 * y2;
+        }
+
         public override string ToString()
         {
             return $"({X}, {Y})";
