@@ -50,7 +50,6 @@
     <Compile Include="Engine\Math2D\Double\VectorD2D.cs" />
     <Compile Include="Engine\Math2D\Int\PointI2D.cs" />
     <Compile Include="Engine\State\GameState.cs" />
-    <Compile Include="Engine\Utility\CameraZoom.cs" />
     <Compile Include="Engine\Utility\Renderable.cs" />
     <Compile Include="Engine\World\Entities\Entity.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\ImmobileEntity.cs" />

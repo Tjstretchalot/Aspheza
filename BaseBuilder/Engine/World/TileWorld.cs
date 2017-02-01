@@ -65,51 +65,46 @@ namespace BaseBuilder.Engine.World
         /// Renders the world in the given context.
         /// </summary>
         /// <param name="context">Render context</param>
-        /// <param name="boundsScreen">The screen bounds of the world.</param>
-        /// <param name="cameraScreen">The camera position (top-left)</param>
-        public void Render(RenderContext context, RectangleD2D boundsScreen, PointD2D cameraScreen)
+        public void Render(RenderContext context)
         {
-            var deltaScreenX = boundsScreen.Left - cameraScreen.X;
-            var deltaScreenY = boundsScreen.Top - cameraScreen.Y;
-            
-            int leftMostVisibleTileX = (int)(cameraScreen.X / CameraZoom.SCREEN_OVER_WORLD);
-            int topMostVisibleTileY = (int)(cameraScreen.Y / CameraZoom.SCREEN_OVER_WORLD);
-            int rightMostVisibleTileX = (int)Math.Ceiling((cameraScreen.X + boundsScreen.Width) / CameraZoom.SCREEN_OVER_WORLD);
-            int bottomMostVisibleTileY = (int)Math.Ceiling((cameraScreen.Y + boundsScreen.Height) / CameraZoom.SCREEN_OVER_WORLD);
+            int leftMostVisibleTileX = (int)(context.Camera.WorldTopLeft.X);
+            int topMostVisibleTileY = (int)(context.Camera.WorldTopLeft.Y);
+            int rightMostVisibleTileX = (int)Math.Ceiling(context.Camera.WorldTopLeft.X + context.Camera.VisibleWorldWidth);
+            int bottomMostVisibleTileY = (int)Math.Ceiling(context.Camera.WorldTopLeft.Y + context.Camera.VisibleWorldHeight);
 
-            var startingLeft = deltaScreenX + leftMostVisibleTileX * CameraZoom.SCREEN_OVER_WORLD;
-            var startingTop = deltaScreenY + topMostVisibleTileY * CameraZoom.SCREEN_OVER_WORLD;
+            double startingLeft, startingTop;
+            context.Camera.PixelLocationOfWorld(leftMostVisibleTileX, topMostVisibleTileY, out startingLeft, out startingTop);
 
+            startingLeft = Math.Round(startingLeft);
+            startingTop = Math.Round(startingTop);
             var point = new PointD2D(startingLeft, startingTop);
             for(int x = leftMostVisibleTileX; x <= rightMostVisibleTileX; x++)
             {
                 for(int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
                 {
                     TileAt(x, y).Render(context, point);
-                    point.Y += CameraZoom.SCREEN_OVER_WORLD;
+                    point.Y += context.Camera.Zoom;
                 }
 
                 point.Y = startingTop;
-                point.X += CameraZoom.SCREEN_OVER_WORLD;
+                point.X += context.Camera.Zoom;
             }
 
             foreach(var immobile in ImmobileEntities)
             {
-                point.X = immobile.Position.X + deltaScreenX;
-                point.Y = immobile.Position.Y + deltaScreenY;
+                context.Camera.PixelLocationOfWorld(immobile.Position.X, immobile.Position.Y, out point.X, out point.Y);
 
                 immobile.Render(context, point);
             }
 
             foreach(var mobile in MobileEntities)
             {
-                point.X = mobile.Position.X + deltaScreenX;
-                point.Y = mobile.Position.Y + deltaScreenY;
+                context.Camera.PixelLocationOfWorld(mobile.Position.X, mobile.Position.Y, out point.X, out point.Y);
 
                 mobile.Render(context, point);
             }
 
-            context.SpriteBatch.DrawString(context.Content.Load<SpriteFont>("Arial"), $"tiles: ({leftMostVisibleTileX}, {topMostVisibleTileY}) to ({rightMostVisibleTileX}, {bottomMostVisibleTileY})", new Microsoft.Xna.Framework.Vector2(5, 25), Color.White);
+            context.SpriteBatch.DrawString(context.Content.Load<SpriteFont>("Arial"), $"tiles: ({leftMostVisibleTileX}, {topMostVisibleTileY}) to ({rightMostVisibleTileX}, {bottomMostVisibleTileY}); starting = {startingLeft}, {startingTop}", new Microsoft.Xna.Framework.Vector2(5, 25), Color.White);
         }
 
         public Tile TileAt(int x, int y)

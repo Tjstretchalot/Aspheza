@@ -17,5 +17,6 @@ namespace BaseBuilder.Engine.Context
         public ContentManager Content;
         public GraphicsDeviceManager Graphics;
         public SpriteBatch SpriteBatch;
+        public Camera Camera;
     }
 }

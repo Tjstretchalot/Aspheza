@@ -26,8 +26,8 @@ namespace BaseBuilder.Engine.World.Tiles
 
             context.SpriteBatch.Draw(texture,
                 new Rectangle(
-                    (int)(screenTopLeft.X + CollisionMesh.Left * CameraZoom.SCREEN_OVER_WORLD), (int)(screenTopLeft.Y + CollisionMesh.Top * CameraZoom.SCREEN_OVER_WORLD), 
-                    (int)(CollisionMesh.Width * CameraZoom.SCREEN_OVER_WORLD), (int)(CollisionMesh.Height * CameraZoom.SCREEN_OVER_WORLD)
+                    (int)(screenTopLeft.X + CollisionMesh.Left * context.Camera.Zoom), (int)(screenTopLeft.Y + CollisionMesh.Top * context.Camera.Zoom), 
+                    (int)(CollisionMesh.Width * context.Camera.Zoom), (int)(CollisionMesh.Height * context.Camera.Zoom)
                     ), Color.White);
         }
     }

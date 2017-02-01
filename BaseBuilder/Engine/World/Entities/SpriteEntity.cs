@@ -29,8 +29,8 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
             context.SpriteBatch.Draw(texture,
                 new Rectangle(
-                    (int)(screenTopLeft.X + CollisionMesh.Left * CameraZoom.SCREEN_OVER_WORLD), (int)(screenTopLeft.Y + CollisionMesh.Top * CameraZoom.SCREEN_OVER_WORLD),
-                    (int)((CollisionMesh.Right - CollisionMesh.Left) * CameraZoom.SCREEN_OVER_WORLD), (int)((CollisionMesh.Bottom - CollisionMesh.Top) * CameraZoom.SCREEN_OVER_WORLD)
+                    (int)(screenTopLeft.X + CollisionMesh.Left * context.Camera.Zoom), (int)(screenTopLeft.Y + CollisionMesh.Top * context.Camera.Zoom),
+                    (int)((CollisionMesh.Right - CollisionMesh.Left) * context.Camera.Zoom), (int)((CollisionMesh.Bottom - CollisionMesh.Top) * context.Camera.Zoom)
                     ), Color.White);
         }
     }

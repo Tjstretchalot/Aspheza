@@ -163,12 +163,12 @@ namespace BaseBuilder.Engine.Math2D.Double
             var min = double.MaxValue;
             var max = double.MinValue;
 
-            foreach(var line in Lines)
+            foreach(var vertix in Vertices)
             {
-                var proj = line.ProjectOntoAxis(unitAxis, myPosition);
+                var proj = PointD2D.DotProduct(vertix.X, vertix.Y, unitAxis.DeltaX, unitAxis.DeltaY, myPosition, null);
 
-                min = Math.Min(min, proj.Min);
-                max = Math.Max(max, proj.Max);
+                min = Math.Min(min, proj);
+                max = Math.Max(max, proj);
             }
 
             return new OneDimensionalLine(unitAxis, min, max);

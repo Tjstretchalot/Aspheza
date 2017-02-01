@@ -1,4 +1,5 @@
-﻿using BaseBuilder.Engine.Context;
+﻿using BaseBuilder.Engine;
+using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.Utility;
 using BaseBuilder.Engine.World;
@@ -16,7 +17,8 @@ namespace BaseBuilder
     /// </summary>
     public class Game1 : Game
     {
-        const double CAMERA_SPEED = 2;
+        const double CAMERA_SPEED = 0.01;
+        const double SCROLL_SPEED = 0.01;
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -25,10 +27,15 @@ namespace BaseBuilder
         RenderContext renderContext;
 
         RectangleD2D screenBounds;
-        PointD2D cameraLocation;
         SpriteFont font;
 
         Random random;
+
+        double cameraPartialZoom;
+        PointD2D cameraPartialTopLeft;
+        Camera camera;
+
+        int previousScrollWheelValue;
 
         public Game1()
         {
@@ -47,8 +54,9 @@ namespace BaseBuilder
             base.Initialize();
 
             renderContext = new RenderContext();
-            cameraLocation = new PointD2D(0, 0);
             random = new Random();
+
+            IsMouseVisible = true;
         }
 
         /// <summary>
@@ -61,8 +69,13 @@ namespace BaseBuilder
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             screenBounds = new RectangleD2D(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            camera = new Camera(new PointD2D(0, 0), screenBounds, 16);
+            cameraPartialZoom = camera.Zoom;
+            cameraPartialTopLeft = new PointD2D(0, 0);
 
             font = Content.Load<SpriteFont>("Arial");
+
+            previousScrollWheelValue = Mouse.GetState().ScrollWheelValue;
         }
 
         /// <summary>
@@ -108,20 +121,62 @@ namespace BaseBuilder
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            var elapsedMS = (int)gameTime.ElapsedGameTime.TotalMilliseconds;
             // TODO game states and stuff
             if (world == null)
                 LoadWorld();
 
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                cameraLocation.X = Math.Max(0, cameraLocation.X - CAMERA_SPEED);
+                cameraPartialTopLeft.X = Math.Max(0, cameraPartialTopLeft.X - CAMERA_SPEED * elapsedMS);
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                cameraLocation.X = Math.Min(world.TileWidth * CameraZoom.SCREEN_OVER_WORLD- screenBounds.Width, cameraLocation.X + CAMERA_SPEED);
+                cameraPartialTopLeft.X = Math.Min(world.TileWidth - camera.VisibleWorldWidth, cameraPartialTopLeft.X + CAMERA_SPEED * elapsedMS);
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                cameraLocation.Y = Math.Max(0, cameraLocation.Y - CAMERA_SPEED);
+                cameraPartialTopLeft.Y = Math.Max(0, cameraPartialTopLeft.Y - CAMERA_SPEED * elapsedMS);
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                cameraLocation.Y = Math.Min(world.TileHeight * CameraZoom.SCREEN_OVER_WORLD - screenBounds.Height, cameraLocation.Y + CAMERA_SPEED);
+                cameraPartialTopLeft.Y = Math.Min(world.TileHeight - camera.VisibleWorldHeight, cameraPartialTopLeft.Y + CAMERA_SPEED * elapsedMS);
 
+
+            var scrollWheel = Mouse.GetState().ScrollWheelValue;
+
+            if (scrollWheel != previousScrollWheelValue)
+            {
+                var delta = scrollWheel - previousScrollWheelValue;
+                previousScrollWheelValue = scrollWheel;
+
+                var oldZoom = cameraPartialZoom;
+                var oldWorldWidth = camera.VisibleWorldWidth;
+                var oldWorldHeight = camera.VisibleWorldHeight;
+                var newZoom = cameraPartialZoom + delta * SCROLL_SPEED;
+
+                newZoom = Math.Min(newZoom, 64);
+                newZoom = Math.Max(newZoom, camera.ScreenLocation.Width / world.TileWidth);
+
+                double mousePixelX = Mouse.GetState().Position.X, mousePixelY = Mouse.GetState().Position.Y;
+                double mouseWorldX, mouseWorldY;
+                camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out mouseWorldX, out mouseWorldY);
+
+                cameraPartialZoom = newZoom;
+                
+                camera.Zoom = Math.Round(cameraPartialZoom);
+
+                double newMouseWorldX, newMouseWorldY;
+                camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out newMouseWorldX, out newMouseWorldY);
+
+                cameraPartialTopLeft.X -= (newMouseWorldX - mouseWorldX);
+                cameraPartialTopLeft.Y -= (newMouseWorldY - mouseWorldY);
+
+                cameraPartialTopLeft.X = Math.Max(cameraPartialTopLeft.X, 0);
+                cameraPartialTopLeft.Y = Math.Max(cameraPartialTopLeft.Y, 0);
+                cameraPartialTopLeft.X = Math.Min(cameraPartialTopLeft.X, world.TileWidth - camera.VisibleWorldWidth);
+                cameraPartialTopLeft.Y = Math.Min(cameraPartialTopLeft.Y, world.TileHeight - camera.VisibleWorldHeight);
+            }
+
+            // the goal is that the camera can move in increments of one pixel. One pixel = (1 world unit / Zoom).
+            int pixelTopLeftX = (int)Math.Round(cameraPartialTopLeft.X * camera.Zoom);
+            int pixelTopLeftY = (int)Math.Round(cameraPartialTopLeft.Y * camera.Zoom);
+            camera.WorldTopLeft.X = pixelTopLeftX / camera.Zoom;
+            camera.WorldTopLeft.Y = pixelTopLeftY / camera.Zoom;
         }
 
         /// <summary>
@@ -139,11 +194,12 @@ namespace BaseBuilder
             renderContext.Graphics = graphics;
             renderContext.SpriteBatch = spriteBatch;
             renderContext.Content = Content;
+            renderContext.Camera = camera;
 
             spriteBatch.Begin();
-            world.Render(renderContext, screenBounds, cameraLocation);
+            world.Render(renderContext);
 
-            spriteBatch.DrawString(font, $"Camera Location: {cameraLocation}", new Vector2(5, 5), Color.White);
+            spriteBatch.DrawString(font, $"Camera Location: {camera.WorldTopLeft}; Camera Zoom: {camera.Zoom}", new Vector2(5, 5), Color.White);
             spriteBatch.End();
         }
     }

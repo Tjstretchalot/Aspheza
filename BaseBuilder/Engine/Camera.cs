@@ -97,63 +97,45 @@ namespace BaseBuilder.Engine
         /// <returns>The projection of this camera onto the specified axis.</returns>
         protected OneDimensionalLine ProjectOntoAxis(VectorD2D axis, PointD2D shift = null)
         {
-            // the world unit polygon starts at WorldTopLeft and is VisibleWorldWidth x VisibleWorldHeight.
-            // it consists of 4 lines:
-            //   (WorldTopLeft.X, WorldTopLeft.Y) to (WorldTopLeft.X + VisibleWorldWidth, WorldTopLeft.Y)
-            //   (WorldTopLeft.X + VisibleWorldWidth, WorldTopLeft.Y) to (WorldTopLeft.X + VisibleWorldWidth, WorldTopLeft.Y + VisibleWorldHeight)
-            //   (WorldTopLeft.X + VisibleWorldWidth, WorldTopLeft.Y + VisibleWorldHeight) to (WorldTopLeft.X, WorldTopLeft.Y + VisibleWorldHeight)
-            //   (WorldTopLeft.X, WorldTopLeft.Y + VisibleWorldHeight) to (WorldTopLeft.X, WorldTopLeft.Y)
-
+            // The world unit polygon starts at WorldTopLeft and is VisibleWorldWidth x VisibleWorldHeight.
+            // Using this projection function is preferable to creating a polygon so that it isn't absurdly
+            // slow to change the zoom or camera position, which would require recalculating the polygon.
+            // it consists of 4 vertices:
+            //   (WorldTopLeft.X, WorldTopLeft.Y)
+            //   (WorldTopLeft.X + VisibleWorldWidth, WorldTopLeft.Y)
+            //   (WorldTopLeft.X + VisibleWorldWidth, WorldTopLeft.Y + VisibleWorldHeight)
+            //   (WorldTopLeft.X, WorldTopLeft.Y + VisibleWorldHeight)
+            
             var min = double.MaxValue;
             var max = double.MinValue;
-
-            // Line 1
+            
             var px1 = WorldTopLeft.X;
             var py1 = WorldTopLeft.Y;
+
             var px2 = WorldTopLeft.X + VisibleWorldWidth;
             var py2 = WorldTopLeft.Y;
 
-            var start = axis.DeltaX * (px1 + (shift == null ? 0 : shift.X)) + axis.DeltaY * (py1 + (shift == null ? 0 : shift.Y));
-            var end = axis.DeltaX * (px2 + (shift == null ? 0 : shift.X)) + axis.DeltaY * (py2 + (shift == null ? 0 : shift.Y));
+            var px3 = WorldTopLeft.X + VisibleWorldWidth;
+            var py3 = WorldTopLeft.Y + VisibleWorldHeight;
 
-            min = Math.Min(start, end);
-            max = Math.Max(start, end);
+            var px4 = WorldTopLeft.X;
+            var py4 = WorldTopLeft.Y + VisibleWorldHeight;
 
-            // Line 2
-            px1 = WorldTopLeft.X + VisibleWorldWidth;
-            py1 = WorldTopLeft.Y;
-            px2 = WorldTopLeft.X + VisibleWorldWidth;
-            py2 = WorldTopLeft.Y + VisibleWorldHeight;
+            var val = PointD2D.DotProduct(axis.DeltaX, axis.DeltaY, px1, py1, null, shift);
+            min = Math.Min(min, val);
+            max = Math.Max(max, val);
 
-            start = axis.DeltaX * (px1 + (shift == null ? 0 : shift.X)) + axis.DeltaY * (py1 + (shift == null ? 0 : shift.Y));
-            end = axis.DeltaX * (px2 + (shift == null ? 0 : shift.X)) + axis.DeltaY * (py2 + (shift == null ? 0 : shift.Y));
+            val = PointD2D.DotProduct(axis.DeltaX, axis.DeltaY, px2, py2, null, shift);
+            min = Math.Min(min, val);
+            max = Math.Max(max, val);
 
-            min = Math.Min(start, end);
-            max = Math.Max(start, end);
+            val = PointD2D.DotProduct(axis.DeltaX, axis.DeltaY, px3, py3, null, shift);
+            min = Math.Min(min, val);
+            max = Math.Max(max, val);
 
-            // Line 3
-            px1 = WorldTopLeft.X + VisibleWorldWidth;
-            py1 = WorldTopLeft.Y + VisibleWorldHeight;
-            px2 = WorldTopLeft.X;
-            py2 = WorldTopLeft.Y + VisibleWorldHeight;
-
-            start = axis.DeltaX * (px1 + (shift == null ? 0 : shift.X)) + axis.DeltaY * (py1 + (shift == null ? 0 : shift.Y));
-            end = axis.DeltaX * (px2 + (shift == null ? 0 : shift.X)) + axis.DeltaY * (py2 + (shift == null ? 0 : shift.Y));
-
-            min = Math.Min(start, end);
-            max = Math.Max(start, end);
-
-            // Line 4
-            px1 = WorldTopLeft.X;
-            py1 = WorldTopLeft.Y + VisibleWorldHeight;
-            px2 = WorldTopLeft.X;
-            py2 = WorldTopLeft.Y;
-
-            start = axis.DeltaX * (px1 + (shift == null ? 0 : shift.X)) + axis.DeltaY * (py1 + (shift == null ? 0 : shift.Y));
-            end = axis.DeltaX * (px2 + (shift == null ? 0 : shift.X)) + axis.DeltaY * (py2 + (shift == null ? 0 : shift.Y));
-
-            min = Math.Min(start, end);
-            max = Math.Max(start, end);
+            val = PointD2D.DotProduct(axis.DeltaX, axis.DeltaY, px3, py3, null, shift);
+            min = Math.Min(min, val);
+            max = Math.Max(max, val);
 
             return new OneDimensionalLine(axis, min, max);
         }
@@ -170,6 +152,93 @@ namespace BaseBuilder.Engine
                 ProjectOntoAxis, new List<VectorD2D> { VectorD2D.X_AXIS, VectorD2D.Y_AXIS }, null, polyPosition, true
                 );
         }
-        
+
+        /// <summary>
+        /// Determines what pixel x corresponds with the specified world x position
+        /// on this camera.
+        /// </summary>
+        /// <param name="worldX">World x position</param>
+        /// <returns>Pixel x position</returns>
+        public double PixelLocationOfWorldX(double worldX)
+        {
+            return worldX * Zoom - (WorldTopLeft.X * Zoom) + ScreenLocation.Left;
+        }
+
+        /// <summary>
+        /// Determines what pixel y corresponds with the specified world y position
+        /// on this camera.
+        /// </summary>
+        /// <param name="worldY">World y position</param>
+        /// <returns>Pixel y position</returns>
+        public double PixelLocationOfWorldY(double worldY)
+        {
+            return worldY * Zoom - (WorldTopLeft.Y * Zoom) + ScreenLocation.Top;
+        }
+
+        /// <summary>
+        /// Determines what pixel position corresponds with the specified world position.
+        /// </summary>
+        /// <param name="world">World position</param>
+        /// <returns>Corresponding pixel position</returns>
+        public PointD2D PixelLocationOfWorld(PointD2D world)
+        {
+            return new PointD2D(PixelLocationOfWorldX(world.X), PixelLocationOfWorldY(world.Y));
+        }
+
+        /// <summary>
+        /// Determines what pixel position corresponds with the specified world position.
+        /// </summary>
+        /// <param name="worldX">The world x.</param>
+        /// <param name="worldY">The world y.</param>
+        /// <param name="pixelX">The variable to set the corresponding pixel x to.</param>
+        /// <param name="pixelY">The variable to set the corresponding pixel y to.</param>
+        public void PixelLocationOfWorld(double worldX, double worldY, out double pixelX, out double pixelY)
+        {
+            pixelX = PixelLocationOfWorldX(worldX);
+            pixelY = PixelLocationOfWorldY(worldY);
+        }
+
+        /// <summary>
+        /// Determines what world x position corresponds with the specified pixel x position.
+        /// </summary>
+        /// <param name="pixelX">The pixel x</param>
+        /// <returns>The corresponding world x</returns>
+        public double WorldLocationOfPixelX(double pixelX)
+        {
+            return pixelX / Zoom + WorldTopLeft.X - ScreenLocation.Left / Zoom;
+        }
+
+        /// <summary>
+        /// Determines what world y position corresponds with the specified pixel y position.
+        /// </summary>
+        /// <param name="pixelY">The pixel y</param>
+        /// <returns>The corresponding world y</returns>
+        public double WorldLocationOfPixelY(double pixelY)
+        {
+            return pixelY / Zoom + WorldTopLeft.Y - ScreenLocation.Top / Zoom;
+        }
+
+        /// <summary>
+        /// Determines the world position corresponding with the specified pixel position.
+        /// </summary>
+        /// <param name="pixel">The pixel position</param>
+        /// <returns>The world position</returns>
+        public PointD2D WorldLocationOfPixel(PointD2D pixel)
+        {
+            return new PointD2D(WorldLocationOfPixelX(pixel.X), WorldLocationOfPixelY(pixel.Y));
+        }
+
+        /// <summary>
+        /// Determines the world position corresponding with the specified pixel position.
+        /// </summary>
+        /// <param name="pixelX">The pixel x position</param>
+        /// <param name="pixelY">The pixel y position</param>
+        /// <param name="worldX">The variable to set the corresponding world x position to</param>
+        /// <param name="worldY">The variable to set the corresponding world y position to</param>
+        public void WorldLocationOfPixel(double pixelX, double pixelY, out double worldX, out double worldY)
+        {
+            worldX = WorldLocationOfPixelX(pixelX);
+            worldY = WorldLocationOfPixelY(pixelY);
+        }
     }
 }

@@ -547,10 +547,25 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <exception cref="ArgumentNullException">If axis is null</exception>
         public OneDimensionalLine ProjectOntoAxis(VectorD2D unitAxis, PointD2D shift = null)
         {
-            var start = unitAxis.DeltaX * (Start.X + (shift == null ? 0 : shift.X)) + unitAxis.DeltaY * (Start.Y + (shift == null ? 0 : shift.Y));
-            var end = unitAxis.DeltaX * (End.X + (shift == null ? 0 : shift.X)) + unitAxis.DeltaY * (End.Y + (shift == null ? 0 : shift.Y));
-            
-            return new OneDimensionalLine(unitAxis, start, end);
+            return ProjectLineOntoAxis(Start.X, Start.Y, End.X, End.Y, unitAxis, shift);
+        }
+
+        /// <summary>
+        /// Convienence function that doesn't require many non-primitives.
+        /// </summary>
+        /// <param name="startX">Start x of the line.</param>
+        /// <param name="startY">Start y of the line.</param>
+        /// <param name="endX">End x of the line.</param>
+        /// <param name="endY">End y of the line.</param>
+        /// <param name="axis">The unit axis to project onto</param>
+        /// <param name="shift">Optional shift of the line</param>
+        /// <returns>The projection of the line from (startX, startY) to (endX, endY) on the axis &lt;axisDX, axisDY&gt;</returns>
+        public static OneDimensionalLine ProjectLineOntoAxis(double startX, double startY, double endX, double endY, VectorD2D axis, PointD2D shift = null)
+        {
+            var start = axis.DeltaX * (startX + (shift == null ? 0 : shift.X)) + axis.DeltaY * (startY + (shift == null ? 0 : shift.Y));
+            var end = axis.DeltaX * (endX + (shift == null ? 0 : shift.X)) + axis.DeltaY * (endY + (shift == null ? 0 : shift.Y));
+
+            return new OneDimensionalLine(axis, start, end);
         }
 
         public override string ToString()
