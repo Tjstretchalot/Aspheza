@@ -27,7 +27,7 @@ namespace BaseBuilder.Engine.World
     /// or environment moves.
     /// </para>
     /// </summary>
-    public class World
+    public class TileWorld
     {
         public int TileWidth { get; }
         public int TileHeight { get; }
@@ -46,7 +46,7 @@ namespace BaseBuilder.Engine.World
         /// </summary>
         /// <param name="width">Width in tiles.</param>
         /// <param name="height">Height in tiles.</param>
-        public World(int width, int height, List<Tile> tiles)
+        public TileWorld(int width, int height, List<Tile> tiles)
         {
             if (tiles == null)
                 throw new ArgumentNullException(nameof(tiles));

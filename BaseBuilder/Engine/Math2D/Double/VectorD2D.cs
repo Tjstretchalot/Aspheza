@@ -13,6 +13,9 @@ namespace BaseBuilder.Engine.Math2D.Double
     /// </summary>
     public class VectorD2D
     {
+        public static VectorD2D X_AXIS = new VectorD2D(1, 0);
+        public static VectorD2D Y_AXIS = new VectorD2D(0, 1);
+
         /// <summary>
         /// Where along the x-axis this vector ends if it starts
         /// at the origin

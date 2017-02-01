@@ -21,7 +21,7 @@ namespace BaseBuilder
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        World world;
+        TileWorld world;
         RenderContext renderContext;
 
         RectangleD2D screenBounds;
@@ -95,7 +95,7 @@ namespace BaseBuilder
                 }
             }
 
-            world = new World(120, 80, tiles);
+            world = new TileWorld(120, 80, tiles);
         }
 
         /// <summary>

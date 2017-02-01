@@ -7,6 +7,14 @@ using System.Threading.Tasks;
 namespace BaseBuilder.Engine.Math2D.Double
 {
     /// <summary>
+    /// Function signature for projecting something that takes up space onto an axis.
+    /// </summary>
+    /// <param name="axis">The axis to project onto</param>
+    /// <param name="position">The position of this thing being projected, or null for the origin</param>
+    /// <returns>The line of this thing projected onto the specified axis</returns>
+    public delegate OneDimensionalLine ProjectionFunc(VectorD2D axis, PointD2D position = null);
+
+    /// <summary>
     /// Describes a convex polygon. A polygon itself does not move.
     /// </summary>
     public class PolygonD2D
@@ -156,9 +164,6 @@ namespace BaseBuilder.Engine.Math2D.Double
 
             foreach(var line in Lines)
             {
-                if (line.Normal.IsParallel(unitAxis))
-                    continue; // The line is completely orthogonal to this axis and will project to a dot, which can be ignored
-                
                 var proj = line.ProjectOntoAxis(unitAxis, myPosition);
 
                 min = Math.Min(min, proj.Min);
@@ -166,6 +171,50 @@ namespace BaseBuilder.Engine.Math2D.Double
             }
 
             return new OneDimensionalLine(unitAxis, min, max);
+        }
+
+        /// <summary>
+        /// Returns true if this polygon contains the specified point. Returns false otherwise.
+        /// </summary>
+        /// <param name="point">The point to check.</param>
+        /// <param name="myPosition">The position of this polygon, or null if the origin</param>
+        /// <returns></returns>
+        public bool Contains(PointD2D point, PointD2D myPosition = null)
+        {
+            return false; // TODO
+        }
+
+        /// <summary>
+        /// Equivalent to Intersects(Polygon), except instead of describing the polygon using this class only requires
+        /// the minimum information necessary - the ability to project onto an axis, and the potential intersection axes
+        /// of the polygon.
+        /// </summary>
+        /// <remarks>
+        /// This still only works for convex polygons.
+        /// </remarks>
+        /// <param name="projector">Ability to project onto an axis.</param>
+        /// <param name="otherNormals">Axes that the polygon can intersect on.</param>
+        /// <param name="myPosition">Where this instance is located, null for the origin.</param>
+        /// <param name="otherPosition">Where the other polygon is located, null for the origin.</param>
+        /// <param name="strict">If touching constitutes intersection.</param>
+        /// <returns>True if this polygon intersects the described polygon, false otherwise.</returns>
+        public bool Intersects(ProjectionFunc projector, List<VectorD2D> otherNormals, PointD2D myPosition = null, PointD2D otherPosition = null, bool strict = false)
+        {
+            var normals = new List<VectorD2D>();
+            normals.AddRange(UniqueUnitNormals);
+            normals.AddRange(otherNormals);
+            RemoveRedundantNormals(normals);
+            
+            foreach (var normal in normals)
+            {
+                var myProj = ProjectOntoAxis(normal, myPosition);
+                var otherProj = projector(normal, otherPosition);
+
+                if (!myProj.Intersects(otherProj, strict))
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -182,21 +231,53 @@ namespace BaseBuilder.Engine.Math2D.Double
             if (other == null)
                 throw new ArgumentNullException(nameof(other));
 
+            return Intersects(other.ProjectOntoAxis, other.UniqueUnitNormals, myPosition, otherPosition, strict);
+        }
+
+        /// <summary>
+        /// Equivalent to IntersectionMTV(Polygon), except accepts a function that projects the shape onto an axis
+        /// and the potential intersection axes rather than a polygon. This is convienent when creating a polygon
+        /// instance is not desirable, such as when the polygon's size changes often.
+        /// </summary>
+        /// <remarks>
+        /// This still only works for convex polygons.
+        /// </remarks>
+        /// <param name="projector">Projection func.</param>
+        /// <param name="otherNormals">The potential intersection axes.</param>
+        /// <param name="myPosition">The position of this polygon, null for the origin.</param>
+        /// <param name="otherPosition">The position of the described polygon, null for the origin.</param>
+        /// <returns></returns>
+        public VectorD2D IntersectionMTV(ProjectionFunc projector, List<VectorD2D> otherNormals, PointD2D myPosition = null, PointD2D otherPosition = null)
+        {
+            if (projector == null)
+                throw new ArgumentNullException(nameof(projector));
+            if (otherNormals == null)
+                throw new ArgumentNullException(nameof(otherNormals));
+
+
             var normals = new List<VectorD2D>();
             normals.AddRange(UniqueUnitNormals);
-            normals.AddRange(other.UniqueUnitNormals);
+            normals.AddRange(otherNormals);
             RemoveRedundantNormals(normals);
-            
+
+            OneDimensionalLine bestChoice = null;
             foreach (var normal in normals)
             {
                 var myProj = ProjectOntoAxis(normal, myPosition);
-                var otherProj = other.ProjectOntoAxis(normal, otherPosition);
+                var otherProj = projector(normal, otherPosition);
 
-                if (!myProj.Intersects(otherProj, strict))
-                    return false;
+                var intersection = myProj.IntersectionLine(otherProj);
+
+                if (intersection == null)
+                    return null; // Polygons are seperated by this axis
+
+                if (bestChoice == null || intersection.Length < bestChoice.Length)
+                {
+                    bestChoice = intersection;
+                }
             }
 
-            return true;
+            return bestChoice.AsFiniteLineD2D().Axis;
         }
 
         /// <summary>
@@ -214,29 +295,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             if (other == null)
                 throw new ArgumentNullException(nameof(other));
 
-            var normals = new List<VectorD2D>();
-            normals.AddRange(UniqueUnitNormals);
-            normals.AddRange(other.UniqueUnitNormals);
-            RemoveRedundantNormals(normals);
-
-            OneDimensionalLine bestChoice = null;
-            foreach(var normal in normals)
-            {
-                var myProj = ProjectOntoAxis(normal, myPosition);
-                var otherProj = other.ProjectOntoAxis(normal, otherPosition);
-
-                var intersection = myProj.IntersectionLine(otherProj);
-
-                if (intersection == null)
-                    return null; // Polygons are seperated by this axis
-                
-                if(bestChoice == null || intersection.Length < bestChoice.Length)
-                {
-                    bestChoice = intersection;
-                }
-            }
-
-            return bestChoice.AsFiniteLineD2D().Axis;
+            return IntersectionMTV(other.ProjectOntoAxis, other.UniqueUnitNormals, myPosition, otherPosition);
         }
         
         /// <summary>

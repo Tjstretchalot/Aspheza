@@ -91,20 +91,27 @@ namespace BaseBuilder.Engine.Math2D.Double
         }
 
         /// <summary>
+        /// True if this line is actually just a point, false otherwise
+        /// </summary>
+        public bool IsPoint
+        {
+            get
+            {
+                return Start == End;
+            }
+        }
+
+        /// <summary>
         /// Initializes the one dimensional line from start to end. 
         /// </summary>
         /// <param name="axis">The axis this line is on</param>
         /// <param name="start">The start of the line</param>
         /// <param name="end">The end of the line</param>
         /// <exception cref="ArgumentNullException">If axis is null</exception>
-        /// <exception cref="InvalidProgramException">If start and end are the same</exception>
         public OneDimensionalLine(VectorD2D axis, double start, double end)
         {
             if (axis == null)
                 throw new ArgumentNullException(nameof(axis));
-
-            if (start == end)
-                throw new InvalidProgramException($"Start cannot match end (both are {start})");
 
             Axis = axis;
             Start = start;
@@ -183,14 +190,18 @@ namespace BaseBuilder.Engine.Math2D.Double
             
             return new OneDimensionalLine(Axis, resultStart, resultEnd); 
         }
-        
+
         /// <summary>
         /// Converts this one dimensional line representation to the standard
         /// finite line representation.
         /// </summary>
         /// <returns>Finite line representation.</returns>
+        /// <exception cref="InvalidOperationException">If IsPoint is true</exception>
         public FiniteLineD2D AsFiniteLineD2D()
         {
+            if (IsPoint)
+                throw new InvalidOperationException("This line is actually a point - you should have checked using IsPoint. The correct method is AsPointD2D");
+
             var cosTheta = Math.Cos(Axis.Theta);
             var sinTheta = Math.Sin(Axis.Theta);
 
@@ -198,6 +209,22 @@ namespace BaseBuilder.Engine.Math2D.Double
             var end = new PointD2D(End * cosTheta, End * sinTheta);
 
             return new FiniteLineD2D(start, end);
+        }
+
+        /// <summary>
+        /// Converts this instance into a point. 
+        /// </summary>
+        /// <returns>The point that this line represents</returns>
+        /// <exception cref="InvalidOperationException">If IsPoint is false</exception>
+        public PointD2D AsPointD2D()
+        {
+            if (!IsPoint)
+                throw new InvalidOperationException("This line is not a point - you should have checked using IsPoint. The correct method is AsVectorD2D");
+
+            var cosTheta = Math.Cos(Axis.Theta);
+            var sinTheta = Math.Sin(Axis.Theta);
+
+            return new PointD2D(Start * cosTheta, Start * sinTheta);
         }
 
         public override string ToString()
