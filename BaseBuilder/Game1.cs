@@ -1,6 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.Math2D.Double;
+using BaseBuilder.Engine.Utility;
+using BaseBuilder.Engine.World;
+using BaseBuilder.Engine.World.Tiles;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace BaseBuilder
 {
@@ -9,14 +16,24 @@ namespace BaseBuilder
     /// </summary>
     public class Game1 : Game
     {
+        const double CAMERA_SPEED = 2;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        World world;
+        RenderContext renderContext;
+
+        RectangleD2D screenBounds;
+        PointD2D cameraLocation;
+        SpriteFont font;
+
+        Random random;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            
         }
 
         /// <summary>
@@ -27,9 +44,11 @@ namespace BaseBuilder
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
+
+            renderContext = new RenderContext();
+            cameraLocation = new PointD2D(0, 0);
+            random = new Random();
         }
 
         /// <summary>
@@ -41,7 +60,9 @@ namespace BaseBuilder
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            screenBounds = new RectangleD2D(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+
+            font = Content.Load<SpriteFont>("Arial");
         }
 
         /// <summary>
@@ -51,6 +72,30 @@ namespace BaseBuilder
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+        }
+
+        protected void LoadWorld()
+        {
+            var tiles = new List<Tile>(120 * 80);
+
+            var tileCollisionMesh = new RectangleD2D(1, 1);
+            
+            for(int y = 0; y < 80; y++)
+            {
+                for(int x = 0; x < 120; x++)
+                {
+                    var point = new PointD2D(x, y);
+                    var rand = random.NextDouble();
+
+                    if (rand < 0.05)
+                        tiles.Add(new StoneTile(point, tileCollisionMesh));
+                    else
+                        tiles.Add(new GrassTile(point, tileCollisionMesh));
+
+                }
+            }
+
+            world = new World(120, 80, tiles);
         }
 
         /// <summary>
@@ -63,9 +108,20 @@ namespace BaseBuilder
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            // TODO game states and stuff
+            if (world == null)
+                LoadWorld();
 
-            base.Update(gameTime);
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                cameraLocation.X = Math.Max(0, cameraLocation.X - CAMERA_SPEED);
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                cameraLocation.X = Math.Min(world.TileWidth * CameraZoom.SCREEN_OVER_WORLD- screenBounds.Width, cameraLocation.X + CAMERA_SPEED);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                cameraLocation.Y = Math.Max(0, cameraLocation.Y - CAMERA_SPEED);
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                cameraLocation.Y = Math.Min(world.TileHeight * CameraZoom.SCREEN_OVER_WORLD - screenBounds.Height, cameraLocation.Y + CAMERA_SPEED);
+
         }
 
         /// <summary>
@@ -76,9 +132,19 @@ namespace BaseBuilder
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            // TODO game states and stuff
+            if (world == null)
+                return;
 
-            base.Draw(gameTime);
+            renderContext.Graphics = graphics;
+            renderContext.SpriteBatch = spriteBatch;
+            renderContext.Content = Content;
+
+            spriteBatch.Begin();
+            world.Render(renderContext, screenBounds, cameraLocation);
+
+            spriteBatch.DrawString(font, $"Camera Location: {cameraLocation}", new Vector2(5, 5), Color.White);
+            spriteBatch.End();
         }
     }
 }

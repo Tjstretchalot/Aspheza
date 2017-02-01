@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.Utility;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace BaseBuilder.Engine.World
 { 
@@ -75,7 +77,10 @@ namespace BaseBuilder.Engine.World
             int rightMostVisibleTileX = (int)Math.Ceiling((cameraScreen.X + boundsScreen.Width) / CameraZoom.SCREEN_OVER_WORLD);
             int bottomMostVisibleTileY = (int)Math.Ceiling((cameraScreen.Y + boundsScreen.Height) / CameraZoom.SCREEN_OVER_WORLD);
 
-            var point = new PointD2D(deltaScreenX, deltaScreenY);
+            var startingLeft = deltaScreenX + leftMostVisibleTileX * CameraZoom.SCREEN_OVER_WORLD;
+            var startingTop = deltaScreenY + topMostVisibleTileY * CameraZoom.SCREEN_OVER_WORLD;
+
+            var point = new PointD2D(startingLeft, startingTop);
             for(int x = leftMostVisibleTileX; x <= rightMostVisibleTileX; x++)
             {
                 for(int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
@@ -84,7 +89,7 @@ namespace BaseBuilder.Engine.World
                     point.Y += CameraZoom.SCREEN_OVER_WORLD;
                 }
 
-                point.Y = deltaScreenY;
+                point.Y = startingTop;
                 point.X += CameraZoom.SCREEN_OVER_WORLD;
             }
 
@@ -103,6 +108,8 @@ namespace BaseBuilder.Engine.World
 
                 mobile.Render(context, point);
             }
+
+            context.SpriteBatch.DrawString(context.Content.Load<SpriteFont>("Arial"), $"tiles: ({leftMostVisibleTileX}, {topMostVisibleTileY}) to ({rightMostVisibleTileX}, {bottomMostVisibleTileY})", new Microsoft.Xna.Framework.Vector2(5, 25), Color.White);
         }
 
         public Tile TileAt(int x, int y)

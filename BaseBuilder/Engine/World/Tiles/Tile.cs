@@ -26,6 +26,12 @@ namespace BaseBuilder.Engine.World.Tiles
         /// </summary>
         public RectangleD2D CollisionMesh;
 
+        protected Tile(PointD2D position, RectangleD2D collisionMesh)
+        {
+            Position = position;
+            CollisionMesh = collisionMesh;
+        }
+
         /// <summary>
         /// See <see cref="Renderable"/>
         /// </summary>
