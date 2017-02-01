@@ -23,15 +23,6 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
             var texture = context.Content.Load<Texture2D>(SpriteName);
 
-            var TmpI = new VectorD2D(0, 0);
-            var TmpJ = new VectorD2D(0, 1);
-
-            var TmpLeft = CollisionMesh.ProjectOntoAxis(TmpI).Start;
-            var TmpTop = CollisionMesh.ProjectOntoAxis(TmpJ).End;
-            var TmpWidth = CollisionMesh.ProjectOntoAxis(TmpI).Length;
-            var TmpHeight = CollisionMesh.ProjectOntoAxis(TmpJ).Length;
-
-
             context.SpriteBatch.Draw(texture,
                 new Rectangle(
                     (int)(screenTopLeft.X + CollisionMesh.Left), (int)(screenTopLeft.Y + CollisionMesh.Top),
