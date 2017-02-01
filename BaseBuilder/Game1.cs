@@ -4,6 +4,7 @@ using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.Utility;
 using BaseBuilder.Engine.World;
+using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -116,6 +117,13 @@ namespace BaseBuilder
             }
 
             world = new TileWorld(120, 80, tiles);
+
+            var archerCollisionMesh = new RectangleD2D(7.375, 7.375);
+            world.AddMobileEntity(new Archer(new PointD2D(5, 5), archerCollisionMesh));
+            world.AddMobileEntity(new Archer(new PointD2D(25, 5), archerCollisionMesh));
+            world.AddMobileEntity(new Archer(new PointD2D(5, 25), archerCollisionMesh));
+            world.AddMobileEntity(new Archer(new PointD2D(50, 5), archerCollisionMesh));
+            world.AddMobileEntity(new Archer(new PointD2D(5, 50), archerCollisionMesh));
         }
 
         void UpdateCamera(UpdateContext context)

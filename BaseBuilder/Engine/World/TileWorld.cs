@@ -62,6 +62,32 @@ namespace BaseBuilder.Engine.World
         }
 
         /// <summary>
+        /// Adds a mobile entity to the world
+        /// </summary>
+        /// <param name="entity">Mobile entity to add to world</param>
+        public void AddMobileEntity(MobileEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+            MobileEntities.Add(entity);
+        }
+
+        /// <summary>
+        /// Adds an immobile entity to the world
+        /// </summary>
+        /// <param name="entity">Immobile entity to add to world</param>
+        public void AddImmobileEntity(ImmobileEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+            ImmobileEntities.Add(entity);
+        }
+
+        /// <summary>
         /// Renders the world in the given context.
         /// </summary>
         /// <param name="context">Render context</param>
