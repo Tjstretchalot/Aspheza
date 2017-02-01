@@ -12,38 +12,25 @@ namespace BaseBuilder.Engine.World.Tiles
 {
     public class DirtTile : SpriteTile
     {
-        private static Rectangle sourceRectAllDirt;
-        private static Rectangle sourceRectDirtUpGrassDown;
-        private static Rectangle sourceRectDirtDownGrassUp;
-        private static Rectangle sourceRectDirtRightGrassLeft;
-        private static Rectangle sourceRectDirtLeftGrassRight;
-        private static Rectangle sourceRectDirtUpRightGrassDownLeft;
-        private static Rectangle sourceRectDirtUpLeftGrassDownRight;
-        private static Rectangle sourceRectDirtDownRightGrassUpLeft;
-        private static Rectangle sourceRectDirtDownLeftGrassUpRight;
+        private static Rectangle sourceRect;
 
         static DirtTile()
         {
-            sourceRectAllDirt = new Rectangle(0, 0, 32, 32);
-            sourceRectDirtUpGrassDown = new Rectangle(64, 0, 32, 32);
-            sourceRectDirtDownGrassUp = new Rectangle(64 + 32, 0, 32, 32);
-            sourceRectDirtRightGrassLeft = new Rectangle(64 + 32 * 2, 0, 32, 32);
-            sourceRectDirtLeftGrassRight = new Rectangle(64 + 32 * 3, 0, 32, 32);
-            sourceRectDirtUpRightGrassDownLeft = new Rectangle(64 + 32 * 4, 0, 32, 32);
-            sourceRectDirtUpLeftGrassDownRight = new Rectangle(64 + 32 * 5, 0, 32, 32);
-            sourceRectDirtDownRightGrassUpLeft = new Rectangle(64 + 32 * 6, 0, 32, 32);
-            sourceRectDirtDownLeftGrassUpRight = new Rectangle(64 + 32 * 7, 0, 32, 32);
+            sourceRect = new Rectangle(0, 0, 32, 32);
         }
 
-        public DirtTile(PointI2D position, RectangleD2D collisionMesh) : base(position, collisionMesh, "TileSet", sourceRectAllDirt)
+        public DirtTile(PointI2D position, RectangleD2D collisionMesh) : base(position, collisionMesh, "TileSet", sourceRect)
         {
         }
 
-        public override void Loaded(UpdateContext context)
-        {
-            base.Loaded(context);
 
-            
+        protected bool GrassAtRelative(UpdateContext context, int rx, int ry)
+        {
+            var tile = GetTileFromRelative(context, rx, ry);
+            if (tile == null)
+                return true;
+
+            return GetType().IsAssignableFrom(tile.GetType());
         }
     }
 }

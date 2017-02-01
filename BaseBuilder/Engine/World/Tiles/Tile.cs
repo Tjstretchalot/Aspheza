@@ -41,9 +41,20 @@ namespace BaseBuilder.Engine.World.Tiles
         {
         }
 
+        /// <summary>
+        /// Called if an adjacent tile changed.
+        /// </summary>
+        /// <param name="context">The update context</param>
+        public virtual void AdjacentTileChanged(UpdateContext context)
+        {
+        }
+
         public Tile GetTileFromRelative(UpdateContext context, int rx, int ry)
         {
-            return null; // TODO
+            if (!context.World.ContainsTile(Position.X + rx, Position.Y + ry))
+                return null;
+
+            return context.World.TileAt(Position.X + rx, Position.Y + ry);
         }
         
 

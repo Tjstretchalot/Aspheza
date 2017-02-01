@@ -154,9 +154,41 @@ namespace BaseBuilder.Engine.World
 
         }
 
+        /// <summary>
+        /// Determines if there is a tile at the specified position.
+        /// </summary>
+        /// <param name="x">X</param>
+        /// <param name="y">Y</param>
+        /// <returns>True if this world has a tile at that position, false otherwise</returns>
+        public bool ContainsTile(int x, int y)
+        {
+            return x >= 0 && x < TileWidth && y >= 0 && y < TileHeight;
+        }
+
         public Tile TileAt(int x, int y)
         {
-            return Tiles[x + y * TileHeight];
+            return Tiles[x + y * TileWidth];
+        }
+
+        /// <summary>
+        /// Replaces the worlds tile at tile.Position with tile.
+        /// </summary>
+        /// <param name="tile">The tile to set</param>
+        public void SetTile(UpdateContext context, Tile tile)
+        {
+            Tiles[tile.Position.X + tile.Position.Y * TileWidth] = tile;
+
+            for(int dx = -1; dx <= 1; dx++)
+            {
+                for(int dy = -1; dy <= 1; dy++)
+                {
+                    var x = tile.Position.X + dx;
+                    var y = tile.Position.Y + dy;
+
+                    if (ContainsTile(x, y))
+                        TileAt(x, y).AdjacentTileChanged(context);
+                }
+            }
         }
     }
 }

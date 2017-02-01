@@ -40,6 +40,7 @@ namespace BaseBuilder
         Camera camera;
 
         int previousScrollWheelValue;
+        bool mouseWasDown;
 
         int gameTimeMS;
 
@@ -107,11 +108,8 @@ namespace BaseBuilder
                 {
                     var point = new PointI2D(x, y);
                     var rand = random.NextDouble();
-
-                    if (rand < 0.1)
-                        tiles.Add(new DirtTile(point, tileCollisionMesh));
-                    else
-                        tiles.Add(new GrassTile(point, tileCollisionMesh));
+                    
+                    tiles.Add(new GrassTile(point, tileCollisionMesh));
 
                 }
             }
@@ -181,6 +179,37 @@ namespace BaseBuilder
             camera.WorldTopLeft.Y = pixelTopLeftY / camera.Zoom;
         }
 
+        void HandleMouseGrassToDirt(UpdateContext context, bool click, PointD2D worldMousePosition, bool onScreen)
+        {
+            if (!onScreen || !click)
+                return;
+
+            int tileX = (int)worldMousePosition.X, tileY = (int)worldMousePosition.Y;
+            var tile = context.World.TileAt(tileX, tileY);
+
+            if(typeof(DirtTile).IsAssignableFrom(tile.GetType()))
+            {
+                context.World.SetTile(context, new GrassTile(new PointI2D(tileX, tileY), new RectangleD2D(1, 1)));
+            }else if(typeof(GrassTile).IsAssignableFrom(tile.GetType()))
+            {
+                context.World.SetTile(context, new DirtTile(new PointI2D(tileX, tileY), new RectangleD2D(1, 1)));
+            }
+        }
+
+        void HandleMouse(UpdateContext context)
+        {
+            var mouseDown = Mouse.GetState().LeftButton == ButtonState.Pressed;
+
+            var click = mouseDown && !mouseWasDown;
+
+            var pixelMousePosition = new PointD2D(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+            var worldMousePosition = camera.WorldLocationOfPixel(pixelMousePosition);
+            var onScreen = pixelMousePosition.X >= 0 && pixelMousePosition.X < screenBounds.Width && pixelMousePosition.Y >= 0 && pixelMousePosition.Y < screenBounds.Height;
+
+            HandleMouseGrassToDirt(context, click, worldMousePosition, onScreen);
+            mouseWasDown = mouseDown;
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -208,6 +237,8 @@ namespace BaseBuilder
             UpdateCamera(updateContext);
 
             world.Update(updateContext);
+
+            HandleMouse(updateContext);
         }
 
         /// <summary>
@@ -229,7 +260,7 @@ namespace BaseBuilder
 
             spriteBatch.Begin();
             world.Render(renderContext);
-
+            
             spriteBatch.DrawString(font, $"Camera Location: {camera.WorldTopLeft}; Camera Zoom: {camera.Zoom}", new Vector2(5, 5), Color.White);
             spriteBatch.End();
         }
