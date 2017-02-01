@@ -144,7 +144,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         public bool ContainPoint(double point, bool strict = false)
         {
             
-            if (EpsilonGreaterThan(Max, point) || (strict && Max == point))
+            if (EpsilonGreaterThan(point, Max) || (strict && Max == point))
                 return false;
             if (EpsilonLessThan(point, Min) || (strict && Min == point))
                 return false;

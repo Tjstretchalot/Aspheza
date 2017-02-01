@@ -179,15 +179,16 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="point">The point to check.</param>
         /// <param name="myPosition">The position of this polygon, or null if the origin</param>
+        /// <param name="strict">False if touching constitutes intersection, true otherwise.</param>
         /// <returns></returns>
-        public bool Contains(PointD2D point, PointD2D myPosition = null)
+        public bool Contains(PointD2D point, PointD2D myPosition = null, bool strict = false)
         {
             foreach (var normal in UniqueUnitNormals)
             {
                 var myProjection = ProjectOntoAxis(normal, myPosition);
                 var pointProjection = PointD2D.DotProduct(point.X, point.Y, normal.DeltaX, normal.DeltaY);
 
-                if (!myProjection.ContainPoint(pointProjection))
+                if (!myProjection.ContainPoint(pointProjection, strict))
                 {
                     return false;
                 }
@@ -235,7 +236,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <param name="other">The polygon to compare with</param>
         /// <param name="myPosition">Where this polygon is located, null for the origin</param>
         /// <param name="otherPosition">Where the other polygon is located, null for the origin</param>
-        /// <param name="strict">False if touching constitutes intersection, false otherwise.</param>
+        /// <param name="strict">False if touching constitutes intersection, true otherwise.</param>
         /// <returns>True for intersection, false otherwise</returns>
         /// <exception cref="ArgumentNullException">If other is null</exception>
         public bool Intersects(PolygonD2D other, PointD2D myPosition = null, PointD2D otherPosition = null, bool strict = false)
