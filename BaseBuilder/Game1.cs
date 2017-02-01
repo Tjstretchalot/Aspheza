@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine;
 using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.Utility;
 using BaseBuilder.Engine.World;
@@ -17,6 +18,7 @@ namespace BaseBuilder
     /// </summary>
     public class Game1 : Game
     {
+        const double MIN_CAMERA_ZOOM = 32;
         const double CAMERA_SPEED = 0.01;
         const double SCROLL_SPEED = 0.01;
 
@@ -25,6 +27,7 @@ namespace BaseBuilder
 
         TileWorld world;
         RenderContext renderContext;
+        UpdateContext updateContext;
 
         RectangleD2D screenBounds;
         SpriteFont font;
@@ -36,6 +39,9 @@ namespace BaseBuilder
         Camera camera;
 
         int previousScrollWheelValue;
+
+        int gameTimeMS;
+
 
         public Game1()
         {
@@ -54,6 +60,7 @@ namespace BaseBuilder
             base.Initialize();
 
             renderContext = new RenderContext();
+            updateContext = new UpdateContext();
             random = new Random();
 
             IsMouseVisible = true;
@@ -97,11 +104,11 @@ namespace BaseBuilder
             {
                 for(int x = 0; x < 120; x++)
                 {
-                    var point = new PointD2D(x, y);
+                    var point = new PointI2D(x, y);
                     var rand = random.NextDouble();
 
-                    if (rand < 0.05)
-                        tiles.Add(new StoneTile(point, tileCollisionMesh));
+                    if (rand < 0.1)
+                        tiles.Add(new DirtTile(point, tileCollisionMesh));
                     else
                         tiles.Add(new GrassTile(point, tileCollisionMesh));
 
@@ -111,30 +118,17 @@ namespace BaseBuilder
             world = new TileWorld(120, 80, tiles);
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
+        void UpdateCamera(UpdateContext context)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            var elapsedMS = (int)gameTime.ElapsedGameTime.TotalMilliseconds;
-            // TODO game states and stuff
-            if (world == null)
-                LoadWorld();
-
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                cameraPartialTopLeft.X = Math.Max(0, cameraPartialTopLeft.X - CAMERA_SPEED * elapsedMS);
+                cameraPartialTopLeft.X = Math.Max(0, cameraPartialTopLeft.X - CAMERA_SPEED * context.ElapsedMS);
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                cameraPartialTopLeft.X = Math.Min(world.TileWidth - camera.VisibleWorldWidth, cameraPartialTopLeft.X + CAMERA_SPEED * elapsedMS);
+                cameraPartialTopLeft.X = Math.Min(world.TileWidth - camera.VisibleWorldWidth, cameraPartialTopLeft.X + CAMERA_SPEED * context.ElapsedMS);
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                cameraPartialTopLeft.Y = Math.Max(0, cameraPartialTopLeft.Y - CAMERA_SPEED * elapsedMS);
+                cameraPartialTopLeft.Y = Math.Max(0, cameraPartialTopLeft.Y - CAMERA_SPEED * context.ElapsedMS);
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                cameraPartialTopLeft.Y = Math.Min(world.TileHeight - camera.VisibleWorldHeight, cameraPartialTopLeft.Y + CAMERA_SPEED * elapsedMS);
+                cameraPartialTopLeft.Y = Math.Min(world.TileHeight - camera.VisibleWorldHeight, cameraPartialTopLeft.Y + CAMERA_SPEED * context.ElapsedMS);
 
 
             var scrollWheel = Mouse.GetState().ScrollWheelValue;
@@ -149,7 +143,7 @@ namespace BaseBuilder
                 var oldWorldHeight = camera.VisibleWorldHeight;
                 var newZoom = cameraPartialZoom + delta * SCROLL_SPEED;
 
-                newZoom = Math.Min(newZoom, 64);
+                newZoom = Math.Min(newZoom, MIN_CAMERA_ZOOM);
                 newZoom = Math.Max(newZoom, camera.ScreenLocation.Width / world.TileWidth);
 
                 double mousePixelX = Mouse.GetState().Position.X, mousePixelY = Mouse.GetState().Position.Y;
@@ -157,7 +151,7 @@ namespace BaseBuilder
                 camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out mouseWorldX, out mouseWorldY);
 
                 cameraPartialZoom = newZoom;
-                
+
                 camera.Zoom = Math.Round(cameraPartialZoom);
 
                 double newMouseWorldX, newMouseWorldY;
@@ -177,6 +171,35 @@ namespace BaseBuilder
             int pixelTopLeftY = (int)Math.Round(cameraPartialTopLeft.Y * camera.Zoom);
             camera.WorldTopLeft.X = pixelTopLeftX / camera.Zoom;
             camera.WorldTopLeft.Y = pixelTopLeftY / camera.Zoom;
+        }
+
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Update(GameTime gameTime)
+        {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            var elapsedMS = (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+            gameTimeMS += elapsedMS;
+
+            bool loadedWorld = world == null;
+            if (world == null)
+                LoadWorld();
+
+            updateContext.World = world;
+            updateContext.ElapsedMS = elapsedMS;
+            updateContext.GameTimeMS = gameTimeMS;
+
+            if (loadedWorld)
+                world.LoadingDone(updateContext);
+            
+            UpdateCamera(updateContext);
+
+            world.Update(updateContext);
         }
 
         /// <summary>

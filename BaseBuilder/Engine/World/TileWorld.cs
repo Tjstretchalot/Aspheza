@@ -107,6 +107,27 @@ namespace BaseBuilder.Engine.World
             context.SpriteBatch.DrawString(context.Content.Load<SpriteFont>("Arial"), $"tiles: ({leftMostVisibleTileX}, {topMostVisibleTileY}) to ({rightMostVisibleTileX}, {bottomMostVisibleTileY}); starting = {startingLeft}, {startingTop}", new Microsoft.Xna.Framework.Vector2(5, 25), Color.White);
         }
 
+        /// <summary>
+        /// Called when loading is complete.
+        /// </summary>
+        /// <param name="context">The context</param>
+        public void LoadingDone(UpdateContext context)
+        {
+            foreach(var tile in Tiles)
+            {
+                tile.Loaded(context);
+            }
+        }
+
+        /// <summary>
+        /// Updates the world in the given context
+        /// </summary>
+        /// <param name="context">The context</param>
+        public void Update(UpdateContext context)
+        {
+
+        }
+
         public Tile TileAt(int x, int y)
         {
             return Tiles[x + y * TileHeight];
