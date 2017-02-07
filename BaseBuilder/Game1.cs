@@ -206,7 +206,7 @@ namespace BaseBuilder
             var worldMousePosition = camera.WorldLocationOfPixel(pixelMousePosition);
             var onScreen = pixelMousePosition.X >= 0 && pixelMousePosition.X < screenBounds.Width && pixelMousePosition.Y >= 0 && pixelMousePosition.Y < screenBounds.Height;
 
-            HandleMouseGrassToDirt(context, click, worldMousePosition, onScreen);
+            //HandleMouseGrassToDirt(context, click, worldMousePosition, onScreen);
             mouseWasDown = mouseDown;
         }
 

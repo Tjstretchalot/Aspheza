@@ -146,12 +146,21 @@ namespace BaseBuilder.Engine.World
         }
 
         /// <summary>
-        /// Updates the world in the given context
+        /// Updates the world in the given context. This is for purely visual updates that aren't
+        /// yet rendered on the screen - like ticking an animation.
         /// </summary>
         /// <param name="context">The context</param>
         public void Update(UpdateContext context)
         {
+            foreach(var e in MobileEntities)
+            {
+                e.Update(context);
+            }
 
+            foreach(var e in ImmobileEntities)
+            {
+                e.Update(context);
+            }
         }
 
         /// <summary>

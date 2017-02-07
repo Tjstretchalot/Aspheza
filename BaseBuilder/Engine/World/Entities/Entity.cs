@@ -44,6 +44,15 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// </summary>
         public abstract void Render(RenderContext context, PointD2D screenTopLeft);
 
+        /// <summary>
+        /// Updates this entity in the given context. Note that this should only do visual
+        /// related updates, like ticking an animation. 
+        /// </summary>
+        /// <param name="context"></param>
+        public virtual void Update(UpdateContext context)
+        {
+        }
+
         protected void Init(PointD2D position, PolygonD2D collisionMesh)
         {
             Position = position;

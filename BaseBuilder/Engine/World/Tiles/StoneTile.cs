@@ -11,10 +11,13 @@ namespace BaseBuilder.Engine.World.Tiles
 {
     public class StoneTile : SpriteTile
     {
+        private static short ID = 3;
         private static Rectangle sourceRect;
+
         static StoneTile()
         {
             sourceRect = new Rectangle(32, 0, 32, 32);
+            TileIdentifier.Register(typeof(StoneTile), ID);
         }
 
         public StoneTile(PointI2D position, RectangleD2D collisionMesh) : base(position, collisionMesh, "TileSet", sourceRect)

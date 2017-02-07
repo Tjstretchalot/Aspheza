@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,7 +13,8 @@
     <AssemblyName>BaseBuilder</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -49,6 +50,14 @@
     <Compile Include="Engine\Math2D\Double\RectangleD2D.cs" />
     <Compile Include="Engine\Math2D\Double\VectorD2D.cs" />
     <Compile Include="Engine\Math2D\Int\PointI2D.cs" />
+    <Compile Include="Engine\Networking\ClientGameConnection.cs" />
+    <Compile Include="Engine\Networking\GameConnection.cs" />
+    <Compile Include="Engine\Networking\GamePacketPool.cs" />
+    <Compile Include="Engine\Networking\IGameConnection.cs" />
+    <Compile Include="Engine\Networking\Packets\GamePacket.cs" />
+    <Compile Include="Engine\Networking\Packets\IGamePacket.cs" />
+    <Compile Include="Engine\Networking\Packets\WorldDownloadPacket.cs" />
+    <Compile Include="Engine\Networking\ServerGameConnection.cs" />
     <Compile Include="Engine\State\GameState.cs" />
     <Compile Include="Engine\Utility\Renderable.cs" />
     <Compile Include="Engine\World\Entities\Entity.cs" />
@@ -62,12 +71,17 @@
     <Compile Include="Engine\World\Tiles\SpriteTile.cs" />
     <Compile Include="Engine\World\Tiles\StoneTile.cs" />
     <Compile Include="Engine\World\Tiles\Tile.cs" />
+    <Compile Include="Engine\World\Tiles\TileIdentifier.cs" />
     <Compile Include="Engine\World\TileWorld.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lidgren.Network.1.0.2\lib\net451\Lidgren.Network.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.6.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.6.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
@@ -106,8 +120,10 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

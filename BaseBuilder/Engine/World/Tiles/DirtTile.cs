@@ -12,11 +12,13 @@ namespace BaseBuilder.Engine.World.Tiles
 {
     public class DirtTile : SpriteTile
     {
+        private static short ID = 1;
         private static Rectangle sourceRect;
 
         static DirtTile()
         {
             sourceRect = new Rectangle(0, 0, 32, 32);
+            TileIdentifier.Register(typeof(DirtTile), ID);
         }
 
         public DirtTile(PointI2D position, RectangleD2D collisionMesh) : base(position, collisionMesh, "TileSet", sourceRect)
