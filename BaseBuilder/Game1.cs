@@ -6,6 +6,7 @@ using BaseBuilder.Engine.Utility;
 using BaseBuilder.Engine.World;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Tiles;
+using BaseBuilder.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -21,6 +22,8 @@ namespace BaseBuilder
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        IScreenManager screenManager;
 
         public Game1()
         {
@@ -49,6 +52,8 @@ namespace BaseBuilder
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            screenManager = new ScreenManager(new MainMenuScreen(Content, graphics, GraphicsDevice, spriteBatch));
         }
 
         /// <summary>
@@ -72,7 +77,9 @@ namespace BaseBuilder
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            var elapsedMS = (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+            var deltaMS = (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            screenManager.Update(deltaMS);
         }
 
         /// <summary>
@@ -81,6 +88,7 @@ namespace BaseBuilder
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            screenManager.Draw();
         }
     }
 }

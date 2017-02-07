@@ -11,8 +11,8 @@ namespace BaseBuilder.Engine.Networking.Packets
     public abstract class GamePacket : IGamePacket
     {
         public abstract void Clear();
-        public abstract void LoadFrom(UpdateContext context, NetPeer peer, NetIncomingMessage message);
-        public abstract void SaveTo(UpdateContext context, NetPeer peer, NetOutgoingMessage message);
+        public abstract void LoadFrom(UpdateContext context, NetIncomingMessage message);
+        public abstract void SaveTo(UpdateContext context, NetOutgoingMessage message);
 
         protected GamePacketPool Pool;
 

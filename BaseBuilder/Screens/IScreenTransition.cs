@@ -6,11 +6,6 @@
     public interface IScreenTransition
     {
         /// <summary>
-        /// True if this transition is done.
-        /// </summary>
-        bool Complete { get; }
-
-        /// <summary>
         /// Updates this transition to reflect the progress the transition should display.
         /// </summary>
         /// <remarks>

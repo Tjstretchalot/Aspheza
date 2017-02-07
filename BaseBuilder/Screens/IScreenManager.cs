@@ -22,7 +22,8 @@ namespace BaseBuilder.Screens
         /// </summary>
         /// <param name="newScreen">The new screen</param>
         /// <param name="transition">The transition to use</param>
-        void TransitionTo(IScreen newScreen, IScreenTransition transition);
+        /// <param name="transitionTimeMS">The time, in milliseconds, for the duration to take</param>
+        void TransitionTo(IScreen newScreen, IScreenTransition transition, int transitionTimeMS);
 
         /// <summary>
         /// Updates the screen manager.
