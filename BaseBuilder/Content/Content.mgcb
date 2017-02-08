@@ -19,3 +19,27 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial.spritefont
 
+#begin ButtonPress.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:ButtonPress.mp3
+
+#begin ButtonUnpress.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:ButtonUnpress.mp3
+
+#begin MouseEnter.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:MouseEnter.mp3
+
+#begin MouseLeave.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:MouseLeave.mp3
+
