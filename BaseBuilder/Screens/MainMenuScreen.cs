@@ -19,7 +19,7 @@ namespace BaseBuilder.Screens
 
         protected override void Initialize()
         {
-            var TestButton = ButtonUtils.CreateSmallButton(new PointI2D(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2), "Test Button");
+            var TestButton = UIUtils.CreateButton(new PointI2D(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2), "Blue Button", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
 
             TestButton.OnPressReleased += TestButtonPressReleased;
             Components.Add(TestButton);
@@ -29,15 +29,31 @@ namespace BaseBuilder.Screens
 
         private void TestButtonPressReleased(object sender, EventArgs args)
         {
-            Console.WriteLine("test button pressed");
-
             var button = sender as Button;
-            if(button.Text.Equals("Pressed"))
+            if (button.Text.Equals("Grey Button"))
             {
-                button.Text = "Test Button";
-            }else
+                button.Text = "Blue Button";
+                UIUtils.SetButton(button, UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
+            }
+            else if (button.Text.Equals("Blue Button"))
             {
-                button.Text = "Pressed";
+                button.Text = "Green Button";
+                UIUtils.SetButton(button, UIUtils.ButtonColor.Green, UIUtils.ButtonSize.Medium);
+            }
+            else if (button.Text.Equals("Green Button"))
+            {
+                button.Text = "Red Button";
+                UIUtils.SetButton(button, UIUtils.ButtonColor.Red, UIUtils.ButtonSize.Medium);
+            }
+            else if (button.Text.Equals("Red Button"))
+            {
+                button.Text = "Yellow Button";
+                UIUtils.SetButton(button, UIUtils.ButtonColor.Yellow, UIUtils.ButtonSize.Medium);
+            }
+            else if (button.Text.Equals("Yellow Button"))
+            {
+                button.Text = "Grey Button";
+                UIUtils.SetButton(button, UIUtils.ButtonColor.Grey, UIUtils.ButtonSize.Medium);
             }
         }
     }

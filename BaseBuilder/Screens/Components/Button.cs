@@ -36,7 +36,7 @@ namespace BaseBuilder.Screens.Components
             }
         }
 
-        private Rectangle? _Location;
+        internal Rectangle? _Location;
 
         public Rectangle Location
         {
@@ -64,6 +64,21 @@ namespace BaseBuilder.Screens.Components
         public string FontName;
 
         /// <summary>
+        /// The color for the text when unhovered and unpressed
+        /// </summary>
+        public Color UnhoveredUnpressedTextColor;
+
+        /// <summary>
+        /// The color for the text when hovered and unpressed
+        /// </summary>
+        public Color HoveredUnpressedTextColor;
+
+        /// <summary>
+        /// The color for the text when hovered and pressed
+        /// </summary>
+        public Color HoveredPressedTextColor;
+
+        /// <summary>
         /// The center of this button.
         /// </summary>
         public PointI2D CenterPoint;
@@ -79,9 +94,22 @@ namespace BaseBuilder.Screens.Components
         public bool Hovered;
 
         /// <summary>
-        /// The name of the sprite that contains the graphics for this button.
+        /// The name of the sprite that contains the graphics for this button when
+        /// unhovered and unpressed
         /// </summary>
-        public string ButtonSpriteName;
+        public string UnhoveredUnpressedButtonSpriteName;
+
+        /// <summary>
+        /// The name of the sprite that contains the graphics for this button when
+        /// hovered and unpressed
+        /// </summary>
+        public string HoveredUnpressedButtonSpriteName;
+
+        /// <summary>
+        /// The name of the sprite that contains the graphics for this button when
+        /// hovered and pressed
+        /// </summary>
+        public string HoveredPressedButtonSpriteName;
 
         /// <summary>
         /// Where in the sprite for this button should be displayed when
@@ -134,16 +162,23 @@ namespace BaseBuilder.Screens.Components
         /// </summary>
         public event EventHandler OnPressReleased;
         
-        protected Vector2? _TextDestinationVec;
+        internal Vector2? _TextDestinationVec;
 
-        public Button(string text, string fontName, PointI2D center, string spriteName, Rectangle unhoveredUnpressedSource, 
+        public Button(string text, string fontName, Color unhoveredUnpressedTextColor, Color hoveredUnpressedTextColor,
+            Color hoveredPressedTextColor, PointI2D center, string spriteNameUnhoveredUnpressed,
+            string spriteNameHoveredUnpressed, string spriteNameHoveredPressed, Rectangle unhoveredUnpressedSource, 
             Rectangle hoveredUnpressedSource, Rectangle hoveredPressedSource, string mouseEnterSFX, string mouseLeaveSFX, 
             string pressedSFX, string unpressedSFX)
         {
             Text = text;
             FontName = fontName;
+            UnhoveredUnpressedTextColor = unhoveredUnpressedTextColor;
+            HoveredUnpressedTextColor = hoveredUnpressedTextColor;
+            HoveredPressedTextColor = hoveredPressedTextColor;
             CenterPoint = center;
-            ButtonSpriteName = spriteName;
+            UnhoveredUnpressedButtonSpriteName = spriteNameUnhoveredUnpressed;
+            HoveredUnpressedButtonSpriteName = spriteNameHoveredUnpressed;
+            HoveredPressedButtonSpriteName = spriteNameHoveredPressed;
             UnhoveredUnpressedSourceRect = unhoveredUnpressedSource;
             HoveredUnpressedSourceRect = hoveredUnpressedSource;
             HoveredPressedSourceRect = hoveredPressedSource;
@@ -154,6 +189,38 @@ namespace BaseBuilder.Screens.Components
 
             _Location = null;
             _TextDestinationVec = null;
+        }
+
+        protected Color GetTextColor(bool pressed, bool hovered)
+        {
+            if (pressed)
+            {
+                if (hovered)
+                    return HoveredPressedTextColor;
+                return UnhoveredUnpressedTextColor;
+            }
+            else
+            {
+                if (hovered)
+                    return HoveredUnpressedTextColor;
+                return UnhoveredUnpressedTextColor;
+            }
+        }
+
+        protected Texture2D GetSourceTexture(ContentManager content, bool pressed, bool hovered)
+        {
+            if (pressed)
+            {
+                if (hovered)
+                    return content.Load<Texture2D>(HoveredPressedButtonSpriteName);
+                return content.Load<Texture2D>(UnhoveredUnpressedButtonSpriteName);
+            }
+            else
+            {
+                if (hovered)
+                    return content.Load<Texture2D>(HoveredUnpressedButtonSpriteName);
+                return content.Load<Texture2D>(UnhoveredUnpressedButtonSpriteName);
+            }
         }
 
         protected Rectangle GetSourceRect(bool pressed, bool hovered)
@@ -167,8 +234,7 @@ namespace BaseBuilder.Screens.Components
             {
                 if (hovered)
                     return HoveredUnpressedSourceRect;
-                else
-                    return UnhoveredUnpressedSourceRect;
+                return UnhoveredUnpressedSourceRect;
             }
         }
 
@@ -237,8 +303,9 @@ namespace BaseBuilder.Screens.Components
         /// <param name="spriteBatch">Sprite batch</param>
         public void Draw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
-            var sourceText = content.Load<Texture2D>(ButtonSpriteName);
+            var sourceText = GetSourceTexture(content, Pressed, Hovered);
             var sourceRect = GetSourceRect(Pressed, Hovered);
+            var textColor = GetTextColor(Pressed, Hovered);
             
             if (Text != null)
             {
@@ -254,7 +321,7 @@ namespace BaseBuilder.Screens.Components
                 }
 
                 spriteBatch.Draw(sourceText, Location, sourceRect, Color.White);
-                spriteBatch.DrawString(font, Text, _TextDestinationVec.Value, Color.Black);
+                spriteBatch.DrawString(font, Text, _TextDestinationVec.Value, textColor);
             }
         }
     }

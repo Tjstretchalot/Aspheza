@@ -7,6 +7,7 @@ using BaseBuilder.Engine.World;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Tiles;
 using BaseBuilder.Screens;
+using BaseBuilder.Screens.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -42,6 +43,8 @@ namespace BaseBuilder
             base.Initialize();
 
             IsMouseVisible = true;
+
+            UIUtils.Load();
         }
 
         /// <summary>

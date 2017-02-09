@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace BaseBuilder.Screens.Components.TextFields
 {
+    /// <summary>
+    /// Describes a one-line text field.
+    /// </summary>
     public class TextField : IScreenComponent
     {
         public Rectangle Location
@@ -19,9 +22,11 @@ namespace BaseBuilder.Screens.Components.TextFields
             }
         }
 
+        public string Text;
+
         public void Draw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void Update(ContentManager content, int deltaMS)
