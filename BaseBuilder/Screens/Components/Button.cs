@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.Math2D;
+using BaseBuilder.Engine.Math2D.Double;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -10,17 +11,52 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BaseBuilder.Screens.Buttons
+namespace BaseBuilder.Screens.Components
 {
     /// <summary>
     /// Describes a simple button that can be used in a screen.
     /// </summary>
-    public class Button
+    public class Button : IScreenComponent
     {
+        private string _Text;
         /// <summary>
         /// The text on this button.
         /// </summary>
-        public string Text;
+        public string Text
+        {
+            get
+            {
+                return _Text;
+            }
+
+            set
+            {
+                _TextDestinationVec = null;
+                _Text = value;
+            }
+        }
+
+        private Rectangle? _Location;
+
+        public Rectangle Location
+        {
+            get
+            {
+                if(!_Location.HasValue)
+                {
+                    var sourceRect = GetSourceRect(Pressed, Hovered);
+
+                    _Location = new Rectangle(
+                        CenterPoint.X - (sourceRect.Width / 2),
+                        CenterPoint.Y - (sourceRect.Height / 2),
+                        sourceRect.Width,
+                        sourceRect.Height
+                    );
+                }
+
+                return _Location.Value;
+            }
+        }
 
         /// <summary>
         /// The name of the font used.
@@ -92,7 +128,12 @@ namespace BaseBuilder.Screens.Buttons
         /// </summary>
         public string UnpressedSFXName;
         
-        protected Rectangle? _DestinationRect;
+        /// <summary>
+        /// Called when this button changes from pressed to unpressed while hovered.
+        /// This is when you should treat the button as clicked.
+        /// </summary>
+        public event EventHandler OnPressReleased;
+        
         protected Vector2? _TextDestinationVec;
 
         public Button(string text, string fontName, PointI2D center, string spriteName, Rectangle unhoveredUnpressedSource, 
@@ -111,7 +152,7 @@ namespace BaseBuilder.Screens.Buttons
             PressedSFXName = pressedSFX;
             UnpressedSFXName = unpressedSFX;
 
-            _DestinationRect = null;
+            _Location = null;
             _TextDestinationVec = null;
         }
 
@@ -140,26 +181,15 @@ namespace BaseBuilder.Screens.Buttons
         /// <returns></returns>
         public bool ContainsPoint(int pX, int pY)
         {
-            if (_DestinationRect.HasValue)
-                return _DestinationRect.Value.Contains(pX, pY);
-
-            var rect = GetSourceRect(Pressed, Hovered);
-
-            return pX >= (CenterPoint.X - rect.Width / 2)
-                && pX <= (CenterPoint.X + rect.Width / 2)
-                && pY >= (CenterPoint.Y - rect.Height / 2)
-                && pY <= (CenterPoint.Y + rect.Height / 2);
+            return Location.Contains(pX, pY);
         }
 
         /// <summary>
-        /// Returns true if Pressed changed during this update, returns
-        /// false otherwise.
+        /// Updates the button.
         /// </summary>
-        /// <returns>
-        /// True if Pressed changed during this update, false otherwise.
-        /// </returns>
         /// <param name="content">The content (for audio)</param>
-        public bool Update(ContentManager content)
+        /// <param name="deltaMS">Time in milliseconds since the last call to update</param>
+        public void Update(ContentManager content, int deltaMS)
         {
             var mouse = Mouse.GetState();
             var newHovered = ContainsPoint(mouse.Position.X, mouse.Position.Y);
@@ -186,15 +216,16 @@ namespace BaseBuilder.Screens.Buttons
             {
                 // Mouse unpressed
                 content.Load<SoundEffect>(UnpressedSFXName).Play();
+
+                if (newHovered && Hovered)
+                    OnPressReleased?.Invoke(this, EventArgs.Empty);
             }
 
             Pressed = newPressed;
             Hovered = newHovered;
 
             if(pressedChanged || hoveredChanged)
-                _DestinationRect = null;
-
-            return pressedChanged;
+                _Location = null;
         }
 
         /// <summary>
@@ -208,16 +239,7 @@ namespace BaseBuilder.Screens.Buttons
         {
             var sourceText = content.Load<Texture2D>(ButtonSpriteName);
             var sourceRect = GetSourceRect(Pressed, Hovered);
-
-            if (!_DestinationRect.HasValue) {
-                _DestinationRect = new Rectangle(
-                    CenterPoint.X - (sourceRect.Width / 2),
-                    CenterPoint.Y - (sourceRect.Height / 2),
-                    sourceRect.Width,
-                    sourceRect.Height
-                    );
-            }
-
+            
             if (Text != null)
             {
                 var font = content.Load<SpriteFont>(FontName);
@@ -231,7 +253,7 @@ namespace BaseBuilder.Screens.Buttons
                         );
                 }
 
-                spriteBatch.Draw(sourceText, _DestinationRect.Value, sourceRect, Color.White);
+                spriteBatch.Draw(sourceText, Location, sourceRect, Color.White);
                 spriteBatch.DrawString(font, Text, _TextDestinationVec.Value, Color.Black);
             }
         }

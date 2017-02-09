@@ -6,38 +6,39 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using BaseBuilder.Screens.Buttons;
+using BaseBuilder.Screens.Components;
+using BaseBuilder.Engine.Math2D;
 
 namespace BaseBuilder.Screens
 {
-    public class MainMenuScreen : Screen
+    public class MainMenuScreen : ComponentScreen
     {
-        private Button TestButton;
-
         public MainMenuScreen(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {
-            var sourceY = 95;
-            var sourceHeight = 50;
-            TestButton = new Button("Play Game", "Arial", new Engine.Math2D.PointI2D(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2), "ButtonSmall",
-                new Rectangle(112, sourceY, 128, sourceHeight),
-                new Rectangle(247, sourceY, 128, sourceHeight),
-                new Rectangle(381, sourceY, 128, sourceHeight), "MouseEnter", "MouseLeave", "ButtonPress", "ButtonUnpress");
         }
 
-        public override void Draw()
+        protected override void Initialize()
         {
-            graphicsDevice.Clear(Color.White);
+            var TestButton = ButtonUtils.CreateSmallButton(new PointI2D(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2), "Test Button");
 
-            spriteBatch.Begin();
+            TestButton.OnPressReleased += TestButtonPressReleased;
+            Components.Add(TestButton);
 
-            TestButton.Draw(content, graphics, graphicsDevice, spriteBatch);
-
-            spriteBatch.End();
+            base.Initialize();
         }
 
-        public override void Update(int deltaMS)
+        private void TestButtonPressReleased(object sender, EventArgs args)
         {
-            TestButton.Update(content);
+            Console.WriteLine("test button pressed");
+
+            var button = sender as Button;
+            if(button.Text.Equals("Pressed"))
+            {
+                button.Text = "Test Button";
+            }else
+            {
+                button.Text = "Pressed";
+            }
         }
     }
 }
