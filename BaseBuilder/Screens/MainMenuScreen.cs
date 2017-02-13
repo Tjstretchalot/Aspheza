@@ -19,10 +19,17 @@ namespace BaseBuilder.Screens
 
         protected override void Initialize()
         {
+            var GreyPanel = new GreyPanel(new Rectangle(graphicsDevice.Viewport.Width / 2 - 200, graphicsDevice.Viewport.Height / 2 - 150, 400, 300));
+            Components.Add(GreyPanel);
+
             var TestButton = UIUtils.CreateButton(new PointI2D(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2), "Blue Button", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
 
             TestButton.OnPressReleased += TestButtonPressReleased;
             Components.Add(TestButton);
+
+            var TestField = UIUtils.CreateTextField(new PointI2D(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 - 100));
+            TestField.Text = "text field text";
+            Components.Add(TestField);
 
             base.Initialize();
         }

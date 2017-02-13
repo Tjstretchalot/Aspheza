@@ -12,7 +12,7 @@
 	<SubTexture name="grey_button_hov_press_medium.png" x="0" y="98" width="190" height="45"/>
 	<SubTexture name="grey_button03.png" x="0" y="331" width="190" height="49"/>
 	<SubTexture name="grey_button_hov_unpress_medium.png" x="0" y="286" width="190" height="45"/>
-	<SubTexture name="grey_button05.png" x="0" y="0" width="195" height="49"/>
+	<SubTexture name="grey_text_field.png" x="0" y="0" width="195" height="49"/>
 	<SubTexture name="grey_button06.png" x="0" y="49" width="191" height="49"/>
 	<SubTexture name="grey_button07.png" x="195" y="0" width="49" height="49"/>
 	<SubTexture name="grey_button08.png" x="240" y="49" width="49" height="49"/>

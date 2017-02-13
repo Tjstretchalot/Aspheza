@@ -27,7 +27,8 @@ namespace BaseBuilder.Screens.Components
         
         private static Color ReallyDarkGray;
 
-        private static Dictionary<Tuple<ButtonColor, ButtonSize>, XElement> SpritesToTextureAtlases;
+        private static Dictionary<string, XElement> SpritesToTextureAtlases;
+        private static Dictionary<Tuple<ButtonColor, ButtonSize>, string> ButtonColorAndSizeToSpriteSheets;
         
         /// <summary>
         /// Sets this utility class up for use. Requires
@@ -37,7 +38,8 @@ namespace BaseBuilder.Screens.Components
         {
             ReallyDarkGray = new Color(55, 55, 55);
 
-            SpritesToTextureAtlases = new Dictionary<Tuple<ButtonColor, ButtonSize>, XElement>();
+            SpritesToTextureAtlases = new Dictionary<string, XElement>();
+            ButtonColorAndSizeToSpriteSheets = new Dictionary<Tuple<ButtonColor, ButtonSize>, string>();
             LoadTextureAtlas("UI/blueSheet.xml", ButtonColor.Blue, ButtonSize.Medium);
             LoadTextureAtlas("UI/yellowSheet.xml", ButtonColor.Yellow, ButtonSize.Medium);
             LoadTextureAtlas("UI/greenSheet.xml", ButtonColor.Green, ButtonSize.Medium);
@@ -47,12 +49,12 @@ namespace BaseBuilder.Screens.Components
 
         private static void LoadTextureAtlas(string spriteSheet, ButtonColor buttonColor, ButtonSize buttonSize)
         {
-            SpritesToTextureAtlases.Add(Tuple.Create(buttonColor, buttonSize), XElement.Load("Content/" + spriteSheet));
+            SpritesToTextureAtlases.Add(spriteSheet, XElement.Load("Content/" + spriteSheet));
+            ButtonColorAndSizeToSpriteSheets.Add(Tuple.Create(buttonColor, buttonSize), spriteSheet);
         }
         
-        private static Rectangle LoadRectangleFromSheetNameAndElementName(ButtonColor color, ButtonSize size, string elementName)
+        private static Rectangle LoadRectangleFromSheetAndElementName(XElement atlas, string elementName)
         {
-            var atlas = SpritesToTextureAtlases[Tuple.Create(color, size)];
             foreach(var node in atlas.Descendants("SubTexture"))
             {
                 var isCorrectElement = node.Attributes("name").First().Value.Equals(elementName);
@@ -68,7 +70,7 @@ namespace BaseBuilder.Screens.Components
                     );
             }
 
-            throw new InvalidProgramException($"Sheet for button color={color} size={size} has no subtexture named {elementName}");
+            throw new InvalidProgramException($"No subtexture named {elementName}");
         }
 
         private static string GetColorNameFromButtonColor(ButtonColor color)
@@ -116,9 +118,10 @@ namespace BaseBuilder.Screens.Components
             var sizeName = GetSizeNameFromButtonSize(size);
 
             sheetName = "UI/" + colorName + "Sheet";
-            unhovUnpress = LoadRectangleFromSheetNameAndElementName(color, size, colorName + "_button_unhov_unpress_" + sizeName + ".png"); // blue 01
-            hovUnpress = LoadRectangleFromSheetNameAndElementName(color, size, colorName + "_button_hov_unpress_" + sizeName + ".png"); // blue 05
-            hovPress = LoadRectangleFromSheetNameAndElementName(color, size, colorName + "_button_hov_press_" + sizeName + ".png"); // blue 03
+            var atlas = SpritesToTextureAtlases[ButtonColorAndSizeToSpriteSheets[Tuple.Create(color, size)]];
+            unhovUnpress = LoadRectangleFromSheetAndElementName(atlas, colorName + "_button_unhov_unpress_" + sizeName + ".png"); // blue 01
+            hovUnpress = LoadRectangleFromSheetAndElementName(atlas, colorName + "_button_hov_unpress_" + sizeName + ".png"); // blue 05
+            hovPress = LoadRectangleFromSheetAndElementName(atlas, colorName + "_button_hov_press_" + sizeName + ".png"); // blue 03
         }
 
         private static void UpdateButtonGraphicsFromSheet(Button button, ButtonColor color, ButtonSize size)
@@ -153,7 +156,7 @@ namespace BaseBuilder.Screens.Components
 
             return new Button(text, "KenVector Future", textColor, textColor, textColor,
                 center, sheetName, sheetName, sheetName, unhovUnpress, hovUnpress, hovPress, 
-                "MouseEnter", "MouseLeave", "ButtonPress", "ButtonUnpress");
+                "UI/MouseEnter", "UI/MouseLeave", "UI/ButtonPress", "UI/ButtonUnpress");
         }
         
         public static Button CreateButton(PointI2D center, string text, ButtonColor color, ButtonSize size)
@@ -164,6 +167,20 @@ namespace BaseBuilder.Screens.Components
         public static void SetButton(Button button, ButtonColor color, ButtonSize size)
         {
             UpdateButtonGraphicsFromSheet(button, color, size);
+        }
+
+
+        // TEXT FIELDS
+
+        public static TextField CreateTextField(PointI2D center)
+        {
+            var atlas = SpritesToTextureAtlases["UI/greySheet.xml"];
+            var sourceRect = LoadRectangleFromSheetAndElementName(atlas, "grey_text_field.png");
+
+            var locationRect = new Rectangle(center.X - sourceRect.Width / 2, center.Y - sourceRect.Height / 2, sourceRect.Width, sourceRect.Height);
+            
+
+            return new TextField(locationRect, "", "Anonymous Pro", ReallyDarkGray, "UI/greySheet", sourceRect, "UI/TextAreaTap", "UI/TextAreaError", 17);
         }
     }
 }
