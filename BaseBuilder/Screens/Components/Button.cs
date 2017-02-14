@@ -47,8 +47,8 @@ namespace BaseBuilder.Screens.Components
                     var sourceRect = GetSourceRect(Pressed, Hovered);
 
                     _Location = new Rectangle(
-                        CenterPoint.X - (sourceRect.Width / 2),
-                        CenterPoint.Y - (sourceRect.Height / 2),
+                        Center.X - (sourceRect.Width / 2),
+                        Center.Y - (sourceRect.Height / 2),
                         sourceRect.Width,
                         sourceRect.Height
                     );
@@ -78,10 +78,35 @@ namespace BaseBuilder.Screens.Components
         /// </summary>
         public Color HoveredPressedTextColor;
 
+        protected Point _Center;
+
         /// <summary>
         /// The center of this button.
         /// </summary>
-        public PointI2D CenterPoint;
+        public Point Center
+        {
+            get
+            {
+                return _Center;
+            }
+
+            set
+            {
+                _Location = null;
+                _Center = value;
+            }
+        }
+
+        /// <summary>
+        /// The size of this button right now.
+        /// </summary>
+        public Point Size
+        {
+            get
+            {
+                return Location.Size;
+            }
+        }
 
         /// <summary>
         /// If this button is pressed or not.
@@ -165,7 +190,7 @@ namespace BaseBuilder.Screens.Components
         internal Vector2? _TextDestinationVec;
 
         public Button(string text, string fontName, Color unhoveredUnpressedTextColor, Color hoveredUnpressedTextColor,
-            Color hoveredPressedTextColor, PointI2D center, string spriteNameUnhoveredUnpressed,
+            Color hoveredPressedTextColor, Point center, string spriteNameUnhoveredUnpressed,
             string spriteNameHoveredUnpressed, string spriteNameHoveredPressed, Rectangle unhoveredUnpressedSource, 
             Rectangle hoveredUnpressedSource, Rectangle hoveredPressedSource, string mouseEnterSFX, string mouseLeaveSFX, 
             string pressedSFX, string unpressedSFX)
@@ -175,7 +200,7 @@ namespace BaseBuilder.Screens.Components
             UnhoveredUnpressedTextColor = unhoveredUnpressedTextColor;
             HoveredUnpressedTextColor = hoveredUnpressedTextColor;
             HoveredPressedTextColor = hoveredPressedTextColor;
-            CenterPoint = center;
+            _Center = center;
             UnhoveredUnpressedButtonSpriteName = spriteNameUnhoveredUnpressed;
             HoveredUnpressedButtonSpriteName = spriteNameHoveredUnpressed;
             HoveredPressedButtonSpriteName = spriteNameHoveredPressed;
@@ -315,8 +340,8 @@ namespace BaseBuilder.Screens.Components
                     var textSize = font.MeasureString(Text);
 
                     _TextDestinationVec = new Vector2(
-                        (int)(CenterPoint.X - textSize.X / 2),
-                        (int)(CenterPoint.Y - textSize.Y / 2)
+                        (int)(Center.X - textSize.X / 2),
+                        (int)(Center.Y - textSize.Y / 2)
                         );
                 }
 

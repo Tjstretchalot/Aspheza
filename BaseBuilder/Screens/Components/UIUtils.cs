@@ -29,6 +29,11 @@ namespace BaseBuilder.Screens.Components
 
         private static Dictionary<string, XElement> SpritesToTextureAtlases;
         private static Dictionary<Tuple<ButtonColor, ButtonSize>, string> ButtonColorAndSizeToSpriteSheets;
+
+        /// <summary>
+        /// (int.MaxValue, int.MaxValue)
+        /// </summary>
+        public static Point MaxPoint;
         
         /// <summary>
         /// Sets this utility class up for use. Requires
@@ -37,6 +42,7 @@ namespace BaseBuilder.Screens.Components
         public static void Load()
         {
             ReallyDarkGray = new Color(55, 55, 55);
+            MaxPoint = new Point(int.MaxValue, int.MaxValue);
 
             SpritesToTextureAtlases = new Dictionary<string, XElement>();
             ButtonColorAndSizeToSpriteSheets = new Dictionary<Tuple<ButtonColor, ButtonSize>, string>();

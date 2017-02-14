@@ -79,6 +79,8 @@
     <Compile Include="Screens\Components\Button.cs" />
     <Compile Include="Screens\ComponentScreen.cs" />
     <Compile Include="Screens\Components\GreyPanel.cs" />
+    <Compile Include="Screens\Components\IResizableComponent.cs" />
+    <Compile Include="Screens\Components\TextureComponent.cs" />
     <Compile Include="Screens\Components\UIUtils.cs" />
     <Compile Include="Screens\Components\IScreenComponent.cs" />
     <Compile Include="Screens\Components\TextField.cs" />

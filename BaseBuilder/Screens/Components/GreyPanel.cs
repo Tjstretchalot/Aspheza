@@ -14,7 +14,7 @@ namespace BaseBuilder.Screens.Components
     /// panel should be used as the background for UI elements, which is itself
     /// on a white background or the game background.
     /// </summary>
-    public class GreyPanel : IScreenComponent
+    public class GreyPanel : IResizableComponent
     {
         private const int SAMPLES_SQRT = 3; // this number must be odd and increases the number of operations quadratically
         private const int RADIUS = 15 * SAMPLES_SQRT;
@@ -29,7 +29,7 @@ namespace BaseBuilder.Screens.Components
         /// <summary>
         /// Where the grey panel is located
         /// </summary>
-        public Rectangle Location
+        protected Rectangle Location
         {
             get
             {
@@ -37,16 +37,58 @@ namespace BaseBuilder.Screens.Components
             }
             set
             {
-                _Texture?.Dispose();
-                _Texture = null;
+                if (value.Width != _Location.Width || value.Height != _Location.Height)
+                {
+                    Texture?.Dispose();
+                    Texture = null;
+                }
+
                 _Location = value;
             }
         }
 
         /// <summary>
-        /// The texture. The
+        /// The center of this panel.
         /// </summary>
-        protected Texture2D _Texture;
+        public Point Center
+        {
+            get
+            {
+                return _Location.Center;
+            }
+
+            set
+            {
+                _Location.X = value.X - Size.X / 2;
+                _Location.Y = value.Y - Size.Y / 2;
+            }
+        }
+
+        /// <summary>
+        /// The size of this panel.
+        /// </summary>
+        public Point Size
+        {
+            get
+            {
+                return _Location.Size;
+            }
+        }
+
+        public Point MinSize
+        {
+            get { return Point.Zero; }
+        }
+
+        public Point MaxSize
+        {
+            get { return UIUtils.MaxPoint; }
+        }
+        
+        /// <summary>
+        /// The texture. 
+        /// </summary>
+        protected Texture2D Texture;
 
         /// <summary>
         /// Sets up a grey panel at the specified location
@@ -58,6 +100,15 @@ namespace BaseBuilder.Screens.Components
         }
 
         /// <summary>
+        /// Resizes this panel to the specified size.
+        /// </summary>
+        /// <param name="newSize">The new size of this panel</param>
+        public void Resize(Point newSize)
+        {
+            Location = new Rectangle(Center.X - newSize.X / 2, Center.Y - newSize.Y / 2, newSize.X, newSize.Y);
+        }
+
+        /// <summary>
         /// Draws the grey panel
         /// </summary>
         /// <param name="content">Content manager</param>
@@ -66,10 +117,10 @@ namespace BaseBuilder.Screens.Components
         /// <param name="spriteBatch">Sprite batch</param>
         public void Draw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
-            if (_Texture == null)
+            if (Texture == null)
                 InitTexture(content, graphics, graphicsDevice, spriteBatch);
 
-            spriteBatch.Draw(_Texture, destinationRectangle: Location);
+            spriteBatch.Draw(Texture, destinationRectangle: Location);
         }
 
         public void Update(ContentManager content, int deltaMS)
@@ -206,8 +257,8 @@ namespace BaseBuilder.Screens.Components
                 }
             }
 
-            _Texture = new Texture2D(graphicsDevice, Location.Width, Location.Height);
-            _Texture.SetData(actColors);
+            Texture = new Texture2D(graphicsDevice, Location.Width, Location.Height);
+            Texture.SetData(actColors);
         }
 
         private static Color AverageColor(List<Color> colors)

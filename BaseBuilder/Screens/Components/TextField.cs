@@ -67,6 +67,31 @@ namespace BaseBuilder.Screens.Components
         }
 
         /// <summary>
+        /// The size of this text field
+        /// </summary>
+        public Point Size
+        {
+            get
+            {
+                return Location.Size;
+            }
+        }
+
+        public Point Center
+        {
+            get
+            {
+                return Location.Center;
+            }
+
+            set
+            {
+                _Location.X = value.X - Size.X / 2;
+                _Location.Y = value.Y - Size.Y / 2;
+            }
+        }
+
+        /// <summary>
         /// Where the top-left of the text is positioned. Must be nulled whenever
         /// something changes that would effect this.
         /// </summary>

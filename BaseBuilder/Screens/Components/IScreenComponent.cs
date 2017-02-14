@@ -16,9 +16,14 @@ namespace BaseBuilder.Screens.Components
     public interface IScreenComponent
     {
         /// <summary>
-        /// Where this component is located
+        /// Where the center of this component is.
         /// </summary>
-        Rectangle Location { get; }
+        Point Center { get; set; }
+
+        /// <summary>
+        /// The size of this component.
+        /// </summary>
+        Point Size { get; }
 
         /// <summary>
         /// Updates the component. 
