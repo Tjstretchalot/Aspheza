@@ -26,9 +26,7 @@ namespace BaseBuilder.Screens
         /// </summary>
         protected bool Initialized;
 
-        protected RasterizerState RasterizerState;
-
-        public ComponentScreen(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
+        public ComponentScreen(IScreenManager screenManager, ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(screenManager, content, graphics, graphicsDevice, spriteBatch)
         {
             Components = new List<IScreenComponent>();
         }
@@ -39,7 +37,6 @@ namespace BaseBuilder.Screens
         protected virtual void Initialize()
         {
             Initialized = true;
-            RasterizerState = new RasterizerState { MultiSampleAntiAlias = true };
         }
 
         public override void Draw()
@@ -48,12 +45,7 @@ namespace BaseBuilder.Screens
                 return;
 
             graphicsDevice.Clear(Color.White);
-            spriteBatch.Begin(
-                SpriteSortMode.Immediate,
-                BlendState.AlphaBlend,
-                SamplerState.AnisotropicClamp,
-                null,
-                RasterizerState);
+            spriteBatch.Begin();
 
             foreach (var component in Components)
             {

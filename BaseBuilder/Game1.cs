@@ -26,10 +26,13 @@ namespace BaseBuilder
 
         IScreenManager screenManager;
 
+        FrameCounter frameCounter;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            frameCounter = new FrameCounter();
         }
 
         /// <summary>
@@ -58,7 +61,8 @@ namespace BaseBuilder
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            screenManager = new ScreenManager(new MainMenuScreen(Content, graphics, GraphicsDevice, spriteBatch));
+            screenManager = new ScreenManager();
+            screenManager.SetInitialScreen(new MainMenuScreen(screenManager, Content, graphics, GraphicsDevice, spriteBatch));
         }
 
         /// <summary>
@@ -94,6 +98,17 @@ namespace BaseBuilder
         protected override void Draw(GameTime gameTime)
         {
             screenManager.Draw();
+
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            frameCounter.Update(deltaTime);
+
+            var fps = string.Format("FPS: {0}", frameCounter.AverageFramesPerSecond);
+
+            spriteBatch.Begin();
+            spriteBatch.DrawString(Content.Load<SpriteFont>("Arial"), fps, new Vector2(1, 1), Color.Black);
+            spriteBatch.End();
+
         }
     }
 }

@@ -11,13 +11,15 @@ namespace BaseBuilder.Screens
 {
     public abstract class Screen : IScreen
     {
+        protected IScreenManager screenManager;
         protected ContentManager content;
         protected GraphicsDeviceManager graphics;
         protected GraphicsDevice graphicsDevice;
         protected SpriteBatch spriteBatch;
 
-        protected Screen(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
+        protected Screen(IScreenManager screenManager, ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
+            this.screenManager = screenManager;
             this.content = content;
             this.graphics = graphics;
             this.graphicsDevice = graphicsDevice;

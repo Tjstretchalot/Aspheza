@@ -153,7 +153,7 @@ namespace BaseBuilder.Screens.Components
             button._TextDestinationVec = null;
         }
 
-        private static Button CreateButtonFromSheet(PointI2D center, string text, ButtonColor color, ButtonSize size)
+        private static Button CreateButtonFromSheet(Point center, string text, ButtonColor color, ButtonSize size)
         {
             Color textColor;
             string sheetName;
@@ -165,7 +165,7 @@ namespace BaseBuilder.Screens.Components
                 "UI/MouseEnter", "UI/MouseLeave", "UI/ButtonPress", "UI/ButtonUnpress");
         }
         
-        public static Button CreateButton(PointI2D center, string text, ButtonColor color, ButtonSize size)
+        public static Button CreateButton(Point center, string text, ButtonColor color, ButtonSize size)
         {
             return CreateButtonFromSheet(center, text, color, size);
         }

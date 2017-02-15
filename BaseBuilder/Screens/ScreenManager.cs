@@ -23,9 +23,13 @@ namespace BaseBuilder.Screens
         protected IScreen NewScreen;
         protected bool? TransitionComplete;
 
-        public ScreenManager(IScreen initialScreen)
+        public ScreenManager()
         {
-            _CurrentScreen = initialScreen;
+        }
+
+        public void SetInitialScreen(IScreen screen)
+        {
+            _CurrentScreen = screen;
             CurrentTransitionMSSoFar = null;
             CurrentTransitionMSTotal = null;
         }

@@ -78,6 +78,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screens\Components\Button.cs" />
     <Compile Include="Screens\ComponentScreen.cs" />
+    <Compile Include="Screens\Components\FrameCounter.cs" />
     <Compile Include="Screens\Components\GreyPanel.cs" />
     <Compile Include="Screens\Components\IResizableComponent.cs" />
     <Compile Include="Screens\Components\TextureComponent.cs" />
@@ -89,8 +90,10 @@
     <Compile Include="Screens\IScreenManager.cs" />
     <Compile Include="Screens\IScreenTransition.cs" />
     <Compile Include="Screens\MainMenuScreen.cs" />
+    <Compile Include="Screens\MultiplayerMainMenuScreen.cs" />
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\ScreenManager.cs" />
+    <Compile Include="Screens\Transitions\FadeTransition.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, processorArchitecture=MSIL">

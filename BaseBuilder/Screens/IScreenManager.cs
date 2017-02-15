@@ -17,6 +17,12 @@ namespace BaseBuilder.Screens
         IScreen CurrentScreen { get; }
 
         /// <summary>
+        /// Set the initial screen for the screen manager.
+        /// </summary>
+        /// <param name="screen">Initial screen.</param>
+        void SetInitialScreen(IScreen screen);
+
+        /// <summary>
         /// Transitions from the current screen to the new screen, using the
         /// specified transition.
         /// </summary>
