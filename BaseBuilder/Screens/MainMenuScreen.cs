@@ -37,7 +37,7 @@ namespace BaseBuilder.Screens
         {
             var newScreen = new MultiplayerMainMenuScreen(screenManager, content, graphics, graphicsDevice, spriteBatch);
             newScreen.Update(0);
-            screenManager.TransitionTo(newScreen, new FadeTransition(content, graphics, graphicsDevice, spriteBatch, this, newScreen), 1000);
+            screenManager.TransitionTo(newScreen, new CrossFadeTransition(content, graphics, graphicsDevice, spriteBatch, this, newScreen), 750);
         }
     }
 }

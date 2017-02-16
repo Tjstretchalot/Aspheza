@@ -20,5 +20,10 @@
         /// if Update has not been called.
         /// </summary>
         void Draw();
+
+        /// <summary>
+        /// Called after the last call to both update and draw
+        /// </summary>
+        void Finished();
     }
 }

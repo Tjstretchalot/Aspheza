@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace BaseBuilder.Screens.Transitions
 {
-    public class FadeTransition : IScreenTransition
+    public class CrossFadeTransition : IScreenTransition
     {
         protected ContentManager content;
         protected GraphicsDeviceManager graphics;
@@ -30,7 +30,7 @@ namespace BaseBuilder.Screens.Transitions
         // Skipping a few frames allows the screenshots to render. Failure to do so causes the screen to blink black.
         private int skippedFramesCounter;
 
-        public FadeTransition(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, IScreen screen1, IScreen screen2)
+        public CrossFadeTransition(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, IScreen screen1, IScreen screen2)
         {
             this.content = content;
             this.graphics = graphics;
@@ -92,6 +92,14 @@ namespace BaseBuilder.Screens.Transitions
             this.progress = (float)progress;
         }
 
+        public void Finished()
+        {
+            input1?.Dispose();
+            input2?.Dispose();
+
+            input1 = null;
+            input2 = null;
+        }
 
         /// <summary>
         /// Renders the screen onto a texture and returns that texture.
