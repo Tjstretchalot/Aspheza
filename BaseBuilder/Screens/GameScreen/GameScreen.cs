@@ -15,8 +15,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BaseBuilder.Screens
+namespace BaseBuilder.Screens.GameScreen
 {
+    /// <summary>
+    /// This screen is visible while the game is in play. The screen itself delegates all logic to
+    /// the 
+    /// </summary>
     public class GameScreen : IScreen
     {
         const double MIN_CAMERA_ZOOM = 32;
@@ -46,7 +50,7 @@ namespace BaseBuilder.Screens
 
         int gameTimeMS;
 
-
+        [Obsolete(message: "This type of function is related to the logic of the game, not the rendering")]
         protected void LoadWorld()
         {
             var tiles = new List<Tile>(120 * 80);
@@ -75,7 +79,8 @@ namespace BaseBuilder.Screens
             world.AddMobileEntity(new Archer(new PointD2D(5, 50), archerCollisionMesh));
         }
 
-
+        
+        [Obsolete(message: "This type of function is related to the logic of the game, not the rendering")]
         void UpdateCamera(UpdateContext context)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Left))

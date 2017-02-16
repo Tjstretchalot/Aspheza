@@ -178,7 +178,7 @@ namespace BaseBuilder.Screens.Components
 
         // TEXT FIELDS
 
-        public static TextField CreateTextField(PointI2D center)
+        public static TextField CreateTextField(Point center)
         {
             var atlas = SpritesToTextureAtlases["UI/greySheet.xml"];
             var sourceRect = LoadRectangleFromSheetAndElementName(atlas, "grey_text_field.png");
