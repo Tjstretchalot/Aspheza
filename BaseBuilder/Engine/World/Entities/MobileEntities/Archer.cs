@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.Math2D.Double;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,38 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
     public class Archer : MobileEntity
     {
-        public Archer(PointD2D position, RectangleD2D collisionMesh, int id) : base(position, collisionMesh, id, "Archer")
+        private static short NetID = 1;
+        private static RectangleD2D _CollisionMesh;
+
+        static Archer()
+        {
+            EntityIdentifier.Register(typeof(Archer), NetID);
+            _CollisionMesh = new RectangleD2D(1, 1);
+        }
+
+        public Archer(PointD2D position, int id) : base(position, _CollisionMesh, id, "Archer")
         {
         }
 
+        /// <summary>
+        /// This should only be used with FromMessage
+        /// </summary>
+        public Archer() : base()
+        {
+            SpriteName = "Archer";
+            CollisionMesh = _CollisionMesh;
+        }
+
+        public override void FromMessage(NetIncomingMessage message)
+        {
+            Position = new PointD2D(message);
+            ID = message.ReadInt32();
+        }
+
+        public override void Write(NetOutgoingMessage message)
+        {
+            Position.Write(message);
+            message.Write(ID);
+        }
     }
 }

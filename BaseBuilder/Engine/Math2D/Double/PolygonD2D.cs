@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lidgren.Network;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -98,6 +99,26 @@ namespace BaseBuilder.Engine.Math2D.Double
             Init(vertices);
         }
         
+        public PolygonD2D(NetIncomingMessage message)
+        {
+            var numVertices = message.ReadInt32();
+
+            Vertices = new List<PointD2D>(numVertices);
+            for(var i = 0; i < numVertices; i++)
+            {
+                Vertices.Add(new PointD2D(message));
+            }
+        }
+
+        public void Write(NetOutgoingMessage message)
+        {
+            message.Write(Vertices.Count);
+            foreach(var vertix in Vertices)
+            {
+                vertix.Write(message);
+            }
+        }
+
         /// <summary>
         /// Empty constructor for subclasses. Should call Init(Vertices) in the child
         /// constructor!

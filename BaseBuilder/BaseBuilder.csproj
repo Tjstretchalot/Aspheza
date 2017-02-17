@@ -68,7 +68,7 @@
     <Compile Include="Engine\Networking\Packets\SimulationStartPacket.cs" />
     <Compile Include="Engine\Networking\Packets\SyncPacket.cs" />
     <Compile Include="Engine\Networking\Packets\SyncStartPacket.cs" />
-    <Compile Include="Engine\Networking\Packets\WorldDownloadPacket.cs" />
+    <Compile Include="Engine\Networking\Packets\SharedGameStateDownloadPacket.cs" />
     <Compile Include="Engine\Networking\ReflectivePacketHandler.cs" />
     <Compile Include="Engine\Networking\ServerGameConnection.cs" />
     <Compile Include="Engine\State\GameState.cs" />
@@ -76,6 +76,7 @@
     <Compile Include="Engine\State\SharedGameState.cs" />
     <Compile Include="Engine\Utility\Renderable.cs" />
     <Compile Include="Engine\World\Entities\Entity.cs" />
+    <Compile Include="Engine\World\Entities\EntityIdentifier.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\ImmobileEntity.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\MobileEntity.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\Archer.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Screens\IScreen.cs" />
     <Compile Include="Screens\IScreenManager.cs" />
     <Compile Include="Screens\IScreenTransition.cs" />
+    <Compile Include="Screens\LANConnectToGameScreen.cs" />
     <Compile Include="Screens\LANHostGameScreen.cs" />
     <Compile Include="Screens\MainMenuScreen.cs" />
     <Compile Include="Screens\MultiplayerMainMenuScreen.cs" />

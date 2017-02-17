@@ -13,5 +13,12 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         public MobileEntity(PointD2D position, PolygonD2D collisionMesh, int id, string spriteName) : base(position, collisionMesh, id, spriteName)
         {
         }
+
+        /// <summary>
+        /// This should only be used with FromMessage
+        /// </summary>
+        public MobileEntity() : base()
+        {
+        }
     }
 }

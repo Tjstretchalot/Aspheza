@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lidgren.Network;
 
 namespace BaseBuilder.Engine.Math2D.Double
 {
@@ -16,7 +17,19 @@ namespace BaseBuilder.Engine.Math2D.Double
             X = x;
             Y = y;
         }
-        
+
+        public PointD2D(NetIncomingMessage message)
+        {
+            X = message.ReadDouble();
+            Y = message.ReadDouble();
+        }
+
+        public void Write(NetOutgoingMessage message)
+        {
+            message.Write(X);
+            message.Write(Y);
+        }
+
         public static PointD2D operator +(PointD2D p1, PointD2D p2)
         {
             return new PointD2D(p1.X + p2.X, p1.Y + p2.Y);

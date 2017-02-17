@@ -35,7 +35,7 @@ namespace BaseBuilder.Engine.Context
 
         public void RegisterPackets()
         {
-            RegisterPacketType(WORLD_DOWNLOAD_PACKET_ID,   typeof(WorldDownloadPacket));
+            RegisterPacketType(WORLD_DOWNLOAD_PACKET_ID,   typeof(SharedGameStateDownloadPacket));
 
             RegisterPacketType(SYNC_START_PACKET_ID,       typeof(SyncStartPacket));
             RegisterPacketType(SYNC_PACKET_ID,             typeof(SyncPacket));

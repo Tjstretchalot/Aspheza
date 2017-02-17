@@ -14,8 +14,8 @@ namespace BaseBuilder.Engine.Networking
 {
     public class ServerGameConnection : GameConnection
     {
-
         protected NetServer Server;
+        protected List<NetConnection> ConnectionsWaitingForDownload;
 
         protected int Port;
         
@@ -42,8 +42,14 @@ namespace BaseBuilder.Engine.Networking
             SendPacket(packet, Server, NetDeliveryMethod.ReliableOrdered);
         }
 
+        protected override void HandleMessage(NetPeer peer, NetIncomingMessage msg)
+        {
+            base.HandleMessage(peer, msg);
+        }
+
         public override void ConsiderGameUpdate()
         {
+            HandleIncomingMessages(Server);
 
             switch (ConnState)
             {

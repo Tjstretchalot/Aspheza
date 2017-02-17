@@ -18,10 +18,10 @@ namespace BaseBuilder.Engine.Networking
     /// </summary>
     public abstract class GameConnection : IGameConnection
     {
-        protected ConnectionState ConnState;
-        protected LocalGameState LocalState;
-        protected SharedGameState SharedState;
-        protected SharedGameLogic SharedLogic;
+        public ConnectionState ConnState;
+        public LocalGameState LocalState;
+        public SharedGameState SharedState;
+        public SharedGameLogic SharedLogic;
 
         protected NetContext Context;
 

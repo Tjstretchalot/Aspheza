@@ -13,5 +13,12 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         public ImmobileEntity(PointD2D position, PolygonD2D collisionMesh, int id, string spriteName) : base(position, collisionMesh, id, spriteName)
         {
         }
+
+        /// <summary>
+        /// This should only be used with FromMessage
+        /// </summary>
+        public ImmobileEntity() : base()
+        {
+        }
     }
 }

@@ -23,6 +23,13 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             SpriteName = spriteName;
         }
 
+        /// <summary>
+        /// This should only be used with FromMessage
+        /// </summary>
+        public SpriteEntity() : base()
+        {
+        }
+
         public override void Render(RenderContext context, PointD2D screenTopLeft)
         {
             var texture = context.Content.Load<Texture2D>(SpriteName);

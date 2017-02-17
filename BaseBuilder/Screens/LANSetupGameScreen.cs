@@ -48,7 +48,9 @@ namespace BaseBuilder.Screens
 
         private void FindPressed(object sender, EventArgs e)
         {
-
+            var newScreen = new LANConnectToGameScreen(screenManager, content, graphics, graphicsDevice, spriteBatch);
+            newScreen.Update(0);
+            screenManager.TransitionTo(newScreen, new CrossFadeTransition(content, graphics, graphicsDevice, spriteBatch, this, newScreen), 750);
         }
 
         private void BackPressed(object sender, EventArgs e)

@@ -1,6 +1,7 @@
 ﻿using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.Utility;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,9 +42,30 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         protected Entity(PointD2D position, PolygonD2D collisionMesh, int id)
         {
-            ID = id;
             Position = position;
             CollisionMesh = collisionMesh;
+            ID = id;
+        }
+
+        /// <summary>
+        /// This should only be used with FromMessage
+        /// </summary>
+        protected Entity()
+        {
+        }
+        
+        public virtual void FromMessage(NetIncomingMessage message)
+        {
+            Position = new PointD2D(message);
+            CollisionMesh = new PolygonD2D(message);
+            ID = message.ReadInt32();
+        }
+
+        public virtual void Write(NetOutgoingMessage message)
+        {
+            Position.Write(message);
+            CollisionMesh.Write(message);
+            message.Write(ID);
         }
 
         /// <summary>

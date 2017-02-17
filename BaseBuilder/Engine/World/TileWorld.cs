@@ -35,10 +35,10 @@ namespace BaseBuilder.Engine.World
         /// <summary>
         /// Index 0-TileWidth-1 is the first row left-right, etc.
         /// </summary>
-        protected List<Tile> Tiles;
+        public List<Tile> Tiles;
 
-        protected List<MobileEntity> MobileEntities;
-        protected List<ImmobileEntity> ImmobileEntities;
+        public List<MobileEntity> MobileEntities;
+        public List<ImmobileEntity> ImmobileEntities;
 
         /// <summary>
         /// Initializes a new world that is the specified number of tiles wide and 
