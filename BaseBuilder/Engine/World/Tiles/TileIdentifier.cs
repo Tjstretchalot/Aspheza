@@ -27,6 +27,10 @@ namespace BaseBuilder.Engine.World.Tiles
             TilesToIds = new Dictionary<Type, short>();
 
             TileCollisionMesh = new RectangleD2D(1, 1);
+
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(DirtTile).TypeHandle);
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(GrassTile).TypeHandle);
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(StoneTile).TypeHandle);
         }
 
         public static void Register(Type tileType, short id)

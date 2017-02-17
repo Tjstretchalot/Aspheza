@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
+using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using Lidgren.Network;
 using System;
@@ -21,6 +22,9 @@ namespace BaseBuilder.Engine.World.Entities
             EntityConstructorParamTypes = new Type[] { };
             IdsToEntities = new Dictionary<short, Type>();
             EntitiesToIds = new Dictionary<Type, short>();
+
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Archer).TypeHandle);
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Overseer).TypeHandle);
         }
 
         public static void Register(Type entityType, short id)
