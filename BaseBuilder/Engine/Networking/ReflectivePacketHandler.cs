@@ -24,6 +24,8 @@ namespace BaseBuilder.Engine.Networking
             Handler = handler;
 
             PacketTypesToMethodBases = new Dictionary<Type, HashSet<MethodBase>>();
+
+            DetectMethods();
         }
 
         protected void RegisterMethod(MethodBase method)
