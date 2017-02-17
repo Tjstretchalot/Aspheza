@@ -82,6 +82,8 @@ namespace BaseBuilder.Engine.Networking
             var readyForSync = Context.GetPoolFromPacketType(typeof(ReadyForSyncPacket)).GetGamePacketFromPool();
             SendPacket(readyForSync);
             readyForSync.Recycle();
+            
+            Console.WriteLine($"Recieved OnSharedGameStateDownloadPacket (SharedState == null = {SharedState == null}");
         }
     }
 }

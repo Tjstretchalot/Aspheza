@@ -9,6 +9,7 @@ using Lidgren.Network;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.Logic;
 using BaseBuilder.Engine.Logic.Orders;
+using BaseBuilder.Engine.Logic.Players;
 
 namespace BaseBuilder.Engine.Networking
 {
@@ -101,11 +102,15 @@ namespace BaseBuilder.Engine.Networking
                     foreach (var conn in ConnectionsWaitingForDownload)
                     {
                         waitingForPlayers = true;
+
+                        var newPlayer = new Player(GetUniquePlayerID(), "not set");
                         var syncPacket = (SharedGameStateDownloadPacket)Context.GetPoolFromPacketType(typeof(SharedGameStateDownloadPacket)).GetGamePacketFromPool();
                         syncPacket.SharedState = SharedState;
-                        syncPacket.LocalPlayerID = GetUniquePlayerID();
+                        syncPacket.LocalPlayerID = newPlayer.ID;
                         SendPacket(syncPacket, Server, conn, NetDeliveryMethod.ReliableOrdered);
                         syncPacket.Recycle();
+
+                        SharedState.Players.Add(newPlayer);
                     }
 
                     ConnectionsWaitingForDownload.Clear();

@@ -49,6 +49,7 @@ namespace BaseBuilder.Engine.Logic.Players
         {
             Name = name;
             ID = id;
+            ReadyForSync = false;
 
             CurrentOrders = new List<IOrder>();
         }
