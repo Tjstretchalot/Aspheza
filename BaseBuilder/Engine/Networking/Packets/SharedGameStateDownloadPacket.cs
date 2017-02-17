@@ -118,6 +118,8 @@ namespace BaseBuilder.Engine.Networking.Packets
 
             foreach(var mobile in SharedState.World.MobileEntities)
             {
+                message.Write(EntityIdentifier.GetIDOfEntity(mobile.GetType()));
+
                 mobile.Write(message);
             }
 
@@ -126,6 +128,8 @@ namespace BaseBuilder.Engine.Networking.Packets
 
             foreach (var immobile in SharedState.World.ImmobileEntities)
             {
+                message.Write(EntityIdentifier.GetIDOfEntity(immobile.GetType()));
+
                 immobile.Write(message);
             }
         }
