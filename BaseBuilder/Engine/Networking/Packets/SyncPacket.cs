@@ -43,8 +43,6 @@ namespace BaseBuilder.Engine.Networking.Packets
 
                 var order = pool.GetGamePacketFromPool();
                 order.LoadFrom(context, message);
-
-
             }
         }
 

@@ -62,12 +62,14 @@
     <Compile Include="Engine\Networking\GameConnection.cs" />
     <Compile Include="Engine\Networking\GamePacketPool.cs" />
     <Compile Include="Engine\Networking\IGameConnection.cs" />
+    <Compile Include="Engine\Networking\PacketHandler.cs" />
     <Compile Include="Engine\Networking\Packets\GamePacket.cs" />
     <Compile Include="Engine\Networking\Packets\IGamePacket.cs" />
     <Compile Include="Engine\Networking\Packets\SimulationStartPacket.cs" />
     <Compile Include="Engine\Networking\Packets\SyncPacket.cs" />
     <Compile Include="Engine\Networking\Packets\SyncStartPacket.cs" />
     <Compile Include="Engine\Networking\Packets\WorldDownloadPacket.cs" />
+    <Compile Include="Engine\Networking\ReflectivePacketHandler.cs" />
     <Compile Include="Engine\Networking\ServerGameConnection.cs" />
     <Compile Include="Engine\State\GameState.cs" />
     <Compile Include="Engine\State\LocalGameState.cs" />

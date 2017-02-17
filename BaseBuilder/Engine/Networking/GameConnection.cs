@@ -7,6 +7,9 @@ using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Networking.Packets;
 using Lidgren.Network;
 using BaseBuilder.Engine.Networking;
+using BaseBuilder.Engine.Logic;
+using BaseBuilder.Engine.State;
+using System.Reflection;
 
 namespace BaseBuilder.Engine.Networking
 {
@@ -15,21 +18,33 @@ namespace BaseBuilder.Engine.Networking
     /// </summary>
     public abstract class GameConnection : IGameConnection
     {
-        public abstract void ConsiderGameUpdate();
-        public abstract IEnumerable<IGamePacket> ReadIncomingPackets();
-        public abstract void SendPacket(IGamePacket packet);
+        protected ConnectionState ConnState;
+        protected LocalGameState LocalState;
+        protected SharedGameState SharedState;
+        protected SharedGameLogic SharedLogic;
 
         protected NetContext Context;
 
-        private List<GamePacketPool> GamePacketPools;
-        private Dictionary<Type, int> PacketTypesToIndexInGamePacketPools;
-        private Dictionary<int, int> PacketIdsToIndexInGamePacketPools;
+        protected Dictionary<Type, MethodBase> PacketTypesToMethodBases;
 
-        protected GameConnection()
+        protected ReflectivePacketHandler ReflectivePacketHandlerObj;
+
+        public abstract void ConsiderGameUpdate();
+        public abstract void SendPacket(IGamePacket packet);
+
+
+        protected GameConnection(LocalGameState localState, SharedGameState sharedState, SharedGameLogic sharedLogic)
         {
             Context = new NetContext();
+            ConnState = ConnectionState.Waiting;
+            
+            LocalState = localState;
+            SharedState = sharedState;
+            SharedLogic = sharedLogic;
 
             Context.RegisterPackets();
+
+            ReflectivePacketHandlerObj = new ReflectivePacketHandler(this);
         }
 
 
@@ -38,20 +53,17 @@ namespace BaseBuilder.Engine.Networking
         /// </summary>
         /// <param name="peer">The peer</param>
         /// <returns>Any incoming packets.</returns>
-        protected IEnumerable<IGamePacket> ReadIncomingPackets(NetPeer peer)
+        protected void HandleIncomingMessages(NetPeer peer)
         {
             NetIncomingMessage msg;
 
             while((msg = peer.ReadMessage()) != null)
             {
-                var packet = HandleMessage(peer, msg);
-
-                if (packet != null)
-                    yield return packet;
+                HandleMessage(peer, msg);
             }
         }
 
-        protected virtual IGamePacket HandleMessage(NetPeer peer, NetIncomingMessage msg)
+        protected virtual void HandleMessage(NetPeer peer, NetIncomingMessage msg)
         {
             switch (msg.MessageType)
             {
@@ -63,34 +75,19 @@ namespace BaseBuilder.Engine.Networking
                     peer.Recycle(msg);
                     break;
                 case NetIncomingMessageType.Data:
-                    var packet = ReadIncomingPacket(msg);
+                    var id = msg.ReadInt32();
+                    var pool = Context.GetPoolFromPacketID(id);
+                    var packet = pool.GetGamePacket(Context, msg);
+                    ReflectivePacketHandlerObj.BroadcastPacket(packet);
                     peer.Recycle(msg);
-                    return packet;
+                    break;
                 default:
                     Console.WriteLine("Unhandled type: " + msg.MessageType);
                     peer.Recycle(msg);
                     break;
             }
-
-            return null;
         }
-
-        /// <summary>
-        /// Reads the specified packet that was sent from the specified peer and is
-        /// NetIncomingMessageType.Data.
-        /// </summary>
-        /// <param name="msg">The message (of NetIncomingMessageType.Data)</param>
-        /// <returns>The game packet from the message</returns>
-        protected IGamePacket ReadIncomingPacket(NetIncomingMessage msg)
-        {
-            var id = msg.ReadInt32();
-
-            var pool = GamePacketPools[PacketIdsToIndexInGamePacketPools[id]];
-            var packet = pool.GetGamePacket(Context, msg);
-
-            return packet;
-        }
-
+        
         /// <summary>
         /// Sends the specified packet to the specified peer.
         /// </summary>
@@ -110,6 +107,63 @@ namespace BaseBuilder.Engine.Networking
             }
         }
 
+        [PacketHandler(packetType: typeof(SyncPacket))]
+        public void HandleSyncPacket(SyncPacket packet)
+        {
+            var syncPacket = packet as SyncPacket;
 
+            var player = SharedState.GetPlayerByID(syncPacket.PlayerID);
+
+            if (ConnState != ConnectionState.Syncing)
+                throw new InvalidProgramException($"Recieved sync packet from player id={player.ID}, name={player.Name} while state is {ConnState} (expected connection state Syncing)");
+
+            if (player.OrdersRecieved)
+                throw new InvalidProgramException($"Player id={player.ID}, name={player.Name} sent SyncPacket when OrdersRecieved=true!");
+
+
+            player.CurrentOrders.AddRange(syncPacket.Orders);
+            player.OrdersRecieved = true;
+        }
+
+        /// <summary>
+        /// This function handles what we, being a player, have to do to get ready to start syncing.
+        /// </summary>
+        protected virtual void OnSyncStart()
+        {
+            ConnState = ConnectionState.Syncing;
+
+            var syncPacket = Context.GetPoolFromPacketType(typeof(SyncPacket)).GetGamePacketFromPool() as SyncPacket;
+            syncPacket.PlayerID = LocalState.LocalPlayerID;
+            syncPacket.Orders.AddRange(LocalState.Orders);
+            LocalState.Orders.Clear();
+            var localPlayer = SharedState.GetPlayerByID(LocalState.LocalPlayerID);
+            localPlayer.CurrentOrders.AddRange(syncPacket.Orders);
+            localPlayer.OrdersRecieved = true;
+            SendPacket(syncPacket);
+            syncPacket.Recycle();
+        }
+
+        /// <summary>
+        /// This function handles what we, being a player, have to do to 
+        /// </summary>
+        protected virtual void OnSimulateStart(int timeMS)
+        {
+            ConnState = ConnectionState.Simulating;
+
+            SharedLogic.SimulateTimePassing(SharedState, timeMS);
+
+            foreach(var pl in SharedState.Players)
+            {
+                foreach(var order in pl.CurrentOrders)
+                {
+                    order.Recycle();
+                }
+
+                pl.CurrentOrders.Clear();
+                pl.OrdersRecieved = false;
+            }
+
+            ConnState = ConnectionState.Waiting;
+        }
     }
 }
