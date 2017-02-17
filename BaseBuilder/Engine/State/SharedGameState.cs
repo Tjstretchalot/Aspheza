@@ -37,5 +37,16 @@ namespace BaseBuilder.Engine.State
             Players = players;
             GameTimeMS = gameTimeMS;
         }
+
+        /// <summary>
+        /// Returns the player with the specified id, if there is one. Otherwise
+        /// returns null.
+        /// </summary>
+        /// <param name="id">ID to search for</param>
+        /// <returns>The player with that id</returns>
+        public Player GetPlayerByID(int id)
+        {
+            return Players.Find((p) => p.ID == id);
+        }
     }
 }

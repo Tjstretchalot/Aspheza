@@ -22,6 +22,8 @@ namespace BaseBuilder.Engine.Logic
         /// <param name="gameState"></param>
         /// <param name="timeMS"></param>
         public void SimulateTimePassing(SharedGameState gameState, int timeMS)
-        { }
+        {
+            gameState.GameTimeMS += timeMS;
+        }
     }
 }

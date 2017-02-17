@@ -72,7 +72,7 @@ namespace BaseBuilder.Engine.Networking
         /// <param name="context">The context</param>
         /// <param name="message">The message</param>
         /// <returns>The game packet representation of the data contained in the message</returns>
-        public IGamePacket GetGamePacket(UpdateContext context, NetIncomingMessage message)
+        public IGamePacket GetGamePacket(NetContext context, NetIncomingMessage message)
         {
             var result = GetGamePacketFromPool();
             result.LoadFrom(context, message);

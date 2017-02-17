@@ -29,16 +29,23 @@ namespace BaseBuilder.Engine.Logic.Players
         public int ID;
 
         /// <summary>
-        /// The orders that the player has issued that have not been resolved yet.
+        /// The orders that the player has issued that have not been resolved yet. This should
+        /// only be modified by the network; orders will propagate from the local game state to
+        /// the player (which is part of the shared game state) via the network.
         /// </summary>
-        public List<Order> Orders;
+        public List<IOrder> CurrentOrders;
+
+        /// <summary>
+        /// If this player has recieved orders since the last SyncStart packet
+        /// </summary>
+        public bool OrdersRecieved;
 
         public Player(int id, string name)
         {
             Name = name;
             ID = id;
 
-            Orders = new List<Order>();
+            CurrentOrders = new List<IOrder>();
         }
     }
 }

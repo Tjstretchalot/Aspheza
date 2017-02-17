@@ -29,14 +29,14 @@ namespace BaseBuilder.Engine.Networking
             Client.Connect(Host);
         }
 
-        public override IEnumerable<IGamePacket> ReadIncomingPackets(UpdateContext context)
+        public override IEnumerable<IGamePacket> ReadIncomingPackets()
         {
-            return ReadIncomingPackets(context, Client);
+            return ReadIncomingPackets(Client);
         }
 
-        public override void SendPacket(UpdateContext context, IGamePacket packet)
+        public override void SendPacket(IGamePacket packet)
         {
-            SendPacket(context, packet, Client, NetDeliveryMethod.ReliableOrdered);
+            SendPacket(packet, Client, NetDeliveryMethod.ReliableOrdered);
         }
 
         public override void ConsiderGameUpdate()

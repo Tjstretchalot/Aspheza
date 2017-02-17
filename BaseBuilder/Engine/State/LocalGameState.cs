@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BaseBuilder.Engine.Logic.Orders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,23 @@ namespace BaseBuilder.Engine.State
         /// </summary>
         public Camera Camera;
 
-        public LocalGameState(Camera camera)
+        /// <summary>
+        /// The id of the local player
+        /// </summary>
+        public int LocalPlayerID;
+
+        /// <summary>
+        /// The orders that have been issued by the player but have not propagated
+        /// to the shared game state yet
+        /// </summary>
+        public List<IOrder> Orders;
+
+        public LocalGameState(Camera camera, int localPlayerID)
         {
             Camera = camera;
+            LocalPlayerID = localPlayerID;
+
+            Orders = new List<IOrder>();
         }
     }
 }

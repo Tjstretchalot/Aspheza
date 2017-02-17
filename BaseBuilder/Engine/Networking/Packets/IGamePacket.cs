@@ -18,14 +18,14 @@ namespace BaseBuilder.Engine.Networking.Packets
         /// </summary>
         /// <param name="context">The context</param>
         /// <param name="message">The message</param>
-        void LoadFrom(UpdateContext context, NetIncomingMessage message);
+        void LoadFrom(NetContext context, NetIncomingMessage message);
 
         /// <summary>
         /// Writes this game packet to the specified message.
         /// </summary>
         /// <param name="context">The context</param>
         /// <param name="message">The message to write</param>
-        void SaveTo(UpdateContext context, NetOutgoingMessage message);
+        void SaveTo(NetContext context, NetOutgoingMessage message);
 
         /// <summary>
         /// Called when a packet is recycled. Should clear any memory-intensive

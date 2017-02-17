@@ -25,7 +25,7 @@ namespace BaseBuilder.Engine.Networking.Packets
         {
         }
 
-        public override void LoadFrom(UpdateContext context, NetIncomingMessage message)
+        public override void LoadFrom(NetContext context, NetIncomingMessage message)
         {
             WorldWidth = message.ReadInt32();
             WorldHeight = message.ReadInt32();
@@ -48,7 +48,7 @@ namespace BaseBuilder.Engine.Networking.Packets
             }
         }
 
-        public override void SaveTo(UpdateContext context, NetOutgoingMessage message)
+        public override void SaveTo(NetContext context, NetOutgoingMessage message)
         {
             message.Write(WorldWidth);
             message.Write(WorldHeight);

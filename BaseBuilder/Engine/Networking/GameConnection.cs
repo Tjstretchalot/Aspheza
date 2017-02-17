@@ -16,8 +16,10 @@ namespace BaseBuilder.Engine.Networking
     public abstract class GameConnection : IGameConnection
     {
         public abstract void ConsiderGameUpdate();
-        public abstract IEnumerable<IGamePacket> ReadIncomingPackets(UpdateContext context);
-        public abstract void SendPacket(UpdateContext context, IGamePacket packet);
+        public abstract IEnumerable<IGamePacket> ReadIncomingPackets();
+        public abstract void SendPacket(IGamePacket packet);
+
+        protected NetContext Context;
 
         private List<GamePacketPool> GamePacketPools;
         private Dictionary<Type, int> PacketTypesToIndexInGamePacketPools;
@@ -25,45 +27,31 @@ namespace BaseBuilder.Engine.Networking
 
         protected GameConnection()
         {
-            GamePacketPools = new List<GamePacketPool>();
-            PacketTypesToIndexInGamePacketPools = new Dictionary<Type, int>();
-            PacketIdsToIndexInGamePacketPools = new Dictionary<int, int>();
+            Context = new NetContext();
 
-            RegisterPackets();
+            Context.RegisterPackets();
         }
 
-        protected void RegisterPacketType(int packetId, Type packetType)
-        {
-            GamePacketPools.Add(new GamePacketPool(packetId, packetType));
-            PacketTypesToIndexInGamePacketPools.Add(packetType, GamePacketPools.Count - 1);
-            PacketIdsToIndexInGamePacketPools.Add(packetId, GamePacketPools.Count - 1);
-        }
-
-        protected void RegisterPackets()
-        {
-            RegisterPacketType(1, typeof(WorldDownloadPacket));
-        }
 
         /// <summary>
         /// Reads incoming packets from the specified peer.
         /// </summary>
-        /// <param name="context">Update context.</param>
         /// <param name="peer">The peer</param>
         /// <returns>Any incoming packets.</returns>
-        protected IEnumerable<IGamePacket> ReadIncomingPackets(UpdateContext context, NetPeer peer)
+        protected IEnumerable<IGamePacket> ReadIncomingPackets(NetPeer peer)
         {
             NetIncomingMessage msg;
 
             while((msg = peer.ReadMessage()) != null)
             {
-                var packet = HandleMessage(context, peer, msg);
+                var packet = HandleMessage(peer, msg);
 
                 if (packet != null)
                     yield return packet;
             }
         }
 
-        protected virtual IGamePacket HandleMessage(UpdateContext context, NetPeer peer, NetIncomingMessage msg)
+        protected virtual IGamePacket HandleMessage(NetPeer peer, NetIncomingMessage msg)
         {
             switch (msg.MessageType)
             {
@@ -75,7 +63,7 @@ namespace BaseBuilder.Engine.Networking
                     peer.Recycle(msg);
                     break;
                 case NetIncomingMessageType.Data:
-                    var packet = ReadIncomingPacket(context, msg);
+                    var packet = ReadIncomingPacket(msg);
                     peer.Recycle(msg);
                     return packet;
                 default:
@@ -91,15 +79,14 @@ namespace BaseBuilder.Engine.Networking
         /// Reads the specified packet that was sent from the specified peer and is
         /// NetIncomingMessageType.Data.
         /// </summary>
-        /// <param name="context">Update context.</param>
         /// <param name="msg">The message (of NetIncomingMessageType.Data)</param>
         /// <returns>The game packet from the message</returns>
-        protected IGamePacket ReadIncomingPacket(UpdateContext context, NetIncomingMessage msg)
+        protected IGamePacket ReadIncomingPacket(NetIncomingMessage msg)
         {
             var id = msg.ReadInt32();
 
             var pool = GamePacketPools[PacketIdsToIndexInGamePacketPools[id]];
-            var packet = pool.GetGamePacket(context, msg);
+            var packet = pool.GetGamePacket(Context, msg);
 
             return packet;
         }
@@ -110,12 +97,12 @@ namespace BaseBuilder.Engine.Networking
         /// <param name="context">The context.</param>
         /// <param name="packet">The packet to send.</param>
         /// <param name="peer">The peer to send the packet to.</param>
-        protected void SendPacket(UpdateContext context, IGamePacket packet, NetPeer peer, NetDeliveryMethod method)
+        protected void SendPacket(IGamePacket packet, NetPeer peer, NetDeliveryMethod method)
         {
             var outgoing = peer.CreateMessage();
 
-            outgoing.Write(GamePacketPools[PacketTypesToIndexInGamePacketPools[packet.GetType()]].PacketIdentifier);
-            packet.SaveTo(context, outgoing);
+            outgoing.Write(Context.GetPoolFromPacketType(packet.GetType()).PacketIdentifier);
+            packet.SaveTo(Context, outgoing);
 
             foreach (var conn in peer.Connections)
             {

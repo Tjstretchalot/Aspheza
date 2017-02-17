@@ -22,6 +22,8 @@ namespace BaseBuilder.Engine.Logic.WorldGen
     {
         protected TileWorld TileWorld;
         protected List<Player> Players;
+        protected int LocalPlayerID;
+
         public SharedGameState SharedGameState;
         public LocalGameState LocalGameState;
 
@@ -58,8 +60,10 @@ namespace BaseBuilder.Engine.Logic.WorldGen
 
         protected virtual List<Player> InitPlayers()
         {
+            LocalPlayerID = 1;
+
             var result = new List<Player>();
-            result.Add(new Player(1, "Host"));
+            result.Add(new Player(LocalPlayerID, "Host"));
             return result;
         }
 
@@ -71,7 +75,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             Players = InitPlayers();
 
             SharedGameState = new SharedGameState(TileWorld, Players, 0);
-            LocalGameState = new LocalGameState(new Camera(new PointD2D(0, 0), new RectangleD2D(screenSize.Width, screenSize.Height), 8));
+            LocalGameState = new LocalGameState(new Camera(new PointD2D(0, 0), new RectangleD2D(screenSize.Width, screenSize.Height), 8), LocalPlayerID);
         }
     }
 }
