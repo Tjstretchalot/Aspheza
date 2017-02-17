@@ -14,27 +14,20 @@ namespace BaseBuilder.Engine.Networking
 {
     public class ServerGameConnection : GameConnection
     {
-        protected ConnectionState ConnState;
-        protected LocalGameState LocalState;
-        protected SharedGameState SharedState;
-        protected SharedGameLogic SharedLogic;
 
         protected NetServer Server;
 
         protected int Port;
         
 
-        public ServerGameConnection(LocalGameState localState, SharedGameState sharedState, SharedGameLogic sharedLogic, int port)
+        public ServerGameConnection(LocalGameState localState, SharedGameState sharedState, SharedGameLogic sharedLogic, int port) : base(localState, sharedState, sharedLogic)
         {
             ConnState = ConnectionState.Waiting;
 
             Port = port;
-            LocalState = localState;
-            SharedState = sharedState;
-            SharedLogic = sharedLogic;
         }
         
-
+        
         public void BeginListening()
         {
             var cfg = new NetPeerConfiguration("basebuilder");
@@ -43,12 +36,7 @@ namespace BaseBuilder.Engine.Networking
             Server = new NetServer(cfg);
             Server.Start();
         }
-
-        public override IEnumerable<IGamePacket> ReadIncomingPackets()
-        {
-            return ReadIncomingPackets(Server);
-        }
-
+        
         public override void SendPacket(IGamePacket packet)
         {
             SendPacket(packet, Server, NetDeliveryMethod.ReliableOrdered);
@@ -56,7 +44,8 @@ namespace BaseBuilder.Engine.Networking
 
         public override void ConsiderGameUpdate()
         {
-            switch(ConnState)
+
+            switch (ConnState)
             {
                 case ConnectionState.Waiting:
                     /*
@@ -104,36 +93,6 @@ namespace BaseBuilder.Engine.Networking
                      */
                     break;
             }
-        }
-
-        /// <summary>
-        /// This function handles what we, being a player, have to do to get ready to start syncing.
-        /// </summary>
-        protected void OnSyncStart()
-        {
-            ConnState = ConnectionState.Syncing;
-
-            var syncPacket = Context.GetPoolFromPacketType(typeof(SyncPacket)).GetGamePacketFromPool() as SyncPacket;
-            syncPacket.PlayerID = LocalState.LocalPlayerID;
-            syncPacket.Orders.AddRange(LocalState.Orders);
-            LocalState.Orders.Clear();
-            var localPlayer = SharedState.GetPlayerByID(LocalState.LocalPlayerID);
-            localPlayer.CurrentOrders.AddRange(syncPacket.Orders);
-            localPlayer.OrdersRecieved = true;
-            SendPacket(syncPacket);
-            syncPacket.Recycle();
-        }
-
-        /// <summary>
-        /// This function handles what we, being a player, have to do to 
-        /// </summary>
-        protected void OnSimulateStart(int timeMS)
-        {
-            ConnState = ConnectionState.Simulating;
-
-            SharedLogic.SimulateTimePassing(SharedState, timeMS);
-
-            ConnState = ConnectionState.Waiting;
         }
     }
 }
