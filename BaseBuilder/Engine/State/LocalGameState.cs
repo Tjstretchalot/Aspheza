@@ -26,6 +26,11 @@ namespace BaseBuilder.Engine.State
         public int LocalPlayerID;
 
         /// <summary>
+        /// The id of the overseer entity
+        /// </summary>
+        public int OverseerEntityID;
+
+        /// <summary>
         /// The orders that have been issued by the player but have not propagated
         /// to the shared game state yet
         /// </summary>

@@ -10,7 +10,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
     public abstract class ImmobileEntity : SpriteEntity
     {
-        public ImmobileEntity(PointD2D position, PolygonD2D collisionMesh, string spriteName) : base(position, collisionMesh, spriteName)
+        public ImmobileEntity(PointD2D position, PolygonD2D collisionMesh, int id, string spriteName) : base(position, collisionMesh, id, spriteName)
         {
         }
     }

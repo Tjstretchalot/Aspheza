@@ -22,6 +22,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
     /// </remarks>
     public abstract class Entity : Renderable
     {
+        public int ID { get; protected set; }
         /// <summary>
         /// Where the entity is located in the world.
         /// </summary>
@@ -33,8 +34,9 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// </summary>
         public PolygonD2D CollisionMesh { get; protected set; }
 
-        protected Entity(PointD2D position, PolygonD2D collisionMesh)
+        protected Entity(PointD2D position, PolygonD2D collisionMesh, int id)
         {
+            ID = id;
             Position = position;
             CollisionMesh = collisionMesh;
         }
