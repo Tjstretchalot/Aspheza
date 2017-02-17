@@ -14,7 +14,7 @@ namespace BaseBuilder.Screens.Components
     /// <summary>
     /// Describes a one-line text field.
     /// </summary>
-    public class TextField : IScreenComponent
+    public class TextField : IResizableComponent
     {
         /// <summary>
         /// How long the caret is visible for during a blink cycle.
@@ -90,6 +90,16 @@ namespace BaseBuilder.Screens.Components
                 _Location.Y = value.Y - Size.Y / 2;
             }
         }
+        
+        public Point MinSize
+        {
+            get { return Point.Zero; }
+        }
+
+        public Point MaxSize
+        {
+            get { return UIUtils.MaxPoint; }
+        }
 
         /// <summary>
         /// Where the top-left of the text is positioned. Must be nulled whenever
@@ -106,19 +116,7 @@ namespace BaseBuilder.Screens.Components
         /// If the text field is currently focused
         /// </summary>
         public bool Focused;
-
-        /// <summary>
-        /// The background texture for the text field. 
-        /// </summary>
-        public string BackgroundTexture;
-
-        /// <summary>
-        /// Where inside the background texture is the part that is the
-        /// actual background of the text field. Width and height must 
-        /// match the location width and height.
-        /// </summary>
-        public Rectangle BackgroundTextureSourceRect;
-
+        
         /// <summary>
         /// The name of the font
         /// </summary>
@@ -162,6 +160,16 @@ namespace BaseBuilder.Screens.Components
         /// The sound is really obnoxious so we don't play it too often.
         /// </summary>
         protected int ErrorSoundCooldown;
+        
+        /// <summary>
+        /// The background texture for the text field. 
+        /// </summary>
+        protected Texture2D BackgroundTexture;
+
+        /// <summary>
+        /// The background texture while focused
+        /// </summary>
+        protected Texture2D FocusedBackgroundTexture;
 
         protected Dictionary<Keys, int> KeysToIgnoreTime;
         protected Keys[] KeysPressedLastUpdate;
@@ -171,15 +179,13 @@ namespace BaseBuilder.Screens.Components
         public event EventHandler OnTextChanged;
         public event EventHandler OnEnter;
 
-        public TextField(Rectangle location, string text, string font, Color textColor, string backgroundTexture, Rectangle backgroundTextureSourceRect,
+        public TextField(Rectangle location, string text, string font, Color textColor,
             string typeSFXName, string invalidKeySFXName, int maxLength)
         {
             _Location = location;
             Text = text;
             FontName = font;
             TextColor = textColor;
-            BackgroundTextureSourceRect = backgroundTextureSourceRect;
-            BackgroundTexture = backgroundTexture;
             TypeSFXName = typeSFXName;
             InvalidKeySFXName = invalidKeySFXName;
             MaxLength = maxLength;
@@ -193,11 +199,28 @@ namespace BaseBuilder.Screens.Components
             KeysToIgnoreTime = new Dictionary<Keys, int>();
         }
 
+        public void Resize(Point size)
+        {
+            BackgroundTexture = null;
+            FocusedBackgroundTexture = null;
+            Location = new Rectangle(
+                Center.X - size.X / 2, 
+                Center.Y - size.Y / 2,
+                size.X, 
+                size.Y
+                );
+        }
         public void Draw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
-            var bkndTexture = content.Load<Texture2D>(BackgroundTexture);
+            if (BackgroundTexture == null)
+                InitBackgroundTexture(content, graphics, graphicsDevice, spriteBatch);
+            if (FocusedBackgroundTexture == null)
+                InitFocusedBackgroundTexture(content, graphics, graphicsDevice, spriteBatch);
 
-            spriteBatch.Draw(bkndTexture, sourceRectangle: BackgroundTextureSourceRect, destinationRectangle: Location);
+            if(Focused)
+                spriteBatch.Draw(FocusedBackgroundTexture, destinationRectangle: Location);
+            else
+                spriteBatch.Draw(BackgroundTexture, destinationRectangle: Location);
 
             var font = content.Load<SpriteFont>(FontName);
             var textToDraw = Text;
@@ -212,6 +235,16 @@ namespace BaseBuilder.Screens.Components
             }
 
             spriteBatch.DrawString(font, textToDraw, _TextPositionVec.Value, TextColor);
+        }
+
+        protected virtual void InitBackgroundTexture(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
+        {
+            BackgroundTexture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, spriteBatch, Size.X, Size.Y, Color.White, new Color(198, 198, 198), new Color(236, 236, 236), 5, 2, 1);
+        }
+        
+        protected virtual void InitFocusedBackgroundTexture(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
+        {
+            FocusedBackgroundTexture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, spriteBatch, Size.X, Size.Y, Color.White, new Color(198, 198, 198), new Color(155, 155, 255), 5, 2, 1);
         }
 
         protected virtual void PlayErrorSound(ContentManager content)
@@ -261,6 +294,16 @@ namespace BaseBuilder.Screens.Components
                     PlayErrorSound(content);
                     return;
                 }
+
+                var newText = Text + keyChar;
+                var font = content.Load<SpriteFont>(FontName);
+
+                if(font.MeasureString(newText).X > Size.X - TEXT_X_OFFSET * 2)
+                {
+                    PlayErrorSound(content);
+                    return;
+                }
+
 
                 PlayTapSound(content);
                 Text = Text + keyChar;

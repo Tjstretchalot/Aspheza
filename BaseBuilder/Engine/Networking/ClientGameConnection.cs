@@ -38,5 +38,10 @@ namespace BaseBuilder.Engine.Networking
         {
             SendPacket(context, packet, Client, NetDeliveryMethod.ReliableOrdered);
         }
+
+        public override void ConsiderGameUpdate()
+        {
+
+        }
     }
 }

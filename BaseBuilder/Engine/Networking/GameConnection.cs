@@ -15,6 +15,7 @@ namespace BaseBuilder.Engine.Networking
     /// </summary>
     public abstract class GameConnection : IGameConnection
     {
+        public abstract void ConsiderGameUpdate();
         public abstract IEnumerable<IGamePacket> ReadIncomingPackets(UpdateContext context);
         public abstract void SendPacket(UpdateContext context, IGamePacket packet);
 
@@ -121,5 +122,7 @@ namespace BaseBuilder.Engine.Networking
                 peer.SendMessage(outgoing, conn, method);
             }
         }
+
+
     }
 }

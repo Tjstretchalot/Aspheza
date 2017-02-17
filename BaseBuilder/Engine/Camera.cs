@@ -61,6 +61,8 @@ namespace BaseBuilder.Engine
         /// If Zoom is 16, a (world) unit square will be represented as 16px x 16px.
         /// </example>
         public double Zoom;
+        private PointD2D pointD2D;
+        private RectangleD2D rectangleD2D;
 
         /// <summary>
         /// Initializes a camera with the specified world offset and camera screen

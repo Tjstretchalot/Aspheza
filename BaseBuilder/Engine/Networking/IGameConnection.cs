@@ -16,8 +16,10 @@ namespace BaseBuilder.Engine.Networking
     /// </summary>
     public interface IGameConnection
     {
-        void SendPacket(UpdateContext context, IGamePacket packet);
-
-        IEnumerable<IGamePacket> ReadIncomingPackets(UpdateContext context);
+        /// <summary>
+        /// The game connection will consider reconciling the local game state with the
+        /// shared game state at this time, and/or simulating the passing of time.
+        /// </summary>
+        void ConsiderGameUpdate();
     }
 }

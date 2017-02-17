@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BaseBuilder.Engine.Logic.Order
+namespace BaseBuilder.Engine.Logic.Orders
 {
     /// <summary>
     /// An order is something a player does that modifies the game. Orders are 

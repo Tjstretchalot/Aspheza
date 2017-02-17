@@ -1,10 +1,11 @@
-﻿using System;
+﻿using BaseBuilder.Engine.Logic.Orders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BaseBuilder.Engine.Logic.Player
+namespace BaseBuilder.Engine.Logic.Players
 {
     /// <summary>
     /// Describes a person in the game and the orders that they have issued.
@@ -27,6 +28,17 @@ namespace BaseBuilder.Engine.Logic.Player
         /// </summary>
         public int ID;
 
-        
+        /// <summary>
+        /// The orders that the player has issued that have not been resolved yet.
+        /// </summary>
+        public List<Order> Orders;
+
+        public Player(int id, string name)
+        {
+            Name = name;
+            ID = id;
+
+            Orders = new List<Order>();
+        }
     }
 }

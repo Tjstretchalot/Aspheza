@@ -18,5 +18,10 @@ namespace BaseBuilder.Engine.State
         /// Where the camera is located.
         /// </summary>
         public Camera Camera;
+
+        public LocalGameState(Camera camera)
+        {
+            Camera = camera;
+        }
     }
 }

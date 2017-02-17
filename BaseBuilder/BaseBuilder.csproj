@@ -42,9 +42,11 @@
     <Compile Include="Engine\Camera.cs" />
     <Compile Include="Engine\Context\RenderContext.cs" />
     <Compile Include="Engine\Context\UpdateContext.cs" />
+    <Compile Include="Engine\Logic\LocalGameLogic.cs" />
     <Compile Include="Engine\Logic\SharedGameLogic.cs" />
-    <Compile Include="Engine\Logic\Order\Order.cs" />
-    <Compile Include="Engine\Logic\Player\Player.cs" />
+    <Compile Include="Engine\Logic\Orders\Order.cs" />
+    <Compile Include="Engine\Logic\Players\Player.cs" />
+    <Compile Include="Engine\Logic\WorldGen\WorldGenerator.cs" />
     <Compile Include="Engine\Math2D\Double\FiniteLineD2D.cs" />
     <Compile Include="Engine\Math2D\Double\MathUtilsD2D.cs" />
     <Compile Include="Engine\Math2D\Double\OneDimensionalLine.cs" />
@@ -91,13 +93,14 @@
     <Compile Include="Screens\Components\UIUtils.cs" />
     <Compile Include="Screens\Components\IScreenComponent.cs" />
     <Compile Include="Screens\Components\TextField.cs" />
-    <Compile Include="Screens\GameScreen\GameScreen.cs" />
+    <Compile Include="Screens\GameScreens\GameScreen.cs" />
     <Compile Include="Screens\IScreen.cs" />
     <Compile Include="Screens\IScreenManager.cs" />
     <Compile Include="Screens\IScreenTransition.cs" />
     <Compile Include="Screens\LANHostGameScreen.cs" />
     <Compile Include="Screens\MainMenuScreen.cs" />
     <Compile Include="Screens\MultiplayerMainMenuScreen.cs" />
+    <Compile Include="Screens\Components\RoundedRectUtils.cs" />
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\ScreenManager.cs" />
     <Compile Include="Screens\LANSetupGameScreen.cs" />
@@ -166,9 +169,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Engine\Logic\WorldGen\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -293,6 +293,7 @@ namespace BaseBuilder.Screens.Components
             {
                 // Mouse entered
                 content.Load<SoundEffect>(MouseEnterSFXName).Play();
+                
             }else if(!newHovered && Hovered)
             {
                 // Mouse left

@@ -18,5 +18,6 @@ namespace BaseBuilder.Engine.Context
         public GraphicsDeviceManager Graphics;
         public SpriteBatch SpriteBatch;
         public Camera Camera;
+        public SpriteFont DebugFont;
     }
 }

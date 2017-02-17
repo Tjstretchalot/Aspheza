@@ -139,3 +139,9 @@
 /processorParam:TextureFormat=Color
 /build:UI/MainMenuBknd.png
 
+#begin Bitter-Regular.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=NoChange
+/build:Bitter-Regular.spritefont
+

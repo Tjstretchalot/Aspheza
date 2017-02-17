@@ -6,19 +6,29 @@ using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Networking.Packets;
 using Lidgren.Network;
+using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.Logic;
 
 namespace BaseBuilder.Engine.Networking
 {
     public class ServerGameConnection : GameConnection
     {
+        protected LocalGameState LocalState;
+        protected SharedGameState SharedState;
+        protected SharedGameLogic SharedLogic;
+
         protected NetServer Server;
 
         protected int Port;
 
-        public ServerGameConnection(int port)
+        public ServerGameConnection(LocalGameState localState, SharedGameState sharedState, SharedGameLogic sharedLogic, int port)
         {
             Port = port;
+            LocalState = localState;
+            SharedState = sharedState;
+            SharedLogic = sharedLogic;
         }
+        
 
         public void BeginListening()
         {
@@ -37,6 +47,11 @@ namespace BaseBuilder.Engine.Networking
         public override void SendPacket(UpdateContext context, IGamePacket packet)
         {
             SendPacket(context, packet, Server, NetDeliveryMethod.ReliableOrdered);
+        }
+
+        public override void ConsiderGameUpdate()
+        {
+            
         }
     }
 }

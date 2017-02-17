@@ -47,6 +47,7 @@ namespace BaseBuilder
 
             IsMouseVisible = true;
             graphics.PreferMultiSampling = true;
+            
 
             UIUtils.Load();
         }
@@ -99,15 +100,15 @@ namespace BaseBuilder
         {
             screenManager.Draw();
 
-            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            frameCounter.Update(deltaTime);
+           // frameCounter.Update(deltaTime);
 
-            var fps = string.Format("FPS: {0}", frameCounter.AverageFramesPerSecond);
+            //var fps = string.Format("FPS: {0}", frameCounter.AverageFramesPerSecond);
 
-            spriteBatch.Begin();
-            spriteBatch.DrawString(Content.Load<SpriteFont>("Arial"), fps, new Vector2(1, 1), Color.Black);
-            spriteBatch.End();
+           // spriteBatch.Begin();
+            //spriteBatch.DrawString(Content.Load<SpriteFont>("Arial"), fps, new Vector2(1, 1), Color.Black);
+            //spriteBatch.End();
 
         }
     }

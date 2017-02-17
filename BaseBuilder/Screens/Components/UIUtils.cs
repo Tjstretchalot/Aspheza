@@ -160,7 +160,7 @@ namespace BaseBuilder.Screens.Components
             Rectangle unhovUnpress, hovUnpress, hovPress;
             LoadButtonSheetInfo(color, size, out textColor, out sheetName, out unhovUnpress, out hovUnpress, out hovPress);
 
-            return new Button(text, "KenVector Future", textColor, textColor, textColor,
+            return new Button(text, "Bitter-Regular", textColor, textColor, textColor,
                 center, sheetName, sheetName, sheetName, unhovUnpress, hovUnpress, hovPress, 
                 "UI/MouseEnter", "UI/MouseLeave", "UI/ButtonPress", "UI/ButtonUnpress");
         }
@@ -178,15 +178,11 @@ namespace BaseBuilder.Screens.Components
 
         // TEXT FIELDS
 
-        public static TextField CreateTextField(Point center)
+        public static TextField CreateTextField(Point center, Point size)
         {
-            var atlas = SpritesToTextureAtlases["UI/greySheet.xml"];
-            var sourceRect = LoadRectangleFromSheetAndElementName(atlas, "grey_text_field.png");
-
-            var locationRect = new Rectangle(center.X - sourceRect.Width / 2, center.Y - sourceRect.Height / 2, sourceRect.Width, sourceRect.Height);
+            var locationRect = new Rectangle(center.X - size.X / 2, center.Y - size.Y / 2, size.X, size.Y);
             
-
-            return new TextField(locationRect, "", "Anonymous Pro", ReallyDarkGray, "UI/greySheet", sourceRect, "UI/TextAreaTap", "UI/TextAreaError", 17);
+            return new TextField(locationRect, "", "Arial", ReallyDarkGray, "UI/TextAreaTap", "UI/TextAreaError", int.MaxValue);
         }
     }
 }

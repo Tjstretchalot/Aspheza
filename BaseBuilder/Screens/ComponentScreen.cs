@@ -45,7 +45,7 @@ namespace BaseBuilder.Screens
                 return;
 
             graphicsDevice.Clear(Color.White);
-            spriteBatch.Begin();
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             foreach (var component in Components)
             {

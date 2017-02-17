@@ -1,9 +1,9 @@
 1. Player1 Hosts a LAN Game:
   1. Creates a shared and local game state using the BaseBuilder.Engine.Logic.WorldGen package
-  2. Creates a ServerGameConnection and allows the OS to specify a port and passes the shared game state to it
-  3. Creates a new SharedGameLogic passing nothing to it (alternatively, load some configuration options such as expected latency and pass those to it)
+  2. Creates a new SharedGameLogic passing nothing to it (alternatively, load some configuration options such as expected latency and pass those to it)
+  3. Creates a ServerGameConnection and passes the shared game state, local game state, shared game logic, and user chosen port to it
   4. Creates a new LocalGameLogic passing nothing to it (alternatively, load some configuration options such as camera speed and pass those to it)
-  5. Creates a new game screen and passes the shared game logic, local game logic, shared game state, local game state, and game connection to it.
+  5. Creates a new game screen and passes the local game logic, shared game state, local game state, and game connection to it.
 2. Player1 moves his camera around:
  1. The game screen regularly calls LocalGameLogic.Update
  2. LocalGameLogic.Update polls the keyboard and mouse state. When appropriate, modifies the LocalGameState which contains the Camera
