@@ -81,6 +81,7 @@ namespace BaseBuilder.Engine.Networking
         [PacketHandler(typeof(ReadyForSyncPacket))]
         public void OnPlayerReadyForSync(ReadyForSyncPacket packet)
         {
+            Console.WriteLine($"Handling ReadyForSyncPacket that is supposedly from player id={packet.PlayerID}");
             SharedState.GetPlayerByID(packet.PlayerID).ReadyForSync = true;
         }
 
@@ -118,6 +119,10 @@ namespace BaseBuilder.Engine.Networking
                     for(int i = 0; i < SharedState.Players.Count && !waitingForPlayers; i++)
                     {
                         waitingForPlayers = !SharedState.Players[i].ReadyForSync;
+                        if(waitingForPlayers)
+                        {
+                            Console.WriteLine($"Waiting for player {SharedState.Players[i].ID} before we can continue simulating time");
+                        }
                     }
 
                     if (!waitingForPlayers)
