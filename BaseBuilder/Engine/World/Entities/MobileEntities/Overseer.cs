@@ -19,7 +19,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             _CollisionMesh = new RectangleD2D(1, 0.875);
         }
         
-        public Overseer(PointD2D position, RectangleD2D collisionMesh, int id) : base(position, _CollisionMesh, id, "Overseer")
+        public Overseer(PointD2D position, int id) : base(position, _CollisionMesh, id, "Overseer")
         {
         }
         

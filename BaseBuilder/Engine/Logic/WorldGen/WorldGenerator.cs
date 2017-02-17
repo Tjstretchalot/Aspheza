@@ -70,7 +70,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
 
         protected void InitOverseers()
         {
-            TileWorld.AddMobileEntity(new Overseer(new PointD2D(5, 5), new RectangleD2D(1, 0.875), SharedGameState.GetEnitityID()));
+            TileWorld.AddMobileEntity(new Overseer(new PointD2D(5, 5), SharedGameState.GetEnitityID()));
         }
 
         public void Create(GraphicsDevice graphicsDevice)
