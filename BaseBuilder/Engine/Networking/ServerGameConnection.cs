@@ -81,7 +81,7 @@ namespace BaseBuilder.Engine.Networking
         [PacketHandler(typeof(ReadyForSyncPacket))]
         public void OnPlayerReadyForSync(ReadyForSyncPacket packet)
         {
-            SharedState.Players[packet.PlayerID].ReadyForSync = true;
+            SharedState.GetPlayerByID(packet.PlayerID).ReadyForSync = true;
         }
 
         public override void ConsiderGameUpdate()

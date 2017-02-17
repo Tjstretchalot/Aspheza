@@ -79,7 +79,8 @@ namespace BaseBuilder.Engine.Networking
             SharedState = packet.SharedState;
             LocalPlayerID = packet.LocalPlayerID;
 
-            var readyForSync = Context.GetPoolFromPacketType(typeof(ReadyForSyncPacket)).GetGamePacketFromPool();
+            var readyForSync = (ReadyForSyncPacket)Context.GetPoolFromPacketType(typeof(ReadyForSyncPacket)).GetGamePacketFromPool();
+            readyForSync.PlayerID = packet.LocalPlayerID;
             SendPacket(readyForSync);
             readyForSync.Recycle();
             
