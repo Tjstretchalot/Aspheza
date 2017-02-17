@@ -178,6 +178,7 @@ namespace BaseBuilder.Engine.Networking
                 pl.OrdersRecieved = false;
             }
 
+            Console.WriteLine($"Simulating done, going from Simulating to Waiting");
             ConnState = ConnectionState.Waiting;
         }
     }
