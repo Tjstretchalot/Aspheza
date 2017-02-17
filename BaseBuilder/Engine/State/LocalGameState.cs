@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.Logic.Orders;
+using BaseBuilder.Engine.World.WorldObject.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,11 @@ namespace BaseBuilder.Engine.State
         /// to the shared game state yet
         /// </summary>
         public List<IOrder> Orders;
+
+        /// <summary>
+        /// The Entity that you are currently selecting
+        /// </summary>
+        public Entity SelectedEntity;
 
         public LocalGameState(Camera camera, int localPlayerID)
         {

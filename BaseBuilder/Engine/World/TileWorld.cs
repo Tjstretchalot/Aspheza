@@ -199,5 +199,22 @@ namespace BaseBuilder.Engine.World
                 }
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="location">The location to see if falls within an entity</param>
+        /// <returns></returns>
+        public Entity GetMobileEntityAtLocation(PointD2D location)
+        {
+            foreach (var entity in MobileEntities)
+            {
+                if (entity.Contains(location))
+                {
+                    return entity;
+                }
+            }
+            return null;
+        }
     }
 }

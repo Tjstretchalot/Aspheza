@@ -7,6 +7,7 @@ using BaseBuilder.Engine.World.Tiles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using BaseBuilder.Engine.World.Entities.MobileEntities;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,6 +68,11 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             return result;
         }
 
+        protected void InitOverseers()
+        {
+            TileWorld.AddMobileEntity(new Overseer(new PointD2D(5, 5), new RectangleD2D(1, 0.875), SharedGameState.GetEnitityID()));
+        }
+
         public void Create(GraphicsDevice graphicsDevice)
         {
             var screenSize = graphicsDevice.Viewport;
@@ -76,6 +82,8 @@ namespace BaseBuilder.Engine.Logic.WorldGen
 
             SharedGameState = new SharedGameState(TileWorld, Players, 0);
             LocalGameState = new LocalGameState(new Camera(new PointD2D(0, 0), new RectangleD2D(screenSize.Width, screenSize.Height), 8), LocalPlayerID);
+
+            InitOverseers();
         }
     }
 }

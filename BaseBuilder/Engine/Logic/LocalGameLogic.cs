@@ -1,6 +1,7 @@
 ﻿using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace BaseBuilder.Engine.Logic
     public class LocalGameLogic
     {
         protected int previousScrollWheelValue;
+        protected Microsoft.Xna.Framework.Input.ButtonState previousLeftMouseButtonState;
         
         protected int minCameraZoom;
         protected double cameraSpeed;
@@ -35,6 +37,48 @@ namespace BaseBuilder.Engine.Logic
             cameraPartialZoom = 8;
 
             cameraPartialTopLeft = new PointD2D(0, 0);
+        }
+        
+        protected void CheckForSelect(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        {
+            var world = sharedGameState.World;
+            var camera = localGameState.Camera;
+
+            if ((Mouse.GetState().LeftButton != previousLeftMouseButtonState) && (previousLeftMouseButtonState == ButtonState.Pressed))
+            {
+                double mousePixelX = Mouse.GetState().Position.X, mousePixelY = Mouse.GetState().Position.Y;
+                double mouseWorldX, mouseWorldY;
+                camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out mouseWorldX, out mouseWorldY);
+
+                var entity = world.GetMobileEntityAtLocation(new PointD2D(mouseWorldX, mouseWorldY));
+                if (entity == null)
+                {
+                    if (localGameState.SelectedEntity == null)
+                    {
+                        previousLeftMouseButtonState = Mouse.GetState().LeftButton;
+                        return;
+                    }
+
+                    localGameState.SelectedEntity.Selected = false;
+                    localGameState.SelectedEntity = entity;
+                    previousLeftMouseButtonState = Mouse.GetState().LeftButton;
+                    return;
+
+                }
+
+                if (localGameState.SelectedEntity == null)
+                {
+                    localGameState.SelectedEntity = entity;
+                    entity.Selected = true;
+                } else
+                {
+                    localGameState.SelectedEntity.Selected = false;
+                    localGameState.SelectedEntity = entity;
+                    entity.Selected = true;
+                }
+
+            }
+            previousLeftMouseButtonState = Mouse.GetState().LeftButton;
         }
 
         protected virtual void UpdateCamera(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
@@ -102,6 +146,7 @@ namespace BaseBuilder.Engine.Logic
         /// <param name="localGameState">The local game state, for reference and modification.</param>
         public void HandleUserInput(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
         {
+            CheckForSelect(sharedGameState, localGameState, elapsedMS);
             UpdateCamera(sharedGameState, localGameState, elapsedMS);
         }
     }

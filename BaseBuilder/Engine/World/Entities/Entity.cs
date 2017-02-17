@@ -34,6 +34,11 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// </summary>
         public PolygonD2D CollisionMesh { get; protected set; }
 
+        /// <summary>
+        /// Is this entity currently selected
+        /// </summary>
+        public bool Selected;
+
         protected Entity(PointD2D position, PolygonD2D collisionMesh, int id)
         {
             ID = id;
@@ -59,6 +64,17 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
             Position = position;
             CollisionMesh = collisionMesh;
+        }
+
+        /// <summary>
+        /// Returns true if this Entity contains the specified point. Returns false otherwise.
+        /// </summary>
+        /// <param name="point">The point to check.</param>
+        /// <param name="strict">False if touching constitutes intersection, true otherwise.</param>
+        /// <returns></returns>
+        public bool Contains(PointD2D point, bool strict = false)
+        {
+            return CollisionMesh.Contains(point, Position, strict);
         }
     }
 }

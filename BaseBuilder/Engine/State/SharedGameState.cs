@@ -31,6 +31,16 @@ namespace BaseBuilder.Engine.State
         /// </summary>
         public int GameTimeMS;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public int EntityIDCounter;
+
+        public int GetEnitityID()
+        {
+            return EntityIDCounter++;
+        }
+
         public SharedGameState(TileWorld world, List<Player> players, int gameTimeMS)
         {
             World = world;

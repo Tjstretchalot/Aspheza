@@ -26,12 +26,18 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public override void Render(RenderContext context, PointD2D screenTopLeft)
         {
             var texture = context.Content.Load<Texture2D>(SpriteName);
+            Color color;
+
+            if (Selected == true)
+                color = Color.LightBlue;
+            else
+                color = Color.White;
 
             context.SpriteBatch.Draw(texture,
                 new Rectangle(
                     (int)(screenTopLeft.X + CollisionMesh.Left * context.Camera.Zoom), (int)(screenTopLeft.Y + CollisionMesh.Top * context.Camera.Zoom),
                     (int)((CollisionMesh.Right - CollisionMesh.Left) * context.Camera.Zoom), (int)((CollisionMesh.Bottom - CollisionMesh.Top) * context.Camera.Zoom)
-                    ), Color.White);
+                    ), color);
         }
     }
 }
