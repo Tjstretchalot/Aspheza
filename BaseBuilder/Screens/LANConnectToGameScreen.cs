@@ -35,7 +35,7 @@ namespace BaseBuilder.Screens
             var greyPanel = new GreyPanel(new Rectangle((int)(vWidth * 0.1), (int)(vHeight * 0.1), (int)(vWidth * 0.8), (int)(vHeight * 0.8)));
 
             ServerNameField = UIUtils.CreateTextField(new Point(vWidth / 3, vHeight / 3), new Point(vWidth / 4, 30));
-            ServerNameField.Text = "127.0.0.1";
+            ServerNameField.Text = "192.168.0.142";
             var serverNameFieldText = new Text(new Point(0, 0), "Server Address", content.Load<SpriteFont>("Bitter-Regular"), Color.Black);
 
             serverNameFieldText.Center = new Point(ServerNameField.Center.X - ServerNameField.Size.X / 2 + serverNameFieldText.Size.X / 2, ServerNameField.Center.Y - ServerNameField.Size.Y / 2 - serverNameFieldText.Size.Y / 2 - 5);

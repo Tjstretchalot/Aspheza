@@ -30,7 +30,7 @@ namespace BaseBuilder.Engine.Networking
 
             Port = port;
 
-            sharedState.Players[localState.LocalPlayerID].ReadyForSync = true;
+            sharedState.GetPlayerByID(localState.LocalPlayerID).ReadyForSync = true;
 
             PlayerIDCounter = localState.LocalPlayerID + 1;
         }
