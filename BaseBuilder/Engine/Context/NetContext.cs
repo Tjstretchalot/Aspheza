@@ -10,6 +10,11 @@ namespace BaseBuilder.Engine.Context
 {
     public class NetContext
     {
+        public const int WORLD_DOWNLOAD_PACKET_ID = 1;
+        public const int SYNC_START_PACKET_ID = 101;
+        public const int SYNC_PACKET_ID = 102;
+        public const int SIMULATION_START_PACKET_ID = 103;
+
         public List<GamePacketPool> GamePacketPools;
         public Dictionary<Type, int> PacketTypesToIndexInGamePacketPools;
         public Dictionary<int, int> PacketIdsToIndexInGamePacketPools;
@@ -30,11 +35,11 @@ namespace BaseBuilder.Engine.Context
 
         public void RegisterPackets()
         {
-            RegisterPacketType(1, typeof(WorldDownloadPacket));
+            RegisterPacketType(WORLD_DOWNLOAD_PACKET_ID,   typeof(WorldDownloadPacket));
 
-            RegisterPacketType(101, typeof(SyncStartPacket));
-            RegisterPacketType(102, typeof(SyncPacket));
-            RegisterPacketType(103, typeof(SimulationStartPacket));
+            RegisterPacketType(SYNC_START_PACKET_ID,       typeof(SyncStartPacket));
+            RegisterPacketType(SYNC_PACKET_ID,             typeof(SyncPacket));
+            RegisterPacketType(SIMULATION_START_PACKET_ID, typeof(SimulationStartPacket));
         }
 
         public GamePacketPool GetPoolFromPacketType(Type type)
