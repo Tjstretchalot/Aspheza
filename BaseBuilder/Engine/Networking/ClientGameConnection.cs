@@ -78,6 +78,10 @@ namespace BaseBuilder.Engine.Networking
         {
             SharedState = packet.SharedState;
             LocalPlayerID = packet.LocalPlayerID;
+
+            var readyForSync = Context.GetPoolFromPacketType(typeof(ReadyForSyncPacket)).GetGamePacketFromPool();
+            SendPacket(readyForSync);
+            readyForSync.Recycle();
         }
     }
 }

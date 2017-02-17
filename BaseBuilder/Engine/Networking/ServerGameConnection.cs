@@ -18,13 +18,21 @@ namespace BaseBuilder.Engine.Networking
         protected List<NetConnection> ConnectionsWaitingForDownload;
 
         protected int Port;
+
+        protected int PlayerIDCounter;
         
 
         public ServerGameConnection(LocalGameState localState, SharedGameState sharedState, SharedGameLogic sharedLogic, int port) : base(localState, sharedState, sharedLogic)
         {
             ConnState = ConnectionState.Waiting;
 
+            ConnectionsWaitingForDownload = new List<NetConnection>();
+
             Port = port;
+
+            sharedState.Players[localState.LocalPlayerID].ReadyForSync = true;
+
+            PlayerIDCounter = localState.LocalPlayerID + 1;
         }
         
         
@@ -44,7 +52,35 @@ namespace BaseBuilder.Engine.Networking
 
         protected override void HandleMessage(NetPeer peer, NetIncomingMessage msg)
         {
+            switch(msg.MessageType)
+            {
+                case NetIncomingMessageType.StatusChanged:
+                    switch(msg.SenderConnection.Status)
+                    {
+                        case NetConnectionStatus.Connected:
+                            OnNewConnection(msg.SenderConnection);
+                            peer.Recycle(msg);
+                            return;
+                    }
+                    break;
+            }
             base.HandleMessage(peer, msg);
+        }
+
+        private void OnNewConnection(NetConnection conn)
+        {
+            ConnectionsWaitingForDownload.Add(conn);
+        }
+
+        private int GetUniquePlayerID()
+        {
+            return PlayerIDCounter++;
+        }
+
+        [PacketHandler(typeof(ReadyForSyncPacket))]
+        public void OnPlayerReadyForSync(ReadyForSyncPacket packet)
+        {
+            SharedState.Players[packet.PlayerID].ReadyForSync = true;
         }
 
         public override void ConsiderGameUpdate()
@@ -60,11 +96,33 @@ namespace BaseBuilder.Engine.Networking
                      * 
                      * For right now, let's just try to sync whenever we're in the waiting state.
                      */
-                    var syncStart = Context.GetPoolFromPacketType(typeof(SyncStartPacket)).GetGamePacketFromPool() as SyncStartPacket;
-                    SendPacket(syncStart);
-                    syncStart.Recycle();
 
-                    OnSyncStart();
+                    var waitingForPlayers = false;
+                    foreach (var conn in ConnectionsWaitingForDownload)
+                    {
+                        waitingForPlayers = true;
+                        var syncPacket = (SharedGameStateDownloadPacket)Context.GetPoolFromPacketType(typeof(SharedGameStateDownloadPacket)).GetGamePacketFromPool();
+                        syncPacket.SharedState = SharedState;
+                        syncPacket.LocalPlayerID = GetUniquePlayerID();
+                        SendPacket(syncPacket, Server, conn, NetDeliveryMethod.ReliableOrdered);
+                        syncPacket.Recycle();
+                    }
+
+                    ConnectionsWaitingForDownload.Clear();
+
+                    for(int i = 0; i < SharedState.Players.Count && !waitingForPlayers; i++)
+                    {
+                        waitingForPlayers = !SharedState.Players[i].ReadyForSync;
+                    }
+
+                    if (!waitingForPlayers)
+                    {
+                        var syncStart = Context.GetPoolFromPacketType(typeof(SyncStartPacket)).GetGamePacketFromPool() as SyncStartPacket;
+                        SendPacket(syncStart);
+                        syncStart.Recycle();
+
+                        OnSyncStart();
+                    }
                     break;
                 case ConnectionState.Syncing:
                     /*

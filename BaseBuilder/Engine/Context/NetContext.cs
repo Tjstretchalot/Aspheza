@@ -14,6 +14,7 @@ namespace BaseBuilder.Engine.Context
         public const int SYNC_START_PACKET_ID = 101;
         public const int SYNC_PACKET_ID = 102;
         public const int SIMULATION_START_PACKET_ID = 103;
+        public const int READY_FOR_SYNC_PACKET_ID = 104;
 
         public List<GamePacketPool> GamePacketPools;
         public Dictionary<Type, int> PacketTypesToIndexInGamePacketPools;
@@ -40,6 +41,7 @@ namespace BaseBuilder.Engine.Context
             RegisterPacketType(SYNC_START_PACKET_ID,       typeof(SyncStartPacket));
             RegisterPacketType(SYNC_PACKET_ID,             typeof(SyncPacket));
             RegisterPacketType(SIMULATION_START_PACKET_ID, typeof(SimulationStartPacket));
+            RegisterPacketType(READY_FOR_SYNC_PACKET_ID,    typeof(ReadyForSyncPacket));
         }
 
         public GamePacketPool GetPoolFromPacketType(Type type)

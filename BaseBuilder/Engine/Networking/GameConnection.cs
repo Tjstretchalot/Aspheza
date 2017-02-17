@@ -74,6 +74,10 @@ namespace BaseBuilder.Engine.Networking
                     Console.WriteLine(msg.ReadString());
                     peer.Recycle(msg);
                     break;
+                case NetIncomingMessageType.StatusChanged:
+                    Console.WriteLine($"Status changed for {msg.SenderEndPoint}. New status: {msg.SenderConnection.Status}");
+                    peer.Recycle(msg);
+                    break;
                 case NetIncomingMessageType.Data:
                     var id = msg.ReadInt32();
                     var pool = Context.GetPoolFromPacketID(id);
@@ -105,6 +109,16 @@ namespace BaseBuilder.Engine.Networking
             {
                 peer.SendMessage(outgoing, conn, method);
             }
+        }
+
+        protected void SendPacket(IGamePacket packet, NetPeer peer, NetConnection conn, NetDeliveryMethod method)
+        {
+            var outgoing = peer.CreateMessage();
+
+            outgoing.Write(Context.GetPoolFromPacketType(packet.GetType()).PacketIdentifier);
+            packet.SaveTo(Context, outgoing);
+            
+            peer.SendMessage(outgoing, conn, method);
         }
 
         [PacketHandler(packetType: typeof(SyncPacket))]

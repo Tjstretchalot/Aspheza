@@ -40,6 +40,11 @@ namespace BaseBuilder.Engine.Logic.Players
         /// </summary>
         public bool OrdersRecieved;
 
+        /// <summary>
+        /// If this player has finished downloading the map and is ready to sync
+        /// </summary>
+        public bool ReadyForSync;
+
         public Player(int id, string name)
         {
             Name = name;
