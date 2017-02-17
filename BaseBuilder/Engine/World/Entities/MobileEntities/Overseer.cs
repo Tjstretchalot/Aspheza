@@ -28,7 +28,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         /// </summary>
         public Overseer() : base()
         {
-            SpriteName = "Archer";
+            SpriteName = "Overseer";
             CollisionMesh = _CollisionMesh;
         }
 
