@@ -22,6 +22,16 @@ namespace BaseBuilder.Engine.Math2D.Double
     public class PolygonD2D
     {
         /// <summary>
+        /// A reference to a unit square top-left (0, 0) center (0.5, 0.5)
+        /// </summary>
+        public static RectangleD2D UnitSquare;
+
+        static PolygonD2D()
+        {
+            UnitSquare = new RectangleD2D(1, 1);
+        }
+
+        /// <summary>
         /// The vertices of the polygon, ordered such that any adjacent
         /// indexes can be used to create a line (wrapping around).
         /// 
@@ -334,7 +344,7 @@ namespace BaseBuilder.Engine.Math2D.Double
 
         /// <summary>
         /// Returns a list of points which correspond to the unit squares intersected on a
-        /// grid while this polygon is at myPosition.
+        /// grid while this polygon is at offset to myPosition.
         /// </summary>
         /// <param name="myPosition">The position of this polygon for this test</param>
         /// <param name="list">

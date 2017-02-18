@@ -62,5 +62,91 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
 
             Assert.IsTrue(triangle.Contains(point));
         }
+
+        [Test(Description = "Test that the TilesIntersectedAt handles a unit square correctly"]
+        public void TilesIntersectedForUnitSquare()
+        {
+            var square = new PolygonD2D(new List<PointD2D>
+            {
+                new PointD2D(0, 0),
+                new PointD2D(0, 1),
+                new PointD2D(1, 1),
+                new PointD2D(1, 0),
+            });
+
+            var tiles = new List<PointI2D>();
+
+            square.TilesIntersectedAt(new PointD2D(0, 0), tiles);
+
+            Assert.AreEqual(1, tiles.Count);
+            Assert.AreEqual(0, tiles[0].X);
+            Assert.AreEqual(0, tiles[0].Y);
+
+            square.TilesIntersectedAt(new PointD2D(1, 0), tiles);
+
+            Assert.AreEqual(1, tiles.Count);
+            Assert.AreEqual(1, tiles[0].X);
+            Assert.AreEqual(0, tiles[0].Y);
+
+            square.TilesIntersectedAt(new PointD2D(0, 0.5), tiles);
+
+            Assert.AreEqual(2, tiles.Count);
+
+            var foundOrigin = false;
+            var found01 = false;
+
+            foreach (var tile in tiles)
+            {
+                if (tile.X == 0 && tile.Y == 0)
+                {
+                    if (foundOrigin)
+                        Assert.Fail("Unit square at (0, 0.5) intersects (0, 0) and (0, 1) but the result from PolygonD2D#TilesIntersectedAt contained (0, 0) twice (no (0, 1))!");
+                    foundOrigin = true;
+                }
+                else if (tile.X == 0 && tile.Y == 1)
+                {
+                    if (found01)
+                        Assert.Fail("Unit square at (0, 0.5) intersects (0, 0) and (0, 1) but the result from PolygonD2D#TilesIntersectedAt contained (0, 1) twice (no (0, 0))!");
+                    found01 = true;
+                }else
+                {
+                    Assert.Fail($"Unit square at (0, 0.5) intersects (0, 0) and (0, 1) but got odd tile from PolygonD2D#TilesIntersectedAt: ({tile.X}, {tile.Y}) (tiles={tiles})");
+                }
+            }
+
+            square.TilesIntersectedAt(new PointD2D(0, -1), tiles);
+
+            Assert.AreEqual(1, tiles.Count);
+            Assert.AreEqual(0, tiles[0].X);
+            Assert.AreEqual(-1, tiles[0].Y);
+
+            square.TilesIntersectedAt(new PointD2D(0.5, 0.5), tiles);
+
+            Assert.AreEqual(4, tiles.Count);
+
+            bool[] found = new[] { false, false, false, false };
+
+            foreach(var tile in tiles)
+            {
+                if(tile.X == 0 && tile.Y == 0)
+                {
+                    found[0] = true;
+                }else if (tile.X == 1 && tile.Y == 0)
+                {
+                    found[1] = true;
+                }
+                else if (tile.X == 1 && tile.Y == 1)
+                {
+                    found[2] = true;
+                }
+                else if (tile.X == 0 && tile.Y == 1)
+                {
+                    found[3] = true;
+                }else
+                {
+                    Assert.Fail($"Unit square at (0.5, 0.5) intersects (0, 0), (0, 1), (1, 0), and (1, 1) but got odd tile from PolygonD2D#TilesIntersectedAt: ({tile.X}, {tile.Y}) (tiles={tiles})");
+                }
+            }
+        }
     }
 }

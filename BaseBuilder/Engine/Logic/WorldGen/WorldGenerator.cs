@@ -42,7 +42,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             var random = new Random();
             var tiles = new List<Tile>(120 * 80);
 
-            var tileCollisionMesh = new RectangleD2D(1, 1);
+            var tileCollisionMesh = PolygonD2D.UnitSquare;
 
             for (int y = 0; y < 80; y++)
             {
