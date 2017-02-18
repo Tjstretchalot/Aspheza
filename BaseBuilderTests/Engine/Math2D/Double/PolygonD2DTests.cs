@@ -155,5 +155,23 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
                 }
             }
         }
+
+        [Test(Description = "TilesIntersectedAt for weird rectangles of non-whole width/height")]
+        public void TilesIntersectedForWeirdRectangle()
+        {
+            var rect = new RectangleD2D(1.5, 1.75);
+
+            var tiles = new List<PointI2D>();
+
+            // TODO test all the things
+        }
+
+        [Test(Description = "Test that TilesIntersectedWhenMovingFromOriginTo works for a unit square")]
+        public void TilesIntersectedDuringMoveForUnitSquare()
+        {
+            var square = PolygonD2D.UnitSquare;
+
+            // TODO test all the things
+        }
     }
 }
