@@ -54,6 +54,16 @@ namespace BaseBuilder.Engine.Networking
 
             HandleIncomingMessages(Client);
         }
+
+        [PacketHandler(packetType: typeof(SimulationStartPacket))]
+        public void OnSimulateStartRecieved(SimulationStartPacket packet)
+        {
+            if(Connected)
+            {
+                Console.WriteLine($"handling simulate start packet");
+                OnSimulateStart(packet.SimulationTime);
+            }
+        }
         
         [PacketHandler(packetType: typeof(SyncStartPacket))]
         public void OnSyncStartRecieved(SyncStartPacket packet)
