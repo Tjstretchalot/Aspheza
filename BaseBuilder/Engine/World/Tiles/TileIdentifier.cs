@@ -18,15 +18,11 @@ namespace BaseBuilder.Engine.World.Tiles
         protected static Dictionary<short, Type> IdsToTiles;
         protected static Dictionary<Type, short> TilesToIds;
 
-        protected static RectangleD2D TileCollisionMesh;
-
         static TileIdentifier()
         {
             TileConstructorParamTypes = new Type[] { typeof(PointI2D), typeof(RectangleD2D) };
             IdsToTiles = new Dictionary<short, Type>();
             TilesToIds = new Dictionary<Type, short>();
-
-            TileCollisionMesh = new RectangleD2D(1, 1);
 
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(DirtTile).TypeHandle);
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(GrassTile).TypeHandle);
@@ -51,7 +47,7 @@ namespace BaseBuilder.Engine.World.Tiles
 
         public static Tile InitTile(Type type, PointI2D position)
         {
-            return (Tile) type.GetConstructor(TileConstructorParamTypes).Invoke(new object[] { position, TileCollisionMesh });
+            return (Tile) type.GetConstructor(TileConstructorParamTypes).Invoke(new object[] { position, PolygonD2D.UnitSquare });
         }
     }
 }
