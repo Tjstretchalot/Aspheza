@@ -18,6 +18,11 @@ namespace BaseBuilder.Engine.Networking
         protected NetServer Server;
         protected List<NetConnection> ConnectionsWaitingForDownload;
 
+        /// <summary>
+        /// Maps player ids to their index in Server.Connections
+        /// </summary>
+        protected Dictionary<int, long> PlayerIDsToNetConnectionUniqueIdentifier;
+
         protected int Port;
 
         protected int PlayerIDCounter;
@@ -34,6 +39,8 @@ namespace BaseBuilder.Engine.Networking
             sharedState.GetPlayerByID(localState.LocalPlayerID).ReadyForSync = true;
 
             PlayerIDCounter = localState.LocalPlayerID + 1;
+
+            PlayerIDsToNetConnectionUniqueIdentifier = new Dictionary<int, long>();
         }
         
         
@@ -85,6 +92,26 @@ namespace BaseBuilder.Engine.Networking
             SharedState.GetPlayerByID(packet.PlayerID).ReadyForSync = true;
         }
 
+        [PacketHandler(typeof(SyncPacket))]
+        public void EchoSyncPackets(SyncPacket packet)
+        {
+            long ignoreRUID;
+            if (!PlayerIDsToNetConnectionUniqueIdentifier.TryGetValue(packet.PlayerID, out ignoreRUID))
+                Console.WriteLine($"Could not find remote unique identifier for player id {packet.PlayerID}!");
+            
+            var outgoing = Server.CreateMessage();
+
+            outgoing.Write(Context.GetPoolFromPacketType(packet.GetType()).PacketIdentifier);
+            packet.SaveTo(Context, outgoing);
+            foreach (var conn in Server.Connections)
+            {
+                if(conn.RemoteUniqueIdentifier != ignoreRUID)
+                {
+                    SendPacket(packet, Server, conn, NetDeliveryMethod.ReliableOrdered);
+                }
+            }
+        }
+
         public override void ConsiderGameUpdate()
         {
             HandleIncomingMessages(Server);
@@ -105,6 +132,8 @@ namespace BaseBuilder.Engine.Networking
                         waitingForPlayers = true;
 
                         var newPlayer = new Player(GetUniquePlayerID(), "not set");
+                        PlayerIDsToNetConnectionUniqueIdentifier.Add(newPlayer.ID, conn.RemoteUniqueIdentifier);
+
                         var syncPacket = (SharedGameStateDownloadPacket)Context.GetPoolFromPacketType(typeof(SharedGameStateDownloadPacket)).GetGamePacketFromPool();
                         syncPacket.SharedState = SharedState;
                         syncPacket.LocalPlayerID = newPlayer.ID;
@@ -148,6 +177,11 @@ namespace BaseBuilder.Engine.Networking
                             Console.WriteLine($"Waiting for pl id={pl.ID} to send us his orders before we can go from Syncing to Simulating");
                             break;
                         }
+                    }
+
+                    if(!stillWaiting)
+                    {
+                        Console.WriteLine($"We have everyones order, going to send it to everyone else");
                     }
 
                     if (!stillWaiting)

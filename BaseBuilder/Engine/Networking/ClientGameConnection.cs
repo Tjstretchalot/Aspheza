@@ -52,6 +52,17 @@ namespace BaseBuilder.Engine.Networking
                 throw new InvalidProgramException("Can't consider game update unless connected. You must can ContinueConnecting until Connected is true");
 
 
+            HandleIncomingMessages(Client);
+        }
+        
+        [PacketHandler(packetType: typeof(SyncStartPacket))]
+        public void OnSyncStartRecieved(SyncStartPacket packet)
+        {
+            if (Connected)
+            {
+                Console.WriteLine($"handling sync start packet");
+                OnSyncStart();
+            }
         }
 
         public void ContinueConnecting(Viewport screenSize)
