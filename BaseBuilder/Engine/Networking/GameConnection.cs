@@ -177,9 +177,7 @@ namespace BaseBuilder.Engine.Networking
                 pl.CurrentOrders.Clear();
                 pl.OrdersRecieved = false;
             }
-
-            if (SharedState.Players.Count > 1)
-                Console.WriteLine($"Simulating done, going from Simulating to Waiting");
+            
             ConnState = ConnectionState.Waiting;
         }
     }

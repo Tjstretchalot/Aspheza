@@ -88,7 +88,6 @@ namespace BaseBuilder.Engine.Networking
         [PacketHandler(typeof(ReadyForSyncPacket))]
         public void OnPlayerReadyForSync(ReadyForSyncPacket packet)
         {
-            Console.WriteLine($"Handling ReadyForSyncPacket that is supposedly from player id={packet.PlayerID}");
             SharedState.GetPlayerByID(packet.PlayerID).ReadyForSync = true;
         }
 
@@ -147,16 +146,10 @@ namespace BaseBuilder.Engine.Networking
                     for(int i = 0; i < SharedState.Players.Count && !waitingForPlayers; i++)
                     {
                         waitingForPlayers = !SharedState.Players[i].ReadyForSync;
-                        if(waitingForPlayers)
-                        {
-                            Console.WriteLine($"Waiting for player {SharedState.Players[i].ID} before we can continue simulating time");
-                        }
                     }
 
                     if (!waitingForPlayers)
                     {
-                        if(SharedState.Players.Count > 1)
-                            Console.WriteLine($"Not waiting for anyone anymore, changing from Waiting to Syncing");
                         var syncStart = Context.GetPoolFromPacketType(typeof(SyncStartPacket)).GetGamePacketFromPool() as SyncStartPacket;
                         SendPacket(syncStart);
                         syncStart.Recycle();
@@ -174,15 +167,12 @@ namespace BaseBuilder.Engine.Networking
                         if(!pl.OrdersRecieved)
                         {
                             stillWaiting = true;
-                            Console.WriteLine($"Waiting for pl id={pl.ID} to send us his orders before we can go from Syncing to Simulating");
                             break;
                         }
                     }
 
                     if (!stillWaiting)
                     {
-                        if (SharedState.Players.Count > 1)
-                            Console.WriteLine($"We have everyones orders, going from Syncing to Simulating");
                         var simulationTime = 16; // TODO don't use a constant here
 
                         var simulateStart = Context.GetPoolFromPacketType(typeof(SimulationStartPacket)).GetGamePacketFromPool() as SimulationStartPacket;
