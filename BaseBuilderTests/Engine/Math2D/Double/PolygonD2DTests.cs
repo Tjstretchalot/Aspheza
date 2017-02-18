@@ -63,7 +63,7 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
             Assert.IsTrue(triangle.Contains(point));
         }
 
-        [Test(Description = "Test that the TilesIntersectedAt handles a unit square correctly"]
+        [Test(Description = "Test that the TilesIntersectedAt handles a unit square correctly")]
         public void TilesIntersectedForUnitSquare()
         {
             var square = PolygonD2D.UnitSquare;
