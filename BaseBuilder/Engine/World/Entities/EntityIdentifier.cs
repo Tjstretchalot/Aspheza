@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using Lidgren.Network;
@@ -25,6 +26,8 @@ namespace BaseBuilder.Engine.World.Entities
 
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Archer).TypeHandle);
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Overseer).TypeHandle);
+
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(House).TypeHandle);
         }
 
         public static void Register(Type entityType, short id)

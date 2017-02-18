@@ -8,9 +8,9 @@ using BaseBuilder.Engine.Math2D.Double;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
-    public abstract class ImmobileEntity : SpriteEntity
+    public abstract class ImmobileEntity : Entity
     {
-        public ImmobileEntity(PointD2D position, PolygonD2D collisionMesh, int id, string spriteName) : base(position, collisionMesh, id, spriteName)
+        public ImmobileEntity(PointD2D position, PolygonD2D collisionMesh, int id) : base(position, collisionMesh, id)
         {
         }
 

@@ -81,6 +81,7 @@
     <Compile Include="Engine\Utility\Renderable.cs" />
     <Compile Include="Engine\World\Entities\Entity.cs" />
     <Compile Include="Engine\World\Entities\EntityIdentifier.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\House.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\ImmobileEntity.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\MobileEntity.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\Archer.cs" />
@@ -154,6 +155,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\OverseerMage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\roguelikeSheet_transparent.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\TileSet.png">

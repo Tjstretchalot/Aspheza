@@ -36,7 +36,7 @@ namespace BaseBuilder.Engine.State
         /// </summary>
         public int EntityIDCounter;
 
-        public int GetEnitityID()
+        public int GetUniqueEntityID()
         {
             return EntityIDCounter++;
         }

@@ -11,6 +11,7 @@ using BaseBuilder.Engine.World.Entities.MobileEntities;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 
 namespace BaseBuilder.Engine.Logic.WorldGen
 {
@@ -70,9 +71,14 @@ namespace BaseBuilder.Engine.Logic.WorldGen
 
         protected void InitOverseers()
         {
-            TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(5, 5), SharedGameState.GetEnitityID()));
+            TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(5, 5), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new Overseer(new PointD2D(5, 5), SharedGameState.GetUniqueEntityID()));
         }
 
+        protected void InitHouse()
+        {
+            TileWorld.AddImmobileEntity(new House(new PointD2D(7, 5), SharedGameState.GetUniqueEntityID()));
+        }
         public void Create(GraphicsDevice graphicsDevice)
         {
             var screenSize = graphicsDevice.Viewport;
@@ -84,6 +90,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             LocalGameState = new LocalGameState(new Camera(new PointD2D(0, 0), new RectangleD2D(screenSize.Width, screenSize.Height), 8), LocalPlayerID);
 
             InitOverseers();
+            InitHouse();
         }
     }
 }
