@@ -331,7 +331,21 @@ namespace BaseBuilder.Engine.Math2D.Double
 
             return IntersectionMTV(other.ProjectOntoAxis, other.UniqueUnitNormals, myPosition, otherPosition);
         }
-        
+
+        /// <summary>
+        /// Returns a list of points which correspond to the unit squares intersected on a
+        /// grid while this polygon is at myPosition.
+        /// </summary>
+        /// <param name="myPosition">The position of this polygon for this test</param>
+        /// <param name="list">
+        /// Sets to the list of points of unit squares intersected while this polygon is at myPosition. Any points in the list at the
+        /// start of the function are assumed to be reusable.
+        /// </param>
+        public void TilesIntersectedAt(PointD2D myPosition, List<PointI2D> list)
+        {
+
+        }
+
         /// <summary>
         /// Removes any vectors in the list that are parallel to each other.
         /// </summary>
