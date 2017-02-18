@@ -179,11 +179,6 @@ namespace BaseBuilder.Engine.Networking
                         }
                     }
 
-                    if(!stillWaiting)
-                    {
-                        Console.WriteLine($"We have everyones order, going to send it to everyone else");
-                    }
-
                     if (!stillWaiting)
                     {
                         Console.WriteLine($"We have everyones orders, going from Syncing to Simulating");
