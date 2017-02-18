@@ -357,6 +357,20 @@ namespace BaseBuilder.Engine.Math2D.Double
         }
 
         /// <summary>
+        /// Returns the list of tiles that are intersected when this polygon moves from no offset to xOffset, yOffset
+        /// where xOffset is -1, 0, or 1 and yOffset is -1, 0, and 1 and either xOffset or yOffset is not 0
+        /// </summary>
+        /// <remarks>
+        /// This function should have it's results cached internally and lazy loaded.
+        /// </remarks>
+        /// <param name="xOffset">The x offset to move towards from the origin</param>
+        /// <param name="yOffset">The y offset to move towards from the origin</param>
+        public List<PointI2D> TilesIntersectedWhenMovingFromOriginTo(int xOffset, int yOffset)
+        {
+            return null; // TODO
+        }
+
+        /// <summary>
         /// Removes any vectors in the list that are parallel to each other.
         /// </summary>
         /// <param name="normals">The list of vectors</param>
