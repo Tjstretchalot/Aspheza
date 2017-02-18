@@ -26,10 +26,7 @@ namespace BaseBuilder.Screens.Transitions
 
         protected Rectangle screenRect;
         protected Texture2D blackPixel;
-
-        // Skipping a few frames allows the screenshots to render. Failure to do so causes the screen to blink black.
-        private int skippedFramesCounter;
-
+        
         public FadeThroughBlackTransition(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, IScreen screen1, IScreen screen2)
         {
             this.content = content;
