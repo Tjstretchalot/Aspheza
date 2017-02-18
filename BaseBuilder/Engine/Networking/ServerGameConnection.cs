@@ -133,14 +133,13 @@ namespace BaseBuilder.Engine.Networking
 
                         var newPlayer = new Player(GetUniquePlayerID(), "not set");
                         PlayerIDsToNetConnectionUniqueIdentifier.Add(newPlayer.ID, conn.RemoteUniqueIdentifier);
+                        SharedState.Players.Add(newPlayer);
 
                         var syncPacket = (SharedGameStateDownloadPacket)Context.GetPoolFromPacketType(typeof(SharedGameStateDownloadPacket)).GetGamePacketFromPool();
                         syncPacket.SharedState = SharedState;
                         syncPacket.LocalPlayerID = newPlayer.ID;
                         SendPacket(syncPacket, Server, conn, NetDeliveryMethod.ReliableOrdered);
                         syncPacket.Recycle();
-
-                        SharedState.Players.Add(newPlayer);
                     }
 
                     ConnectionsWaitingForDownload.Clear();
