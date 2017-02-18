@@ -353,7 +353,41 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </param>
         public void TilesIntersectedAt(PointD2D myPosition, List<PointI2D> list)
         {
+            int locationX = (int)(Math.Floor(Left) + Math.Floor(myPosition.X));
+            int maxX = (int)(Math.Ceiling(Right) + Math.Ceiling(myPosition.X));
+            int locationY;
+            int minY = (int)(Math.Floor(Top) + Math.Floor(myPosition.Y));
+            int maxY = (int)(Math.Ceiling(Bottom) + Math.Ceiling(myPosition.Y));
+            int listIndex = 0;
+            PointD2D location = new PointD2D(0, 0);
 
+            for (; locationX < maxX; locationX++)
+            {
+                for (locationY = minY;  locationY < maxY; locationY++)
+                {
+                    location.X = locationX;
+                    location.Y = locationY;
+                    if (UnitSquare.Intersects(UnitSquare, myPosition, location, true))
+                    {
+                        if (listIndex < list.Count)
+                        {
+                            list[listIndex].X = locationX;
+                            list[listIndex].Y = locationY;
+                            listIndex++;
+                        }
+                        else
+                        {
+                            list.Add(new PointI2D(locationX, locationY));
+                            listIndex++;
+                        }
+                    }
+                }
+            }
+            for (int endOfList = list.Count - 1; endOfList >= listIndex; endOfList--)
+            {
+                list.RemoveAt(endOfList);
+            }
+            
         }
 
         protected Dictionary<PointI2D, HashSet<PointI2D>> _TilesIntersectedWhenMovingFromOriginToCache;

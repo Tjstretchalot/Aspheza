@@ -84,6 +84,7 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\ImmobileEntity.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\MobileEntity.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\Archer.cs" />
+    <Compile Include="Engine\World\Entities\MobileEntities\OverseerMage.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\Overseer.cs" />
     <Compile Include="Engine\World\Entities\SpriteEntity.cs" />
     <Compile Include="Engine\World\Events.cs" />
@@ -150,6 +151,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overseer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\OverseerMage.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\TileSet.png">
