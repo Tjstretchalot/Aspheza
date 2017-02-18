@@ -33,7 +33,7 @@ namespace BaseBuilder.Engine.Networking.Packets
 
         public override void LoadFrom(NetContext context, NetIncomingMessage message)
         {
-            int playerID = message.ReadInt32();
+            PlayerID = message.ReadInt32();
             int numOrders = message.ReadInt32();
 
             for(int orderNum = 0; orderNum < numOrders; orderNum++)
@@ -43,6 +43,7 @@ namespace BaseBuilder.Engine.Networking.Packets
 
                 var order = pool.GetGamePacketFromPool();
                 order.LoadFrom(context, message);
+                Orders.Add((IOrder)order);
             }
         }
 
@@ -53,7 +54,11 @@ namespace BaseBuilder.Engine.Networking.Packets
 
             foreach(var order in Orders)
             {
+                int orderId = context.GetPoolFromPacketType(order.GetType()).PacketIdentifier;
 
+                message.Write(orderId);
+
+                order.SaveTo(context, message);
             }
         }
     }
