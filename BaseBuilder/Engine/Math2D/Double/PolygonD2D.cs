@@ -356,16 +356,37 @@ namespace BaseBuilder.Engine.Math2D.Double
 
         }
 
+        protected Dictionary<PointI2D, HashSet<PointI2D>> _TilesIntersectedWhenMovingFromOriginToCache;
         /// <summary>
-        /// Returns the list of tiles that are intersected when this polygon moves from no offset to xOffset, yOffset
-        /// where xOffset is -1, 0, or 1 and yOffset is -1, 0, and 1 and either xOffset or yOffset is not 0
+        /// Returns the list of tiles that are intersected when this polygon moves from no offset to offset,
+        /// where is adjacent to the origin (including diagonals)
         /// </summary>
         /// <remarks>
         /// This function should have it's results cached internally and lazy loaded.
         /// </remarks>
-        /// <param name="xOffset">The x offset to move towards from the origin</param>
-        /// <param name="yOffset">The y offset to move towards from the origin</param>
-        public List<PointI2D> TilesIntersectedWhenMovingFromOriginTo(int xOffset, int yOffset)
+        /// <param name="offset">The offset that this polygon is moving to from the origin</param>
+        public HashSet<PointI2D> TilesIntersectedWhenMovingFromOriginTo(PointI2D offset)
+        {
+            if (offset == null)
+                throw new ArgumentNullException(nameof(offset));
+
+            HashSet<PointI2D> result;
+            if(!_TilesIntersectedWhenMovingFromOriginToCache.TryGetValue(offset, out result))
+            {
+                if (offset.X < -1 || offset.X > 1 || offset.Y < -1 || offset.Y > 1)
+                    throw new InvalidProgramException($"{offset} is not adjacent to (0, 0)");
+                if (offset.X == 0 && offset.Y == 0)
+                    throw new InvalidProgramException($"{offset} is not a valid argument to TilesIntersectedWhenMovingFromOriginTo - it implies no movement!");
+
+                result = TilesIntersectedWhenMovingFromOriginToImpl(offset);
+
+                _TilesIntersectedWhenMovingFromOriginToCache.Add(offset, result);
+            }
+
+            return result;
+        }
+
+        protected HashSet<PointI2D> TilesIntersectedWhenMovingFromOriginToImpl(PointI2D offset)
         {
             return null; // TODO
         }
