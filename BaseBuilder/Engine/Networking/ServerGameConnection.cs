@@ -156,7 +156,8 @@ namespace BaseBuilder.Engine.Networking
 
                     if (!waitingForPlayers)
                     {
-                        Console.WriteLine($"Not waiting for anyone anymore, changing from Waiting to Syncing");
+                        if(SharedState.Players.Count > 1)
+                            Console.WriteLine($"Not waiting for anyone anymore, changing from Waiting to Syncing");
                         var syncStart = Context.GetPoolFromPacketType(typeof(SyncStartPacket)).GetGamePacketFromPool() as SyncStartPacket;
                         SendPacket(syncStart);
                         syncStart.Recycle();
@@ -181,7 +182,8 @@ namespace BaseBuilder.Engine.Networking
 
                     if (!stillWaiting)
                     {
-                        Console.WriteLine($"We have everyones orders, going from Syncing to Simulating");
+                        if (SharedState.Players.Count > 1)
+                            Console.WriteLine($"We have everyones orders, going from Syncing to Simulating");
                         var simulationTime = 16; // TODO don't use a constant here
 
                         var simulateStart = Context.GetPoolFromPacketType(typeof(SimulationStartPacket)).GetGamePacketFromPool() as SimulationStartPacket;
