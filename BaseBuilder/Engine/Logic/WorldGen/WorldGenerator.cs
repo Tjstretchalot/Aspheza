@@ -72,7 +72,6 @@ namespace BaseBuilder.Engine.Logic.WorldGen
         protected void InitOverseers()
         {
             TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(5, 5), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new Overseer(new PointD2D(5, 5), SharedGameState.GetUniqueEntityID()));
         }
 
         protected void InitHouse()

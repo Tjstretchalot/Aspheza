@@ -26,6 +26,7 @@ namespace BaseBuilder.Engine.World.Entities
 
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Archer).TypeHandle);
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Overseer).TypeHandle);
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(OverseerMage).TypeHandle);
 
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(House).TypeHandle);
         }
