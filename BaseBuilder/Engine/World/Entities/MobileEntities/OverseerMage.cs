@@ -16,7 +16,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         static OverseerMage()
         {
             EntityIdentifier.Register(typeof(OverseerMage), NetID);
-            _CollisionMesh = new RectangleD2D(1, 0.875);
+            _CollisionMesh = new RectangleD2D(1, 1);
         }
         
         public OverseerMage(PointD2D position, int id) : base(position, _CollisionMesh, id, "OverseerMage")
