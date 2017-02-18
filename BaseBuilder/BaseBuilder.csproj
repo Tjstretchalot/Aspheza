@@ -82,6 +82,15 @@
     <Compile Include="Engine\World\Entities\Entity.cs" />
     <Compile Include="Engine\World\Entities\EntityIdentifier.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\House.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntityFailerTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntityRepeaterTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntityRepeatUntilFailTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntitySelectorTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntitySequenceTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntitySucceederTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntityTaskStatus.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\IEntityTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\ITaskable.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\ImmobileEntity.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\MobileEntity.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\Archer.cs" />
