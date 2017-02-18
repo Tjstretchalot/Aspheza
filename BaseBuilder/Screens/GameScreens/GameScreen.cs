@@ -74,7 +74,7 @@ namespace BaseBuilder.Screens.GameScreens
             renderContext.Camera = localGameState.Camera;
             renderContext.DebugFont = debugFont;
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             sharedGameState.World.Render(renderContext);
 
             //spriteBatch.DrawString(debugFont, $"Camera Location: {localGameState.Camera.WorldTopLeft}; Camera Zoom: {localGameState.Camera.Zoom}", new Vector2(5, 5), Color.White);
