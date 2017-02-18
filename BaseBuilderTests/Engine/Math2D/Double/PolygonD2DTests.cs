@@ -66,13 +66,7 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
         [Test(Description = "Test that the TilesIntersectedAt handles a unit square correctly"]
         public void TilesIntersectedForUnitSquare()
         {
-            var square = new PolygonD2D(new List<PointD2D>
-            {
-                new PointD2D(0, 0),
-                new PointD2D(0, 1),
-                new PointD2D(1, 1),
-                new PointD2D(1, 0),
-            });
+            var square = PolygonD2D.UnitSquare;
 
             var tiles = new List<PointI2D>();
 
@@ -130,17 +124,30 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
             {
                 if(tile.X == 0 && tile.Y == 0)
                 {
+                    if(found[0])
+                        Assert.Fail($"Unit square at (0, 0.5) intersects (0, 0), (1, 0), (1, 1), and (0, 1) but the result from PolygonD2D#TilesIntersectedAt contained (0, 0) twice! {tiles}");
                     found[0] = true;
                 }else if (tile.X == 1 && tile.Y == 0)
                 {
+                    if (found[1])
+                        Assert.Fail($"Unit square at (0, 0.5) intersects (0, 0), (1, 0), (1, 1), and (0, 1) but the result from PolygonD2D#TilesIntersectedAt contained (1, 0) twice! {tiles}");
+
                     found[1] = true;
                 }
                 else if (tile.X == 1 && tile.Y == 1)
                 {
+
+                    if (found[2])
+                        Assert.Fail($"Unit square at (0, 0.5) intersects (0, 0), (1, 0), (1, 1), and (0, 1) but the result from PolygonD2D#TilesIntersectedAt contained (1, 1) twice! {tiles}");
+
                     found[2] = true;
                 }
                 else if (tile.X == 0 && tile.Y == 1)
                 {
+
+                    if (found[3])
+                        Assert.Fail($"Unit square at (0, 0.5) intersects (0, 0), (1, 0), (1, 1), and (0, 1) but the result from PolygonD2D#TilesIntersectedAt contained (0, 1) twice! {tiles}");
+
                     found[3] = true;
                 }else
                 {
