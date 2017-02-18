@@ -60,7 +60,6 @@ namespace BaseBuilder.Engine.Networking
         {
             if(Connected)
             {
-                Console.WriteLine($"handling simulate start packet");
                 OnSimulateStart(packet.SimulationTime);
             }
         }
@@ -70,7 +69,6 @@ namespace BaseBuilder.Engine.Networking
         {
             if (Connected)
             {
-                Console.WriteLine($"handling sync start packet");
                 OnSyncStart();
             }
         }

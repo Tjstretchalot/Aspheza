@@ -82,7 +82,6 @@ namespace BaseBuilder.Engine.Networking
                     var id = msg.ReadInt32();
                     var pool = Context.GetPoolFromPacketID(id);
                     var packet = pool.GetGamePacket(Context, msg);
-                    Console.WriteLine($"Recieved packet {packet.GetType().Name}");
                     ReflectivePacketHandlerObj.BroadcastPacket(packet);
                     peer.Recycle(msg);
                     break;
