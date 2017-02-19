@@ -29,6 +29,7 @@ namespace BaseBuilder.Engine.World.Entities
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(OverseerMage).TypeHandle);
 
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(House).TypeHandle);
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MageTower).TypeHandle);
         }
 
         public static void Register(Type entityType, short id)

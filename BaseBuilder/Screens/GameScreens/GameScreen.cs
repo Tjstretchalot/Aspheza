@@ -72,6 +72,7 @@ namespace BaseBuilder.Screens.GameScreens
             renderContext.SpriteBatch = spriteBatch;
             renderContext.Content = content;
             renderContext.Camera = localGameState.Camera;
+            renderContext.GraphicsDevice = graphicsDevice;
             renderContext.DebugFont = debugFont;
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);

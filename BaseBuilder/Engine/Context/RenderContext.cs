@@ -16,6 +16,7 @@ namespace BaseBuilder.Engine.Context
     {
         public ContentManager Content;
         public GraphicsDeviceManager Graphics;
+        public GraphicsDevice GraphicsDevice;
         public SpriteBatch SpriteBatch;
         public Camera Camera;
         public SpriteFont DebugFont;

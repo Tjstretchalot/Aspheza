@@ -244,3 +244,6 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /BaseBuilder/Content/TopDownToken.jpg
+/BaseBuilder/Content/copymagetower.png
+/BaseBuilder/Content/copymagetower2.png
+/BaseBuilder/Content/copymagetower3.png

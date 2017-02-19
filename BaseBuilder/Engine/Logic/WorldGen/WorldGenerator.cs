@@ -74,10 +74,12 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(5, 5), SharedGameState.GetUniqueEntityID()));
         }
 
-        protected void InitHouse()
+        protected void InitBuildings()
         {
             TileWorld.AddImmobileEntity(new House(new PointD2D(7, 5), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(new MageTower(new PointD2D(10, 5), SharedGameState.GetUniqueEntityID()));
         }
+        
         public void Create(GraphicsDevice graphicsDevice)
         {
             var screenSize = graphicsDevice.Viewport;
@@ -89,7 +91,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             LocalGameState = new LocalGameState(new Camera(new PointD2D(0, 0), new RectangleD2D(screenSize.Width, screenSize.Height), 8), LocalPlayerID);
 
             InitOverseers();
-            InitHouse();
+            InitBuildings();
         }
     }
 }
