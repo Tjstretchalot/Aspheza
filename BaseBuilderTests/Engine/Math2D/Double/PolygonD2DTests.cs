@@ -63,6 +63,12 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
             Assert.IsTrue(triangle.Contains(point));
         }
 
+        [Test(Description = "Test components of polygon intersection")]
+        public void PolygonIntersection()
+        {
+            Assert.IsFalse(PolygonD2D.UnitSquare.Intersects(PolygonD2D.UnitSquare, new PointD2D(1, 0)));
+        }
+
         [Test(Description = "Test that the TilesIntersectedAt handles a unit square correctly")]
         public void TilesIntersectedForUnitSquare()
         {
