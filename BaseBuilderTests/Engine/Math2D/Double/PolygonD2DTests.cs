@@ -108,7 +108,8 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
                     if (found01)
                         Assert.Fail("Unit square at (0, 0.5) intersects (0, 0) and (0, 1) but the result from PolygonD2D#TilesIntersectedAt contained (0, 1) twice (no (0, 0))!");
                     found01 = true;
-                }else
+                }
+                else
                 {
                     Assert.Fail($"Unit square at (0, 0.5) intersects (0, 0) and (0, 1) but got odd tile from PolygonD2D#TilesIntersectedAt: ({tile.X}, {tile.Y}) (tiles={tiles})");
                 }
@@ -126,14 +127,15 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
 
             bool[] found = new[] { false, false, false, false };
 
-            foreach(var tile in tiles)
+            foreach (var tile in tiles)
             {
-                if(tile.X == 0 && tile.Y == 0)
+                if (tile.X == 0 && tile.Y == 0)
                 {
-                    if(found[0])
+                    if (found[0])
                         Assert.Fail($"Unit square at (0, 0.5) intersects (0, 0), (1, 0), (1, 1), and (0, 1) but the result from PolygonD2D#TilesIntersectedAt contained (0, 0) twice! {tiles}");
                     found[0] = true;
-                }else if (tile.X == 1 && tile.Y == 0)
+                }
+                else if (tile.X == 1 && tile.Y == 0)
                 {
                     if (found[1])
                         Assert.Fail($"Unit square at (0, 0.5) intersects (0, 0), (1, 0), (1, 1), and (0, 1) but the result from PolygonD2D#TilesIntersectedAt contained (1, 0) twice! {tiles}");
@@ -155,7 +157,8 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
                         Assert.Fail($"Unit square at (0, 0.5) intersects (0, 0), (1, 0), (1, 1), and (0, 1) but the result from PolygonD2D#TilesIntersectedAt contained (0, 1) twice! {tiles}");
 
                     found[3] = true;
-                }else
+                }
+                else
                 {
                     Assert.Fail($"Unit square at (0.5, 0.5) intersects (0, 0), (0, 1), (1, 0), and (1, 1) but got odd tile from PolygonD2D#TilesIntersectedAt: ({tile.X}, {tile.Y}) (tiles={tiles})");
                 }
@@ -176,8 +179,72 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
         public void TilesIntersectedDuringMoveForUnitSquare()
         {
             var square = PolygonD2D.UnitSquare;
+            var offset = new PointI2D(0, 1);
+            HashSet<PointI2D> hash;
 
-            // TODO test all the things
+            hash = square.TilesIntersectedWhenMovingFromOriginTo(offset);
+
+            Assert.AreEqual(2, hash.Count);
+            Assert.IsTrue(hash.Contains(new PointI2D(0, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(0, 1)));
+
+            offset.X = 1;
+            offset.Y = 1;
+
+            hash = square.TilesIntersectedWhenMovingFromOriginTo(offset);
+
+            Assert.AreEqual(4, hash.Count);
+            Assert.IsTrue(hash.Contains(new PointI2D(0, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(0, 1)));
+            Assert.IsTrue(hash.Contains(new PointI2D(1, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(1, 1)));
+
+            offset.X = -1;
+            offset.Y = -1;
+
+            hash = square.TilesIntersectedWhenMovingFromOriginTo(offset);
+
+            Assert.AreEqual(4, hash.Count);
+            Assert.IsTrue(hash.Contains(new PointI2D(0, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(0, -1)));
+            Assert.IsTrue(hash.Contains(new PointI2D(-1, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(-1, -1)));
+            
+            // Larger square
+            var polygon = new PolygonD2D(new List<PointD2D> { new PointD2D(0, 0), new PointD2D(0, 1.5), new PointD2D(1.5, 1.5), new PointD2D(1.5, 0) });
+
+            offset.X = 1;
+            offset.Y = 1;
+
+            hash = polygon.TilesIntersectedWhenMovingFromOriginTo(offset);
+
+            Assert.AreEqual(9, hash.Count);
+            Assert.IsTrue(hash.Contains(new PointI2D(0, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(0, 1)));
+            Assert.IsTrue(hash.Contains(new PointI2D(0, 2)));
+            Assert.IsTrue(hash.Contains(new PointI2D(1, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(1, 1)));
+            Assert.IsTrue(hash.Contains(new PointI2D(1, 2)));
+            Assert.IsTrue(hash.Contains(new PointI2D(2, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(2, 1)));
+            Assert.IsTrue(hash.Contains(new PointI2D(2, 2)));
+
+            offset.X = -1;
+            offset.Y = -1;
+
+            hash = polygon.TilesIntersectedWhenMovingFromOriginTo(offset);
+
+            Assert.AreEqual(9, hash.Count);
+            Assert.IsTrue(hash.Contains(new PointI2D(-1, -1)));
+            Assert.IsTrue(hash.Contains(new PointI2D(-1, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(-1, 1)));
+            Assert.IsTrue(hash.Contains(new PointI2D(0, -1)));
+            Assert.IsTrue(hash.Contains(new PointI2D(0, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(0, -1)));
+            Assert.IsTrue(hash.Contains(new PointI2D(1, -1)));
+            Assert.IsTrue(hash.Contains(new PointI2D(1, 0)));
+            Assert.IsTrue(hash.Contains(new PointI2D(1, 1)));
         }
+        
     }
 }

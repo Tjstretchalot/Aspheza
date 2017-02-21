@@ -405,6 +405,8 @@ namespace BaseBuilder.Engine.Math2D.Double
                 throw new ArgumentNullException(nameof(offset));
 
             HashSet<PointI2D> result;
+            if (_TilesIntersectedWhenMovingFromOriginToCache == null)
+                _TilesIntersectedWhenMovingFromOriginToCache = new Dictionary<PointI2D, HashSet<PointI2D>>();
             if(!_TilesIntersectedWhenMovingFromOriginToCache.TryGetValue(offset, out result))
             {
                 if (offset.X < -1 || offset.X > 1 || offset.Y < -1 || offset.Y > 1)
@@ -422,7 +424,42 @@ namespace BaseBuilder.Engine.Math2D.Double
 
         protected HashSet<PointI2D> TilesIntersectedWhenMovingFromOriginToImpl(PointI2D offset)
         {
-            return null; // TODO
+            PointD2D start = new PointD2D(0, 0);
+            HashSet <PointI2D> result = new HashSet<PointI2D>();
+            List<PointD2D> lineVertices = new List<PointD2D> { new PointD2D(0,0), new PointD2D(0, 0) };
+
+            foreach (PointD2D vertices in Vertices)
+            {
+                lineVertices[0] = vertices;
+                lineVertices[1].X = vertices.X + offset.X;
+                lineVertices[1].Y = vertices.Y + offset.Y;
+
+                var line = new FiniteLineD2D(lineVertices[0], lineVertices[1]);
+                
+                var list = line.GetTilesIntersected(true);
+
+                foreach (PointI2D point in list)
+                {
+                    result.Add(point);
+                }
+            }
+
+            List<PointI2D> list2 = new List<PointI2D>();
+            TilesIntersectedAt(start, list2);
+
+            foreach (PointI2D point in list2)
+            {
+                result.Add(point);
+            }
+            List<PointI2D> list3 = new List<PointI2D>();
+            TilesIntersectedAt(new PointD2D(offset.X, offset.Y), list3);
+
+            foreach (PointI2D point in list3)
+            {
+                result.Add(point);
+            }
+
+            return result;
         }
 
         /// <summary>
