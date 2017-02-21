@@ -1,4 +1,6 @@
 ﻿using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.Logic.Orders;
+using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework;
@@ -41,7 +43,7 @@ namespace BaseBuilder.Engine.Logic
             cameraPartialTopLeft = new PointD2D(0, 0);
         }
 
-        protected void CheckForMoveOrder(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        protected void CheckForMoveOrder(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS)
         {
             var world = sharedGameState.World;
             var camera = localGameState.Camera;
@@ -56,7 +58,11 @@ namespace BaseBuilder.Engine.Logic
                 
                 if (localGameState.SelectedEntity != null)
                 {
-                    Console.WriteLine("Issue move order to enitity ID " + localGameState.SelectedEntity.ID + " To (" + mouseWorldX + ", " + mouseWorldY + ").");
+                    //Console.WriteLine($"Issue move order to enitity ID {localGameState.SelectedEntity.ID} To ({mouseWorldX} {mouseWorldY}).");
+                    var moveOrder = netContext.GetPoolFromPacketType(typeof(MoveOrder)).GetGamePacketFromPool() as MoveOrder;
+                    moveOrder.EntityID = localGameState.SelectedEntity.ID;
+                    moveOrder.End = new PointI2D((int)mouseWorldX, (int)mouseWorldY);
+                    localGameState.Orders.Add(moveOrder);
                 }
             }
             previousRightMouseButtonState = Mouse.GetState().RightButton;
@@ -179,7 +185,7 @@ namespace BaseBuilder.Engine.Logic
             CheckForColisionDebugUpadate(sharedGameState, localGameState, elapsedMS);
             CheckForSelect(sharedGameState, localGameState, elapsedMS);
             UpdateCamera(sharedGameState, localGameState, elapsedMS);
-            CheckForMoveOrder(sharedGameState, localGameState, elapsedMS);
+            CheckForMoveOrder(sharedGameState, localGameState, netContext, elapsedMS);
         }
     }
 }
