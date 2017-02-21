@@ -49,11 +49,17 @@ namespace BaseBuilder.Engine.Math2D
 
         public static bool operator ==(PointI2D p1, PointI2D p2)
         {
+            if (ReferenceEquals(p1, null) || ReferenceEquals(p2, null))
+                return ReferenceEquals(p1, p2);
+
             return p1.X == p2.X && p1.Y == p2.Y;
         }
 
         public static bool operator !=(PointI2D p1, PointI2D p2)
         {
+            if (ReferenceEquals(p1, null) || ReferenceEquals(p2, null))
+                return !ReferenceEquals(p1, p2);
+
             return p1.X != p2.X || p1.Y != p2.Y;
         }
 
