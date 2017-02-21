@@ -22,6 +22,7 @@ namespace BaseBuilder.Engine.Logic
         protected int previousScrollWheelValue;
         protected bool previousDKeyState;
         protected Microsoft.Xna.Framework.Input.ButtonState previousLeftMouseButtonState;
+        protected Microsoft.Xna.Framework.Input.ButtonState previousRightMouseButtonState;
 
         protected int minCameraZoom;
         protected double cameraSpeed;
@@ -39,7 +40,28 @@ namespace BaseBuilder.Engine.Logic
 
             cameraPartialTopLeft = new PointD2D(0, 0);
         }
-        
+
+        protected void CheckForMoveOrder(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        {
+            var world = sharedGameState.World;
+            var camera = localGameState.Camera;
+
+            if ((Mouse.GetState().RightButton != previousRightMouseButtonState) && (previousRightMouseButtonState == ButtonState.Pressed))
+            {
+                double mousePixelX = Mouse.GetState().Position.X, mousePixelY = Mouse.GetState().Position.Y;
+                double mouseWorldX, mouseWorldY;
+                camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out mouseWorldX, out mouseWorldY);
+                mouseWorldX = (int)mouseWorldX;
+                mouseWorldY = (int)mouseWorldY;
+                
+                if (localGameState.SelectedEntity != null)
+                {
+                    Console.WriteLine("Issue move order to enitity ID " + localGameState.SelectedEntity.ID + " To (" + mouseWorldX + ", " + mouseWorldY + ").");
+                }
+            }
+            previousRightMouseButtonState = Mouse.GetState().RightButton;
+        }
+
         protected void CheckForSelect(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
         {
             var world = sharedGameState.World;
@@ -64,7 +86,6 @@ namespace BaseBuilder.Engine.Logic
                     localGameState.SelectedEntity = entity;
                     previousLeftMouseButtonState = Mouse.GetState().LeftButton;
                     return;
-
                 }
 
                 if (localGameState.SelectedEntity == null)
@@ -77,7 +98,6 @@ namespace BaseBuilder.Engine.Logic
                     localGameState.SelectedEntity = entity;
                     entity.Selected = true;
                 }
-
             }
             previousLeftMouseButtonState = Mouse.GetState().LeftButton;
         }
@@ -159,6 +179,7 @@ namespace BaseBuilder.Engine.Logic
             CheckForColisionDebugUpadate(sharedGameState, localGameState, elapsedMS);
             CheckForSelect(sharedGameState, localGameState, elapsedMS);
             UpdateCamera(sharedGameState, localGameState, elapsedMS);
+            CheckForMoveOrder(sharedGameState, localGameState, elapsedMS);
         }
     }
 }
