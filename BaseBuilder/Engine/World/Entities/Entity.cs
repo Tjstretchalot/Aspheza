@@ -59,6 +59,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// </summary>
         protected Entity()
         {
+            Tasks = new Queue<IEntityTask>();
         }
         
         public virtual void FromMessage(NetIncomingMessage message)
