@@ -106,6 +106,16 @@ namespace BaseBuilder.Engine.Math2D.Double
         }
 
         /// <summary>
+        /// Returns the dot product of this point with the other point
+        /// </summary>
+        /// <param name="other">The other point</param>
+        /// <returns>this . other</returns>
+        public double DotProduct(PointD2D other)
+        {
+            return DotProduct(other.X, other.Y);
+        }
+
+        /// <summary>
         /// Returns the dot product of (x1 + shift1.X, y1 + shift1.Y) and (x2, shift2.X, y2 + shift2.Y). For shifts, null
         /// is assumed to mean the origin.
         /// </summary>

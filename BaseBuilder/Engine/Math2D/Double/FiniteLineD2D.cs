@@ -373,12 +373,15 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>X at y</returns>
         public double? XAt(double y)
         {
-            if (Vertical)
+            if (Horizontal)
             {
                 return null;
             }
             else
             {
+                if (Vertical)
+                    return Start.X; // this makes it act the same as YAt when slope is 0
+
                 return ((y - YIntercept) / Slope);
             }
         }
@@ -393,7 +396,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>Y at x</returns>
         public double? YAt(double x)
         {
-            if (Horizontal)
+            if (Vertical)
             {
                 return null;
             }
@@ -566,6 +569,143 @@ namespace BaseBuilder.Engine.Math2D.Double
             var end = axis.DeltaX * (endX + (shift == null ? 0 : shift.X)) + axis.DeltaY * (endY + (shift == null ? 0 : shift.Y));
 
             return new OneDimensionalLine(axis, start, end);
+        }
+
+        /// <summary>
+        /// Returns the list of locations that this line intersects
+        /// </summary>
+        /// <returns>Tiles intersected by this line</returns>
+        public HashSet<PointI2D> GetTilesIntersected(bool strict = false)
+        {
+            var points = new HashSet<PointI2D>();
+
+            var currentPoint = new PointD2D(Start.X, Start.Y);
+
+            if (strict && Horizontal && (currentPoint.Y == (int)currentPoint.Y))
+                return points;
+
+            if (strict && Vertical && (currentPoint.X == (int)currentPoint.X))
+                return points;
+
+            if (strict)
+            {
+                while (currentPoint.X == (int)currentPoint.X || currentPoint.Y == (int)currentPoint.Y)
+                {
+                    const double dist = 0.05;
+                    currentPoint += Axis.UnitVector.Scale(dist).AsPointD2D();
+                }
+            }
+
+            bool incrementingX = End.X > Start.X;
+            bool incrementingY = End.Y > Start.Y;
+            while (true)
+            {
+                int currentTileX;
+                if (!strict || incrementingX || currentPoint.X != (int)currentPoint.X)
+                    currentTileX = (int)Math.Floor(currentPoint.X);
+                else
+                    currentTileX = (int)currentPoint.X - 1;
+
+                int currentTileY;
+                if(!strict || incrementingY || currentPoint.Y != (int)currentPoint.Y)
+                    currentTileY = (int)Math.Floor(currentPoint.Y);
+                else
+                    currentTileY = (int)currentPoint.Y - 1;
+
+                var currentTile = new PointI2D(currentTileX, currentTileY);
+
+                if(!strict)
+                {
+                    if (currentPoint.X == (int)currentPoint.X)
+                    {
+                        points.Add(new PointI2D(currentTile.X - 1, currentTile.Y));
+                    }
+
+                    if (currentPoint.Y == (int)currentPoint.Y)
+                    {
+                        points.Add(new PointI2D(currentTile.X, currentTile.Y - 1));
+                    }
+
+                    if (currentPoint.X == (int)currentPoint.X && currentPoint.Y == (int)currentPoint.Y)
+                    {
+                        points.Add(new PointI2D(currentTile.X - 1, currentTile.Y - 1));
+                    }
+                }
+
+                points.Add(currentTile);
+
+                double distSq = double.MaxValue;
+                PointD2D nextPoint = null;
+                if (!Horizontal)
+                {
+                    int nextY;
+                    bool done;
+                    if (incrementingY)
+                    {
+                        nextY = (int)Math.Floor(currentPoint.Y) + 1;
+                        done = nextY > MaxY || (strict && nextY == MaxY);
+                    }
+                    else
+                    {
+                        nextY = (int)Math.Ceiling(currentPoint.Y) - 1;
+                        done = nextY < MinY || (strict && nextY == MinY);
+                    }
+
+                    if (!done)
+                    {
+                        var xAtNextY = XAt(nextY).Value;
+
+                        var nextYPoint = new PointD2D(xAtNextY, nextY);
+                        var distToNextYPointSq = (nextYPoint - currentPoint).AsVectorD2D().MagnitudeSquared;
+
+                        if (distToNextYPointSq < distSq)
+                        {
+                            distSq = distToNextYPointSq;
+                            nextPoint = nextYPoint;
+                        }
+                    }
+                }
+
+                if(!Vertical)
+                {
+                    int nextX;
+                    bool done;
+                    if (incrementingX)
+                    {
+                        nextX = (int)Math.Floor(currentPoint.X) + 1;
+                        done = nextX > MaxX || (strict && nextX == MaxX);
+                    }
+                    else
+                    {
+                        nextX = (int)Math.Ceiling(currentPoint.X) - 1;
+                        done = nextX < MinX || (strict && nextX == MinX);
+                    }
+
+
+                    if (!done)
+                    {
+                        var yAtNextX = YAt(nextX).Value;
+
+                        var nextXPoint = new PointD2D(nextX, yAtNextX);
+                        var distToNextXPointSq = (nextXPoint - currentPoint).AsVectorD2D().MagnitudeSquared;
+
+                        if(distToNextXPointSq < distSq)
+                        {
+                            distSq = distToNextXPointSq;
+                            nextPoint = nextXPoint;
+                        }
+                    }
+                }
+
+
+                if (nextPoint == null)
+                {
+                    return points;
+                }
+                    
+                
+                currentPoint = nextPoint;
+            }
         }
 
         public override string ToString()

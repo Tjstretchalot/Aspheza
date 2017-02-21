@@ -201,5 +201,159 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
             Assert.IsFalse(line1.Intersects(line2, strict: true), "{0}.Intersects({1}, strict: true)", line1, line2);
             Assert.IsFalse(line2.Intersects(line1, strict: true), "{0}.Intersects({1}, strict: true)", line2, line1);
         }
+
+        [Test(Description = "Intersects tiles handles standard lines correctly")]
+        public void TilesIntersectedForNormalLines()
+        {
+            Action<HashSet<PointI2D>, HashSet<PointI2D>, FiniteLineD2D> checkResult = (exp, act, testLine) =>
+            {
+                var errorMess = $"Expected {string.Join(",", exp)} but got {string.Join(",", act)} for {testLine}";
+                Assert.IsTrue(exp.Count == act.Count, errorMess);
+                
+                foreach(var p in act)
+                {
+                    if(!exp.Contains(p))
+                    {
+                        Assert.Fail($"{errorMess} [act has {p} which is not in exp]");
+                    }
+                }
+            };
+
+            var line = new FiniteLineD2D(new PointD2D(0.5, 0.5), new PointD2D(1.5, 0.5));
+            var tilesExp = new HashSet<PointI2D> { new PointI2D(0, 0), new PointI2D(1, 0) };
+            var tilesAct = line.GetTilesIntersected();
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(0.5, 0.5), new PointD2D(0.5, 1.5));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(0, 0), new PointI2D(0, 1) };
+            tilesAct = line.GetTilesIntersected();
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(0.5, 0.8), new PointD2D(1.2, 1.5));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(0, 0), new PointI2D(0, 1), new PointI2D(1, 1) };
+            tilesAct = line.GetTilesIntersected();
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(-1.5, -0.3), new PointD2D(-2.5, -1.1));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(-2, -1), new PointI2D(-3, -1), new PointI2D(-3, -2) };
+            tilesAct = line.GetTilesIntersected();
+            checkResult(tilesExp, tilesAct, line);
+        }
+
+        [Test(Description = "Intersects tiles handles strictness correctly when strict=true")]
+        public void TilesIntersectedWhenStrictTrue()
+        {
+            Action<HashSet<PointI2D>, HashSet<PointI2D>, FiniteLineD2D> checkResult = (exp, act, testLine) =>
+            {
+                var errorMess = $"Expected {string.Join(",", exp)} but got {string.Join(",", act)} for {testLine}";
+                Assert.IsTrue(exp.Count == act.Count, errorMess);
+
+                foreach (var p in act)
+                {
+                    if (!exp.Contains(p))
+                    {
+                        Assert.Fail($"{errorMess} [act has {p} which is not in exp]");
+                    }
+                }
+            };
+
+            var line = new FiniteLineD2D(new PointD2D(0, 0), new PointD2D(0.5, 0.5));
+            var tilesExp = new HashSet<PointI2D> { new PointI2D(0, 0) };
+            var tilesAct = line.GetTilesIntersected(strict: true);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(0, 0), new PointD2D(1, 1));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(0, 0) };
+            tilesAct = line.GetTilesIntersected(strict: true);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(0.5, 0.5), new PointD2D(1.5, 1.5));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(0, 0), new PointI2D(1, 1) };
+            tilesAct = line.GetTilesIntersected(strict: true);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(1.7, 1.5), new PointD2D(2.5, 1));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(1, 1), new PointI2D(2, 1) };
+            tilesAct = line.GetTilesIntersected(strict: true);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(1.7, 1.5), new PointD2D(2.5, 2));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(1, 1), new PointI2D(2, 1) };
+            tilesAct = line.GetTilesIntersected(strict: true);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(1.7, 1.5), new PointD2D(3, 2));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(1, 1), new PointI2D(2, 1) };
+            tilesAct = line.GetTilesIntersected(strict: true);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(1, 1.5), new PointD2D(2.5, 2));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(1, 1), new PointI2D(2, 1) };
+            tilesAct = line.GetTilesIntersected(strict: true);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(-3, 1.5), new PointD2D(-2, -1));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(-3, 1), new PointI2D(-3, 0), new PointI2D(-3, -1) };
+            tilesAct = line.GetTilesIntersected(strict: true);
+            checkResult(tilesExp, tilesAct, line);
+        }
+
+        [Test(Description = "Intersects tiles handles strictness correctly when strict=false")]
+        public void TilesIntersectedWhenStrictFalse()
+        {
+            Action<HashSet<PointI2D>, HashSet<PointI2D>, FiniteLineD2D> checkResult = (exp, act, testLine) =>
+            {
+                var errorMess = $"Expected {string.Join(",", exp)} but got {string.Join(",", act)} for {testLine}";
+                Assert.IsTrue(exp.Count == act.Count, errorMess);
+
+                foreach (var p in act)
+                {
+                    if (!exp.Contains(p))
+                    {
+                        Assert.Fail($"{errorMess} [act has {p} which is not in exp]");
+                    }
+                }
+            };
+
+            var line = new FiniteLineD2D(new PointD2D(0, 0), new PointD2D(0.5, 0.5));
+            var tilesExp = new HashSet<PointI2D> { new PointI2D(0, 0), new PointI2D(-1, 0), new PointI2D(-1, -1), new PointI2D(0, -1) };
+            var tilesAct = line.GetTilesIntersected(strict: false);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(0, 0), new PointD2D(1, 1));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(-1, -1), new PointI2D(0, -1), new PointI2D(-1, 0), new PointI2D(0, 0), new PointI2D(1, 0), new PointI2D(0, 1), new PointI2D(1, 1), };
+            tilesAct = line.GetTilesIntersected(strict: false);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(0.5, 0.5), new PointD2D(1.5, 1.5));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(0, 0), new PointI2D(1, 0), new PointI2D(0, 1), new PointI2D(1, 1), };
+            tilesAct = line.GetTilesIntersected(strict: false);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(1.7, 1.5), new PointD2D(2.5, 1));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(2, 0), new PointI2D(1, 1), new PointI2D(2, 1) };
+            tilesAct = line.GetTilesIntersected(strict: false);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(1.7, 1.5), new PointD2D(2.5, 2));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(1, 1), new PointI2D(2, 1), new PointI2D(2, 2) };
+            tilesAct = line.GetTilesIntersected(strict: false);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(1.7, 1.5), new PointD2D(3, 2));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(1, 1), new PointI2D(2, 1), new PointI2D(3, 1), new PointI2D(2, 2), new PointI2D(3, 2) };
+            tilesAct = line.GetTilesIntersected(strict: false);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(1, 1.5), new PointD2D(2.5, 2));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(0, 1), new PointI2D(1, 1), new PointI2D(2, 1), new PointI2D(2, 2) };
+            tilesAct = line.GetTilesIntersected(strict: false);
+            checkResult(tilesExp, tilesAct, line);
+
+            line = new FiniteLineD2D(new PointD2D(-3, 1.5), new PointD2D(-2, -1));
+            tilesExp = new HashSet<PointI2D> { new PointI2D(-3, -2), new PointI2D(-2, -2), new PointI2D(-3, -1), new PointI2D(-2, -1), new PointI2D(-3, 0), new PointI2D(-4, 1), new PointI2D(-3, 1) };
+            tilesAct = line.GetTilesIntersected(strict: false);
+            checkResult(tilesExp, tilesAct, line);
+        }
     }
 }

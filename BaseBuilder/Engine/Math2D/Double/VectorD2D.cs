@@ -52,6 +52,24 @@ namespace BaseBuilder.Engine.Math2D.Double
             }
         }
 
+        protected double? _MagnitudeSquared;
+
+        /// <summary>
+        /// The squared magnitude of this vector
+        /// </summary>
+        public double MagnitudeSquared
+        {
+            get
+            {
+                if (!_MagnitudeSquared.HasValue)
+                {
+                    _MagnitudeSquared = (DeltaX * DeltaX) + (DeltaY * DeltaY);
+                }
+
+                return _MagnitudeSquared.Value;
+            }
+        }
+
         protected double? _Magnitude;
 
         /// <summary>
@@ -63,7 +81,7 @@ namespace BaseBuilder.Engine.Math2D.Double
             {
                 if (!_Magnitude.HasValue)
                 {
-                    _Magnitude = Math.Sqrt(((DeltaX * DeltaX) + (DeltaY * DeltaY)));
+                    _Magnitude = Math.Sqrt(MagnitudeSquared);
                 }
 
                 return _Magnitude.Value;
