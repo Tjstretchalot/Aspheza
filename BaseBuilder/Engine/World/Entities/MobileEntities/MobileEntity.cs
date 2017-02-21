@@ -10,8 +10,11 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
     public abstract class MobileEntity : SpriteEntity
     {
-        public MobileEntity(PointD2D position, PolygonD2D collisionMesh, int id, string spriteName) : base(position, collisionMesh, id, spriteName)
+        public double SpeedUnitPerMS;
+
+        public MobileEntity(PointD2D position, PolygonD2D collisionMesh, int id, string spriteName, double speed) : base(position, collisionMesh, id, spriteName)
         {
+            SpeedUnitPerMS = speed;
         }
 
         /// <summary>
