@@ -17,7 +17,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         protected static List<Tuple<Rectangle, PointD2D>> _SourceRectsToOffsetLocations;
         protected static string _SheetName;
 
-        private static short NetId = 1001;
+        private static short NetId = 1002;
         private static PolygonD2D _CollisionMesh;
 
         static MageTower()
