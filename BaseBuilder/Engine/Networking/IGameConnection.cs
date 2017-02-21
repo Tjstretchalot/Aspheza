@@ -17,6 +17,12 @@ namespace BaseBuilder.Engine.Networking
     public interface IGameConnection
     {
         /// <summary>
+        /// The context that the networking is in. This is required to issue
+        /// new orders.
+        /// </summary>
+        NetContext Context { get; }
+
+        /// <summary>
         /// The game connection will consider reconciling the local game state with the
         /// shared game state at this time, and/or simulating the passing of time.
         /// </summary>

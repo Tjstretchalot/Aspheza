@@ -174,7 +174,7 @@ namespace BaseBuilder.Engine.Logic
         /// </summary>
         /// <param name="sharedGameState">The shared game state for reference</param>
         /// <param name="localGameState">The local game state, for reference and modification.</param>
-        public void HandleUserInput(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        public void HandleUserInput(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS)
         {
             CheckForColisionDebugUpadate(sharedGameState, localGameState, elapsedMS);
             CheckForSelect(sharedGameState, localGameState, elapsedMS);

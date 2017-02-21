@@ -57,7 +57,7 @@ namespace BaseBuilder.Screens.GameScreens
         
         public void Update(int deltaMS)
         {
-            localGameLogic.HandleUserInput(sharedGameState, localGameState, deltaMS);
+            localGameLogic.HandleUserInput(sharedGameState, localGameState, gameConnection.Context, deltaMS);
 
             gameConnection.ConsiderGameUpdate();
         }
