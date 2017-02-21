@@ -23,9 +23,7 @@ namespace BaseBuilder.Engine.Networking
         public SharedGameState SharedState;
         public SharedGameLogic SharedLogic;
 
-        protected NetContext Context;
-
-        protected Dictionary<Type, MethodBase> PacketTypesToMethodBases;
+        public NetContext Context;
 
         protected ReflectivePacketHandler ReflectivePacketHandlerObj;
 
