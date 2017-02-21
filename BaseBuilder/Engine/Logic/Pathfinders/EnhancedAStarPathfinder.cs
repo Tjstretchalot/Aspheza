@@ -55,7 +55,7 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
         /// <param name="start">The start of the path</param>
         /// <param name="end">The end of the path</param>
         /// <returns>The path to travel if one can be found, null if no path can be found</returns>
-        public UnitPath? CalculatePath(TileWorld world, MobileEntity entity, PointI2D start, PointI2D end)
+        public UnitPath CalculatePath(TileWorld world, MobileEntity entity, PointI2D start, PointI2D end)
         {
             Init(world, entity, start, end);
             var path = CalculatePathImpl();
@@ -64,7 +64,7 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
             return path;
         }
 
-        protected UnitPath? CalculatePathImpl()
+        protected UnitPath CalculatePathImpl()
         {
             AddToOpen(new WorkingAStarNode(null, Start, Heuristic(Start), 0));
 

@@ -15,9 +15,9 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
     /// <remarks>
     /// Room is left open to optimize this 
     /// </remarks>
-    public struct UnitPath
+    public class UnitPath
     {
-        internal AStarNode CurrentNode;
+        private AStarNode CurrentNode;
 
         internal UnitPath(AStarNode first)
         {

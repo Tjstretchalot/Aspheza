@@ -1,4 +1,5 @@
-﻿using BaseBuilder.Engine.Logic.Players;
+﻿using BaseBuilder.Engine.Logic.Pathfinders;
+using BaseBuilder.Engine.Logic.Players;
 using BaseBuilder.Engine.World;
 using System;
 using System.Collections.Generic;
@@ -32,9 +33,14 @@ namespace BaseBuilder.Engine.State
         public int GameTimeMS;
 
         /// <summary>
-        /// 
+        /// The entity counter
         /// </summary>
         public int EntityIDCounter;
+
+        /// <summary>
+        /// What pathfinder is being used.
+        /// </summary>
+        public EnhancedAStarPathfinder Pathfinder;
 
         public int GetUniqueEntityID()
         {
@@ -46,6 +52,7 @@ namespace BaseBuilder.Engine.State
             World = world;
             Players = players;
             GameTimeMS = gameTimeMS;
+            Pathfinder = new EnhancedAStarPathfinder();
         }
 
         /// <summary>

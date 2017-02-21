@@ -1,7 +1,9 @@
 ﻿using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
+using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.Utility;
+using BaseBuilder.Engine.World.Entities.EntityTasks;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -22,7 +24,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
     /// 
     /// Furthermore, entities are able to render themselves.
     /// </remarks>
-    public abstract class Entity : Renderable
+    public abstract class Entity : Renderable, ITaskable
     {
         public int ID { get; protected set; }
         /// <summary>
@@ -41,11 +43,15 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// </summary>
         public bool Selected;
 
+        public Queue<IEntityTask> Tasks;
+        public IEntityTask CurrentTask;
+
         protected Entity(PointD2D position, PolygonD2D collisionMesh, int id)
         {
             Position = position;
             CollisionMesh = collisionMesh;
             ID = id;
+            Tasks = new Queue<IEntityTask>();
         }
 
         /// <summary>
@@ -83,6 +89,25 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
         }
 
+        public virtual void SimulateTimePassing(SharedGameState sharedState, int timeMS)
+        {
+            if (CurrentTask == null && Tasks.Count > 0)
+            {
+                CurrentTask = Tasks.Dequeue();
+            }
+
+            if (CurrentTask != null)
+            {
+                var status = CurrentTask.SimulateTimePassing(sharedState, timeMS);
+
+                if(status != EntityTaskStatus.Running)
+                {
+                    CurrentTask = null;
+                }
+            }
+
+        }
+
         protected void Init(PointD2D position, PolygonD2D collisionMesh)
         {
             Position = position;
@@ -105,5 +130,15 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             CollisionMesh.TilesIntersectedAt(Position, list);
         }
 
+        public void QueueTask(IEntityTask task)
+        {
+            Tasks.Enqueue(task);
+        }
+
+        public void ClearTasks()
+        {
+            CurrentTask = null;
+            Tasks.Clear();
+        }
     }
 }

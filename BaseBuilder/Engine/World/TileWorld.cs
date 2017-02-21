@@ -13,6 +13,7 @@ using BaseBuilder.Engine.Utility;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.Math2D;
+using BaseBuilder.Engine.State;
 
 namespace BaseBuilder.Engine.World
 { 
@@ -39,6 +40,7 @@ namespace BaseBuilder.Engine.World
         public List<Tile> Tiles;
 
         public List<MobileEntity> MobileEntities;
+
         public List<ImmobileEntity> ImmobileEntities;
         
         protected Dictionary<Entity, List<Tile>> EntityToTiles;
@@ -214,6 +216,20 @@ namespace BaseBuilder.Engine.World
             }
 
             //context.SpriteBatch.DrawString(context.DebugFont, $"tiles: ({leftMostVisibleTileX}, {topMostVisibleTileY}) to ({rightMostVisibleTileX}, {bottomMostVisibleTileY}); starting = {startingLeft}, {startingTop}", new Microsoft.Xna.Framework.Vector2(5, 25), Color.White);
+        }
+
+
+        public void SimulateTimePassing(SharedGameState gameState, int timeMS)
+        {
+            foreach(var mobileEntity in MobileEntities)
+            {
+                mobileEntity.SimulateTimePassing(gameState, timeMS);
+            }
+
+            foreach(var immobileEntity in ImmobileEntities)
+            {
+                immobileEntity.SimulateTimePassing(gameState, timeMS);
+            }
         }
 
         /// <summary>

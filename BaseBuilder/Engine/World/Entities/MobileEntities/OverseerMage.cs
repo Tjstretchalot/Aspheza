@@ -10,6 +10,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
     public class OverseerMage : MobileEntity
     {
+        private const double SpeedConst = 0.005;
         private static short NetID = 3;
         private static RectangleD2D _CollisionMesh;
 
@@ -19,7 +20,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             _CollisionMesh = new RectangleD2D(1, 1);
         }
         
-        public OverseerMage(PointD2D position, int id) : base(position, _CollisionMesh, id, "OverseerMage", 1)
+        public OverseerMage(PointD2D position, int id) : base(position, _CollisionMesh, id, "OverseerMage", SpeedConst)
         {
         }
         
@@ -30,7 +31,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         {
             SpriteName = "OverseerMage";
             CollisionMesh = _CollisionMesh;
-            SpeedUnitPerMS = 1;
+            SpeedUnitsPerMS = SpeedConst;
         }
 
         public override void FromMessage(NetIncomingMessage message)

@@ -10,6 +10,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
     public class Archer : MobileEntity
     {
+        private const double SpeedConst = 0.001;
         private static short NetID = 1;
         private static RectangleD2D _CollisionMesh;
 
@@ -19,7 +20,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             _CollisionMesh = new RectangleD2D(1, 1);
         }
 
-        public Archer(PointD2D position, int id) : base(position, _CollisionMesh, id, "Archer", 1)
+        public Archer(PointD2D position, int id) : base(position, _CollisionMesh, id, "Archer", SpeedConst)
         {
         }
 
@@ -30,7 +31,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         {
             SpriteName = "Archer";
             CollisionMesh = _CollisionMesh;
-            SpeedUnitPerMS = 1;
+            SpeedUnitsPerMS = SpeedConst;
         }
 
         public override void FromMessage(NetIncomingMessage message)

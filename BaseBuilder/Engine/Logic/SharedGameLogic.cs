@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.Logic.Orders;
+using BaseBuilder.Engine.World.Entities.MobileEntities;
+using BaseBuilder.Engine.World.Entities.EntityTasks;
 
 namespace BaseBuilder.Engine.Logic
 {
@@ -38,6 +40,8 @@ namespace BaseBuilder.Engine.Logic
                 HandlePlayerOrders(gameState, timeMS, player);
             }
 
+            gameState.World.SimulateTimePassing(gameState, timeMS);
+
             gameState.GameTimeMS += timeMS;
         }
 
@@ -57,7 +61,14 @@ namespace BaseBuilder.Engine.Logic
         [OrderHandler(typeof(MoveOrder))]
         public void OnMoveOrder(SharedGameState gameState, Player player, MoveOrder order)
         {
+            MobileEntity entity = gameState.World.MobileEntities.Find((me) => me.ID == order.EntityID);
+            if(entity == null)
+            {
+                throw new InvalidProgramException("move order on null entity? race condition?");
+            }
 
+            Console.WriteLine($"issuing move task to entity id {entity.ID}");
+            entity.QueueTask(new EntityMoveTask(entity, order.End));
         }
     }
 }

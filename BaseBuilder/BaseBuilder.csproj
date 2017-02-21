@@ -85,6 +85,7 @@
     <Compile Include="Engine\Utility\Renderable.cs" />
     <Compile Include="Engine\World\Entities\Entity.cs" />
     <Compile Include="Engine\World\Entities\EntityIdentifier.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntityMoveTask.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\House.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityFailerTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityRepeaterTask.cs" />
