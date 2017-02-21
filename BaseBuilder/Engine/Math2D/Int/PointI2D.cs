@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lidgren.Network;
 
 namespace BaseBuilder.Engine.Math2D
 {
@@ -22,6 +23,18 @@ namespace BaseBuilder.Engine.Math2D
         {
             X = x;
             Y = y;
+        }
+
+        public PointI2D(NetIncomingMessage message)
+        {
+            X = message.ReadInt32();
+            Y = message.ReadInt32();
+        }
+
+        public void Write(NetOutgoingMessage message)
+        {
+            message.Write(X);
+            message.Write(Y);
         }
 
         public double DistanceToSquared(PointI2D other)

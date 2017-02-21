@@ -45,11 +45,13 @@
     <Compile Include="Engine\Context\UpdateContext.cs" />
     <Compile Include="Engine\Logic\LocalGameLogic.cs" />
     <Compile Include="Engine\Logic\LogicUtils.cs" />
+    <Compile Include="Engine\Logic\OrderHandler.cs" />
     <Compile Include="Engine\Logic\Orders\MoveOrder.cs" />
     <Compile Include="Engine\Logic\Pathfinders\AStarNode.cs" />
     <Compile Include="Engine\Logic\Pathfinders\EnhancedAStarPathfinder.cs" />
     <Compile Include="Engine\Logic\Pathfinders\UnitPath.cs" />
     <Compile Include="Engine\Logic\Pathfinders\WorkingAStarNode.cs" />
+    <Compile Include="Engine\Logic\ReflectiveOrderHandler.cs" />
     <Compile Include="Engine\Logic\SharedGameLogic.cs" />
     <Compile Include="Engine\Logic\Orders\IOrder.cs" />
     <Compile Include="Engine\Logic\Players\Player.cs" />

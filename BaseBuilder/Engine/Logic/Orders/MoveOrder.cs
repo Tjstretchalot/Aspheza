@@ -7,28 +7,35 @@ using System.Threading.Tasks;
 using BaseBuilder.Engine.Networking;
 using BaseBuilder.Engine.Context;
 using Lidgren.Network;
+using BaseBuilder.Engine.Math2D;
 
 namespace BaseBuilder.Engine.Logic.Orders
 {
-    class MoveOrder : GamePacket, IOrder
+    public class MoveOrder : GamePacket, IOrder
     {
+        public int EntityID;
+        public PointI2D End;
+
         public MoveOrder(GamePacketPool pool) : base(pool)
         {
         }
 
         public override void Clear()
         {
-            throw new NotImplementedException();
+            EntityID = -1;
+            End = null;
         }
 
         public override void LoadFrom(NetContext context, NetIncomingMessage message)
         {
-            throw new NotImplementedException();
+            EntityID = message.ReadInt32();
+            End = new PointI2D(message);
         }
 
         public override void SaveTo(NetContext context, NetOutgoingMessage message)
         {
-            throw new NotImplementedException();
+            message.Write(EntityID);
+            End.Write(message);
         }
     }
 }
