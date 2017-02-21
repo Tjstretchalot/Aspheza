@@ -9,6 +9,7 @@ using BaseBuilder.Engine.World.WorldObject.Entities;
 using BaseBuilder.Engine.Logic.Pathfinders;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.Math2D.Double;
+using static BaseBuilder.Engine.Math2D.Double.MathUtilsD2D;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -115,7 +116,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             var unitsMaxThisTick = speedUnitsPerMS * moveMS;
             var unitsSqMaxThisTick = unitsMaxThisTick * unitsMaxThisTick;
             
-            if(moveVec.MagnitudeSquared < unitsSqMaxThisTick)
+            if(EpsilonLessThan(moveVec.MagnitudeSquared, unitsSqMaxThisTick))
             {
                 int msToMoveMoveVec = (int)Math.Round(moveVec.Magnitude / speedUnitsPerMS);
 
