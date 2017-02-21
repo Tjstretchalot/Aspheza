@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BaseBuilder.Engine.Math2D.Double;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,12 @@ namespace BaseBuilder.Engine.Math2D
 {
     public class PointI2D
     {
+        public static PointI2D Origin;
+        static PointI2D()
+        {
+            Origin = new PointI2D(0, 0);
+        }
+
         public int X;
         public int Y;
 
@@ -15,6 +22,16 @@ namespace BaseBuilder.Engine.Math2D
         {
             X = x;
             Y = y;
+        }
+
+        public double DistanceToSquared(PointI2D other)
+        {
+            return (other.X - X) * (other.X - X) + (other.Y - Y) * (other.Y - Y);
+        }
+
+        public double DistanceToSquared(PointD2D other)
+        {
+            return (other.X - X) * (other.X - X) + (other.Y - Y) * (other.Y - Y);
         }
 
         public static PointI2D operator +(PointI2D p1, PointI2D p2)
