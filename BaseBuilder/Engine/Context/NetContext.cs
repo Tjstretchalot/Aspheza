@@ -1,4 +1,5 @@
-﻿using BaseBuilder.Engine.Networking;
+﻿using BaseBuilder.Engine.Logic.Orders;
+using BaseBuilder.Engine.Networking;
 using BaseBuilder.Engine.Networking.Packets;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace BaseBuilder.Engine.Context
         public const int SYNC_PACKET_ID = 102;
         public const int SIMULATION_START_PACKET_ID = 103;
         public const int READY_FOR_SYNC_PACKET_ID = 104;
+
+        public const int MOVE_ORDER_PACKET_ID = 201;
 
         public List<GamePacketPool> GamePacketPools;
         public Dictionary<Type, int> PacketTypesToIndexInGamePacketPools;
@@ -41,7 +44,9 @@ namespace BaseBuilder.Engine.Context
             RegisterPacketType(SYNC_START_PACKET_ID,       typeof(SyncStartPacket));
             RegisterPacketType(SYNC_PACKET_ID,             typeof(SyncPacket));
             RegisterPacketType(SIMULATION_START_PACKET_ID, typeof(SimulationStartPacket));
-            RegisterPacketType(READY_FOR_SYNC_PACKET_ID,    typeof(ReadyForSyncPacket));
+            RegisterPacketType(READY_FOR_SYNC_PACKET_ID,   typeof(ReadyForSyncPacket));
+
+            RegisterPacketType(MOVE_ORDER_PACKET_ID,       typeof(MoveOrder));
         }
 
         public GamePacketPool GetPoolFromPacketType(Type type)
