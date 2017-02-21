@@ -24,7 +24,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
             _SheetName = "roguelikeSheet_transparent";
 
-            _CollisionMesh = new RectangleD2D(2, 3);
+            _CollisionMesh = new RectangleD2D(2, 4);
             EntityIdentifier.Register(typeof(House), NetId);
 
             _SourceRectsToOffsetLocations = new List<Tuple<Rectangle, PointD2D>>();

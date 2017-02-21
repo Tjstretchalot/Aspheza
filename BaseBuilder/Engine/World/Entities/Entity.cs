@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.Utility;
 using Lidgren.Network;
@@ -98,5 +99,11 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
             return CollisionMesh.Contains(point, Position, strict);
         }
+
+        public void TilesIntersectedAt(List<PointI2D> list)
+        {
+            CollisionMesh.TilesIntersectedAt(Position, list);
+        }
+
     }
 }

@@ -35,10 +35,10 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             var texture = context.Content.Load<Texture2D>(SpriteName);
             Color color;
 
-            if (Selected == true)
+            if (Selected)
                 color = Color.LightBlue;
             else
-                color = Color.White;
+                color = Color.White;            
 
             context.SpriteBatch.Draw(texture,
                 new Rectangle(

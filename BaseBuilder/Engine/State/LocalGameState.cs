@@ -42,12 +42,15 @@ namespace BaseBuilder.Engine.State
         /// </summary>
         public Entity SelectedEntity;
 
+        public bool CollisionDebug;
+
         public LocalGameState(Camera camera, int localPlayerID)
         {
             Camera = camera;
             LocalPlayerID = localPlayerID;
 
             Orders = new List<IOrder>();
+            CollisionDebug = false;
         }
     }
 }

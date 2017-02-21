@@ -20,5 +20,6 @@ namespace BaseBuilder.Engine.Context
         public SpriteBatch SpriteBatch;
         public Camera Camera;
         public SpriteFont DebugFont;
+        public bool CollisionDebug;
     }
 }

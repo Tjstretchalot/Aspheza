@@ -20,8 +20,9 @@ namespace BaseBuilder.Engine.Logic
     public class LocalGameLogic
     {
         protected int previousScrollWheelValue;
+        protected bool previousDKeyState;
         protected Microsoft.Xna.Framework.Input.ButtonState previousLeftMouseButtonState;
-        
+
         protected int minCameraZoom;
         protected double cameraSpeed;
         protected double cameraZoomSpeed;
@@ -81,6 +82,15 @@ namespace BaseBuilder.Engine.Logic
             previousLeftMouseButtonState = Mouse.GetState().LeftButton;
         }
 
+        protected void CheckForColisionDebugUpadate(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        {
+            if ((Keyboard.GetState().IsKeyDown(Keys.D) != previousDKeyState) && !previousDKeyState && (Keyboard.GetState().IsKeyDown(Keys.LeftAlt) || Keyboard.GetState().IsKeyDown(Keys.RightAlt)))
+            {
+                localGameState.CollisionDebug = !localGameState.CollisionDebug;
+            }
+            previousDKeyState = Keyboard.GetState().IsKeyDown(Keys.D);
+        }
+        
         protected virtual void UpdateCamera(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
         {
             var world = sharedGameState.World;
@@ -146,6 +156,7 @@ namespace BaseBuilder.Engine.Logic
         /// <param name="localGameState">The local game state, for reference and modification.</param>
         public void HandleUserInput(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
         {
+            CheckForColisionDebugUpadate(sharedGameState, localGameState, elapsedMS);
             CheckForSelect(sharedGameState, localGameState, elapsedMS);
             UpdateCamera(sharedGameState, localGameState, elapsedMS);
         }

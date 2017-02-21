@@ -74,6 +74,7 @@ namespace BaseBuilder.Screens.GameScreens
             renderContext.Camera = localGameState.Camera;
             renderContext.GraphicsDevice = graphicsDevice;
             renderContext.DebugFont = debugFont;
+            renderContext.CollisionDebug = localGameState.CollisionDebug;
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             sharedGameState.World.Render(renderContext);

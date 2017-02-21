@@ -367,7 +367,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 {
                     location.X = locationX;
                     location.Y = locationY;
-                    if (UnitSquare.Intersects(UnitSquare, myPosition, location, true))
+                    if (Intersects(UnitSquare, myPosition, location, true))
                     {
                         if (listIndex < list.Count)
                         {

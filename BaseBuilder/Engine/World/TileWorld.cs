@@ -12,6 +12,7 @@ using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.Utility;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using BaseBuilder.Engine.Math2D;
 
 namespace BaseBuilder.Engine.World
 { 
@@ -39,6 +40,9 @@ namespace BaseBuilder.Engine.World
 
         public List<MobileEntity> MobileEntities;
         public List<ImmobileEntity> ImmobileEntities;
+        
+        protected Dictionary<Entity, List<Tile>> EntityToTiles;
+        protected Dictionary<Tile, List<Entity>> TileToEntities;
 
         /// <summary>
         /// Initializes a new world that is the specified number of tiles wide and 
@@ -59,6 +63,13 @@ namespace BaseBuilder.Engine.World
             Tiles = tiles;
             MobileEntities = new List<MobileEntity>();
             ImmobileEntities = new List<ImmobileEntity>();
+
+            EntityToTiles = new Dictionary<Entity, List<Tile>>();
+            TileToEntities = new Dictionary<Tile, List<Entity>>();
+            foreach (var tile in Tiles)
+            {
+                TileToEntities.Add(tile, new List<Entity>());
+            }
         }
 
         /// <summary>
@@ -72,6 +83,7 @@ namespace BaseBuilder.Engine.World
                 throw new ArgumentNullException(nameof(entity));
             }
             MobileEntities.Add(entity);
+            AddTileCollisions(entity);
         }
 
         /// <summary>
@@ -85,6 +97,55 @@ namespace BaseBuilder.Engine.World
                 throw new ArgumentNullException(nameof(entity));
             }
             ImmobileEntities.Add(entity);
+            AddTileCollisions(entity);
+        }
+        
+
+        public void AddTileCollisions(Entity ent)
+        {
+            EntityToTiles.Add(ent, new List<Tile>());
+
+            UpdateTileCollisions(ent);
+        }
+
+
+        public void UpdateTileCollisions(Entity ent)
+        {
+            List<PointI2D> TilesLocation = new List<PointI2D>();
+            List<Tile> NewTiles = new List<Tile>();
+            ent.TilesIntersectedAt(TilesLocation);
+            var OldTiles = EntityToTiles[ent];
+            var OldTileCount = OldTiles.Count;
+
+            NewTiles.AddRange(TilesLocation.Select((t) => TileAt(t.X, t.Y)));
+
+            foreach (var tile in NewTiles)
+            {
+                if(!OldTiles.Contains(tile))
+                {
+                    OldTiles.Add(tile);
+                    TileToEntities[tile].Add(ent);
+                }
+            }
+            for (var loc = OldTileCount - 1; loc >= 0; loc--)
+            {
+                if(!NewTiles.Contains(OldTiles[loc]))
+                {
+                    TileToEntities[OldTiles[loc]].Remove(ent);
+                    OldTiles.RemoveAt(loc);
+                }
+            }
+        }
+
+        public bool IsPassable(PointI2D loc, MobileEntity ent)
+        {
+            return IsPassable(loc.X, loc.Y, ent);
+        }
+
+        public bool IsPassable(int locX, int locY, MobileEntity ent)
+        {
+            var entities = TileToEntities[TileAt(locX, locY)];
+            return !entities.Any((e) => e != ent);
         }
 
         /// <summary>
@@ -104,6 +165,11 @@ namespace BaseBuilder.Engine.World
             startingLeft = Math.Round(startingLeft);
             startingTop = Math.Round(startingTop);
             var point = new PointD2D(startingLeft, startingTop);
+            Vector2 cSize = Vector2.Zero;
+            if (context.CollisionDebug)
+            {
+                cSize = context.DebugFont.MeasureString("C");
+            }
             for(int x = leftMostVisibleTileX; x <= rightMostVisibleTileX; x++)
             {
                 for(int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
@@ -128,6 +194,23 @@ namespace BaseBuilder.Engine.World
                 context.Camera.PixelLocationOfWorld(mobile.Position.X, mobile.Position.Y, out point.X, out point.Y);
 
                 mobile.Render(context, point);
+            }
+
+            point.Y = startingTop;
+            point.X = startingLeft;
+
+            for (int x = leftMostVisibleTileX; x <= rightMostVisibleTileX; x++)
+            {
+                for (int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
+                {
+                    if (context.CollisionDebug && TileToEntities[TileAt(x, y)].Count > 0)
+                    {
+                        context.SpriteBatch.DrawString(context.DebugFont, "C", new Vector2((int)(point.X + 0.5 * context.Camera.Zoom - cSize.X / 2), (int)(point.Y + 0.5 * context.Camera.Zoom - cSize.Y / 2)), Color.Red);
+                    }
+                    point.Y += context.Camera.Zoom;
+                }
+                point.Y = startingTop;
+                point.X += context.Camera.Zoom;
             }
 
             //context.SpriteBatch.DrawString(context.DebugFont, $"tiles: ({leftMostVisibleTileX}, {topMostVisibleTileY}) to ({rightMostVisibleTileX}, {bottomMostVisibleTileY}); starting = {startingLeft}, {startingTop}", new Microsoft.Xna.Framework.Vector2(5, 25), Color.White);
