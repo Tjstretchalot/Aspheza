@@ -66,6 +66,9 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
 
         protected UnitPath CalculatePathImpl()
         {
+            if (!IsTilePassable(End))
+                return null;
+
             AddToOpen(new WorkingAStarNode(null, Start, Heuristic(Start), 0));
 
             while(Open.Count > 0)
