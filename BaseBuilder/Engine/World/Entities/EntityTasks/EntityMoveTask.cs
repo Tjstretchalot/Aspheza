@@ -46,6 +46,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
         }
 
+        protected int EntityID;
         protected MobileEntity Entity;
         protected PointI2D Destination;
 
@@ -56,6 +57,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public EntityMoveTask(MobileEntity entity, PointI2D destination)
         {
             Entity = entity;
+            EntityID = entity.ID;
             Destination = destination;
 
             Path = null;
@@ -65,8 +67,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public EntityMoveTask(SharedGameState gameState, NetIncomingMessage message)
         {
-            var entityID = message.ReadInt32();
-            Entity = gameState.World.MobileEntities.Find((me) => me.ID == entityID);
+            EntityID = message.ReadInt32();
             Destination = new PointI2D(message);
 
             Path = new UnitPath(message);
@@ -76,7 +77,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Write(NetOutgoingMessage message)
         {
-            message.Write(Entity.ID);
+            message.Write(EntityID);
             Destination.Write(message);
             Path.Write(message);
             message.Write(Finished);
@@ -93,6 +94,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
+            if(Entity == null)
+            {
+                Entity = gameState.World.MobileEntities.Find((me) => me.ID == EntityID);
+            }
+
             if (FailedToFindPath || Finished)
                 throw new InvalidProgramException("I should have been reset!");
 

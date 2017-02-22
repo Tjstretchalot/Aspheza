@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
+using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
@@ -48,10 +49,10 @@ namespace BaseBuilder.Engine.World.Entities
             return IdsToEntities[id];
         }
 
-        public static Entity InitEntity(Type type, NetIncomingMessage message)
+        public static Entity InitEntity(Type type, SharedGameState gameState, NetIncomingMessage message)
         {
             var entity = type.GetConstructor(EntityConstructorParamTypes).Invoke(new object[] { }) as Entity;
-            entity.FromMessage(message);
+            entity.FromMessage(gameState, message);
             return entity;
         }
     }

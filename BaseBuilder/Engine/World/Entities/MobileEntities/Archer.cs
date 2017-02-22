@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.Math2D.Double;
+using BaseBuilder.Engine.State;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -34,12 +35,12 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             SpeedUnitsPerMS = SpeedConst;
         }
 
-        public override void FromMessage(NetIncomingMessage message)
+        public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)
         {
             Position = new PointD2D(message);
             ID = message.ReadInt32();
 
-            TasksFromMessage(message);
+            TasksFromMessage(gameState, message);
         }
 
         public override void Write(NetOutgoingMessage message)

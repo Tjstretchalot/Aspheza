@@ -61,21 +61,21 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
         }
         
-        protected virtual void TasksFromMessage(NetIncomingMessage message)
+        protected virtual void TasksFromMessage(SharedGameState gameState, NetIncomingMessage message)
         {
             var numTasks = message.ReadInt16();
             Tasks = new Queue<IEntityTask>(numTasks);
             for(int i = 0; i < numTasks; i++)
             {
                 var taskID = message.ReadInt16();
-                Tasks.Enqueue(TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), message));
+                Tasks.Enqueue(TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message));
             }
 
             bool currentTask = message.ReadBoolean();
             if(currentTask)
             {
                 var taskID = message.ReadInt16();
-                CurrentTask = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), message);
+                CurrentTask = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message);
             }
         }
 
@@ -101,13 +101,14 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
                 CurrentTask.Write(message);
             }
         }
-        public virtual void FromMessage(NetIncomingMessage message)
+
+        public virtual void FromMessage(SharedGameState gameState, NetIncomingMessage message)
         {
             Position = new PointD2D(message);
             CollisionMesh = new PolygonD2D(message);
             ID = message.ReadInt32();
 
-            TasksFromMessage(message);
+            TasksFromMessage(gameState, message);
         }
 
         public virtual void Write(NetOutgoingMessage message)

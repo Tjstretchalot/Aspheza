@@ -71,7 +71,7 @@ namespace BaseBuilder.Engine.Networking.Packets
             {
                 var entID = message.ReadInt16();
 
-                SharedState.World.AddMobileEntity((MobileEntity)EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(entID), message));
+                SharedState.World.AddMobileEntity((MobileEntity)EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(entID), SharedState, message));
             }
 
             var numImmobileEntities = message.ReadInt32();
@@ -79,7 +79,7 @@ namespace BaseBuilder.Engine.Networking.Packets
             {
                 var entID = message.ReadInt16();
 
-                SharedState.World.AddImmobileEntity((ImmobileEntity)EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(entID), message));
+                SharedState.World.AddImmobileEntity((ImmobileEntity)EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(entID), SharedState, message));
             }
 
         }

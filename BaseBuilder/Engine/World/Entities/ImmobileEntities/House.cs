@@ -9,6 +9,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.Math2D;
+using BaseBuilder.Engine.State;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
@@ -58,19 +59,23 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
         }
 
-        public override void FromMessage(NetIncomingMessage message)
+        public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)
         {
             Position = new PointD2D(message);
             ID = message.ReadInt32();
             CollisionMesh = _CollisionMesh;
             SheetName = _SheetName;
             SourceRectsToOffsetLocations = _SourceRectsToOffsetLocations;
+
+            TasksFromMessage(gameState, message);
         }
 
         public override void Write(NetOutgoingMessage message)
         {
             Position.Write(message);
             message.Write(ID);
+
+            WriteTasks(message);
         }
     }
 }
