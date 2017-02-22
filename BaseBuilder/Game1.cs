@@ -63,7 +63,7 @@ namespace BaseBuilder
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             screenManager = new ScreenManager();
-            screenManager.SetInitialScreen(new MainMenuScreen(screenManager, Content, graphics, GraphicsDevice, spriteBatch));
+            screenManager.SetInitialScreen(new LANHostGameScreen(screenManager, Content, graphics, GraphicsDevice, spriteBatch));
         }
 
         /// <summary>

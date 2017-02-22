@@ -11,6 +11,8 @@ using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.Math2D.Double;
 using static BaseBuilder.Engine.Math2D.Double.MathUtilsD2D;
 using Lidgren.Network;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -54,6 +56,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         protected bool Finished;
         protected bool FailedToFindPath;
 
+        protected Random random;
+        protected bool PlaySFX;
+        protected int NextSFXCounter;
+
         /// <summary>
         /// Initializes a move task that will calculate a path on the next SimulateTimePassing
         /// </summary>
@@ -68,6 +74,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Path = null;
             FailedToFindPath = false;
             Finished = false;
+
+            random = new Random();
         }
 
         /// <summary>
@@ -85,6 +93,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Path = new UnitPath(message);
             Finished = message.ReadBoolean();
             FailedToFindPath = message.ReadBoolean();
+
+            random = new Random();
         }
 
         /// <summary>
@@ -156,7 +166,18 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
 
             ImplMove(gameState, curr, timeMS);
-            gameState.World.UpdateTileCollisions(Entity);
+            
+            bool move = !gameState.World.UpdateTileCollisions(Entity);
+            if(move)
+            {
+                NextSFXCounter--;
+
+                if(NextSFXCounter <= 0)
+                {
+                    PlaySFX = true;
+                    NextSFXCounter = 5;
+                }
+            }
             if (Finished)
             {
                 Path = null;
@@ -208,6 +229,16 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 var posOffset = moveVec.UnitVector.Scale(unitsMaxThisTick);
                 Entity.Position.X += posOffset.DeltaX;
                 Entity.Position.Y += posOffset.DeltaY;
+            }
+        }
+
+        public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
+        {
+            if (PlaySFX)
+            {
+                var sfx = $"Sounds/footstep0{random.Next(10)}";
+                content.Load<SoundEffect>(sfx).Play();
+                PlaySFX = false;
             }
         }
     }

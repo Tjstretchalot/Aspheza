@@ -5,6 +5,7 @@ using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Screens.GameScreens;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -65,7 +66,7 @@ namespace BaseBuilder.Engine.Logic
             AddComponent(localGameState, component);
         }
         
-        protected void UpdateComponents(SharedGameState sharedGameState, LocalGameState localGameState)
+        protected void UpdateComponents(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
         {
             var mouseCurr = Mouse.GetState();
             var keyboardCurr = Keyboard.GetState();
@@ -93,11 +94,24 @@ namespace BaseBuilder.Engine.Logic
 
             foreach(var comp in localGameState.Components)
             {
-                comp.Update(sharedGameState, localGameState);
+                comp.Update(sharedGameState, localGameState, elapsedMS);
             }
 
             mouseLast = mouseCurr;
             keyboardLast = keyboardCurr;
+        }
+
+        public void UpdateTasks(SharedGameState sharedGameState, LocalGameState localGameState, ContentManager content)
+        {
+            foreach(var ent in sharedGameState.World.MobileEntities)
+            {
+                ent.CurrentTask?.Update(content, sharedGameState, localGameState);
+            }
+
+            foreach (var ent in sharedGameState.World.ImmobileEntities)
+            {
+                ent.CurrentTask?.Update(content, sharedGameState, localGameState);
+            }
         }
 
         protected void CheckForMoveOrder(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS)
@@ -249,7 +263,7 @@ namespace BaseBuilder.Engine.Logic
             CheckForSelect(sharedGameState, localGameState, elapsedMS);
             UpdateCamera(sharedGameState, localGameState, elapsedMS);
             CheckForMoveOrder(sharedGameState, localGameState, netContext, elapsedMS);
-            UpdateComponents(sharedGameState, localGameState);
+            UpdateComponents(sharedGameState, localGameState, elapsedMS);
         }
     }
 }

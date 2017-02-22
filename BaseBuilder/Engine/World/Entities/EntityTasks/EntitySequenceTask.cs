@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.State;
 using Lidgren.Network;
+using Microsoft.Xna.Framework.Content;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -160,6 +161,15 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
 
             Counter = 0;
+        }
+
+
+        public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
+        {
+            foreach (var task in Tasks)
+            {
+                task.Update(content, sharedGameState, localGameState);
+            }
         }
     }
 }

@@ -130,6 +130,7 @@
     <Compile Include="Screens\Components\IScreenComponent.cs" />
     <Compile Include="Screens\Components\TextField.cs" />
     <Compile Include="Screens\GameScreens\ChatOverlay.cs" />
+    <Compile Include="Screens\GameScreens\GameBackgroundMusicComponent.cs" />
     <Compile Include="Screens\GameScreens\GameComponent.cs" />
     <Compile Include="Screens\GameScreens\GameScreen.cs" />
     <Compile Include="Screens\GameScreens\IGameComponent.cs" />

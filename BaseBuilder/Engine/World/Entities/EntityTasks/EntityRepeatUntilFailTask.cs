@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.State;
 using Lidgren.Network;
+using Microsoft.Xna.Framework.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,6 +119,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
 
             return EntityTaskStatus.Running;
+        }
+
+        public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
+        {
+            Task.Update(content, sharedGameState, localGameState);
         }
     }
 }

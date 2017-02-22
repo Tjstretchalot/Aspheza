@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.State;
 using Lidgren.Network;
+using Microsoft.Xna.Framework.Content;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -104,6 +105,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
 
             throw new InvalidProgramException("Can't get here");
+        }
+
+        public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
+        {
+            Task.Update(content, sharedGameState, localGameState);
         }
     }
 }

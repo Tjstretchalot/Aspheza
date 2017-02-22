@@ -54,7 +54,7 @@ namespace BaseBuilder.Screens.GameScreens
             return false;
         }
 
-        public virtual void Update(SharedGameState sharedGameState, LocalGameState localGameState)
+        public virtual void Update(SharedGameState sharedGameState, LocalGameState localGameState, int timeMS)
         {
         }
     }

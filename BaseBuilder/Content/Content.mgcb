@@ -145,3 +145,177 @@
 /processorParam:TextureFormat=NoChange
 /build:Bitter-Regular.spritefont
 
+#begin Music/Mishief Stroll.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Mishief Stroll.ogg
+
+#begin Sounds/footstep00.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/footstep00.ogg
+
+#begin Sounds/footstep01.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/footstep01.ogg
+
+#begin Sounds/footstep02.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/footstep02.ogg
+
+#begin Sounds/footstep03.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/footstep03.ogg
+
+#begin Sounds/footstep04.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/footstep04.ogg
+
+#begin Sounds/footstep05.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/footstep05.ogg
+
+#begin Sounds/footstep06.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/footstep06.ogg
+
+#begin Sounds/footstep07.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/footstep07.ogg
+
+#begin Sounds/footstep08.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/footstep08.ogg
+
+#begin Sounds/footstep09.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/footstep09.ogg
+
+#begin Music/Alpha Dance.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Alpha Dance.ogg
+
+#begin Music/Cheerful Annoyance.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Cheerful Annoyance.ogg
+
+#begin Music/Drumming Sticks.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Drumming Sticks.ogg
+
+#begin Music/Farm Frolics.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Farm Frolics.ogg
+
+#begin Music/Flowing Rocks.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Flowing Rocks.ogg
+
+#begin Music/Game Over.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Game Over.ogg
+
+#begin Music/German Virtue.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/German Virtue.ogg
+
+#begin Music/Infinite Descent.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Infinite Descent.ogg
+
+#begin Music/Italian Mom.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Italian Mom.ogg
+
+#begin Music/Mission Plausible.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Mission Plausible.ogg
+
+#begin Music/Night at the Beach.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Night at the Beach.ogg
+
+#begin Music/Polka Train.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Polka Train.ogg
+
+#begin Music/Sad Descent.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Sad Descent.ogg
+
+#begin Music/Sad Town.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Sad Town.ogg
+
+#begin Music/Space Cadet.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Space Cadet.ogg
+
+#begin Music/Swinging Pants.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Swinging Pants.ogg
+
+#begin Music/Time Driving.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Time Driving.ogg
+
+#begin Music/Wacky Waiting.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Wacky Waiting.ogg
+

@@ -1,6 +1,7 @@
 ﻿using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using Lidgren.Network;
+using Microsoft.Xna.Framework.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,14 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// <param name="gameState">The game state for the entity</param>
         /// <returns>The status of this task</returns>
         EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS);
+
+        /// <summary>
+        /// Do stuff like play sounds here. Called once per frame.
+        /// </summary>
+        /// <param name="content">The content</param>
+        /// <param name="sharedGameState">The shared game state</param>
+        /// <param name="localGameState">The local game state</param>
+        void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState);
 
         /// <summary>
         /// Reset this task so it can be run again.

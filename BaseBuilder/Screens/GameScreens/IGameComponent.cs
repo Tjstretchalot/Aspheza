@@ -69,6 +69,6 @@ namespace BaseBuilder.Screens.GameScreens
         /// </summary>
         /// <param name="sharedGameState">The shared game state</param>
         /// <param name="localGameState">The local game state</param>
-        void Update(SharedGameState sharedGameState, LocalGameState localGameState);
+        void Update(SharedGameState sharedGameState, LocalGameState localGameState, int timeMS);
     }
 }
