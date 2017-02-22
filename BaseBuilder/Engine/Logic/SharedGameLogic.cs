@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
+using BaseBuilder.Engine.World.WorldObject.Entities;
 
 namespace BaseBuilder.Engine.Logic
 {
@@ -69,6 +70,19 @@ namespace BaseBuilder.Engine.Logic
 
             Console.WriteLine($"issuing move task to entity id {entity.ID}");
             entity.QueueTask(new EntityMoveTask(entity, order.End));
+        }
+
+        [OrderHandler(typeof(CancelTasksOrder))]
+        public void OnCancelTasksOrder(SharedGameState gameState, Player player, CancelTasksOrder order)
+        {
+            Entity entity = gameState.World.MobileEntities.Find((me) => me.ID == order.EntityID);
+            if (entity == null)
+                entity = gameState.World.ImmobileEntities.Find((me) => me.ID == order.EntityID);
+
+            if (entity == null)
+                throw new InvalidProgramException("cancel tasks order on null entity?");
+
+            entity.ClearTasks();
         }
     }
 }

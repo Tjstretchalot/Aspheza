@@ -18,6 +18,7 @@ namespace BaseBuilder.Engine.Context
         public const int READY_FOR_SYNC_PACKET_ID = 104;
 
         public const int MOVE_ORDER_PACKET_ID = 201;
+        public const int CANCEL_TASKS_PACKET_ID = 202;
 
         public List<GamePacketPool> GamePacketPools;
         public Dictionary<Type, int> PacketTypesToIndexInGamePacketPools;
@@ -47,6 +48,7 @@ namespace BaseBuilder.Engine.Context
             RegisterPacketType(READY_FOR_SYNC_PACKET_ID,   typeof(ReadyForSyncPacket));
 
             RegisterPacketType(MOVE_ORDER_PACKET_ID,       typeof(MoveOrder));
+            RegisterPacketType(CANCEL_TASKS_PACKET_ID,     typeof(CancelTasksOrder));
         }
 
         public GamePacketPool GetPoolFromPacketType(Type type)

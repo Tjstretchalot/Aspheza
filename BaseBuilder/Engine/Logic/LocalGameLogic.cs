@@ -59,6 +59,12 @@ namespace BaseBuilder.Engine.Logic
                 if (localGameState.SelectedEntity != null)
                 {
                     //Console.WriteLine($"Issue move order to enitity ID {localGameState.SelectedEntity.ID} To ({mouseWorldX} {mouseWorldY}).");
+                    if(!Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+                    {
+                        var cancelTasksOrder = netContext.GetPoolFromPacketType(typeof(CancelTasksOrder)).GetGamePacketFromPool() as CancelTasksOrder;
+                        cancelTasksOrder.EntityID = localGameState.SelectedEntity.ID;
+                        localGameState.Orders.Add(cancelTasksOrder);
+                    }
                     var moveOrder = netContext.GetPoolFromPacketType(typeof(MoveOrder)).GetGamePacketFromPool() as MoveOrder;
                     moveOrder.EntityID = localGameState.SelectedEntity.ID;
                     moveOrder.End = new PointI2D((int)mouseWorldX, (int)mouseWorldY);

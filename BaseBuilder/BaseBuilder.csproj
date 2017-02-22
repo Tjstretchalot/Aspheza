@@ -46,6 +46,7 @@
     <Compile Include="Engine\Logic\LocalGameLogic.cs" />
     <Compile Include="Engine\Logic\LogicUtils.cs" />
     <Compile Include="Engine\Logic\OrderHandler.cs" />
+    <Compile Include="Engine\Logic\Orders\CancelTasksOrder.cs" />
     <Compile Include="Engine\Logic\Orders\MoveOrder.cs" />
     <Compile Include="Engine\Logic\Pathfinders\AStarNode.cs" />
     <Compile Include="Engine\Logic\Pathfinders\EnhancedAStarPathfinder.cs" />
