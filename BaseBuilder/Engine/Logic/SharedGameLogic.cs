@@ -67,8 +67,7 @@ namespace BaseBuilder.Engine.Logic
             {
                 throw new InvalidProgramException("move order on null entity? race condition?");
             }
-
-            Console.WriteLine($"issuing move task to entity id {entity.ID}");
+            
             entity.QueueTask(new EntityMoveTask(entity, order.End));
         }
 
