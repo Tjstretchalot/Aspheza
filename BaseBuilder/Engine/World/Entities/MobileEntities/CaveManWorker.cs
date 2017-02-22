@@ -9,28 +9,28 @@ using System.Threading.Tasks;
 
 namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
-    public class Overseer : MobileEntity
+    public class CaveManWorker : MobileEntity
     {
         private const double SpeedConst = 0.005;
-        private static short NetID = 2;
+        private static short NetID = 4;
         private static RectangleD2D _CollisionMesh;
 
-        static Overseer()
+        static CaveManWorker()
         {
-            EntityIdentifier.Register(typeof(Overseer), NetID);
+            EntityIdentifier.Register(typeof(CaveManWorker), NetID);
             _CollisionMesh = new RectangleD2D(1, 1);
         }
-        
-        public Overseer(PointD2D position, int id) : base(position, _CollisionMesh, id, "Overseer", SpeedConst)
+
+        public CaveManWorker(PointD2D position, int id) : base(position, _CollisionMesh, id, "CaveManWorker", SpeedConst)
         {
         }
-        
+
         /// <summary>
         /// This should only be used with FromMessage
         /// </summary>
-        public Overseer() : base()
+        public CaveManWorker() : base()
         {
-            SpriteName = "Overseer";
+            SpriteName = "CaveManWorker";
             CollisionMesh = _CollisionMesh;
             SpeedUnitsPerMS = SpeedConst;
         }

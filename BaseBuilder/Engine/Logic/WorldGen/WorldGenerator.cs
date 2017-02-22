@@ -72,6 +72,13 @@ namespace BaseBuilder.Engine.Logic.WorldGen
         protected void InitOverseers()
         {
             TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(5, 5), SharedGameState.GetUniqueEntityID()));
+
+
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(15, 5), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(5, 15), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(15, 15), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(25, 5), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(5, 25), SharedGameState.GetUniqueEntityID()));
         }
 
         protected void InitBuildings()

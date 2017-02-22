@@ -11,7 +11,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
     public class Archer : MobileEntity
     {
-        private const double SpeedConst = 0.001;
+        private const double SpeedConst = 0.005;
         private static short NetID = 1;
         private static RectangleD2D _CollisionMesh;
 
