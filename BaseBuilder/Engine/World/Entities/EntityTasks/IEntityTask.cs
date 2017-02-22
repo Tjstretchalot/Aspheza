@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.WorldObject.Entities;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,5 +46,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// </summary>
         /// <param name="gameState">The game state</param>
         void Reset(SharedGameState gameState);
+
+        /// <summary>
+        /// Writes this task to the outgoing message
+        /// </summary>
+        /// <param name="message"></param>
+        void Write(NetOutgoingMessage message);
     }
 }

@@ -59,14 +59,55 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// </summary>
         protected Entity()
         {
-            Tasks = new Queue<IEntityTask>();
         }
         
+        protected virtual void TasksFromMessage(NetIncomingMessage message)
+        {
+            var numTasks = message.ReadInt16();
+            Tasks = new Queue<IEntityTask>(numTasks);
+            for(int i = 0; i < numTasks; i++)
+            {
+                var taskID = message.ReadInt16();
+                Tasks.Enqueue(TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), message));
+            }
+
+            bool currentTask = message.ReadBoolean();
+            if(currentTask)
+            {
+                var taskID = message.ReadInt16();
+                CurrentTask = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), message);
+            }
+        }
+
+        protected virtual void WriteTasks(NetOutgoingMessage message)
+        {
+            message.Write((short)Tasks.Count);
+            for(int i = 0; i < Tasks.Count; i++)
+            {
+                var task = Tasks.ElementAt(i);
+
+                message.Write(TaskIdentifier.GetIDOfTask(task.GetType()));
+                task.Write(message);
+            }
+
+            if(CurrentTask == null)
+            {
+                message.Write(false);
+            }
+            else
+            {
+                message.Write(true);
+                message.Write(TaskIdentifier.GetIDOfTask(CurrentTask.GetType()));
+                CurrentTask.Write(message);
+            }
+        }
         public virtual void FromMessage(NetIncomingMessage message)
         {
             Position = new PointD2D(message);
             CollisionMesh = new PolygonD2D(message);
             ID = message.ReadInt32();
+
+            TasksFromMessage(message);
         }
 
         public virtual void Write(NetOutgoingMessage message)
@@ -74,6 +115,8 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             Position.Write(message);
             CollisionMesh.Write(message);
             message.Write(ID);
+
+            WriteTasks(message);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.State;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,26 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             Task = task;
             SpecificName = specificName;
+        }
+
+        public EntityRepeatUntilFailTask(NetIncomingMessage message)
+        {
+            var taskID = message.ReadInt16();
+
+            Task = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), message);
+            SpecificName = message.ReadString();
+            TaskRunSinceLastReset = message.ReadBoolean();
+            Failed = message.ReadBoolean();
+        }
+
+        public void Write(NetOutgoingMessage message)
+        {
+            message.Write(TaskIdentifier.GetIDOfTask(Task.GetType()));
+
+            Task.Write(message);
+            message.Write(SpecificName);
+            message.Write(TaskRunSinceLastReset);
+            message.Write(Failed);
         }
 
         public void Reset(SharedGameState gameState)

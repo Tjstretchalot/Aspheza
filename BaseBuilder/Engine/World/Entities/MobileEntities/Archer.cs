@@ -38,12 +38,16 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         {
             Position = new PointD2D(message);
             ID = message.ReadInt32();
+
+            TasksFromMessage(message);
         }
 
         public override void Write(NetOutgoingMessage message)
         {
             Position.Write(message);
             message.Write(ID);
+
+            WriteTasks(message);
         }
     }
 }

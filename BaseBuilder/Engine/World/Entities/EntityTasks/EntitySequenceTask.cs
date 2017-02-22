@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.State;
+using Lidgren.Network;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -47,7 +48,6 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
         }
 
-        protected string SpecificName;
         protected string _TaskName;
         public string TaskName
         {
@@ -73,6 +73,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
         }
 
+        protected string SpecificName;
         protected int Counter;
         protected bool CounterRunAtleastOnce;
 
@@ -88,6 +89,37 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Tasks = tasks;
             SpecificName = specificName;
             Counter = 0;
+        }
+
+        public EntitySequenceTask(NetIncomingMessage message)
+        {
+            SpecificName = message.ReadString();
+            Counter = message.ReadInt32();
+            CounterRunAtleastOnce = message.ReadBoolean();
+
+            var numTasks = message.ReadInt16();
+            Tasks = new List<IEntityTask>(numTasks);
+
+            for(int i = 0; i < Tasks.Count; i++)
+            {
+                var taskID = message.ReadInt16();
+
+                Tasks.Add(TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), message));
+            }
+        }
+
+        public void Write(NetOutgoingMessage message)
+        {
+            message.Write(SpecificName);
+            message.Write(Counter);
+            message.Write(CounterRunAtleastOnce);
+
+            message.Write((short)Tasks.Count);
+            foreach(var task in Tasks)
+            {
+                message.Write(TaskIdentifier.GetIDOfTask(task.GetType()));
+                task.Write(message);
+            }
         }
         
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)

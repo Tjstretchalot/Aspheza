@@ -38,9 +38,9 @@ namespace BaseBuilder.Engine.World.Entities
             EntitiesToIds.Add(entityType, id);
         }
 
-        public static short GetIDOfEntity(Type tileType)
+        public static short GetIDOfEntity(Type entityType)
         {
-            return EntitiesToIds[tileType];
+            return EntitiesToIds[entityType];
         }
 
         public static Type GetTypeOfID(short id)

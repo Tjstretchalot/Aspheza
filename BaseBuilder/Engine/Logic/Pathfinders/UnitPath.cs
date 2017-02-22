@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.Math2D;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,27 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
         internal UnitPath(AStarNode first)
         {
             CurrentNode = first;
+        }
+
+        public UnitPath(NetIncomingMessage message)
+        {
+            bool current = message.ReadBoolean();
+            if(current)
+                CurrentNode = new AStarNode(message);
+        }
+
+        public void Write(NetOutgoingMessage message)
+        {
+            if (CurrentNode == null)
+            {
+                message.Write(false);
+            }
+            else
+            {
+                message.Write(true);
+                CurrentNode.Write(message);
+            }
+
         }
 
         /// <summary>

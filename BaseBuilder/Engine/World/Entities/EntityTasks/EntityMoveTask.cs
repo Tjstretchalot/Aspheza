@@ -10,6 +10,7 @@ using BaseBuilder.Engine.Logic.Pathfinders;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.Math2D.Double;
 using static BaseBuilder.Engine.Math2D.Double.MathUtilsD2D;
+using Lidgren.Network;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -61,6 +62,31 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             FailedToFindPath = false;
             Finished = false;
         }
+
+        public EntityMoveTask(NetIncomingMessage message)
+        {
+            var entID = message.ReadInt16();
+
+            Entity = EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(entID), message) as MobileEntity;
+            Destination = new PointI2D(message);
+
+            Path = new UnitPath(message);
+            Finished = message.ReadBoolean();
+            FailedToFindPath = message.ReadBoolean();
+        }
+
+        public void Write(NetOutgoingMessage message)
+        {
+            var entID = EntityIdentifier.GetIDOfEntity(Entity.GetType());
+
+            message.Write(entID);
+            Entity.Write(message);
+            Destination.Write(message);
+            Path.Write(message);
+            message.Write(Finished);
+            message.Write(FailedToFindPath);
+        }
+
 
         public void Reset(SharedGameState gameState)
         {
