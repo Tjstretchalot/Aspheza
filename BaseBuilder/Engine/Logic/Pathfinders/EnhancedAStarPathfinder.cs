@@ -219,7 +219,7 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
                     new PointI2D(0,   1),
                     new PointI2D(1,  -1),
                     new PointI2D(1,   0),
-                    new PointI2D(1,  -1),
+                    new PointI2D(1,   1),
                 };
             }
             if(pos.X > 0)
