@@ -3,6 +3,7 @@ using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
+using BaseBuilder.Screens.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -31,6 +32,10 @@ namespace BaseBuilder.Engine.Logic
         protected double cameraZoomSpeed;
         protected double cameraPartialZoom;
         protected PointD2D cameraPartialTopLeft;
+        
+        MouseState? mouseLast;
+        KeyboardState? keyboardLast;
+        List<Keys> keysPressedReusable;
 
         public LocalGameLogic()
         {
@@ -41,6 +46,58 @@ namespace BaseBuilder.Engine.Logic
             cameraPartialZoom = 8;
 
             cameraPartialTopLeft = new PointD2D(0, 0);
+            keysPressedReusable = new List<Keys>();
+        }
+
+        public void AddComponent(LocalGameState localGameState, IMyGameComponent component)
+        {
+            LogicUtils.BinaryInsert(localGameState.Components, component, (c1, c2) => c1.Z - c2.Z); // ascending order
+        }
+
+        public void RemoveComponent(LocalGameState localGameState, IMyGameComponent component)
+        {
+            localGameState.Components.Remove(component);
+        }
+
+        public void UpdateComponentZ(LocalGameState localGameState, IMyGameComponent component)
+        {
+            RemoveComponent(localGameState, component);
+            AddComponent(localGameState, component);
+        }
+        
+        protected void UpdateComponents(SharedGameState sharedGameState, LocalGameState localGameState)
+        {
+            var mouseCurr = Mouse.GetState();
+            var keyboardCurr = Keyboard.GetState();
+
+            if (mouseLast.HasValue && keyboardLast.HasValue)
+            {
+                var keysCurr = keyboardCurr.GetPressedKeys();
+
+                keysPressedReusable.Clear();
+                keysPressedReusable.AddRange(keyboardLast.Value.GetPressedKeys());
+                keysPressedReusable.RemoveAll((k) => keysCurr.Contains(k));
+                bool mouseHandled = false, keyboardHandled = false;
+                for (int i = localGameState.Components.Count - 1; i >= 0; i--)
+                {
+                    var comp = localGameState.Components[i];
+                    if (!mouseHandled && comp.HandleMouseState(sharedGameState, localGameState, mouseLast.Value, mouseCurr))
+                        mouseHandled = true;
+                    if (!keyboardHandled && comp.HandleKeyboardState(sharedGameState, localGameState, keyboardLast.Value, keyboardCurr, keysPressedReusable))
+                        keyboardHandled = true;
+
+                    if (mouseHandled && keyboardHandled)
+                        return;
+                }
+            }
+
+            foreach(var comp in localGameState.Components)
+            {
+                comp.Update(sharedGameState, localGameState);
+            }
+
+            mouseLast = mouseCurr;
+            keyboardLast = keyboardCurr;
         }
 
         protected void CheckForMoveOrder(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS)
@@ -192,6 +249,7 @@ namespace BaseBuilder.Engine.Logic
             CheckForSelect(sharedGameState, localGameState, elapsedMS);
             UpdateCamera(sharedGameState, localGameState, elapsedMS);
             CheckForMoveOrder(sharedGameState, localGameState, netContext, elapsedMS);
+            UpdateComponents(sharedGameState, localGameState);
         }
     }
 }

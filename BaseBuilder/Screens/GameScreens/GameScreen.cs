@@ -40,6 +40,7 @@ namespace BaseBuilder.Screens.GameScreens
 
         SpriteFont debugFont;
 
+
         public GameScreen(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, 
             LocalGameLogic localGameLogic, SharedGameState sharedGameState, LocalGameState localGameState, IGameConnection gameConnection)
         {
@@ -51,14 +52,20 @@ namespace BaseBuilder.Screens.GameScreens
             this.sharedGameState = sharedGameState;
             this.localGameState = localGameState;
             this.gameConnection = gameConnection;
-
+            
             debugFont = content.Load<SpriteFont>("Bitter-Regular");
+            InitComponents();
         }
         
+        protected void InitComponents()
+        {
+            localGameState.Components = new List<IMyGameComponent>();
+            localGameLogic.AddComponent(localGameState, new ChatOverlay(content, graphics, graphicsDevice, spriteBatch));
+        }
+
         public void Update(int deltaMS)
         {
             localGameLogic.HandleUserInput(sharedGameState, localGameState, gameConnection.Context, deltaMS);
-
             gameConnection.ConsiderGameUpdate();
         }
 
@@ -78,6 +85,11 @@ namespace BaseBuilder.Screens.GameScreens
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             sharedGameState.World.Render(renderContext);
+
+            foreach(var comp in localGameState.Components)
+            {
+                comp.Draw(renderContext);
+            }
 
             //spriteBatch.DrawString(debugFont, $"Camera Location: {localGameState.Camera.WorldTopLeft}; Camera Zoom: {localGameState.Camera.Zoom}", new Vector2(5, 5), Color.White);
             spriteBatch.DrawString(debugFont, $"Game Time: {sharedGameState.GameTimeMS}", new Vector2(5, 5), Color.Black);

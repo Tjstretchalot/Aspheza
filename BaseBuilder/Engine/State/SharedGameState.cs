@@ -42,6 +42,11 @@ namespace BaseBuilder.Engine.State
         /// </summary>
         public EnhancedAStarPathfinder Pathfinder;
 
+        /// <summary>
+        /// A list of (message, gameTimeMessageWasSent) messages
+        /// </summary>
+        public List<Tuple<string, int>> RecentMessages;
+
         public int GetUniqueEntityID()
         {
             return EntityIDCounter++;
@@ -53,6 +58,7 @@ namespace BaseBuilder.Engine.State
             Players = players;
             GameTimeMS = gameTimeMS;
             Pathfinder = new EnhancedAStarPathfinder();
+            RecentMessages = new List<Tuple<string, int>>();
         }
 
         /// <summary>

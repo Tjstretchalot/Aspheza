@@ -44,6 +44,19 @@ namespace BaseBuilder.Engine.Logic
             gameState.World.SimulateTimePassing(gameState, timeMS);
 
             gameState.GameTimeMS += timeMS;
+
+            for(int i = gameState.RecentMessages.Count - 1; i >= 0; i--)
+            {
+                var msgTuple = gameState.RecentMessages[i];
+                var timestamp = msgTuple.Item2;
+
+                var timeSinceIssued = gameState.GameTimeMS - timestamp;
+
+                if(timeSinceIssued > 10000)
+                {
+                    gameState.RecentMessages.RemoveAt(i);
+                }
+            }
         }
 
         public void HandlePlayerOrders(SharedGameState gameState, int timeMS, Player player)
@@ -82,6 +95,12 @@ namespace BaseBuilder.Engine.Logic
                 throw new InvalidProgramException("cancel tasks order on null entity?");
 
             entity.ClearTasks();
+        }
+
+        [OrderHandler(typeof(IssueMessageOrder))]
+        public void OnIssueMessageOrder(SharedGameState gameState, Player player, IssueMessageOrder order)
+        {
+            gameState.RecentMessages.Add(Tuple.Create(order.Message, gameState.GameTimeMS));
         }
     }
 }

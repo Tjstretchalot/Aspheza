@@ -47,6 +47,7 @@
     <Compile Include="Engine\Logic\LogicUtils.cs" />
     <Compile Include="Engine\Logic\OrderHandler.cs" />
     <Compile Include="Engine\Logic\Orders\CancelTasksOrder.cs" />
+    <Compile Include="Engine\Logic\Orders\IssueMessageOrder.cs" />
     <Compile Include="Engine\Logic\Orders\MoveOrder.cs" />
     <Compile Include="Engine\Logic\Pathfinders\AStarNode.cs" />
     <Compile Include="Engine\Logic\Pathfinders\EnhancedAStarPathfinder.cs" />
@@ -128,7 +129,10 @@
     <Compile Include="Screens\Components\UIUtils.cs" />
     <Compile Include="Screens\Components\IScreenComponent.cs" />
     <Compile Include="Screens\Components\TextField.cs" />
+    <Compile Include="Screens\GameScreens\ChatOverlay.cs" />
+    <Compile Include="Screens\GameScreens\GameComponent.cs" />
     <Compile Include="Screens\GameScreens\GameScreen.cs" />
+    <Compile Include="Screens\GameScreens\IGameComponent.cs" />
     <Compile Include="Screens\IScreen.cs" />
     <Compile Include="Screens\IScreenManager.cs" />
     <Compile Include="Screens\IScreenTransition.cs" />

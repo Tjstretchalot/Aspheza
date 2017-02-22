@@ -19,6 +19,7 @@ namespace BaseBuilder.Engine.Context
 
         public const int MOVE_ORDER_PACKET_ID = 201;
         public const int CANCEL_TASKS_PACKET_ID = 202;
+        public const int ISSUE_MESSAGE_PACKET_ID = 203;
 
         public List<GamePacketPool> GamePacketPools;
         public Dictionary<Type, int> PacketTypesToIndexInGamePacketPools;
@@ -49,6 +50,7 @@ namespace BaseBuilder.Engine.Context
 
             RegisterPacketType(MOVE_ORDER_PACKET_ID,       typeof(MoveOrder));
             RegisterPacketType(CANCEL_TASKS_PACKET_ID,     typeof(CancelTasksOrder));
+            RegisterPacketType(ISSUE_MESSAGE_PACKET_ID,    typeof(IssueMessageOrder));
         }
 
         public GamePacketPool GetPoolFromPacketType(Type type)

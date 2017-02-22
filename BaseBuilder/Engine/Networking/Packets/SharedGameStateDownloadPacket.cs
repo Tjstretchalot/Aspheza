@@ -82,6 +82,14 @@ namespace BaseBuilder.Engine.Networking.Packets
                 SharedState.World.AddImmobileEntity((ImmobileEntity)EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(entID), SharedState, message));
             }
 
+            var numRecentMessages = message.ReadInt32();
+            for (var i = 0; i < numRecentMessages; i++)
+            {
+                var msg = message.ReadString();
+                var time = message.ReadInt32();
+
+                SharedState.RecentMessages.Add(Tuple.Create(msg, time));
+            }
         }
 
         public override void SaveTo(NetContext context, NetOutgoingMessage message)
@@ -131,6 +139,14 @@ namespace BaseBuilder.Engine.Networking.Packets
                 message.Write(EntityIdentifier.GetIDOfEntity(immobile.GetType()));
 
                 immobile.Write(message);
+            }
+
+            message.Write(SharedState.RecentMessages.Count);
+
+            foreach(var msgTuple in SharedState.RecentMessages)
+            {
+                message.Write(msgTuple.Item1);
+                message.Write(msgTuple.Item2);
             }
         }
 

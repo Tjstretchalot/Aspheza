@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.World.WorldObject.Entities;
+using BaseBuilder.Screens.GameScreens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace BaseBuilder.Engine.State
         public Entity SelectedEntity;
 
         public bool CollisionDebug;
+
+        /// <summary>
+        /// The components on the screen
+        /// </summary>
+        public List<IMyGameComponent> Components;
 
         public LocalGameState(Camera camera, int localPlayerID)
         {

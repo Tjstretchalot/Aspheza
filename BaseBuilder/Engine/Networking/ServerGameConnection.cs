@@ -89,6 +89,11 @@ namespace BaseBuilder.Engine.Networking
         public void OnPlayerReadyForSync(ReadyForSyncPacket packet)
         {
             SharedState.GetPlayerByID(packet.PlayerID).ReadyForSync = true;
+
+            var pool = Context.GetPoolFromPacketType(typeof(IssueMessageOrder));
+            var order = pool.GetGamePacketFromPool() as IssueMessageOrder;
+            order.Message = "A new player has connected!";
+            LocalState.Orders.Add(order);
         }
 
         [PacketHandler(typeof(SyncPacket))]
