@@ -83,7 +83,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
 
         protected void InitBuildings()
         {
-            TileWorld.AddImmobileEntity(new House(new PointD2D(7, 5), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(new House(new PointD2D(6.5, 5), SharedGameState.GetUniqueEntityID()));
             //TileWorld.AddImmobileEntity(new MageTower(new PointD2D(10, 5), SharedGameState.GetUniqueEntityID()));
         }
         
