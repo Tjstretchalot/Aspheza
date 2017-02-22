@@ -85,7 +85,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
 
             var curr = Path.GetCurrent();
-            if(Entity.Position.X == curr.X && Entity.Position.Y == curr.Y)
+            if(EpsilonEqual(Entity.Position.X, curr.X) && EpsilonEqual(Entity.Position.Y, curr.Y))
             {
                 Finished = !Path.Next();
 
@@ -99,6 +99,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
 
             ImplMove(gameState, curr, timeMS);
+            gameState.World.UpdateTileCollisions(Entity);
             if (Finished)
             {
                 Path = null;
