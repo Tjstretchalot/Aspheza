@@ -125,12 +125,12 @@ namespace BaseBuilder.Engine.Logic
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
                 cameraPartialTopLeft.X = Math.Max(0, cameraPartialTopLeft.X - cameraSpeed * elapsedMS);
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                cameraPartialTopLeft.X = Math.Min(world.TileWidth - camera.VisibleWorldWidth, cameraPartialTopLeft.X + cameraSpeed * elapsedMS);
+                cameraPartialTopLeft.X = Math.Min(world.TileWidth - camera.VisibleWorldWidth - 1, cameraPartialTopLeft.X + cameraSpeed * elapsedMS);
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 cameraPartialTopLeft.Y = Math.Max(0, cameraPartialTopLeft.Y - cameraSpeed * elapsedMS);
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                cameraPartialTopLeft.Y = Math.Min(world.TileHeight - camera.VisibleWorldHeight, cameraPartialTopLeft.Y + cameraSpeed * elapsedMS);
+                cameraPartialTopLeft.Y = Math.Min(world.TileHeight - camera.VisibleWorldHeight - 1, cameraPartialTopLeft.Y + cameraSpeed * elapsedMS);
 
 
             var scrollWheel = Mouse.GetState().ScrollWheelValue;
@@ -164,8 +164,8 @@ namespace BaseBuilder.Engine.Logic
 
                 cameraPartialTopLeft.X = Math.Max(cameraPartialTopLeft.X, 0);
                 cameraPartialTopLeft.Y = Math.Max(cameraPartialTopLeft.Y, 0);
-                cameraPartialTopLeft.X = Math.Min(cameraPartialTopLeft.X, world.TileWidth - camera.VisibleWorldWidth);
-                cameraPartialTopLeft.Y = Math.Min(cameraPartialTopLeft.Y, world.TileHeight - camera.VisibleWorldHeight);
+                cameraPartialTopLeft.X = Math.Min(cameraPartialTopLeft.X, world.TileWidth - camera.VisibleWorldWidth - 1);
+                cameraPartialTopLeft.Y = Math.Min(cameraPartialTopLeft.Y, world.TileHeight - camera.VisibleWorldHeight - 1);
             }
 
             // the goal is that the camera can move in increments of one pixel. One pixel = (1 world unit / Zoom).
