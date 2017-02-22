@@ -69,10 +69,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             SpecificName = specificName;
         }
 
-        public EntityRepeaterTask(NetIncomingMessage message)
+        public EntityRepeaterTask(SharedGameState gameState, NetIncomingMessage message)
         {
             var taskID = message.ReadInt16();
-            Task = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), message);
+            Task = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message);
             SpecificName = message.ReadString();
             TaskRunSinceLastReset = message.ReadBoolean();
             Times = message.ReadInt32();

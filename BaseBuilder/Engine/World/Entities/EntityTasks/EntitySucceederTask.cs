@@ -64,10 +64,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             SpecificName = specificName;
         }
 
-        public EntitySucceederTask(NetIncomingMessage message)
+        public EntitySucceederTask(SharedGameState gameState, NetIncomingMessage message)
         {
             var taskID = message.ReadInt16();
-            Task = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), message);
+            Task = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message);
             SpecificName = message.ReadString();
             TaskRunSinceLastReset = message.ReadBoolean();
         }

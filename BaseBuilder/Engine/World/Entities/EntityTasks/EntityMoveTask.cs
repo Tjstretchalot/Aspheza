@@ -63,11 +63,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Finished = false;
         }
 
-        public EntityMoveTask(NetIncomingMessage message)
+        public EntityMoveTask(SharedGameState gameState, NetIncomingMessage message)
         {
-            var entID = message.ReadInt16();
-
-            Entity = EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(entID), message) as MobileEntity;
+            var entityID = message.ReadInt32();
+            Entity = gameState.World.MobileEntities.Find((me) => me.ID == entityID);
             Destination = new PointI2D(message);
 
             Path = new UnitPath(message);
@@ -77,10 +76,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Write(NetOutgoingMessage message)
         {
-            var entID = EntityIdentifier.GetIDOfEntity(Entity.GetType());
-
-            message.Write(entID);
-            Entity.Write(message);
+            message.Write(Entity.ID);
             Destination.Write(message);
             Path.Write(message);
             message.Write(Finished);

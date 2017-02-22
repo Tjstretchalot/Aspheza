@@ -91,7 +91,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Counter = 0;
         }
 
-        public EntitySequenceTask(NetIncomingMessage message)
+        public EntitySequenceTask(SharedGameState gameState, NetIncomingMessage message)
         {
             SpecificName = message.ReadString();
             Counter = message.ReadInt32();
@@ -104,7 +104,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             {
                 var taskID = message.ReadInt16();
 
-                Tasks.Add(TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), message));
+                Tasks.Add(TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message));
             }
         }
 

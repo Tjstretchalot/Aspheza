@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using BaseBuilder.Engine.State;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         static TaskIdentifier()
         {
-            TaskConstructorParamTypes = new Type[] { typeof(NetIncomingMessage) };
+            TaskConstructorParamTypes = new Type[] { typeof(SharedGameState), typeof(NetIncomingMessage) };
             IdsToTasks = new Dictionary<short, Type>();
             TasksToIds = new Dictionary<Type, short>();
 
@@ -47,9 +48,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             return IdsToTasks[id];
         }
 
-        public static IEntityTask InitEntityTask(Type type, NetIncomingMessage message)
+        public static IEntityTask InitEntityTask(Type type, SharedGameState gameState, NetIncomingMessage message)
         {
-            return type.GetConstructor(TaskConstructorParamTypes).Invoke(new object[] { message }) as IEntityTask;
+            return type.GetConstructor(TaskConstructorParamTypes).Invoke(new object[] { gameState, message }) as IEntityTask;
         }
     }
 }
