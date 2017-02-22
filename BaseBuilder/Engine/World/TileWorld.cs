@@ -110,33 +110,71 @@ namespace BaseBuilder.Engine.World
             UpdateTileCollisions(ent);
         }
 
-
-        public void UpdateTileCollisions(Entity ent)
+        protected bool ResolveEntityCollisions(Entity ent, List<PointI2D> newEntTiles)
         {
-            List<PointI2D> TilesLocation = new List<PointI2D>();
-            List<Tile> NewTiles = new List<Tile>();
-            ent.TilesIntersectedAt(TilesLocation);
-            var OldTiles = EntityToTiles[ent];
-            var OldTileCount = OldTiles.Count;
-
-            NewTiles.AddRange(TilesLocation.Select((t) => TileAt(t.X, t.Y)));
-
-            foreach (var tile in NewTiles)
+            foreach(var tilePos in newEntTiles)
             {
-                if(!OldTiles.Contains(tile))
+                var tile = TileAt(tilePos.X, tilePos.Y);
+                var entities = TileToEntities[tile];
+
+                foreach(var colliding in entities)
                 {
-                    OldTiles.Add(tile);
+                    if (colliding == ent)
+                        continue;
+
+                    var mtv = ent.CollisionMesh.IntersectionMTV(colliding.CollisionMesh, ent.Position, colliding.Position);
+
+                    if(mtv != null)
+                    {
+                        ent.Position.X += mtv.DeltaX;
+                        ent.Position.Y += mtv.DeltaY;
+                        ent.TilesIntersectedAt(newEntTiles);
+                        ResolveEntityCollisions(ent, newEntTiles);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Updates the tile collisions for the specified entity. This is required any time an entities
+        /// position changes.
+        /// </summary>
+        /// <param name="ent">The entity that moved</param>
+        /// <returns>True if this function moved the entity to resolve a collision, false otherwise.</returns>
+        public bool UpdateTileCollisions(Entity ent)
+        {
+            List<PointI2D> tilesLocation = new List<PointI2D>();
+            List<Tile> newTiles = new List<Tile>();
+            ent.TilesIntersectedAt(tilesLocation);
+
+            var result = ResolveEntityCollisions(ent, tilesLocation);
+
+            var oldTiles = EntityToTiles[ent];
+            var oldTileCount = oldTiles.Count;
+
+            newTiles.AddRange(tilesLocation.Select((t) => TileAt(t.X, t.Y)));
+
+            foreach (var tile in newTiles)
+            {
+                if(!oldTiles.Contains(tile))
+                {
+                    oldTiles.Add(tile);
                     TileToEntities[tile].Add(ent);
                 }
             }
-            for (var loc = OldTileCount - 1; loc >= 0; loc--)
+            for (var loc = oldTileCount - 1; loc >= 0; loc--)
             {
-                if(!NewTiles.Contains(OldTiles[loc]))
+                if(!newTiles.Contains(oldTiles[loc]))
                 {
-                    TileToEntities[OldTiles[loc]].Remove(ent);
-                    OldTiles.RemoveAt(loc);
+                    TileToEntities[oldTiles[loc]].Remove(ent);
+                    oldTiles.RemoveAt(loc);
                 }
             }
+
+            return result;
         }
 
         public bool IsPassable(PointI2D loc, MobileEntity ent)
