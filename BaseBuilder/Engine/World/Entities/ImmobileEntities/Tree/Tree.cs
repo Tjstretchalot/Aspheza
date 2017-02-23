@@ -21,7 +21,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
         {
         }
 
-        public Tree(PointD2D position, PolygonD2D collisionMesh, int id, string sheetName, List<Tuple<Rectangle, PointD2D>> sourceRectsToOffsetLocations, TreeSize size, TreeStyle style, TreeColor color) : base(position, collisionMesh, id, sheetName, sourceRectsToOffsetLocations)
+        public Tree(PointD2D position, PolygonD2D collisionMesh, int id, List<Tuple<Rectangle, PointD2D>> sourceRectsToOffsetLocations, TreeSize size, TreeStyle style, TreeColor color) : base(position, collisionMesh, id, "roguelikeSheet_transparent", sourceRectsToOffsetLocations)
         {
             Size = size;
             Style = style;
@@ -42,6 +42,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             var dataFromInfo = TreeUtils.GetCollisionMesh(Size, Style, Color);
             CollisionMesh = dataFromInfo.Item1;
             SourceRectsToOffsetLocations = dataFromInfo.Item2;
+            SheetName = "roguelikeSheet_transparent";
         }
 
         public override void Write(NetOutgoingMessage message)

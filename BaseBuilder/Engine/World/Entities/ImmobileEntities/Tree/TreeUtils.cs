@@ -56,7 +56,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             tree = tuple.Item2;
             collisionMesh = tuple.Item1;
 
-            return new Tree(position, collisionMesh, id, "roguelikeSheet_transparent", tree, size, style, color);
+            return new Tree(position, collisionMesh, id, tree, size, style, color);
         }
 
         public static Tuple<PolygonD2D, List<Tuple<Rectangle, PointD2D>>> GetCollisionMesh(TreeSize size, TreeStyle style, TreeColor color)
