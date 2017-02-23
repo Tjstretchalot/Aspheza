@@ -41,6 +41,9 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         /// </summary>
         public Sign() : base()
         {
+            CollisionMesh = _CollisionMesh;
+            SheetName = "roguelikeSheet_transparent";
+            SourceRectsToOffsetLocations = _SourceRectsToOffsetLocations;
         }
 
         public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)
@@ -48,7 +51,6 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Position = new PointD2D(message);
             ID = message.ReadInt32();
             SetText(message.ReadString());
-            CollisionMesh = _CollisionMesh;
 
             TasksFromMessage(gameState, message);
         }
