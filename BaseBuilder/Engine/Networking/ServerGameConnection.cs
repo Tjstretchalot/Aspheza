@@ -114,7 +114,7 @@ namespace BaseBuilder.Engine.Networking
             {
                 foreach(var player in SharedState.Players)
                 {
-                    if(player.ID != ignorePlayerID)
+                    if(player.ID != ignorePlayerID && player.ID != LocalState.LocalPlayerID)
                     {
                         var ruid = PlayerIDsToNetConnectionUniqueIdentifier[player.ID];
 
@@ -164,7 +164,7 @@ namespace BaseBuilder.Engine.Networking
                         newPlayerPacket.NewPlayer = newPlayer;
                         foreach(var player in SharedState.Players)
                         {
-                            if (player.ID == newPlayer.ID)
+                            if (player.ID == newPlayer.ID || player.ID == LocalState.LocalPlayerID)
                                 continue;
                             
                             player.ReadyForSync = false;
@@ -175,7 +175,7 @@ namespace BaseBuilder.Engine.Networking
                         {
                             foreach(var player in SharedState.Players)
                             {
-                                if (player.ID != newPlayer.ID)
+                                if (player.ID != newPlayer.ID && player.ID != LocalState.LocalPlayerID)
                                 {
                                     var ruid = PlayerIDsToNetConnectionUniqueIdentifier[player.ID];
 
