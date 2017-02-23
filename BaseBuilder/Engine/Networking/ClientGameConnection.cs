@@ -82,6 +82,23 @@ namespace BaseBuilder.Engine.Networking
             }
         }
 
+        [PacketHandler(packetType: typeof(PlayerJoinedPacket))]
+        public void OnPlayerJoined(PlayerJoinedPacket packet)
+        {
+            if(!Connected)
+            {
+                throw new InvalidProgramException("This is a very fringe case that should be prevented on the server from happening");
+            }
+
+            var player = packet.NewPlayer;
+            SharedState.Players.Add(player);
+            
+            var readyForSync = (ReadyForSyncPacket)Context.GetPoolFromPacketType(typeof(ReadyForSyncPacket)).GetGamePacketFromPool();
+            readyForSync.PlayerID = LocalPlayerID.Value;
+            SendPacket(readyForSync);
+            readyForSync.Recycle();
+        }
+
         public void ContinueConnecting(Viewport screenSize)
         {
             if(!InitiatedConnection)

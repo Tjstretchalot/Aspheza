@@ -74,6 +74,7 @@
     <Compile Include="Engine\Networking\PacketHandler.cs" />
     <Compile Include="Engine\Networking\Packets\GamePacket.cs" />
     <Compile Include="Engine\Networking\Packets\IGamePacket.cs" />
+    <Compile Include="Engine\Networking\Packets\PlayerJoinedPacket.cs" />
     <Compile Include="Engine\Networking\Packets\ReadyForSyncPacket.cs" />
     <Compile Include="Engine\Networking\Packets\SimulationStartPacket.cs" />
     <Compile Include="Engine\Networking\Packets\SyncPacket.cs" />

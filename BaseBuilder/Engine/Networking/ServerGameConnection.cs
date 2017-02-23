@@ -137,8 +137,9 @@ namespace BaseBuilder.Engine.Networking
                      */
 
                     var waitingForPlayers = false;
-                    foreach (var conn in ConnectionsWaitingForDownload)
-                    {
+                    if(ConnectionsWaitingForDownload.Count > 0) {
+                        var conn = ConnectionsWaitingForDownload[0];
+                        ConnectionsWaitingForDownload.RemoveAt(0);
                         waitingForPlayers = true;
 
                         var newPlayer = new Player(GetUniquePlayerID(), "not set");
@@ -150,9 +151,39 @@ namespace BaseBuilder.Engine.Networking
                         syncPacket.LocalPlayerID = newPlayer.ID;
                         SendPacket(syncPacket, Server, conn, NetDeliveryMethod.ReliableOrdered);
                         syncPacket.Recycle();
+
+                        var newPlayerPacket = (PlayerJoinedPacket)Context.GetPoolFromPacketType(typeof(PlayerJoinedPacket)).GetGamePacketFromPool();
+                        newPlayerPacket.NewPlayer = newPlayer;
+                        foreach(var player in SharedState.Players)
+                        {
+                            if (player.ID == newPlayer.ID)
+                                continue;
+                            
+                            player.ReadyForSync = false;
+                        }
+
+                        List<NetConnection> connectionsToSendTo = new List<NetConnection>(SharedState.Players.Count - 1);
+                        foreach(var con in Server.Connections)
+                        {
+                            foreach(var player in SharedState.Players)
+                            {
+                                if (player.ID != newPlayer.ID)
+                                {
+                                    var ruid = PlayerIDsToNetConnectionUniqueIdentifier[player.ID];
+
+                                    if(con.RemoteUniqueIdentifier == ruid)
+                                    {
+                                        connectionsToSendTo.Add(con);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        SendPacket(newPlayerPacket, Server, connectionsToSendTo, NetDeliveryMethod.ReliableOrdered);
+                        newPlayerPacket.Recycle();
                     }
 
-                    ConnectionsWaitingForDownload.Clear();
+                    
 
                     for(int i = 0; i < SharedState.Players.Count && !waitingForPlayers; i++)
                     {

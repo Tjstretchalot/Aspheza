@@ -16,6 +16,7 @@ namespace BaseBuilder.Engine.Context
         public const int SYNC_PACKET_ID = 102;
         public const int SIMULATION_START_PACKET_ID = 103;
         public const int READY_FOR_SYNC_PACKET_ID = 104;
+        public const int PLAYER_JOINED_PACKET_ID = 105;
 
         public const int MOVE_ORDER_PACKET_ID = 201;
         public const int CANCEL_TASKS_PACKET_ID = 202;
@@ -47,6 +48,7 @@ namespace BaseBuilder.Engine.Context
             RegisterPacketType(SYNC_PACKET_ID,             typeof(SyncPacket));
             RegisterPacketType(SIMULATION_START_PACKET_ID, typeof(SimulationStartPacket));
             RegisterPacketType(READY_FOR_SYNC_PACKET_ID,   typeof(ReadyForSyncPacket));
+            RegisterPacketType(PLAYER_JOINED_PACKET_ID,    typeof(PlayerJoinedPacket));
 
             RegisterPacketType(MOVE_ORDER_PACKET_ID,       typeof(MoveOrder));
             RegisterPacketType(CANCEL_TASKS_PACKET_ID,     typeof(CancelTasksOrder));
