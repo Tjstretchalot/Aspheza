@@ -119,7 +119,6 @@ namespace BaseBuilder.Engine.Networking
             peer.SendMessage(outgoing, conn, method);
         }
 
-        [PacketHandler(packetType: typeof(SyncPacket))]
         public void HandleSyncPacket(SyncPacket packet)
         {
             var syncPacket = packet as SyncPacket;

@@ -99,6 +99,8 @@ namespace BaseBuilder.Engine.Networking
         [PacketHandler(typeof(SyncPacket))]
         public void EchoSyncPackets(SyncPacket packet)
         {
+            HandleSyncPacket(packet);
+
             long ignoreRUID;
             if (!PlayerIDsToNetConnectionUniqueIdentifier.TryGetValue(packet.PlayerID, out ignoreRUID))
                 Console.WriteLine($"Could not find remote unique identifier for player id {packet.PlayerID}!");

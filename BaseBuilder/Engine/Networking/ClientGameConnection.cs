@@ -73,6 +73,15 @@ namespace BaseBuilder.Engine.Networking
             }
         }
 
+        [PacketHandler(packetType: typeof(SyncPacket))]
+        public void OnSyncReceieved(SyncPacket packet)
+        {
+            if(Connected)
+            {
+                HandleSyncPacket(packet);
+            }
+        }
+
         public void ContinueConnecting(Viewport screenSize)
         {
             if(!InitiatedConnection)
