@@ -11,6 +11,7 @@ using BaseBuilder.Engine.Logic;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.Math2D.Double;
 using Microsoft.Xna.Framework.Graphics;
+using BaseBuilder.Engine.Logic.Orders;
 
 namespace BaseBuilder.Engine.Networking
 {
@@ -24,12 +25,15 @@ namespace BaseBuilder.Engine.Networking
 
         protected IPEndPoint Host;
 
+        protected string DesiredName;
+
         protected int? LocalPlayerID;
 
-        public ClientGameConnection(IPEndPoint host) : base(null, null, null)
+        public ClientGameConnection(IPEndPoint host, string desiredName) : base(null, null, null)
         {
             Host = host;
             Connected = false;
+            DesiredName = desiredName;
         }
 
         private void Connect()
@@ -102,6 +106,9 @@ namespace BaseBuilder.Engine.Networking
 
         public void ContinueConnecting(Viewport screenSize)
         {
+            if (Connected)
+                return;
+
             if(!InitiatedConnection)
             {
                 Connect();
@@ -112,10 +119,26 @@ namespace BaseBuilder.Engine.Networking
 
             Connected = SharedState != null;
 
-            if(Connected)
+            if (Connected)
             {
                 LocalState = new LocalGameState(new Camera(new PointD2D(0, 0), new RectangleD2D(screenSize.Width, screenSize.Height), 8), LocalPlayerID.Value);
                 SharedLogic = new SharedGameLogic();
+
+                var imPool = Context.GetPoolFromPacketType(typeof(IssueMessageOrder));
+                var imOrder = imPool.GetGamePacketFromPool() as IssueMessageOrder;
+                imOrder.Message = $"Player {LocalPlayerID} is ready to play.";
+                LocalState.Orders.Add(imOrder);
+
+                var cnPool = Context.GetPoolFromPacketType(typeof(ChangeNameOrder));
+                var cnOrder = cnPool.GetGamePacketFromPool() as ChangeNameOrder;
+                cnOrder.PlayerID = LocalPlayerID.Value;
+                cnOrder.NewName = DesiredName;
+                LocalState.Orders.Add(cnOrder);
+
+                imOrder = imPool.GetGamePacketFromPool() as IssueMessageOrder;
+                imOrder.Message = $"Player {LocalPlayerID} has identified himself as {DesiredName}";
+                LocalState.Orders.Add(imOrder);
+
             }
         }
 
@@ -129,7 +152,6 @@ namespace BaseBuilder.Engine.Networking
             readyForSync.PlayerID = packet.LocalPlayerID;
             SendPacket(readyForSync);
             readyForSync.Recycle();
-            
             Console.WriteLine($"Recieved OnSharedGameStateDownloadPacket (SharedState == null = {SharedState == null}; num players = {SharedState.Players.Count}; my id = {LocalPlayerID}");
         }
     }

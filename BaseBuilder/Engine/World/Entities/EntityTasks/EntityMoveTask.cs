@@ -175,7 +175,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 if(NextSFXCounter <= 0)
                 {
                     PlaySFX = true;
-                    NextSFXCounter = 5;
+                    NextSFXCounter = random.Next(3) + 9;
                 }
             }
             if (Finished)
@@ -236,8 +236,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             if (PlaySFX)
             {
-                var sfx = $"Sounds/footstep0{random.Next(10)}";
-                content.Load<SoundEffect>(sfx).Play();
+                var sfxNm = $"Sounds/footstep05";
+                var sfx = content.Load<SoundEffect>(sfxNm);
+                var inst = sfx.CreateInstance();
+                inst.Volume = 0.5f;
+                inst.Play();
                 PlaySFX = false;
             }
         }

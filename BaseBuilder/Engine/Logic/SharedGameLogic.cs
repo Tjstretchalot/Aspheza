@@ -102,5 +102,13 @@ namespace BaseBuilder.Engine.Logic
         {
             gameState.RecentMessages.Add(Tuple.Create(order.Message, gameState.GameTimeMS));
         }
+
+        [OrderHandler(typeof(ChangeNameOrder))]
+        public void OnChangeNameOrder(SharedGameState gameState, Player player, ChangeNameOrder order)
+        {
+            var playerToChangeName = gameState.GetPlayerByID(order.PlayerID);
+
+            playerToChangeName.Name = order.NewName;
+        }
     }
 }
