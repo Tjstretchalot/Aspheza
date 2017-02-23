@@ -88,6 +88,7 @@ namespace BaseBuilder.Engine.Networking
         [PacketHandler(typeof(ReadyForSyncPacket))]
         public void OnPlayerReadyForSync(ReadyForSyncPacket packet)
         {
+            Console.WriteLine($"Player {packet.PlayerID} has indicated he is ready to sync");
             SharedState.GetPlayerByID(packet.PlayerID).ReadyForSync = true;
 
             var pool = Context.GetPoolFromPacketType(typeof(IssueMessageOrder));
@@ -101,9 +102,7 @@ namespace BaseBuilder.Engine.Networking
         {
             HandleSyncPacket(packet);
 
-            long ignoreRUID;
-            if (!PlayerIDsToNetConnectionUniqueIdentifier.TryGetValue(packet.PlayerID, out ignoreRUID))
-                Console.WriteLine($"Could not find remote unique identifier for player id {packet.PlayerID}!");
+            int ignorePlayerID = packet.PlayerID;
             
             var outgoing = Server.CreateMessage();
 
@@ -113,9 +112,18 @@ namespace BaseBuilder.Engine.Networking
             
             foreach (var conn in Server.Connections)
             {
-                if(conn.RemoteUniqueIdentifier != ignoreRUID)
+                foreach(var player in SharedState.Players)
                 {
-                    connsToSendTo.Add(conn);
+                    if(player.ID != ignorePlayerID)
+                    {
+                        var ruid = PlayerIDsToNetConnectionUniqueIdentifier[player.ID];
+
+                        if(ruid == conn.RemoteUniqueIdentifier)
+                        {
+                            connsToSendTo.Add(conn);
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -182,9 +190,7 @@ namespace BaseBuilder.Engine.Networking
                         SendPacket(newPlayerPacket, Server, connectionsToSendTo, NetDeliveryMethod.ReliableOrdered);
                         newPlayerPacket.Recycle();
                     }
-
                     
-
                     for(int i = 0; i < SharedState.Players.Count && !waitingForPlayers; i++)
                     {
                         waitingForPlayers = !SharedState.Players[i].ReadyForSync;

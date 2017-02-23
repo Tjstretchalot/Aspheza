@@ -85,6 +85,7 @@ namespace BaseBuilder.Engine.Networking
         [PacketHandler(packetType: typeof(PlayerJoinedPacket))]
         public void OnPlayerJoined(PlayerJoinedPacket packet)
         {
+            Console.WriteLine($"A player with id {packet.NewPlayer.ID} has connected to the game");
             if(!Connected)
             {
                 throw new InvalidProgramException("This is a very fringe case that should be prevented on the server from happening");
