@@ -126,7 +126,7 @@ namespace BaseBuilder.Engine.Networking
 
                 var imPool = Context.GetPoolFromPacketType(typeof(IssueMessageOrder));
                 var imOrder = imPool.GetGamePacketFromPool() as IssueMessageOrder;
-                imOrder.Message = $"Player {LocalPlayerID} is ready to play.";
+                imOrder.Message = $"Player {LocalPlayerID} has connected.";
                 LocalState.Orders.Add(imOrder);
 
                 var cnPool = Context.GetPoolFromPacketType(typeof(ChangeNameOrder));
