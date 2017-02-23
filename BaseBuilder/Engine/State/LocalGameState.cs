@@ -43,6 +43,11 @@ namespace BaseBuilder.Engine.State
         /// </summary>
         public Entity SelectedEntity;
 
+        /// <summary>
+        /// The Entity that you are currently hovering on
+        /// </summary>
+        public Entity HoveredEntity;
+
         public bool CollisionDebug;
 
         /// <summary>

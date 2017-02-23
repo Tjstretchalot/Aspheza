@@ -3,6 +3,7 @@ using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World.WorldObject.Entities;
 using BaseBuilder.Screens.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -23,18 +24,15 @@ namespace BaseBuilder.Engine.Logic
     /// </summary>
     public class LocalGameLogic
     {
-        protected int previousScrollWheelValue;
-        protected bool previousDKeyState;
-        protected Microsoft.Xna.Framework.Input.ButtonState previousLeftMouseButtonState;
-        protected Microsoft.Xna.Framework.Input.ButtonState previousRightMouseButtonState;
-
         protected int minCameraZoom;
         protected double cameraSpeed;
         protected double cameraZoomSpeed;
         protected double cameraPartialZoom;
         protected PointD2D cameraPartialTopLeft;
         
+        MouseState mouseCurr;
         MouseState? mouseLast;
+        KeyboardState keyboardCurr;
         KeyboardState? keyboardLast;
         List<Keys> keysPressedReusable;
 
@@ -68,8 +66,10 @@ namespace BaseBuilder.Engine.Logic
         
         protected void UpdateComponents(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
         {
-            var mouseCurr = Mouse.GetState();
-            var keyboardCurr = Keyboard.GetState();
+            if (!mouseLast.HasValue && !keyboardLast.HasValue)
+            {
+                return;
+            }
 
             if (mouseLast.HasValue && keyboardLast.HasValue)
             {
@@ -96,9 +96,6 @@ namespace BaseBuilder.Engine.Logic
             {
                 comp.Update(sharedGameState, localGameState, elapsedMS);
             }
-
-            mouseLast = mouseCurr;
-            keyboardLast = keyboardCurr;
         }
 
         public void UpdateTasks(SharedGameState sharedGameState, LocalGameState localGameState, ContentManager content)
@@ -116,12 +113,17 @@ namespace BaseBuilder.Engine.Logic
 
         protected void CheckForMoveOrder(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS)
         {
+            if (!mouseLast.HasValue)
+            {
+                return;
+            }
+
             var world = sharedGameState.World;
             var camera = localGameState.Camera;
-
-            if ((Mouse.GetState().RightButton != previousRightMouseButtonState) && (previousRightMouseButtonState == ButtonState.Pressed))
+            
+            if ((mouseCurr.RightButton != mouseLast.Value.RightButton) && (mouseLast.Value.RightButton == ButtonState.Pressed))
             {
-                double mousePixelX = Mouse.GetState().Position.X, mousePixelY = Mouse.GetState().Position.Y;
+                double mousePixelX = mouseCurr.Position.X, mousePixelY = mouseCurr.Position.Y;
                 double mouseWorldX, mouseWorldY;
                 camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out mouseWorldX, out mouseWorldY);
                 mouseWorldX = (int)mouseWorldX;
@@ -130,7 +132,7 @@ namespace BaseBuilder.Engine.Logic
                 if (localGameState.SelectedEntity != null)
                 {
                     //Console.WriteLine($"Issue move order to enitity ID {localGameState.SelectedEntity.ID} To ({mouseWorldX} {mouseWorldY}).");
-                    if(!Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+                    if(!keyboardCurr.IsKeyDown(Keys.LeftShift))
                     {
                         var cancelTasksOrder = netContext.GetPoolFromPacketType(typeof(CancelTasksOrder)).GetGamePacketFromPool() as CancelTasksOrder;
                         cancelTasksOrder.EntityID = localGameState.SelectedEntity.ID;
@@ -142,32 +144,27 @@ namespace BaseBuilder.Engine.Logic
                     localGameState.Orders.Add(moveOrder);
                 }
             }
-            previousRightMouseButtonState = Mouse.GetState().RightButton;
         }
 
         protected void CheckForSelect(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
         {
-            var world = sharedGameState.World;
-            var camera = localGameState.Camera;
-
-            if ((Mouse.GetState().LeftButton != previousLeftMouseButtonState) && (previousLeftMouseButtonState == ButtonState.Pressed))
+            if (!mouseLast.HasValue)
             {
-                double mousePixelX = Mouse.GetState().Position.X, mousePixelY = Mouse.GetState().Position.Y;
-                double mouseWorldX, mouseWorldY;
-                camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out mouseWorldX, out mouseWorldY);
+                return;
+            }
 
-                var entity = world.GetMobileEntityAtLocation(new PointD2D(mouseWorldX, mouseWorldY));
+            if ((mouseCurr.LeftButton != mouseLast.Value.LeftButton) && (mouseLast.Value.LeftButton == ButtonState.Pressed))
+            {
+                var entity = localGameState.HoveredEntity;
                 if (entity == null)
                 {
                     if (localGameState.SelectedEntity == null)
                     {
-                        previousLeftMouseButtonState = Mouse.GetState().LeftButton;
                         return;
                     }
 
                     localGameState.SelectedEntity.Selected = false;
                     localGameState.SelectedEntity = entity;
-                    previousLeftMouseButtonState = Mouse.GetState().LeftButton;
                     return;
                 }
 
@@ -182,40 +179,63 @@ namespace BaseBuilder.Engine.Logic
                     entity.Selected = true;
                 }
             }
-            previousLeftMouseButtonState = Mouse.GetState().LeftButton;
+        }
+
+        protected void CheckForHovering(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        {
+            if (!mouseLast.HasValue)
+            {
+                return;
+            }
+
+            var world = sharedGameState.World;
+            var camera = localGameState.Camera;
+            
+            double mousePixelX = mouseCurr.Position.X, mousePixelY = mouseCurr.Position.Y;
+            double mouseWorldX, mouseWorldY;
+            camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out mouseWorldX, out mouseWorldY);
+
+            var entity = world.GetEntityAtLocation(new PointD2D(mouseWorldX, mouseWorldY));
+            
+            localGameState.HoveredEntity = entity;
         }
 
         protected void CheckForColisionDebugUpadate(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
         {
-            if ((Keyboard.GetState().IsKeyDown(Keys.D) != previousDKeyState) && !previousDKeyState && (Keyboard.GetState().IsKeyDown(Keys.LeftAlt) || Keyboard.GetState().IsKeyDown(Keys.RightAlt)))
+            if (!keyboardLast.HasValue)
+            {
+                return;
+            }
+
+            if ((keyboardCurr.IsKeyDown(Keys.D) != keyboardLast.Value.IsKeyDown(Keys.D)) && !keyboardLast.Value.IsKeyDown(Keys.D) && (keyboardCurr.IsKeyDown(Keys.LeftAlt) || keyboardCurr.IsKeyDown(Keys.RightAlt)))
             {
                 localGameState.CollisionDebug = !localGameState.CollisionDebug;
             }
-            previousDKeyState = Keyboard.GetState().IsKeyDown(Keys.D);
         }
         
         protected virtual void UpdateCamera(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
         {
+            if (!mouseLast.HasValue)
+            {
+                return;
+            }
+
             var world = sharedGameState.World;
             var camera = localGameState.Camera;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            
+            if (keyboardCurr.IsKeyDown(Keys.Left))
                 cameraPartialTopLeft.X = Math.Max(0, cameraPartialTopLeft.X - cameraSpeed * elapsedMS);
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            if (keyboardCurr.IsKeyDown(Keys.Right))
                 cameraPartialTopLeft.X = Math.Min(world.TileWidth - camera.VisibleWorldWidth - 1, cameraPartialTopLeft.X + cameraSpeed * elapsedMS);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            if (keyboardCurr.IsKeyDown(Keys.Up))
                 cameraPartialTopLeft.Y = Math.Max(0, cameraPartialTopLeft.Y - cameraSpeed * elapsedMS);
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            if (keyboardCurr.IsKeyDown(Keys.Down))
                 cameraPartialTopLeft.Y = Math.Min(world.TileHeight - camera.VisibleWorldHeight - 1, cameraPartialTopLeft.Y + cameraSpeed * elapsedMS);
-
-
-            var scrollWheel = Mouse.GetState().ScrollWheelValue;
-
-            if (scrollWheel != previousScrollWheelValue)
+            
+            if (mouseCurr.ScrollWheelValue != mouseLast.Value.ScrollWheelValue)
             {
-                var delta = scrollWheel - previousScrollWheelValue;
-                previousScrollWheelValue = scrollWheel;
+                var delta = mouseCurr.ScrollWheelValue - mouseLast.Value.ScrollWheelValue;
 
                 var oldZoom = cameraPartialZoom;
                 var oldWorldWidth = camera.VisibleWorldWidth;
@@ -225,7 +245,7 @@ namespace BaseBuilder.Engine.Logic
                 newZoom = Math.Min(newZoom, minCameraZoom);
                 newZoom = Math.Max(newZoom, camera.ScreenLocation.Width / world.TileWidth);
 
-                double mousePixelX = Mouse.GetState().Position.X, mousePixelY = Mouse.GetState().Position.Y;
+                double mousePixelX = mouseCurr.Position.X, mousePixelY = mouseCurr.Position.Y;
                 double mouseWorldX, mouseWorldY;
                 camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out mouseWorldX, out mouseWorldY);
 
@@ -259,11 +279,18 @@ namespace BaseBuilder.Engine.Logic
         /// <param name="localGameState">The local game state, for reference and modification.</param>
         public void HandleUserInput(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS)
         {
+            mouseCurr = Mouse.GetState();
+            keyboardCurr = Keyboard.GetState();
+
             CheckForColisionDebugUpadate(sharedGameState, localGameState, elapsedMS);
+            CheckForHovering(sharedGameState, localGameState, elapsedMS);
             CheckForSelect(sharedGameState, localGameState, elapsedMS);
             UpdateCamera(sharedGameState, localGameState, elapsedMS);
             CheckForMoveOrder(sharedGameState, localGameState, netContext, elapsedMS);
             UpdateComponents(sharedGameState, localGameState, elapsedMS);
+
+            mouseLast = mouseCurr;
+            keyboardLast = keyboardCurr;
         }
     }
 }

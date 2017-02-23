@@ -342,16 +342,14 @@ namespace BaseBuilder.Engine.World
         /// </summary>
         /// <param name="location">The location to see if falls within an entity</param>
         /// <returns></returns>
-        public Entity GetMobileEntityAtLocation(PointD2D location)
+        public Entity GetEntityAtLocation(PointD2D location)
         {
-            foreach (var entity in MobileEntities)
-            {
-                if (entity.Contains(location))
-                {
-                    return entity;
-                }
-            }
-            return null;
+            var tile = TileAt((int)location.X, (int)location.Y);
+            var entities = TileToEntities[tile];
+
+            if (entities.Count == 0)
+                return null;
+            return entities[0];
         }
     }
 }
