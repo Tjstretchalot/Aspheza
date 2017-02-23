@@ -41,7 +41,7 @@ namespace BaseBuilder.Screens.GameScreens
             var font = context.DebugFont;
 
             var textSize = font.MeasureString(HoverText);
-            var leftOffset = expandRight ? 5 : -textSize.X - 5;
+            var leftOffset = expandRight ? 16 : -textSize.X - 5;
             var topOffset = expandDown ? 5 : -textSize.Y - 5;
 
 
