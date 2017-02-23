@@ -111,7 +111,7 @@ namespace BaseBuilder.Engine.Networking
             outgoing.Write(Context.GetPoolFromPacketType(packet.GetType()).PacketIdentifier);
             packet.SaveTo(Context, outgoing);
 
-            peer.SendMessage(outgoing, peer.Connections, method, 1);
+            peer.SendMessage(outgoing, connections, method, 1);
         }
 
         protected void SendPacket(IGamePacket packet, NetPeer peer, NetConnection conn, NetDeliveryMethod method)
