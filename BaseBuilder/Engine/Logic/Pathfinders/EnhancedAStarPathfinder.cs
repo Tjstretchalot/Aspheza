@@ -74,6 +74,7 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
             while(Open.Count > 0)
             {
                 var expanding = GetNextFromOpen();
+                AddToClosed(expanding.Location);
 
                 foreach(var offset in AdjacentOffsets(expanding.Location))
                 {
