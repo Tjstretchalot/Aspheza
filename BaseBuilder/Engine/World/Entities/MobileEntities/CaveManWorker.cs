@@ -12,12 +12,10 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
     public class CaveManWorker : MobileEntity
     {
         private const double SpeedConst = 0.005;
-        private static short NetID = 4;
         private static RectangleD2D _CollisionMesh;
 
         static CaveManWorker()
         {
-            EntityIdentifier.Register(typeof(CaveManWorker), NetID);
             _CollisionMesh = new RectangleD2D(1, 1);
         }
 

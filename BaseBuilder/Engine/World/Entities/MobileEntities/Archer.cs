@@ -12,12 +12,10 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
     public class Archer : MobileEntity
     {
         private const double SpeedConst = 0.005;
-        private static short NetID = 1;
         private static RectangleD2D _CollisionMesh;
 
         static Archer()
         {
-            EntityIdentifier.Register(typeof(Archer), NetID);
             _CollisionMesh = new RectangleD2D(1, 1);
         }
 

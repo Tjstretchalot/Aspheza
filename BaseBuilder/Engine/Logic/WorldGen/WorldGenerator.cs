@@ -84,7 +84,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
         protected void InitBuildings()
         {
             TileWorld.AddImmobileEntity(new House(new PointD2D(6.5, 5), SharedGameState.GetUniqueEntityID()));
-            //TileWorld.AddImmobileEntity(new MageTower(new PointD2D(10, 5), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(new Sign(new PointD2D(12, 10), SharedGameState.GetUniqueEntityID(), "Welcome to the game!"));
         }
         
         public void Create(GraphicsDevice graphicsDevice)

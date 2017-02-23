@@ -5,39 +5,41 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D.Double;
-using Lidgren.Network;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State;
+using Lidgren.Network;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
-    public class MageTower : ImmobileEntity
+    public class Sign : SpriteSheetBuilding
     {
         protected static List<Tuple<Rectangle, PointD2D>> _SourceRectsToOffsetLocations;
         protected static string _SheetName;
         
         private static PolygonD2D _CollisionMesh;
 
-        static MageTower()
+        static Sign()
         {
 
-            _CollisionMesh = new RectangleD2D(3, 4);
+            _CollisionMesh = new RectangleD2D(1, 1);
 
             _SourceRectsToOffsetLocations = new List<Tuple<Rectangle, PointD2D>>();
 
-            _SourceRectsToOffsetLocations.Add(Tuple.Create(new Rectangle(0, 0, 48, 64), new PointD2D(4, 0)));
+            _SourceRectsToOffsetLocations.Add(Tuple.Create(new Rectangle(323, 0, 16, 16), new PointD2D(0, 0)));
 
         }
 
-        public MageTower(PointD2D position, int id) : base(position, _CollisionMesh, id)
+
+        protected string Text;
+
+        public Sign(PointD2D position, int id, string text) : base(position, _CollisionMesh, id, "roguelikeSheet_transparent", _SourceRectsToOffsetLocations)
         {
+            SetText(text);
         }
         /// <summary>
         /// This should only be used with FromMessage
         /// </summary>
-        public MageTower() : base()
+        public Sign() : base()
         {
         }
 
@@ -45,6 +47,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
             Position = new PointD2D(message);
             ID = message.ReadInt32();
+            SetText(message.ReadString());
             CollisionMesh = _CollisionMesh;
 
             TasksFromMessage(gameState, message);
@@ -54,13 +57,15 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
             Position.Write(message);
             message.Write(ID);
+            message.Write(Text);
 
             WriteTasks(message);
         }
 
-        public override void Render(RenderContext context, PointD2D screenTopLeft)
+        public void SetText(string text)
         {
-            throw new NotImplementedException();
+            Text = text;
+            HoverText = text;
         }
     }
 }

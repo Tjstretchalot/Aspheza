@@ -17,8 +17,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
     {
         protected static List<Tuple<Rectangle, PointD2D>> _SourceRectsToOffsetLocations;
         protected static string _SheetName;
-
-        private static short NetId = 1001;
+        
         private static PolygonD2D _CollisionMesh;
 
         static House()
@@ -26,7 +25,6 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             _SheetName = "roguelikeSheet_transparent";
 
             _CollisionMesh = new RectangleD2D(2, 4);
-            EntityIdentifier.Register(typeof(House), NetId);
 
             _SourceRectsToOffsetLocations = new List<Tuple<Rectangle, PointD2D>>();
             // Shed

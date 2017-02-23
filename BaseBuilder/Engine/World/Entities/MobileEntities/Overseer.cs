@@ -12,12 +12,10 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
     public class Overseer : MobileEntity
     {
         private const double SpeedConst = 0.005;
-        private static short NetID = 2;
         private static RectangleD2D _CollisionMesh;
 
         static Overseer()
         {
-            EntityIdentifier.Register(typeof(Overseer), NetID);
             _CollisionMesh = new RectangleD2D(1, 1);
         }
         

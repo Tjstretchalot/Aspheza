@@ -25,13 +25,14 @@ namespace BaseBuilder.Engine.World.Entities
             IdsToEntities = new Dictionary<short, Type>();
             EntitiesToIds = new Dictionary<Type, short>();
 
-            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Archer).TypeHandle);
-            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Overseer).TypeHandle);
-            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(OverseerMage).TypeHandle);
-            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(CaveManWorker).TypeHandle);
+            Register(typeof(Archer), 1);
+            Register(typeof(Overseer), 2);
+            Register(typeof(OverseerMage), 3);
+            Register(typeof(CaveManWorker), 4);
 
-            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(House).TypeHandle);
-            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MageTower).TypeHandle);
+            Register(typeof(House), 1001);
+            Register(typeof(MageTower), 1002);
+            Register(typeof(Sign), 1003);
         }
 
         public static void Register(Type entityType, short id)
