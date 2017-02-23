@@ -71,20 +71,22 @@ namespace BaseBuilder.Engine.Logic.WorldGen
 
         protected void InitOverseers()
         {
-            TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(5, 5), SharedGameState.GetUniqueEntityID()));
-
-
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(15, 5), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(5, 15), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(15, 15), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(25, 5), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(5, 25), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(7, 9), SharedGameState.GetUniqueEntityID()));
+            
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(5, 9), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(5, 10), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(6, 11), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(7, 11), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(8, 11), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(9, 10), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(9, 9), SharedGameState.GetUniqueEntityID()));
         }
 
         protected void InitBuildings()
         {
             TileWorld.AddImmobileEntity(new House(new PointD2D(6.5, 5), SharedGameState.GetUniqueEntityID()));
             TileWorld.AddImmobileEntity(new Sign(new PointD2D(12, 10), SharedGameState.GetUniqueEntityID(), "Welcome to the game!"));
+            TileWorld.AddImmobileEntity(new TreePointy(new PointD2D(10, 5), SharedGameState.GetUniqueEntityID()));
         }
         
         public void Create(GraphicsDevice graphicsDevice)
