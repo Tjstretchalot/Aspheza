@@ -112,7 +112,7 @@ namespace BaseBuilder.Engine.Networking
             SendPacket(readyForSync);
             readyForSync.Recycle();
             
-            Console.WriteLine($"Recieved OnSharedGameStateDownloadPacket (SharedState == null = {SharedState == null})");
+            Console.WriteLine($"Recieved OnSharedGameStateDownloadPacket (SharedState == null = {SharedState == null}; num players = {SharedState.Players.Count}; my id = {LocalPlayerID}");
         }
     }
 }

@@ -57,7 +57,7 @@ namespace BaseBuilder.Engine.Networking
         {
             SendPacket(packet, Server, NetDeliveryMethod.ReliableOrdered);
         }
-
+        
         protected override void HandleMessage(NetPeer peer, NetIncomingMessage msg)
         {
             switch(msg.MessageType)
@@ -109,13 +109,17 @@ namespace BaseBuilder.Engine.Networking
 
             outgoing.Write(Context.GetPoolFromPacketType(packet.GetType()).PacketIdentifier);
             packet.SaveTo(Context, outgoing);
+            var connsToSendTo = new List<NetConnection>();
+            
             foreach (var conn in Server.Connections)
             {
                 if(conn.RemoteUniqueIdentifier != ignoreRUID)
                 {
-                    SendPacket(packet, Server, conn, NetDeliveryMethod.ReliableOrdered);
+                    connsToSendTo.Add(conn);
                 }
             }
+
+            SendPacket(packet, Server, connsToSendTo, NetDeliveryMethod.ReliableOrdered);
         }
 
         public override void ConsiderGameUpdate()

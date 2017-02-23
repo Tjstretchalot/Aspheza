@@ -98,7 +98,12 @@ namespace BaseBuilder.Engine.Networking
         /// <param name="peer">The peer to send the packet to.</param>
         protected void SendPacket(IGamePacket packet, NetPeer peer, NetDeliveryMethod method)
         {
-            if (peer.Connections.Count == 0)
+            SendPacket(packet, peer, peer.Connections, method);
+        }
+
+        protected void SendPacket(IGamePacket packet, NetPeer peer, List<NetConnection> connections, NetDeliveryMethod method)
+        {
+            if (connections.Count == 0)
                 return;
 
             var outgoing = peer.CreateMessage();
