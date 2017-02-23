@@ -103,10 +103,7 @@ namespace BaseBuilder.Engine.Networking
             outgoing.Write(Context.GetPoolFromPacketType(packet.GetType()).PacketIdentifier);
             packet.SaveTo(Context, outgoing);
 
-            foreach (var conn in peer.Connections)
-            {
-                peer.SendMessage(outgoing, conn, method);
-            }
+            peer.SendMessage(outgoing, peer.Connections, method, 1);
         }
 
         protected void SendPacket(IGamePacket packet, NetPeer peer, NetConnection conn, NetDeliveryMethod method)
