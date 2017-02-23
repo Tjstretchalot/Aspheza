@@ -3,6 +3,7 @@ using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using BaseBuilder.Screens.GameScreens;
 using Microsoft.Xna.Framework;
@@ -129,7 +130,7 @@ namespace BaseBuilder.Engine.Logic
                 mouseWorldX = (int)mouseWorldX;
                 mouseWorldY = (int)mouseWorldY;
                 
-                if (localGameState.SelectedEntity != null)
+                if (localGameState.SelectedEntity != null && typeof(MobileEntity).IsAssignableFrom(localGameState.SelectedEntity.GetType()))
                 {
                     //Console.WriteLine($"Issue move order to enitity ID {localGameState.SelectedEntity.ID} To ({mouseWorldX} {mouseWorldY}).");
                     if(!keyboardCurr.IsKeyDown(Keys.LeftShift))
@@ -194,6 +195,11 @@ namespace BaseBuilder.Engine.Logic
             double mousePixelX = mouseCurr.Position.X, mousePixelY = mouseCurr.Position.Y;
             double mouseWorldX, mouseWorldY;
             camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out mouseWorldX, out mouseWorldY);
+
+            if (mouseWorldX < 0 || mouseWorldY < 0 || mouseWorldX >= world.TileWidth || mouseWorldY >= world.TileHeight)
+            {
+                return;
+            }
 
             var entity = world.GetEntityAtLocation(new PointD2D(mouseWorldX, mouseWorldY));
             
