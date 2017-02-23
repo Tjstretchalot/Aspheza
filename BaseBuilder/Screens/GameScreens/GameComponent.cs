@@ -57,5 +57,9 @@ namespace BaseBuilder.Screens.GameScreens
         public virtual void Update(SharedGameState sharedGameState, LocalGameState localGameState, int timeMS)
         {
         }
+
+        public virtual void Dispose()
+        {
+        }
     }
 }

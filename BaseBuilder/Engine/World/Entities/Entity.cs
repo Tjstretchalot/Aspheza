@@ -39,6 +39,11 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public PolygonD2D CollisionMesh { get; protected set; }
 
         /// <summary>
+        /// Not-null if this entity has text on hover
+        /// </summary>
+        public string HoverText { get; protected set; }
+
+        /// <summary>
         /// Is this entity currently selected
         /// </summary>
         public bool Selected;

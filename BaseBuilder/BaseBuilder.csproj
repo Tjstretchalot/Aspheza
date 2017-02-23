@@ -135,6 +135,7 @@
     <Compile Include="Screens\GameScreens\GameBackgroundMusicComponent.cs" />
     <Compile Include="Screens\GameScreens\GameComponent.cs" />
     <Compile Include="Screens\GameScreens\GameScreen.cs" />
+    <Compile Include="Screens\GameScreens\HoverTextComponent.cs" />
     <Compile Include="Screens\GameScreens\IGameComponent.cs" />
     <Compile Include="Screens\IScreen.cs" />
     <Compile Include="Screens\IScreenManager.cs" />

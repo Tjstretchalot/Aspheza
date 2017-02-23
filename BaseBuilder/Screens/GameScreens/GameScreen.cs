@@ -64,6 +64,7 @@ namespace BaseBuilder.Screens.GameScreens
             localGameState.Components = new List<IMyGameComponent>();
             localGameLogic.AddComponent(localGameState, new ChatOverlay(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new GameBackgroundMusicComponent(content, graphics, graphicsDevice, spriteBatch));
+            localGameLogic.AddComponent(localGameState, new HoverTextComponent(content, graphics, graphicsDevice, spriteBatch));
         }
 
         public void Update(int deltaMS)

@@ -65,6 +65,11 @@ namespace BaseBuilder.Screens.GameScreens
         void Draw(RenderContext context);
 
         /// <summary>
+        /// Dispose any parts of this component that need disposing
+        /// </summary>
+        void Dispose();
+
+        /// <summary>
         /// Called every frame, regardless of the mouse/keyboard state.
         /// </summary>
         /// <param name="sharedGameState">The shared game state</param>
