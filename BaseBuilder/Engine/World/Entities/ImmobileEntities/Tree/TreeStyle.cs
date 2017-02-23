@@ -8,6 +8,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 {
     public enum TreeStyle
     {
-        Pointy, Rounded
+        Pointy = 0,
+        Rounded
     }
 }

@@ -105,6 +105,7 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\MageTower.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Sign.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\SpriteSheetBuilding.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\Tree\Tree.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tree\TreeColor.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tree\TreePointy.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tree\TreeSize.cs" />

@@ -2,6 +2,7 @@
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using Lidgren.Network;
@@ -33,7 +34,7 @@ namespace BaseBuilder.Engine.World.Entities
             Register(typeof(House), 1001);
             Register(typeof(MageTower), 1002);
             Register(typeof(Sign), 1003);
-            Register(typeof(TreePointy), 1004);
+            Register(typeof(Tree), 1004);
         }
 
         public static void Register(Type entityType, short id)

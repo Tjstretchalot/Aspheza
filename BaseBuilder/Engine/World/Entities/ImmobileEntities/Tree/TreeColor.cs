@@ -8,6 +8,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 {
     public enum TreeColor
     {
-        Blue, Red, Green
+        Blue = 0,
+        Red,
+        Green
     }
 }
