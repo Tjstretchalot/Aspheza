@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
+using Microsoft.Xna.Framework.Input;
 
 namespace BaseBuilder.Screens.GameScreens
 {
@@ -17,7 +18,7 @@ namespace BaseBuilder.Screens.GameScreens
     /// </summary>
     public class HoverTextComponent : MyGameComponent
     {
-        private PointD2D HoverTextMouseLoc;
+        private Point HoverTextMouseLoc;
         private string HoverText;
 
         private Texture2D BackgroundTexture;
@@ -40,8 +41,8 @@ namespace BaseBuilder.Screens.GameScreens
             var font = context.DebugFont;
 
             var textSize = font.MeasureString(HoverText);
-            var leftOffset = expandRight ? 0 : -textSize.X;
-            var topOffset = expandDown ? 0 : -textSize.Y;
+            var leftOffset = expandRight ? 5 : -textSize.X - 5;
+            var topOffset = expandDown ? 5 : -textSize.Y - 5;
 
 
             var displayRect = new Rectangle((int)(HoverTextMouseLoc.X + leftOffset - 5), (int)(HoverTextMouseLoc.Y + topOffset - 5), (int)(textSize.X + 10), (int)(textSize.Y + 10));
@@ -52,7 +53,18 @@ namespace BaseBuilder.Screens.GameScreens
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, int timeMS)
         {
-            
+            HoverText = null;
+            if (localGameState.HoveredEntity != null)
+            {
+                var ent = localGameState.HoveredEntity;
+
+                if (ent.HoverText != null)
+                {
+                    HoverText = ent.HoverText;
+                    var mouseState = Mouse.GetState();
+                    HoverTextMouseLoc = mouseState.Position;
+                }
+            }
         }
 
         public override void Dispose()
