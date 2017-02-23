@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree;
 
 namespace BaseBuilder.Engine.Logic.WorldGen
 {
@@ -86,7 +87,8 @@ namespace BaseBuilder.Engine.Logic.WorldGen
         {
             TileWorld.AddImmobileEntity(new House(new PointD2D(6.5, 5), SharedGameState.GetUniqueEntityID()));
             TileWorld.AddImmobileEntity(new Sign(new PointD2D(12, 10), SharedGameState.GetUniqueEntityID(), "Welcome to the game!"));
-            TileWorld.AddImmobileEntity(new TreePointy(new PointD2D(10, 5), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(10, 5), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Red));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(9, 5), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Red));
         }
         
         public void Create(GraphicsDevice graphicsDevice)
