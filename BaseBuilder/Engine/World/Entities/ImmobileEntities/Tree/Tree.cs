@@ -39,7 +39,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             TasksFromMessage(gameState, message);
 
 
-            var dataFromInfo = Tuple.Create(new PolygonD2D(message), new List<Tuple<Rectangle, PointD2D>>()); // TODO this is just to see the type
+            var dataFromInfo = TreeUtils.GetCollisionMesh(Size, Style, Color);
             CollisionMesh = dataFromInfo.Item1;
             SourceRectsToOffsetLocations = dataFromInfo.Item2;
         }
