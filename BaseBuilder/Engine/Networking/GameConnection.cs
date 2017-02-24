@@ -16,7 +16,7 @@ namespace BaseBuilder.Engine.Networking
     /// <summary>
     /// Parent class for game connections for client and server.
     /// </summary>
-    public abstract class GameConnection : IGameConnection
+    public abstract class GameConnection
     {
         public ConnectionState ConnState;
         public LocalGameState LocalState;
@@ -29,6 +29,22 @@ namespace BaseBuilder.Engine.Networking
 
         public abstract void ConsiderGameUpdate();
         public abstract void SendPacket(IGamePacket packet);
+
+        protected const int SimulationTimesMax = 60; // 1 second looping
+        protected Queue<int> SimulationTimes;
+        protected int SimulationTimeSum;
+        protected int SimulationTimeAvg;
+
+        /// <summary>
+        /// The average time in milliseconds per SimulateTimePassing
+        /// </summary>
+        public int SimulationTimeAverageMS
+        {
+            get
+            {
+                return SimulationTimeAvg;
+            }
+        }
 
 
         protected GameConnection(LocalGameState localState, SharedGameState sharedState, SharedGameLogic sharedLogic)
@@ -43,6 +59,10 @@ namespace BaseBuilder.Engine.Networking
             Context.RegisterPackets();
 
             ReflectivePacketHandlerObj = new ReflectivePacketHandler(this);
+
+            SimulationTimes = new Queue<int>();
+            SimulationTimeSum = 0;
+            SimulationTimeAvg = 0;
         }
 
 
@@ -159,11 +179,27 @@ namespace BaseBuilder.Engine.Networking
             syncPacket.Recycle();
         }
 
+        void UpdateSimulationSpeedStats(int timeMS)
+        {
+            SimulationTimes.Enqueue(timeMS);
+            SimulationTimeSum += timeMS;
+
+            if(SimulationTimes.Count > SimulationTimesMax)
+            {
+                var popped = SimulationTimes.Dequeue();
+                SimulationTimeSum -= popped;
+            }
+
+            SimulationTimeAvg = SimulationTimeSum / SimulationTimes.Count;
+        }
+
         /// <summary>
         /// This function handles what we, being a player, have to do to 
         /// </summary>
         protected virtual void OnSimulateStart(int timeMS)
         {
+            UpdateSimulationSpeedStats(timeMS);
+
             ConnState = ConnectionState.Simulating;
 
             SharedLogic.SimulateTimePassing(SharedState, timeMS);

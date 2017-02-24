@@ -72,7 +72,6 @@
     <Compile Include="Engine\Networking\ConnectionState.cs" />
     <Compile Include="Engine\Networking\GameConnection.cs" />
     <Compile Include="Engine\Networking\GamePacketPool.cs" />
-    <Compile Include="Engine\Networking\IGameConnection.cs" />
     <Compile Include="Engine\Networking\PacketHandler.cs" />
     <Compile Include="Engine\Networking\Packets\GamePacket.cs" />
     <Compile Include="Engine\Networking\Packets\IGamePacket.cs" />

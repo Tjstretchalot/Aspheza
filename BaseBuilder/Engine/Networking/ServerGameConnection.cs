@@ -130,18 +130,9 @@ namespace BaseBuilder.Engine.Networking
 
         bool OkayToSync()
         {
-            if (TickWatch == null)
-                return true;
-
-            var elapsed = (int)TickWatch.ElapsedMilliseconds;
-            var worstART = 2; // The starting number is the minimum min sync time. This cannot be smaller than 1
-            foreach(var conn in Server.Connections)
-            {
-                worstART = Math.Max(worstART, (int)(conn.AverageRoundtripTime * 1000));
-            }
-
-            return elapsed >= worstART;
+            return true;
         }
+
         public override void ConsiderGameUpdate()
         {
             HandleIncomingMessages(Server);

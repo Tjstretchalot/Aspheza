@@ -36,14 +36,14 @@ namespace BaseBuilder.Screens.GameScreens
         LocalGameLogic localGameLogic;
         SharedGameState sharedGameState;
         LocalGameState localGameState;
-        IGameConnection gameConnection;
+        GameConnection gameConnection;
 
         RenderContext renderContext;
 
         SpriteFont debugFont;
 
         public GameScreen(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, 
-            LocalGameLogic localGameLogic, SharedGameState sharedGameState, LocalGameState localGameState, IGameConnection gameConnection)
+            LocalGameLogic localGameLogic, SharedGameState sharedGameState, LocalGameState localGameState, GameConnection gameConnection)
         {
             this.content = content;
             this.graphics = graphics;
@@ -100,7 +100,8 @@ namespace BaseBuilder.Screens.GameScreens
             }
 
             //spriteBatch.DrawString(debugFont, $"Camera Location: {localGameState.Camera.WorldTopLeft}; Camera Zoom: {localGameState.Camera.Zoom}", new Vector2(5, 5), Color.White);
-            spriteBatch.DrawString(debugFont, $"Game Time: {sharedGameState.GameTimeMS}", new Vector2(5, 5), Color.Black);
+            spriteBatch.DrawString(debugFont, $"Game Time: {sharedGameState.GameTimeMS}ms", new Vector2(5, 5), Color.Black);
+            spriteBatch.DrawString(debugFont, $"Avg. Tick Time: {gameConnection.SimulationTimeAverageMS}ms", new Vector2(5, 5 + debugFont.LineSpacing), Color.Black);
             spriteBatch.End();
         }
     }
