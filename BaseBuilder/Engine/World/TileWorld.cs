@@ -369,7 +369,9 @@ namespace BaseBuilder.Engine.World
 
             foreach (var location in tiles)
             {
-                yield return GetEntityAtLocation(location);
+                var ent = GetEntityAtLocation(location);
+                if (ent != null)
+                    yield return ent;
             }
         }
     }
