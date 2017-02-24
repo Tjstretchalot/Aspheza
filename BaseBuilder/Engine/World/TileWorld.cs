@@ -372,10 +372,10 @@ namespace BaseBuilder.Engine.World
             foreach (var location in tiles)
             {
                 var ent = GetEntityAtLocation(location);
-                if (alreadyChecked.Contains(ent))
+                if (ent == null || alreadyChecked.Contains(ent))
                     continue;
                 alreadyChecked.Add(ent);
-                if (ent != null && ent.CollisionMesh.Intersects(poly, ent.Position, myPosition, strict))
+                if (ent.CollisionMesh.Intersects(poly, ent.Position, myPosition, strict))
                     yield return ent;
             }
         }

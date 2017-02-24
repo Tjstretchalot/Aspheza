@@ -63,10 +63,22 @@ namespace BaseBuilder.Engine.Math2D.Double.Tests
             Assert.IsTrue(triangle.Contains(point));
         }
 
+        [Test(Description = "Ensure that Contains handles strictness")]
+        public void ContainsHandlesStrictnessTest()
+        {
+            Assert.IsTrue(PolygonD2D.UnitSquare.Contains(new PointD2D(0, 0.5), strict: false));
+            Assert.IsFalse(PolygonD2D.UnitSquare.Contains(new PointD2D(0, 0.5), strict: true));
+
+
+            Assert.IsTrue(PolygonD2D.UnitSquare.Contains(new PointD2D(2, 1.5), myPosition: new PointD2D(1, 1), strict: false));
+            Assert.IsFalse(PolygonD2D.UnitSquare.Contains(new PointD2D(2, 1.5), myPosition: new PointD2D(1, 1), strict: true));
+        }
+
         [Test(Description = "Test components of polygon intersection")]
         public void PolygonIntersection()
         {
-            Assert.IsFalse(PolygonD2D.UnitSquare.Intersects(PolygonD2D.UnitSquare, new PointD2D(1, 0)));
+            Assert.IsTrue(PolygonD2D.UnitSquare.Intersects(PolygonD2D.UnitSquare, new PointD2D(1, 0)));
+            Assert.IsFalse(PolygonD2D.UnitSquare.Intersects(PolygonD2D.UnitSquare, new PointD2D(1, 0), strict: true));
         }
 
         [Test(Description = "Test that the TilesIntersectedAt handles a unit square correctly")]

@@ -219,7 +219,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 var myProjection = ProjectOntoAxis(normal, myPosition);
                 var pointProjection = PointD2D.DotProduct(point.X, point.Y, normal.DeltaX, normal.DeltaY);
 
-                if (!myProjection.ContainPoint(pointProjection, !strict))
+                if (!myProjection.ContainPoint(pointProjection, strict))
                 {
                     return false;
                 }
@@ -254,7 +254,7 @@ namespace BaseBuilder.Engine.Math2D.Double
                 var myProj = ProjectOntoAxis(normal, myPosition);
                 var otherProj = projector(normal, otherPosition);
 
-                if (!myProj.Intersects(otherProj, !strict))
+                if (!myProj.Intersects(otherProj, strict))
                     return false;
             }
 

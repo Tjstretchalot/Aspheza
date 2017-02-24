@@ -68,14 +68,23 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 return false;
 
             // Snap to half-tiles
-            CurrentPlaceLocation.X = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelX(current.Position.X) * 2)) / 2;
-            CurrentPlaceLocation.Y = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelY(current.Position.Y) * 2)) / 2;
+            CurrentPlaceLocation.X = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelX(current.Position.X) * 2)) / 2.0;
+            CurrentPlaceLocation.Y = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelY(current.Position.Y) * 2)) / 2.0;
+
+            // Don't snap to grid
+            //CurrentPlaceLocation.X = localGameState.Camera.WorldLocationOfPixelX(current.Position.X);
+            //CurrentPlaceLocation.Y = localGameState.Camera.WorldLocationOfPixelY(current.Position.Y);
 
             CantPlace = false;
             foreach (var ent in sharedGameState.World.GetEntitiesAtLocation(BuildingToPlace.CollisionMesh, CurrentPlaceLocation))
             {
                 CantPlace = true;
                 break;
+            }
+
+            if(CantPlace)
+            {
+                foreach (var tmp in sharedGameState.World.GetEntitiesAtLocation(BuildingToPlace.CollisionMesh, CurrentPlaceLocation)) { } // debug
             }
 
             if (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released && !CantPlace)
