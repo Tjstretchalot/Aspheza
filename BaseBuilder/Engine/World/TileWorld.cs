@@ -375,7 +375,7 @@ namespace BaseBuilder.Engine.World
                 if (alreadyChecked.Contains(ent))
                     continue;
                 alreadyChecked.Add(ent);
-                if (ent.CollisionMesh.Intersects(poly, ent.Position, myPosition, strict) && ent != null)
+                if (ent != null && ent.CollisionMesh.Intersects(poly, ent.Position, myPosition, strict))
                     yield return ent;
             }
         }
