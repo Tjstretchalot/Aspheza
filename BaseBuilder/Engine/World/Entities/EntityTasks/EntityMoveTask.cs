@@ -158,7 +158,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
                 if (Finished)
                 {
-                    Path = null;
+                    OnFinished(gameState);
                     return EntityTaskStatus.Success;
                 }
 
@@ -180,14 +180,19 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
             if (Finished)
             {
-                Path = null;
-                // fix rounding
-                Entity.Position.X = Destination.X;
-                Entity.Position.Y = Destination.Y;
-                gameState.World.UpdateTileCollisions(Entity);
+                OnFinished(gameState);
                 return EntityTaskStatus.Success;
             }
             return EntityTaskStatus.Running;
+        }
+
+        void OnFinished(SharedGameState gameState)
+        {
+            Path = null;
+            // fix rounding
+            Entity.Position.X = Destination.X;
+            Entity.Position.Y = Destination.Y;
+            gameState.World.UpdateTileCollisions(Entity);
         }
 
         /// <summary>
