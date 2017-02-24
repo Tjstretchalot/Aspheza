@@ -349,6 +349,7 @@ namespace BaseBuilder.Engine.World
 
             if (entities.Count == 0)
                 return null;
+            
             return entities[0];
         }
 
@@ -362,15 +363,19 @@ namespace BaseBuilder.Engine.World
             return GetEntityAtLocation(location.X, location.Y);
         }
 
-        public IEnumerable<Entity> GetEntitiesAtLocation(PolygonD2D poly, PointD2D myPosition)
+        public IEnumerable<Entity> GetEntitiesAtLocation(PolygonD2D poly, PointD2D myPosition, bool strict = true)
         {
             List<PointI2D> tiles = new List<PointI2D>();
             poly.TilesIntersectedAt(myPosition, tiles);
 
+            var alreadyChecked = new List<Entity>();
             foreach (var location in tiles)
             {
                 var ent = GetEntityAtLocation(location);
-                if (ent != null)
+                if (alreadyChecked.Contains(ent))
+                    continue;
+                alreadyChecked.Add(ent);
+                if (ent.CollisionMesh.Intersects(poly, ent.Position, myPosition, strict) && ent != null)
                     yield return ent;
             }
         }

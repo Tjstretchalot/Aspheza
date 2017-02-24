@@ -181,6 +181,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             if (Finished)
             {
                 Path = null;
+                // fix rounding
+                Entity.Position.X = Destination.X;
+                Entity.Position.Y = Destination.Y;
                 return EntityTaskStatus.Success;
             }
             return EntityTaskStatus.Running;
