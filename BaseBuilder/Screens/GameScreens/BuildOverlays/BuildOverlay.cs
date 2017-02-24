@@ -23,6 +23,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
     {
         protected UnbuiltImmobileEntity BuildingToPlace;
         protected PointD2D CurrentPlaceLocation;
+        protected bool CantPlace;
 
         public BuildOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {
@@ -32,7 +33,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 
         public override void Draw(RenderContext context)
         {
-            if(BuildingToPlace != null)
+            if(BuildingToPlace != null && !CantPlace)
             {
                 var placeLocationScreen = new PointD2D((int)context.Camera.PixelLocationOfWorldX(CurrentPlaceLocation.X), (int)context.Camera.PixelLocationOfWorldY(CurrentPlaceLocation.Y));
 
@@ -66,10 +67,18 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             if (BuildingToPlace == null)
                 return false;
 
-            CurrentPlaceLocation.X = localGameState.Camera.WorldLocationOfPixelX(current.Position.X);
-            CurrentPlaceLocation.Y = localGameState.Camera.WorldLocationOfPixelY(current.Position.Y);
+            // Snap to half-tiles
+            CurrentPlaceLocation.X = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelX(current.Position.X) * 2)) / 2;
+            CurrentPlaceLocation.Y = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelY(current.Position.Y) * 2)) / 2;
 
-            if(last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
+            CantPlace = false;
+            foreach (var ent in sharedGameState.World.GetEntitiesAtLocation(BuildingToPlace.CollisionMesh, CurrentPlaceLocation))
+            {
+                CantPlace = true;
+                break;
+            }
+
+            if (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released && !CantPlace)
             {
                 var ent = BuildingToPlace.CreateEntity(new PointD2D(CurrentPlaceLocation.X, CurrentPlaceLocation.Y));
 
