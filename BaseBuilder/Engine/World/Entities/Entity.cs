@@ -42,7 +42,18 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// <summary>
         /// Not-null if this entity has text on hover
         /// </summary>
-        public string HoverText { get; protected set; }
+        protected string _HoverText { get; set; }
+
+        public virtual string HoverText
+        {
+            get
+            {
+                if (_HoverText != null)
+                    return _HoverText;
+
+                return $"Position = ({Position.X}, {Position.Y})";
+            }
+        }
 
         /// <summary>
         /// Is this entity currently selected

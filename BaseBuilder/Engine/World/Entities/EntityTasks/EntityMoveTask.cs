@@ -184,6 +184,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 // fix rounding
                 Entity.Position.X = Destination.X;
                 Entity.Position.Y = Destination.Y;
+                gameState.World.UpdateTileCollisions(Entity);
                 return EntityTaskStatus.Success;
             }
             return EntityTaskStatus.Running;

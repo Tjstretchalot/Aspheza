@@ -67,7 +67,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         public void SetText(string text)
         {
             Text = text;
-            HoverText = text;
+            _HoverText = text;
         }
     }
 }
