@@ -65,7 +65,18 @@ namespace BaseBuilder.Engine.Logic
             AddComponent(localGameState, component);
         }
         
-        protected void UpdateComponents(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        /// <summary>
+        /// <para>Loop through the game components in order of descending Z and give them a chance to act on the
+        /// mouse and keyboard state. Components may specify that they have acted on the state of the mouse
+        /// and/or keyboard, in which no further components will be able to act on the part they have handled,
+        /// and no other portions of the program should either.</para>
+        /// </summary>
+        /// <param name="sharedGameState">The shared game state</param>
+        /// <param name="localGameState">The local game state</param>
+        /// <param name="elapsedMS">The elapsed time</param>
+        /// <param name="keyboardHandled"></param>
+        /// <param name="mouseHandled"></param>
+        protected void UpdateComponents(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
         {
             if (!mouseLast.HasValue && !keyboardLast.HasValue)
             {
@@ -79,7 +90,6 @@ namespace BaseBuilder.Engine.Logic
                 keysPressedReusable.Clear();
                 keysPressedReusable.AddRange(keyboardLast.Value.GetPressedKeys());
                 keysPressedReusable.RemoveAll((k) => keysCurr.Contains(k));
-                bool mouseHandled = false, keyboardHandled = false;
                 for (int i = localGameState.Components.Count - 1; i >= 0; i--)
                 {
                     var comp = localGameState.Components[i];
@@ -99,6 +109,12 @@ namespace BaseBuilder.Engine.Logic
             }
         }
 
+        /// <summary>
+        /// Loop through every entity and update their current task for graphics/audio.
+        /// </summary>
+        /// <param name="sharedGameState">Shared game state</param>
+        /// <param name="localGameState">Local game state</param>
+        /// <param name="content">Content</param>
         public void UpdateTasks(SharedGameState sharedGameState, LocalGameState localGameState, ContentManager content)
         {
             foreach(var ent in sharedGameState.World.MobileEntities)
@@ -112,9 +128,18 @@ namespace BaseBuilder.Engine.Logic
             }
         }
 
-        protected void CheckForMoveOrder(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS)
+        /// <summary>
+        /// If an entity is selected and the user right clicks this will issue a move order and handle the mouse.
+        /// </summary>
+        /// <param name="sharedGameState">Shared game staet</param>
+        /// <param name="localGameState">Local game state</param>
+        /// <param name="netContext">Net context</param>
+        /// <param name="elapsedMS">Elapsed time since last frame</param>
+        /// <param name="keyboardHandled">If the keyboard has already been handeld</param>
+        /// <param name="mouseHandled">If the mouse has already been handled. Move orders require the mouse not to be handled and do handle the mouse.</param>
+        protected void CheckForMoveOrder(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
         {
-            if (!mouseLast.HasValue)
+            if (!mouseLast.HasValue || mouseHandled)
             {
                 return;
             }
@@ -132,6 +157,7 @@ namespace BaseBuilder.Engine.Logic
                 
                 if (localGameState.SelectedEntity != null && typeof(MobileEntity).IsAssignableFrom(localGameState.SelectedEntity.GetType()))
                 {
+                    mouseHandled = true;
                     //Console.WriteLine($"Issue move order to enitity ID {localGameState.SelectedEntity.ID} To ({mouseWorldX} {mouseWorldY}).");
                     if(!keyboardCurr.IsKeyDown(Keys.LeftShift))
                     {
@@ -147,9 +173,21 @@ namespace BaseBuilder.Engine.Logic
             }
         }
 
-        protected void CheckForSelect(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        /// <summary>
+        /// Checks if an entity was selected this frame. An entity is selected when the user left-clicks while
+        /// HoveredEntity is not null.
+        /// </summary>
+        /// <param name="sharedGameState">The shared game state</param>
+        /// <param name="localGameState">The local game state</param>
+        /// <param name="elapsedMS">The time in milliseconds since last frame</param>
+        /// <param name="keyboardHandled">If the keyboard has already been handled</param>
+        /// <param name="mouseHandled">
+        /// If the mouse has already been handled. Selecting an entity requires the mouse
+        /// is not already handled and does handle the mouse
+        /// </param>
+        protected void CheckForSelect(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
         {
-            if (!mouseLast.HasValue)
+            if (!mouseLast.HasValue || mouseHandled)
             {
                 return;
             }
@@ -169,6 +207,7 @@ namespace BaseBuilder.Engine.Logic
                     return;
                 }
 
+                mouseHandled = true;
                 if (localGameState.SelectedEntity == null)
                 {
                     localGameState.SelectedEntity = entity;
@@ -181,11 +220,20 @@ namespace BaseBuilder.Engine.Logic
                 }
             }
         }
-
-        protected void CheckForHovering(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        
+        /// <summary>
+        /// Updates localGameState.HoveredEntity. An entity is hovered if the mouse is contained within an entity.
+        /// </summary>
+        /// <param name="sharedGameState">The shared game state</param>
+        /// <param name="localGameState">The local game state</param>
+        /// <param name="elapsedMS">Elapsed time since last frame in milliseconds</param>
+        /// <param name="keyboardHandled">If the keyboard has already been handled</param>
+        /// <param name="mouseHandled">If the mouse has already been handled. Hovering requires the mouse was not handled but does not handle the mouse</param>
+        protected void CheckForHovering(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
         {
-            if (!mouseLast.HasValue)
+            if (!mouseLast.HasValue || mouseHandled)
             {
+                localGameState.HoveredEntity = null;
                 return;
             }
 
@@ -198,6 +246,7 @@ namespace BaseBuilder.Engine.Logic
 
             if (mouseWorldX < 0 || mouseWorldY < 0 || mouseWorldX >= world.TileWidth || mouseWorldY >= world.TileHeight)
             {
+                localGameState.HoveredEntity = null;
                 return;
             }
 
@@ -206,9 +255,17 @@ namespace BaseBuilder.Engine.Logic
             localGameState.HoveredEntity = entity;
         }
 
-        protected void CheckForColisionDebugUpadate(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        /// <summary>
+        /// Toggles localGameState.CollisionDebug with the Alt+D command. 
+        /// </summary>
+        /// <param name="sharedGameState">The shared game state</param>
+        /// <param name="localGameState">The local game stae</param>
+        /// <param name="elapsedMS">The elapsed time in milliseconds</param>
+        /// <param name="keyboardHandled">If the keyboard has already been handled; this requires the keyboard is not handled but does not handle the keyboard</param>
+        /// <param name="mouseHandled">If the mouse has already been handled</param>
+        protected void CheckForCollisionDebugUpdate(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
         {
-            if (!keyboardLast.HasValue)
+            if (!keyboardLast.HasValue || keyboardHandled)
             {
                 return;
             }
@@ -219,9 +276,17 @@ namespace BaseBuilder.Engine.Logic
             }
         }
         
-        protected virtual void UpdateCamera(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS)
+        /// <summary>
+        /// Updates the camera based on the arrow keys.
+        /// </summary>
+        /// <param name="sharedGameState">The shared game state.</param>
+        /// <param name="localGameState">The local game state</param>
+        /// <param name="elapsedMS">Time in milliseconds elapsed since last frame</param>
+        /// <param name="keyboardHandled">If the keyboard was already handled. Updating the camera requires the keyboard was not handled, but does not handle the keyboard</param>
+        /// <param name="mouseHandled">If the mouse was already handled</param>
+        protected virtual void UpdateCamera(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
         {
-            if (!mouseLast.HasValue)
+            if (!mouseLast.HasValue || mouseHandled)
             {
                 return;
             }
@@ -288,12 +353,14 @@ namespace BaseBuilder.Engine.Logic
             mouseCurr = Mouse.GetState();
             keyboardCurr = Keyboard.GetState();
 
-            CheckForColisionDebugUpadate(sharedGameState, localGameState, elapsedMS);
-            CheckForHovering(sharedGameState, localGameState, elapsedMS);
-            CheckForSelect(sharedGameState, localGameState, elapsedMS);
-            UpdateCamera(sharedGameState, localGameState, elapsedMS);
-            CheckForMoveOrder(sharedGameState, localGameState, netContext, elapsedMS);
-            UpdateComponents(sharedGameState, localGameState, elapsedMS);
+            bool keyboardHandled = false, mouseHandled = false;
+            
+            UpdateComponents(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
+            CheckForCollisionDebugUpdate(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
+            CheckForHovering(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
+            CheckForSelect(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
+            UpdateCamera(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
+            CheckForMoveOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
 
             mouseLast = mouseCurr;
             keyboardLast = keyboardCurr;
