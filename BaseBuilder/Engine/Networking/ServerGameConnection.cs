@@ -10,6 +10,7 @@ using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.Logic;
 using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.Logic.Players;
+using System.Diagnostics;
 
 namespace BaseBuilder.Engine.Networking
 {
@@ -26,6 +27,8 @@ namespace BaseBuilder.Engine.Networking
         protected int Port;
 
         protected int PlayerIDCounter;
+
+        protected Stopwatch TickWatch;
         
 
         public ServerGameConnection(LocalGameState localState, SharedGameState sharedState, SharedGameLogic sharedLogic, int port) : base(localState, sharedState, sharedLogic)
@@ -125,6 +128,20 @@ namespace BaseBuilder.Engine.Networking
             SendPacket(packet, Server, connsToSendTo, NetDeliveryMethod.ReliableOrdered);
         }
 
+        bool OkayToSync()
+        {
+            if (TickWatch == null)
+                return true;
+
+            var elapsed = (int)TickWatch.ElapsedMilliseconds;
+            var worstART = 2; // The starting number is the minimum min sync time. This cannot be smaller than 1
+            foreach(var conn in Server.Connections)
+            {
+                worstART = Math.Max(worstART, (int)(conn.AverageRoundtripTime * 1000));
+            }
+
+            return elapsed >= worstART;
+        }
         public override void ConsiderGameUpdate()
         {
             HandleIncomingMessages(Server);
@@ -191,7 +208,7 @@ namespace BaseBuilder.Engine.Networking
                         waitingForPlayers = !SharedState.Players[i].ReadyForSync;
                     }
 
-                    if (!waitingForPlayers)
+                    if (!waitingForPlayers && OkayToSync())
                     {
                         var syncStart = Context.GetPoolFromPacketType(typeof(SyncStartPacket)).GetGamePacketFromPool() as SyncStartPacket;
                         SendPacket(syncStart);
@@ -216,7 +233,17 @@ namespace BaseBuilder.Engine.Networking
 
                     if (!stillWaiting)
                     {
-                        var simulationTime = 16; // TODO don't use a constant here
+                        int simulationTime;
+                        if(TickWatch == null)
+                        {
+                            TickWatch = new Stopwatch();
+                            TickWatch.Start();
+                            simulationTime = 1;
+                        }else
+                        {
+                            simulationTime = (int)TickWatch.ElapsedMilliseconds;
+                            TickWatch.Restart();
+                        }
 
                         var simulateStart = Context.GetPoolFromPacketType(typeof(SimulationStartPacket)).GetGamePacketFromPool() as SimulationStartPacket;
                         simulateStart.SimulationTime = simulationTime; 

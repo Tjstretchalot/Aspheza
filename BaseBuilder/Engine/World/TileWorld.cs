@@ -208,7 +208,7 @@ namespace BaseBuilder.Engine.World
             Vector2 cSize = Vector2.Zero;
             if (context.CollisionDebug)
             {
-                cSize = context.DebugFont.MeasureString("C");
+                cSize = context.DefaultFont.MeasureString("C");
             }
             for(int x = leftMostVisibleTileX; x <= rightMostVisibleTileX; x++)
             {
@@ -245,7 +245,7 @@ namespace BaseBuilder.Engine.World
                 {
                     if (context.CollisionDebug && TileToEntities[TileAt(x, y)].Count > 0)
                     {
-                        context.SpriteBatch.DrawString(context.DebugFont, "C", new Vector2((int)(point.X + 0.5 * context.Camera.Zoom - cSize.X / 2), (int)(point.Y + 0.5 * context.Camera.Zoom - cSize.Y / 2)), Color.Red);
+                        context.SpriteBatch.DrawString(context.DefaultFont, "C", new Vector2((int)(point.X + 0.5 * context.Camera.Zoom - cSize.X / 2), (int)(point.Y + 0.5 * context.Camera.Zoom - cSize.Y / 2)), Color.Red);
                     }
                     point.Y += context.Camera.Zoom;
                 }

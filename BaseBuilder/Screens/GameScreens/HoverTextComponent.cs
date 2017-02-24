@@ -40,7 +40,7 @@ namespace BaseBuilder.Screens.GameScreens
             var expandRight = HoverTextMouseLoc.X < (screenSize.Width / 2);
             var expandDown = HoverTextMouseLoc.Y < (screenSize.Height / 2);
 
-            var font = context.DebugFont;
+            var font = context.DefaultFont;
 
             var textSize = font.MeasureString(HoverText);
             var leftOffset = expandRight ? 16 : -textSize.X - 5;

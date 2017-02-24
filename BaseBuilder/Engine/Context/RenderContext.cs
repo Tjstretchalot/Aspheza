@@ -19,7 +19,7 @@ namespace BaseBuilder.Engine.Context
         public GraphicsDevice GraphicsDevice;
         public SpriteBatch SpriteBatch;
         public Camera Camera;
-        public SpriteFont DebugFont;
+        public SpriteFont DefaultFont;
         public bool CollisionDebug;
     }
 }

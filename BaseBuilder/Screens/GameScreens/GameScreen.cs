@@ -67,6 +67,7 @@ namespace BaseBuilder.Screens.GameScreens
             localGameLogic.AddComponent(localGameState, new GameBackgroundMusicComponent(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new HoverTextComponent(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new BuildOverlay(content, graphics, graphicsDevice, spriteBatch));
+            localGameLogic.AddComponent(localGameState, new PlayersOverlay(content, graphics, graphicsDevice, spriteBatch));
         }
 
         public void Update(int deltaMS)
@@ -87,7 +88,7 @@ namespace BaseBuilder.Screens.GameScreens
             renderContext.Content = content;
             renderContext.Camera = localGameState.Camera;
             renderContext.GraphicsDevice = graphicsDevice;
-            renderContext.DebugFont = debugFont;
+            renderContext.DefaultFont = debugFont;
             renderContext.CollisionDebug = localGameState.CollisionDebug;
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);

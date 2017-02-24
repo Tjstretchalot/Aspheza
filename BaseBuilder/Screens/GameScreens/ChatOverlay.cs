@@ -32,7 +32,7 @@ namespace BaseBuilder.Screens.GameScreens
             if (RecentMessages == null || RecentMessages.Count == 0)
                 return;
 
-            var font = context.DebugFont;
+            var font = context.DefaultFont;
             var lineHeight = font.LineSpacing;
 
             int x = ScreenLocation.X + 3;
