@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Networking.Packets;
+using BaseBuilder.Engine.State;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -72,10 +73,10 @@ namespace BaseBuilder.Engine.Networking
         /// <param name="context">The context</param>
         /// <param name="message">The message</param>
         /// <returns>The game packet representation of the data contained in the message</returns>
-        public IGamePacket GetGamePacket(NetContext context, NetIncomingMessage message)
+        public IGamePacket GetGamePacket(NetContext context, SharedGameState gameState, NetIncomingMessage message)
         {
             var result = GetGamePacketFromPool();
-            result.LoadFrom(context, message);
+            result.LoadFrom(context, gameState, message);
             return result;
         }
 

@@ -58,7 +58,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             WriteTasks(message);
         }
 
-        public override void Render(RenderContext context, PointD2D screenTopLeft)
+        public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
             throw new NotImplementedException();
         }

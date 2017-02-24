@@ -30,7 +30,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
         }
 
-        public override void Render(RenderContext context, PointD2D screenTopLeft)
+        public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
             var sheet = context.Content.Load<Texture2D>(SheetName);
 
@@ -41,7 +41,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                 var destRect = new Rectangle(
                         (int)(offset.X * context.Camera.Zoom + screenTopLeft.X), (int)(offset.Y * context.Camera.Zoom + screenTopLeft.Y), (int)context.Camera.Zoom, (int)context.Camera.Zoom
                     );
-                context.SpriteBatch.Draw(sheet, sourceRectangle: sourceRect, destinationRectangle: destRect);
+                context.SpriteBatch.Draw(sheet, sourceRectangle: sourceRect, destinationRectangle: destRect, color: overlay);
             }
         }
     }

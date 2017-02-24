@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
 using Lidgren.Network;
+using BaseBuilder.Engine.State;
 
 namespace BaseBuilder.Engine.Networking.Packets
 {
@@ -31,7 +32,7 @@ namespace BaseBuilder.Engine.Networking.Packets
             Orders.Clear();
         }
 
-        public override void LoadFrom(NetContext context, NetIncomingMessage message)
+        public override void LoadFrom(NetContext context, SharedGameState gameState, NetIncomingMessage message)
         {
             PlayerID = message.ReadInt32();
             int numOrders = message.ReadInt32();
@@ -42,12 +43,12 @@ namespace BaseBuilder.Engine.Networking.Packets
                 var pool = context.GetPoolFromPacketID(orderID);
 
                 var order = pool.GetGamePacketFromPool();
-                order.LoadFrom(context, message);
+                order.LoadFrom(context, gameState, message);
                 Orders.Add((IOrder)order);
             }
         }
 
-        public override void SaveTo(NetContext context, NetOutgoingMessage message)
+        public override void SaveTo(NetContext context, SharedGameState gameState, NetOutgoingMessage message)
         {
             message.Write(PlayerID);
             message.Write(Orders.Count);
@@ -58,7 +59,7 @@ namespace BaseBuilder.Engine.Networking.Packets
 
                 message.Write(orderId);
 
-                order.SaveTo(context, message);
+                order.SaveTo(context, gameState, message);
             }
         }
     }

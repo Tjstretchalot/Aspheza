@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.State;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -18,14 +19,14 @@ namespace BaseBuilder.Engine.Networking.Packets
         /// </summary>
         /// <param name="context">The context</param>
         /// <param name="message">The message</param>
-        void LoadFrom(NetContext context, NetIncomingMessage message);
+        void LoadFrom(NetContext context, SharedGameState gameState, NetIncomingMessage message);
 
         /// <summary>
         /// Writes this game packet to the specified message.
         /// </summary>
         /// <param name="context">The context</param>
         /// <param name="message">The message to write</param>
-        void SaveTo(NetContext context, NetOutgoingMessage message);
+        void SaveTo(NetContext context, SharedGameState gameState, NetOutgoingMessage message);
 
         /// <summary>
         /// Called when a packet is recycled. Should clear any memory-intensive

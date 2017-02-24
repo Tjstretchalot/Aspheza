@@ -76,7 +76,7 @@ namespace BaseBuilder.Engine.Logic
         /// <param name="elapsedMS">The elapsed time</param>
         /// <param name="keyboardHandled"></param>
         /// <param name="mouseHandled"></param>
-        protected void UpdateComponents(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
+        protected void UpdateComponents(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
         {
             if (!mouseLast.HasValue && !keyboardLast.HasValue)
             {
@@ -93,9 +93,9 @@ namespace BaseBuilder.Engine.Logic
                 for (int i = localGameState.Components.Count - 1; i >= 0; i--)
                 {
                     var comp = localGameState.Components[i];
-                    if (!mouseHandled && comp.HandleMouseState(sharedGameState, localGameState, mouseLast.Value, mouseCurr))
+                    if (!mouseHandled && comp.HandleMouseState(sharedGameState, localGameState, netContext, mouseLast.Value, mouseCurr))
                         mouseHandled = true;
-                    if (!keyboardHandled && comp.HandleKeyboardState(sharedGameState, localGameState, keyboardLast.Value, keyboardCurr, keysPressedReusable))
+                    if (!keyboardHandled && comp.HandleKeyboardState(sharedGameState, localGameState, netContext, keyboardLast.Value, keyboardCurr, keysPressedReusable))
                         keyboardHandled = true;
 
                     if (mouseHandled && keyboardHandled)
@@ -105,7 +105,7 @@ namespace BaseBuilder.Engine.Logic
 
             foreach(var comp in localGameState.Components)
             {
-                comp.Update(sharedGameState, localGameState, elapsedMS);
+                comp.Update(sharedGameState, localGameState, netContext, elapsedMS);
             }
         }
 
@@ -355,7 +355,7 @@ namespace BaseBuilder.Engine.Logic
 
             bool keyboardHandled = false, mouseHandled = false;
             
-            UpdateComponents(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
+            UpdateComponents(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForCollisionDebugUpdate(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForHovering(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForSelect(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);

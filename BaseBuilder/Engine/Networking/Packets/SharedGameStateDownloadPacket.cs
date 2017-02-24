@@ -29,7 +29,7 @@ namespace BaseBuilder.Engine.Networking.Packets
         {
         }
 
-        public override void LoadFrom(NetContext context, NetIncomingMessage message)
+        public override void LoadFrom(NetContext context, SharedGameState gameState, NetIncomingMessage message)
         {
             LocalPlayerID = message.ReadInt32();
 
@@ -92,7 +92,7 @@ namespace BaseBuilder.Engine.Networking.Packets
             }
         }
 
-        public override void SaveTo(NetContext context, NetOutgoingMessage message)
+        public override void SaveTo(NetContext context, SharedGameState gameState, NetOutgoingMessage message)
         {
             message.Write(LocalPlayerID);
 

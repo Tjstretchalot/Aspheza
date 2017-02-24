@@ -110,5 +110,11 @@ namespace BaseBuilder.Engine.Logic
 
             playerToChangeName.Name = order.NewName;
         }
+
+        [OrderHandler(typeof(BuildOrder))]
+        public void OnBuildOrder(SharedGameState gameState, Player player, BuildOrder order)
+        {
+            gameState.World.AddImmobileEntity(order.Entity);
+        }
     }
 }

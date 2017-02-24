@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
 using Lidgren.Network;
+using BaseBuilder.Engine.State;
 
 namespace BaseBuilder.Engine.Networking.Packets
 {
@@ -22,7 +23,7 @@ namespace BaseBuilder.Engine.Networking.Packets
             NewPlayer = null;
         }
 
-        public override void LoadFrom(NetContext context, NetIncomingMessage message)
+        public override void LoadFrom(NetContext context, SharedGameState gameState, NetIncomingMessage message)
         {
             var id = message.ReadInt32();
             var name = message.ReadString();
@@ -30,7 +31,7 @@ namespace BaseBuilder.Engine.Networking.Packets
             NewPlayer = new Player(id, name);
         }
 
-        public override void SaveTo(NetContext context, NetOutgoingMessage message)
+        public override void SaveTo(NetContext context, SharedGameState gameState, NetOutgoingMessage message)
         {
             message.Write(NewPlayer.ID);
             message.Write(NewPlayer.Name);

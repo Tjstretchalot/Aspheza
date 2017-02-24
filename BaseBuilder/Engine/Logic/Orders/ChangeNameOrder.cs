@@ -7,6 +7,7 @@ using BaseBuilder.Engine.Context;
 using Lidgren.Network;
 using BaseBuilder.Engine.Networking.Packets;
 using BaseBuilder.Engine.Networking;
+using BaseBuilder.Engine.State;
 
 namespace BaseBuilder.Engine.Logic.Orders
 {
@@ -25,13 +26,13 @@ namespace BaseBuilder.Engine.Logic.Orders
             NewName = null;
         }
 
-        public override void LoadFrom(NetContext context, NetIncomingMessage message)
+        public override void LoadFrom(NetContext context, SharedGameState gameState, NetIncomingMessage message)
         {
             PlayerID = message.ReadInt32();
             NewName = message.ReadString();
         }
 
-        public override void SaveTo(NetContext context, NetOutgoingMessage message)
+        public override void SaveTo(NetContext context, SharedGameState gameState, NetOutgoingMessage message)
         {
             message.Write(PlayerID);
             message.Write(NewName);

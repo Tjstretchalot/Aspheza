@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
 using Lidgren.Network;
+using BaseBuilder.Engine.State;
 
 namespace BaseBuilder.Engine.Networking.Packets
 {
@@ -32,12 +33,12 @@ namespace BaseBuilder.Engine.Networking.Packets
             SimulationTime = -1;
         }
 
-        public override void LoadFrom(NetContext context, NetIncomingMessage message)
+        public override void LoadFrom(NetContext context, SharedGameState gameState, NetIncomingMessage message)
         {
             SimulationTime = message.ReadInt32();
         }
 
-        public override void SaveTo(NetContext context, NetOutgoingMessage message)
+        public override void SaveTo(NetContext context, SharedGameState gameState, NetOutgoingMessage message)
         {
             message.Write(SimulationTime);
         }

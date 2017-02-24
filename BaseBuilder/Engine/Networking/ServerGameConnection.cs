@@ -102,7 +102,7 @@ namespace BaseBuilder.Engine.Networking
             var outgoing = Server.CreateMessage();
 
             outgoing.Write(Context.GetPoolFromPacketType(packet.GetType()).PacketIdentifier);
-            packet.SaveTo(Context, outgoing);
+            packet.SaveTo(Context, SharedState, outgoing);
             var connsToSendTo = new List<NetConnection>();
             
             foreach (var conn in Server.Connections)

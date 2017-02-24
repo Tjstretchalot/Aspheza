@@ -45,7 +45,7 @@ namespace BaseBuilder.Screens.GameScreens
         /// <param name="last">The mouse state last frame</param>
         /// <param name="current">The mouse state this frame</param>
         /// <returns>True if this component handled the mouse, false otherwise.</returns>
-        bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, MouseState last, MouseState current);
+        bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current);
 
         /// <summary>
         /// Handles the state of the keyboard for this component. Returns true if this component
@@ -57,7 +57,7 @@ namespace BaseBuilder.Screens.GameScreens
         /// <param name="last">The keyboard state last frame</param>
         /// <param name="current">The keyboard state this frame</param>
         /// <returns>True if this component hnadled the keyboard, false otherwise</returns>
-        bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame);
+        bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame);
 
         /// <summary>
         /// Draws this component to the screen
@@ -74,6 +74,6 @@ namespace BaseBuilder.Screens.GameScreens
         /// </summary>
         /// <param name="sharedGameState">The shared game state</param>
         /// <param name="localGameState">The local game state</param>
-        void Update(SharedGameState sharedGameState, LocalGameState localGameState, int timeMS);
+        void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS);
     }
 }

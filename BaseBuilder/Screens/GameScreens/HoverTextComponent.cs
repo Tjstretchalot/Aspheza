@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Input;
+using BaseBuilder.Engine.Math2D;
 
 namespace BaseBuilder.Screens.GameScreens
 {
@@ -27,6 +28,7 @@ namespace BaseBuilder.Screens.GameScreens
         {
             BackgroundTexture = new Texture2D(graphicsDevice, 1, 1);
             BackgroundTexture.SetData(new[] { new Color(Color.Black, 0.8f) });
+            Init(new PointI2D(0, 0), new PointI2D(0, 0), 1);
         }
         
         public override void Draw(RenderContext context)
@@ -51,7 +53,7 @@ namespace BaseBuilder.Screens.GameScreens
             SpriteBatch.DrawString(font, HoverText, new Vector2(displayRect.X + 5, displayRect.Y + 5), Color.White);
         }
 
-        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, int timeMS)
+        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext context, int timeMS)
         {
             HoverText = null;
             if (localGameState.HoveredEntity != null)

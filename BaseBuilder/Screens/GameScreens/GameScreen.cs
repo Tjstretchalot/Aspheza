@@ -18,6 +18,7 @@ using BaseBuilder.Engine.Logic;
 using BaseBuilder.Engine.Networking;
 using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Media;
+using BaseBuilder.Screens.GameScreens.BuildOverlays;
 
 namespace BaseBuilder.Screens.GameScreens
 {
@@ -65,6 +66,7 @@ namespace BaseBuilder.Screens.GameScreens
             localGameLogic.AddComponent(localGameState, new ChatOverlay(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new GameBackgroundMusicComponent(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new HoverTextComponent(content, graphics, graphicsDevice, spriteBatch));
+            localGameLogic.AddComponent(localGameState, new BuildOverlay(content, graphics, graphicsDevice, spriteBatch));
         }
 
         public void Update(int deltaMS)

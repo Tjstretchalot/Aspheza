@@ -46,6 +46,7 @@
     <Compile Include="Engine\Logic\LocalGameLogic.cs" />
     <Compile Include="Engine\Logic\LogicUtils.cs" />
     <Compile Include="Engine\Logic\OrderHandler.cs" />
+    <Compile Include="Engine\Logic\Orders\BuildOrder.cs" />
     <Compile Include="Engine\Logic\Orders\CancelTasksOrder.cs" />
     <Compile Include="Engine\Logic\Orders\ChangeNameOrder.cs" />
     <Compile Include="Engine\Logic\Orders\IssueMessageOrder.cs" />
@@ -138,6 +139,9 @@
     <Compile Include="Screens\Components\UIUtils.cs" />
     <Compile Include="Screens\Components\IScreenComponent.cs" />
     <Compile Include="Screens\Components\TextField.cs" />
+    <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlay.cs" />
+    <Compile Include="Screens\GameScreens\BuildOverlays\UnbuiltImmobileEntity.cs" />
+    <Compile Include="Screens\GameScreens\BuildOverlays\UnbuiltSpritesheetImmobileEntity.cs" />
     <Compile Include="Screens\GameScreens\ChatOverlay.cs" />
     <Compile Include="Screens\GameScreens\GameBackgroundMusicComponent.cs" />
     <Compile Include="Screens\GameScreens\GameComponent.cs" />

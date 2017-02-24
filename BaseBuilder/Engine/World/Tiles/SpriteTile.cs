@@ -27,7 +27,7 @@ namespace BaseBuilder.Engine.World.Tiles
             drawRect = new Rectangle();
         }
 
-        public override void Render(RenderContext context, PointD2D screenTopLeft)
+        public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
             var texture = context.Content.Load<Texture2D>(SpriteName);
 
@@ -36,7 +36,7 @@ namespace BaseBuilder.Engine.World.Tiles
             drawRect.Width = (int)(CollisionMesh.Width * context.Camera.Zoom);
             drawRect.Height = (int)(CollisionMesh.Height * context.Camera.Zoom);
 
-            context.SpriteBatch.Draw(texture, sourceRectangle: SourceRect, destinationRectangle: drawRect);
+            context.SpriteBatch.Draw(texture, sourceRectangle: SourceRect, destinationRectangle: drawRect, color: overlay);
         }
     }
 }

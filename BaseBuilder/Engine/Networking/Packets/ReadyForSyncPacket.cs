@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.State;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -25,12 +26,12 @@ namespace BaseBuilder.Engine.Networking.Packets
             PlayerID = -1;
         }
 
-        public override void LoadFrom(NetContext context, NetIncomingMessage message)
+        public override void LoadFrom(NetContext context, SharedGameState gameState, NetIncomingMessage message)
         {
             PlayerID = message.ReadInt32();
         }
 
-        public override void SaveTo(NetContext context, NetOutgoingMessage message)
+        public override void SaveTo(NetContext context, SharedGameState gameState, NetOutgoingMessage message)
         {
             message.Write(PlayerID);
         }

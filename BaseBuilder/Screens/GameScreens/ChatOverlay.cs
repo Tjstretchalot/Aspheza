@@ -45,7 +45,7 @@ namespace BaseBuilder.Screens.GameScreens
             }
         }
 
-        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, int timeMS)
+        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext context, int timeMS)
         {
             RecentMessages = sharedGameState.RecentMessages;
         }

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using System.Diagnostics;
+using BaseBuilder.Engine.Math2D;
 
 namespace BaseBuilder.Screens.GameScreens
 {
@@ -71,13 +72,14 @@ namespace BaseBuilder.Screens.GameScreens
             CurrentVolume = 0;
 
             random = new Random();
+            Init(new PointI2D(0, 0), new PointI2D(0, 0), 1);
         }
 
         public override void Draw(RenderContext context)
         {
         }
 
-        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, int timeMS)
+        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext context, int timeMS)
         {
             if(CurrentSong == null)
             {

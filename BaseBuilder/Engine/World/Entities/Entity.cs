@@ -5,6 +5,7 @@ using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.Utility;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -128,7 +129,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// <summary>
         /// See <see cref="Renderable"/>
         /// </summary>
-        public abstract void Render(RenderContext context, PointD2D screenTopLeft);
+        public abstract void Render(RenderContext context, PointD2D screenTopLeft, Color overlay);
 
         /// <summary>
         /// Updates this entity in the given context. Note that this should only do visual

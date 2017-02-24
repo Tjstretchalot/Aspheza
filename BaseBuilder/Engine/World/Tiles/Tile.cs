@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D;
+using Microsoft.Xna.Framework;
 
 namespace BaseBuilder.Engine.World.Tiles
 {
@@ -62,6 +63,6 @@ namespace BaseBuilder.Engine.World.Tiles
         /// <summary>
         /// See <see cref="Renderable"/>
         /// </summary>
-        public abstract void Render(RenderContext context, PointD2D screenTopLeft);
+        public abstract void Render(RenderContext context, PointD2D screenTopLeft, Color overlay);
     }
 }

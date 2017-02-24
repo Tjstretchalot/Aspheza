@@ -79,7 +79,7 @@ namespace BaseBuilder.Engine.Networking
                 case NetIncomingMessageType.Data:
                     var id = msg.ReadInt32();
                     var pool = Context.GetPoolFromPacketID(id);
-                    var packet = pool.GetGamePacket(Context, msg);
+                    var packet = pool.GetGamePacket(Context, SharedState, msg);
                     ReflectivePacketHandlerObj.BroadcastPacket(packet);
                     peer.Recycle(msg);
                     break;
@@ -109,7 +109,7 @@ namespace BaseBuilder.Engine.Networking
             var outgoing = peer.CreateMessage();
 
             outgoing.Write(Context.GetPoolFromPacketType(packet.GetType()).PacketIdentifier);
-            packet.SaveTo(Context, outgoing);
+            packet.SaveTo(Context, SharedState, outgoing);
 
             peer.SendMessage(outgoing, connections, method, 1);
         }
@@ -119,7 +119,7 @@ namespace BaseBuilder.Engine.Networking
             var outgoing = peer.CreateMessage();
 
             outgoing.Write(Context.GetPoolFromPacketType(packet.GetType()).PacketIdentifier);
-            packet.SaveTo(Context, outgoing);
+            packet.SaveTo(Context, SharedState, outgoing);
             
             peer.SendMessage(outgoing, conn, method);
         }

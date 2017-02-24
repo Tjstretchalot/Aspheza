@@ -214,7 +214,7 @@ namespace BaseBuilder.Engine.World
             {
                 for(int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
                 {
-                    TileAt(x, y).Render(context, point);
+                    TileAt(x, y).Render(context, point, Color.White);
                     point.Y += context.Camera.Zoom;
                 }
 
@@ -226,14 +226,14 @@ namespace BaseBuilder.Engine.World
             {
                 context.Camera.PixelLocationOfWorld(immobile.Position.X, immobile.Position.Y, out point.X, out point.Y);
 
-                immobile.Render(context, point);
+                immobile.Render(context, point, immobile.Selected ? Color.LightBlue : Color.White);
             }
 
             foreach(var mobile in MobileEntities)
             {
                 context.Camera.PixelLocationOfWorld(mobile.Position.X, mobile.Position.Y, out point.X, out point.Y);
 
-                mobile.Render(context, point);
+                mobile.Render(context, point, mobile.Selected ? Color.LightBlue : Color.White);
             }
 
             point.Y = startingTop;

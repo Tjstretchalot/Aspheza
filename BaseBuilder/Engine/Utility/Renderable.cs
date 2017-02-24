@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D.Double;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,6 @@ namespace BaseBuilder.Engine.Utility
         /// </summary>
         /// <param name="context">Render context.</param>
         /// <param name="bounds">Bounds to render in.</param>
-        void Render(RenderContext context, PointD2D screenTopLeft);
+        void Render(RenderContext context, PointD2D screenTopLeft, Color overlay);
     }
 }

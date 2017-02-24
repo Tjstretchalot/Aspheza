@@ -44,17 +44,17 @@ namespace BaseBuilder.Screens.GameScreens
 
         public abstract void Draw(RenderContext context);
 
-        public virtual bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame)
+        public virtual bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame)
         {
             return false;
         }
 
-        public virtual bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, MouseState last, MouseState current)
+        public virtual bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
         {
             return false;
         }
 
-        public virtual void Update(SharedGameState sharedGameState, LocalGameState localGameState, int timeMS)
+        public virtual void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {
         }
 
