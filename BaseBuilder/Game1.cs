@@ -46,6 +46,7 @@ namespace BaseBuilder
             base.Initialize();
 
             IsMouseVisible = true;
+            IsFixedTimeStep = false;
             graphics.PreferMultiSampling = true;
             
 
