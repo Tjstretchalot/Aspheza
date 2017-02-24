@@ -72,33 +72,37 @@ namespace BaseBuilder.Engine.Logic.WorldGen
 
         protected void InitOverseers()
         {
-            TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(7, 9), SharedGameState.GetUniqueEntityID()));
+            var wcx = TileWorld.TileWidth / 2;
+            var wcy = TileWorld.TileHeight / 2;
+            TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(wcx + 0, wcy), SharedGameState.GetUniqueEntityID()));
             
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(5, 9), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(5, 10), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(6, 11), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(7, 11), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(8, 11), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(9, 10), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(9, 9), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 2, wcy + 0), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 2, wcy + 1), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 1, wcy + 2), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 0, wcy + 2), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 1, wcy + 2), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 2, wcy + 1), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 2, wcy + 0), SharedGameState.GetUniqueEntityID()));
         }
 
         protected void InitBuildings()
         {
-            TileWorld.AddImmobileEntity(new House(new PointD2D(6.5, 5), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddImmobileEntity(new Sign(new PointD2D(12, 10), SharedGameState.GetUniqueEntityID(), "Welcome to the game!"));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(10, 5), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(11, 5), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Red));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(12, 5), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Blue));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(13, 5), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Green));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(14, 5), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Red));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(15, 5), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Blue));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(10, 8), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Green));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(11, 8), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Red));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(12, 8), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Blue));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(13, 8), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Green));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(14, 8), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Red));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(15, 8), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Blue));
+            var wcx = TileWorld.TileWidth / 2;
+            var wcy = TileWorld.TileHeight / 2;
+            TileWorld.AddImmobileEntity(new House(new PointD2D(wcx - 0.5, wcy - 4), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(new Sign(new PointD2D(wcx + 5, wcy + 1), SharedGameState.GetUniqueEntityID(), "Welcome to the game!"));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 4, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Red));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 5, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Blue));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 6, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Green));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 7, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Red));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 8, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Blue));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 3, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Green));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 4, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Red));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 5, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Blue));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 6, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Green));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 7, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Red));
+            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 8, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Blue));
         }
         
         public void Create(GraphicsDevice graphicsDevice)
