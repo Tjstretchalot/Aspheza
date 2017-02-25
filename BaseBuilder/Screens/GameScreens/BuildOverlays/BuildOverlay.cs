@@ -33,11 +33,11 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 
         public override void Draw(RenderContext context)
         {
-            if(BuildingToPlace != null && !CantPlace)
+            if (BuildingToPlace != null)
             {
                 var placeLocationScreen = new PointD2D((int)context.Camera.PixelLocationOfWorldX(CurrentPlaceLocation.X), (int)context.Camera.PixelLocationOfWorldY(CurrentPlaceLocation.Y));
 
-                BuildingToPlace.Render(context, placeLocationScreen, Color.DarkBlue);
+                BuildingToPlace.Render(context, placeLocationScreen, CantPlace ? Color.Red : Color.DarkBlue);
             }
         }
 
