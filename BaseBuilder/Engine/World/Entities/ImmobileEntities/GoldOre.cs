@@ -26,6 +26,11 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             CollisionMesh = _CollisionMesh;
         }
 
+        public GoldOre() : base()
+        {
+            CollisionMesh = _CollisionMesh;
+        }
+
         public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)
         {
             Position = new PointD2D(message);
