@@ -3,6 +3,7 @@ using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using BaseBuilder.Screens.GameScreens;

@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.Logic.Orders;
+using BaseBuilder.Engine.World;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using BaseBuilder.Screens.GameScreens;
 using System;
@@ -50,10 +51,13 @@ namespace BaseBuilder.Engine.State
 
         public bool CollisionDebug;
 
+        
         /// <summary>
         /// The components on the screen
         /// </summary>
         public List<IMyGameComponent> Components;
+
+        private bool Initialized;
 
         public LocalGameState(Camera camera, int localPlayerID)
         {
@@ -62,6 +66,26 @@ namespace BaseBuilder.Engine.State
 
             Orders = new List<IOrder>();
             CollisionDebug = false;
+        }
+
+
+        public void EnsureInititialized(SharedGameState gameState)
+        {
+            if (Initialized)
+                return;
+
+            gameState.World.OnEntityRemoved += EntityRemoved;
+            Initialized = true;
+        }
+
+        private void EntityRemoved(object sender, EventArgs e)
+        {
+            var args = e as EntityEventArgs;
+
+            if (args.Entity == SelectedEntity)
+            {
+                SelectedEntity = null;
+            }
         }
     }
 }

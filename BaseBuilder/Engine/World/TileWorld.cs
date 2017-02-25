@@ -46,6 +46,9 @@ namespace BaseBuilder.Engine.World
         protected Dictionary<Entity, List<Tile>> EntityToTiles;
         protected Dictionary<Tile, List<Entity>> TileToEntities;
 
+        public event EventHandler OnEntityAdded;
+        public event EventHandler OnEntityRemoved;
+
         /// <summary>
         /// Initializes a new world that is the specified number of tiles wide and 
         /// specified number of tiles tall.
@@ -86,8 +89,24 @@ namespace BaseBuilder.Engine.World
             }
             MobileEntities.Add(entity);
             AddTileCollisions(entity);
+
+            OnEntityAdded?.Invoke(this, new EntityEventArgs(entity));
         }
 
+        /// <summary>
+        /// Remove a mobile entity from the world
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
+        public void RemoveMobileEntity(MobileEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            MobileEntities.Remove(entity);
+            RemoveTileCollisions(entity);
+
+            OnEntityRemoved?.Invoke(this, new EntityEventArgs(entity));
+        }
         /// <summary>
         /// Adds an immobile entity to the world
         /// </summary>
@@ -100,14 +119,41 @@ namespace BaseBuilder.Engine.World
             }
             ImmobileEntities.Add(entity);
             AddTileCollisions(entity);
+
+            OnEntityAdded?.Invoke(this, new EntityEventArgs(entity));
         }
         
+        /// <summary>
+        /// Remove an immobile entity from the world
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
+        public void RemoveImmobileEntity(ImmobileEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            ImmobileEntities.Remove(entity);
+            RemoveTileCollisions(entity);
+
+            OnEntityRemoved?.Invoke(this, new EntityEventArgs(entity));
+        }
 
         public void AddTileCollisions(Entity ent)
         {
             EntityToTiles.Add(ent, new List<Tile>());
 
             UpdateTileCollisions(ent);
+        }
+
+        public void RemoveTileCollisions(Entity entity)
+        {
+            var tiles = EntityToTiles[entity];
+            foreach (var tile in tiles)
+            {
+                TileToEntities[tile].Remove(entity);
+            }
+
+            EntityToTiles.Remove(entity);
         }
 
         protected bool ResolveEntityCollisions(Entity ent, List<PointI2D> newEntTiles)

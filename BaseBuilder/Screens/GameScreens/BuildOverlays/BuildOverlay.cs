@@ -59,6 +59,18 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 }
             }
 
+
+            if(last.IsKeyDown(Keys.Delete) && current.IsKeyUp(Keys.Delete))
+            {
+                var immobileSel = localGameState.SelectedEntity as ImmobileEntity;
+
+                if(immobileSel != null)
+                {
+                    var order = netContext.GetPoolFromPacketType(typeof(DeconstructOrder)).GetGamePacketFromPool() as DeconstructOrder;
+                    order.EntityID = immobileSel.ID;
+                    localGameState.Orders.Add(order);
+                }
+            }
             return false;
         }
 

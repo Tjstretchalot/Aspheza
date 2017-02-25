@@ -23,6 +23,7 @@ namespace BaseBuilder.Engine.Context
         public const int ISSUE_MESSAGE_PACKET_ID = 203;
         public const int CHANGE_NAME_PACKET_ID = 204;
         public const int BUILD_ORDER_PACKET_ID = 205;
+        public const int DECONSTRUCT_ORDER_PACKET_ID = 206;
 
         public List<GamePacketPool> GamePacketPools;
         public Dictionary<Type, int> PacketTypesToIndexInGamePacketPools;
@@ -52,11 +53,12 @@ namespace BaseBuilder.Engine.Context
             RegisterPacketType(READY_FOR_SYNC_PACKET_ID,   typeof(ReadyForSyncPacket));
             RegisterPacketType(PLAYER_JOINED_PACKET_ID,    typeof(PlayerJoinedPacket));
 
-            RegisterPacketType(MOVE_ORDER_PACKET_ID,       typeof(MoveOrder));
-            RegisterPacketType(CANCEL_TASKS_PACKET_ID,     typeof(CancelTasksOrder));
-            RegisterPacketType(ISSUE_MESSAGE_PACKET_ID,    typeof(IssueMessageOrder));
-            RegisterPacketType(CHANGE_NAME_PACKET_ID,      typeof(ChangeNameOrder));
-            RegisterPacketType(BUILD_ORDER_PACKET_ID,      typeof(BuildOrder));
+            RegisterPacketType(MOVE_ORDER_PACKET_ID,        typeof(MoveOrder));
+            RegisterPacketType(CANCEL_TASKS_PACKET_ID,      typeof(CancelTasksOrder));
+            RegisterPacketType(ISSUE_MESSAGE_PACKET_ID,     typeof(IssueMessageOrder));
+            RegisterPacketType(CHANGE_NAME_PACKET_ID,       typeof(ChangeNameOrder));
+            RegisterPacketType(BUILD_ORDER_PACKET_ID,       typeof(BuildOrder));
+            RegisterPacketType(DECONSTRUCT_ORDER_PACKET_ID, typeof(DeconstructOrder));
         }
 
         public GamePacketPool GetPoolFromPacketType(Type type)

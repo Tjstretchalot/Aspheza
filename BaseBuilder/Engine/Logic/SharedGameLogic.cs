@@ -9,6 +9,7 @@ using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
 using BaseBuilder.Engine.World.WorldObject.Entities;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 
 namespace BaseBuilder.Engine.Logic
 {
@@ -115,6 +116,14 @@ namespace BaseBuilder.Engine.Logic
         public void OnBuildOrder(SharedGameState gameState, Player player, BuildOrder order)
         {
             gameState.World.AddImmobileEntity(order.Entity);
+        }
+
+        [OrderHandler(typeof(DeconstructOrder))]
+        public void OnDeconstructOrder(SharedGameState gameState, Player player, DeconstructOrder order)
+        {
+            var ent = gameState.World.ImmobileEntities.Find((e) => e.ID == order.EntityID);
+
+            gameState.World.RemoveImmobileEntity(ent as ImmobileEntity);
         }
     }
 }

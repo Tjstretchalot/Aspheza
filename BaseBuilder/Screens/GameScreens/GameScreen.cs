@@ -57,6 +57,8 @@ namespace BaseBuilder.Screens.GameScreens
             
             debugFont = content.Load<SpriteFont>("Bitter-Regular");
             InitComponents();
+
+            localGameState.EnsureInititialized(sharedGameState);
             
         }
         
