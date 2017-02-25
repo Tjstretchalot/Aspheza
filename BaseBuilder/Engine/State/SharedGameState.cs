@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Logic.Pathfinders;
 using BaseBuilder.Engine.Logic.Players;
+using BaseBuilder.Engine.State.Resources;
 using BaseBuilder.Engine.World;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,11 @@ namespace BaseBuilder.Engine.State
         /// The world in which the players are in
         /// </summary>
         public TileWorld World;
+        
+        /// <summary>
+        /// The resources that the player has
+        /// </summary>
+        public MaterialManager Resources;
 
         /// <summary>
         /// The players in the game
@@ -59,6 +65,7 @@ namespace BaseBuilder.Engine.State
             GameTimeMS = gameTimeMS;
             Pathfinder = new EnhancedAStarPathfinder();
             RecentMessages = new List<Tuple<string, int>>();
+            Resources = new MaterialManager();
         }
 
         /// <summary>

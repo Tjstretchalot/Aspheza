@@ -70,6 +70,7 @@ namespace BaseBuilder.Screens.GameScreens
             localGameLogic.AddComponent(localGameState, new HoverTextComponent(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new BuildOverlay(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new PlayersOverlay(content, graphics, graphicsDevice, spriteBatch));
+            localGameLogic.AddComponent(localGameState, new ResourceOverlay(content, graphics, graphicsDevice, spriteBatch));
         }
 
         public void Update(int deltaMS)

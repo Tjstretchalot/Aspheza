@@ -12,6 +12,7 @@ using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Engine.Networking.Packets
 {
@@ -90,6 +91,8 @@ namespace BaseBuilder.Engine.Networking.Packets
 
                 SharedState.RecentMessages.Add(Tuple.Create(msg, time));
             }
+
+            SharedState.Resources = new MaterialManager(message);
         }
 
         public override void SaveTo(NetContext context, SharedGameState gameState, NetOutgoingMessage message)
@@ -148,6 +151,8 @@ namespace BaseBuilder.Engine.Networking.Packets
                 message.Write(msgTuple.Item1);
                 message.Write(msgTuple.Item2);
             }
+
+            SharedState.Resources.Write(message);
         }
 
         public override void Clear()
