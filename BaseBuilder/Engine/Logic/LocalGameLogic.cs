@@ -4,6 +4,8 @@ using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World;
+using BaseBuilder.Engine.World.Entities.EntityTasks;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using BaseBuilder.Screens.GameScreens;
@@ -166,12 +168,46 @@ namespace BaseBuilder.Engine.Logic
                         cancelTasksOrder.EntityID = localGameState.SelectedEntity.ID;
                         localGameState.Orders.Add(cancelTasksOrder);
                     }
-                    var moveOrder = netContext.GetPoolFromPacketType(typeof(MoveOrder)).GetGamePacketFromPool() as MoveOrder;
-                    moveOrder.EntityID = localGameState.SelectedEntity.ID;
-                    moveOrder.End = new PointI2D((int)mouseWorldX, (int)mouseWorldY);
-                    localGameState.Orders.Add(moveOrder);
+                    var taskOrder = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
+                    taskOrder.Entity = localGameState.SelectedEntity;
+                    taskOrder.Task = new EntityMoveTask(localGameState.SelectedEntity as MobileEntity, new PointI2D((int)mouseWorldX, (int)mouseWorldY));
+                    localGameState.Orders.Add(taskOrder);
                 }
             }
+        }
+
+        /// <summary>
+        /// If the user has a CaveManWorker selected and right clicks on gold ore, then he is trying to have
+        /// the worker dig ore. For right now, this requires that the worker is already close enough to the ore.
+        /// </summary>
+        /// <param name="sharedGameState">Shared state</param>
+        /// <param name="localGameState">Local state</param>
+        /// <param name="netContext">Net context</param>
+        /// <param name="elapsedMS">Time since last frame in ms</param>
+        /// <param name="keyboardHandled">If the keyboard was already handled</param>
+        /// <param name="mouseHandled">If the mouse was already handled. Dig orders require mouse is not handled and handle the mouse</param>
+        protected void CheckForDigGoldOreOrder(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
+        {
+            if (mouseHandled)
+                return;
+
+            var worker = localGameState.SelectedEntity as CaveManWorker;
+            var vein = localGameState.HoveredEntity as GoldOre;
+            if (worker == null || vein == null)
+                return;
+
+            if (mouseLast.Value.RightButton != ButtonState.Pressed || mouseCurr.RightButton != ButtonState.Released)
+                return;
+
+            mouseHandled = true;
+
+            if (!worker.CollisionMesh.Intersects(vein.CollisionMesh, worker.Position, vein.Position, false) && worker.CollisionMesh.MinDistanceTo(vein.CollisionMesh, worker.Position, vein.Position) > 1)
+                return;
+
+            var order = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
+            order.Entity = worker;
+            order.Task = new EntityMineGoldTask(worker, vein);
+            localGameState.Orders.Add(order);
         }
 
         /// <summary>
@@ -361,6 +397,7 @@ namespace BaseBuilder.Engine.Logic
             CheckForHovering(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForSelect(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             UpdateCamera(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
+            CheckForDigGoldOreOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForMoveOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
 
             mouseLast = mouseCurr;

@@ -18,7 +18,7 @@ namespace BaseBuilder.Engine.Context
         public const int READY_FOR_SYNC_PACKET_ID = 104;
         public const int PLAYER_JOINED_PACKET_ID = 105;
 
-        public const int MOVE_ORDER_PACKET_ID = 201;
+        public const int TASK_ORDER_PACKET_ID = 201;
         public const int CANCEL_TASKS_PACKET_ID = 202;
         public const int ISSUE_MESSAGE_PACKET_ID = 203;
         public const int CHANGE_NAME_PACKET_ID = 204;
@@ -53,7 +53,7 @@ namespace BaseBuilder.Engine.Context
             RegisterPacketType(READY_FOR_SYNC_PACKET_ID,   typeof(ReadyForSyncPacket));
             RegisterPacketType(PLAYER_JOINED_PACKET_ID,    typeof(PlayerJoinedPacket));
 
-            RegisterPacketType(MOVE_ORDER_PACKET_ID,        typeof(MoveOrder));
+            RegisterPacketType(TASK_ORDER_PACKET_ID,        typeof(IssueTaskOrder));
             RegisterPacketType(CANCEL_TASKS_PACKET_ID,      typeof(CancelTasksOrder));
             RegisterPacketType(ISSUE_MESSAGE_PACKET_ID,     typeof(IssueMessageOrder));
             RegisterPacketType(CHANGE_NAME_PACKET_ID,       typeof(ChangeNameOrder));

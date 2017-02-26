@@ -106,6 +106,37 @@ namespace BaseBuilder.Engine.Math2D.Double
             }
         }
 
+        private double? _CosTheta;
+        
+        /// <summary>
+        /// Math.Cos(Theta)
+        /// </summary>
+        public double CosTheta
+        {
+            get
+            {
+                if (!_CosTheta.HasValue)
+                    _CosTheta = Math.Cos(Theta);
+
+                return _CosTheta.Value;
+            }
+        }
+
+        private double? _SinTheta;
+
+        /// <summary>
+        /// Math.Sin(Theta)
+        /// </summary>
+        public double SinTheta
+        {
+            get
+            {
+                if (!_SinTheta.HasValue)
+                    _SinTheta = Math.Sin(Theta);
+
+                return _SinTheta.Value;
+            }
+        }
         protected VectorD2D _UnitVector;
 
         /// <summary>

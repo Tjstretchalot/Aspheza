@@ -219,12 +219,9 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             if (IsPoint)
                 throw new InvalidOperationException("This line is actually a point - you should have checked using IsPoint. The correct method is AsPointD2D");
-
-            var cosTheta = Math.Cos(Axis.Theta);
-            var sinTheta = Math.Sin(Axis.Theta);
-
-            var start = new PointD2D(Start * cosTheta, Start * sinTheta);
-            var end = new PointD2D(End * cosTheta, End * sinTheta);
+            
+            var start = new PointD2D(Start * Axis.CosTheta, Start * Axis.SinTheta);
+            var end = new PointD2D(End * Axis.CosTheta, End * Axis.SinTheta);
 
             return new FiniteLineD2D(start, end);
         }

@@ -309,6 +309,86 @@ namespace BaseBuilder.Engine.Math2D.Double
         }
 
         /// <summary>
+        /// Calculates the shortest vector from this line to the specified point. Does not work
+        /// if this line intersects the point.
+        /// </summary>
+        /// <param name="other">The point</param>
+        /// <param name="myPosition">My position</param>
+        /// <param name="otherPosition">Other position</param>
+        /// <returns>Shortest vector from this line to other, ties broken arbitrarily</returns>
+        public VectorD2D MinVectorTo(PointD2D other, PointD2D myPosition, PointD2D otherPosition)
+        {
+            /*
+             * Method:
+             *   Project the point onto this axis -> One dimensional point on axis
+             *   Project this line onto this axis -> One dimensional line on axis
+             *   
+             *   If point < Min, the shortest distance is from the Min to the point
+             *   If point > Max, the shortest distance is from the Max to the point
+             *   
+             *   Project this line onto the normal of this line -> One dimensional point on axis
+             *   Project the point onto the normal of this line -> One dimensional point on axis
+             *   
+             *   Return the distance between the two
+             */
+
+            var usProjOnAxis = ProjectOntoAxis(Axis.UnitVector, myPosition);
+            var pointProjOnAxis = other.DotProduct(Axis.UnitVector.DeltaX, Axis.UnitVector.DeltaY, otherPosition.X, otherPosition.Y);
+
+            var minPoint = (usProjOnAxis.Start == usProjOnAxis.Min) ? Start : End;
+            var maxPoint = (usProjOnAxis.Start == usProjOnAxis.Max) ? Start : End;
+
+            if(pointProjOnAxis < usProjOnAxis.Min)
+            {
+                // from us to them = them - us
+                return new VectorD2D((other.X + otherPosition.X) - (minPoint.X + myPosition.X), (other.Y + otherPosition.Y) - (minPoint.Y + myPosition.Y));
+            }
+
+            if(pointProjOnAxis > usProjOnAxis.Max)
+            {
+                return new VectorD2D((other.X + otherPosition.X) - (maxPoint.X + myPosition.X), (other.Y + otherPosition.Y) - (maxPoint.Y + myPosition.Y));
+            }
+
+            // projecting this onto the normal axis is the same as projecting any point on this line to the normal axis
+            var usProjOnNormal = Start.DotProduct(Normal.UnitVector.DeltaX, Normal.UnitVector.DeltaY, myPosition.X, myPosition.Y);
+            var pointProjOnNormal = other.DotProduct(Normal.UnitVector.DeltaX, Normal.UnitVector.DeltaY, otherPosition.X, otherPosition.Y);
+
+            // Slow version:
+            //   var tmp = new OneDimensionalLine(Normal, usProjOnAxis, pointProjOnAxis).AsFiniteLineD2D();
+            //   return (tmp.End - tmp.Start).AsVectorD2D()
+
+            return new VectorD2D((pointProjOnNormal - usProjOnNormal) * Normal.CosTheta, (pointProjOnNormal - usProjOnNormal) * Normal.SinTheta);
+        }
+
+        /// <summary>
+        /// Returns the shortest vector that connects the two lines. Does not work if the two lines intersect.
+        /// </summary>
+        /// <param name="other">The other line</param>
+        /// <param name="myPosition">Where this line is located</param>
+        /// <param name="otherPosition">Where the other line is located</param>
+        /// <returns>The shortest vector between this line and the other line</returns>
+        public VectorD2D MinVectorTo(FiniteLineD2D other, PointD2D myPosition, PointD2D otherPosition)
+        {
+            // Performance improvements are possible - a lot of stuff here is recalculated (particularly projections)
+            // which can be reused for each of the 4 checks
+            var shortest = MinVectorTo(other.Start, myPosition, otherPosition);
+
+            var tmp = MinVectorTo(other.End, myPosition, otherPosition);
+            if (tmp.MagnitudeSquared < shortest.MagnitudeSquared)
+                shortest = tmp;
+
+            tmp = other.MinVectorTo(Start, otherPosition, myPosition);
+            if (tmp.MagnitudeSquared < shortest.MagnitudeSquared)
+                shortest = tmp;
+
+            tmp = other.MinVectorTo(End, otherPosition, myPosition);
+            if (tmp.MagnitudeSquared < shortest.MagnitudeSquared)
+                shortest = tmp;
+
+            return shortest;
+        }
+
+        /// <summary>
         /// Returns if this line is parallel to the other line. Two
         /// lines that are going in opposite directions ARE considered
         /// parallel. That is to say, the line going from (0, 0) to (0, 1)

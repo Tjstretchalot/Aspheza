@@ -99,22 +99,25 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         /// <param name="x">The x</param>
         /// <param name="y">The y</param>
+        /// <param name="shiftX">Added to my x</param>
+        /// <param name="shiftY">Added to my y</param>
         /// <returns>this . (x, y)</returns>
-        public double DotProduct(double x, double y)
+        public double DotProduct(double x, double y, double shiftX = 0, double shiftY = 0)
         {
-            return X * x + Y * y;
+            return (X + shiftX) * x + (Y + shiftY) * y;
         }
 
         /// <summary>
         /// Returns the dot product of this point with the other point
         /// </summary>
         /// <param name="other">The other point</param>
-        /// <returns>this . other</returns>
-        public double DotProduct(PointD2D other)
+        /// <param name="shift">The shift to my position or null for no shift</param>
+        /// <returns>(this + shift) . other</returns>
+        public double DotProduct(PointD2D other, PointD2D shift = null)
         {
-            return DotProduct(other.X, other.Y);
+            return DotProduct(other.X, other.Y, (shift == null ? 0 : shift.X), (shift == null ? 0 : shift.Y));
         }
-
+        
         /// <summary>
         /// Returns the dot product of (x1 + shift1.X, y1 + shift1.Y) and (x2, shift2.X, y2 + shift2.Y). For shifts, null
         /// is assumed to mean the origin.
@@ -123,10 +126,10 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <param name="y1">Y1</param>
         /// <param name="x2">X2</param>
         /// <param name="y2">Y2</param>
-        /// <param name="shift1">Shift of (x1, y1)</param>
-        /// <param name="shift2">Shift of (x2, y2)</param>
+        /// <param name="shift1">Shift of (x1, y1) or null</param>
+        /// <param name="shift2">Shift of (x2, y2) or null</param>
         /// <returns></returns>
-        public static double DotProduct(double x1, double y1, double x2, double y2, PointD2D shift1 = null, PointD2D shift2 = null)
+        public static double DotProduct(double x1, double y1, double x2, double y2, PointD2D shift1, PointD2D shift2)
         {
             x1 = x1 + (shift1 == null ? 0 : shift1.X);
             x2 = x2 + (shift2 == null ? 0 : shift2.X);

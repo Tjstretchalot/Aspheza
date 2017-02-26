@@ -73,16 +73,10 @@ namespace BaseBuilder.Engine.Logic
             OrderHandler.BroadcastOrder(gameState, player, order);
         }
 
-        [OrderHandler(typeof(MoveOrder))]
-        public void OnMoveOrder(SharedGameState gameState, Player player, MoveOrder order)
+        [OrderHandler(typeof(IssueTaskOrder))]
+        public void OnTaskOrder(SharedGameState gameState, Player player, IssueTaskOrder order)
         {
-            MobileEntity entity = gameState.World.MobileEntities.Find((me) => me.ID == order.EntityID);
-            if(entity == null)
-            {
-                throw new InvalidProgramException("move order on null entity? race condition?");
-            }
-            
-            entity.QueueTask(new EntityMoveTask(entity, order.End));
+            order.Entity.QueueTask(order.Task);
         }
 
         [OrderHandler(typeof(CancelTasksOrder))]
