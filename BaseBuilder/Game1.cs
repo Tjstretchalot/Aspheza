@@ -21,6 +21,8 @@ namespace BaseBuilder
     /// </summary>
     public class Game1 : Game
     {
+        public static Game1 Instance;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -30,9 +32,17 @@ namespace BaseBuilder
 
         public Game1()
         {
+            Instance = this;
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             frameCounter = new FrameCounter();
+
+            IsMouseVisible = true;
+            IsFixedTimeStep = false;
+            graphics.PreferMultiSampling = true;
+            graphics.IsFullScreen = true;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
         }
 
         /// <summary>
@@ -44,12 +54,7 @@ namespace BaseBuilder
         protected override void Initialize()
         {
             base.Initialize();
-
-            IsMouseVisible = true;
-            IsFixedTimeStep = false;
-            graphics.PreferMultiSampling = true;
             
-
             UIUtils.Load();
         }
 

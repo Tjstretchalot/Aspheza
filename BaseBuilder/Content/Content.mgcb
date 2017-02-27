@@ -319,3 +319,105 @@
 /processorParam:Quality=Best
 /build:Music/Wacky Waiting.ogg
 
+#begin Sounds/jingles_SAX04.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX04.ogg
+
+#begin Sounds/jingles_SAX00.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX00.ogg
+
+#begin Sounds/jingles_SAX01.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX01.ogg
+
+#begin Sounds/jingles_SAX02.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX02.ogg
+
+#begin Sounds/jingles_SAX03.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX03.ogg
+
+#begin Sounds/jingles_SAX05.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX05.ogg
+
+#begin Sounds/jingles_SAX06.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX06.ogg
+
+#begin Sounds/jingles_SAX07.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX07.ogg
+
+#begin Sounds/jingles_SAX08.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX08.ogg
+
+#begin Sounds/jingles_SAX09.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX09.ogg
+
+#begin Sounds/jingles_SAX10.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX10.ogg
+
+#begin Sounds/jingles_SAX11.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX11.ogg
+
+#begin Sounds/jingles_SAX12.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX12.ogg
+
+#begin Sounds/jingles_SAX13.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX13.ogg
+
+#begin Sounds/jingles_SAX14.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX14.ogg
+
+#begin Sounds/jingles_SAX15.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX15.ogg
+
+#begin Sounds/jingles_SAX16.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/jingles_SAX16.ogg
+

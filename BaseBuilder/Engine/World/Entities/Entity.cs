@@ -64,7 +64,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         public Queue<IEntityTask> Tasks;
         public IEntityTask CurrentTask;
-
+        
         protected Entity(PointD2D position, PolygonD2D collisionMesh, int id)
         {
             Position = position;

@@ -19,6 +19,8 @@ using BaseBuilder.Engine.Networking;
 using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Media;
 using BaseBuilder.Screens.GameScreens.BuildOverlays;
+using Microsoft.Xna.Framework.Audio;
+using BaseBuilder.Screens.GameScreens.ToolbarOverlays;
 
 namespace BaseBuilder.Screens.GameScreens
 {
@@ -53,7 +55,6 @@ namespace BaseBuilder.Screens.GameScreens
             this.sharedGameState = sharedGameState;
             this.localGameState = localGameState;
             this.gameConnection = gameConnection;
-
             
             debugFont = content.Load<SpriteFont>("Bitter-Regular");
             InitComponents();
@@ -71,6 +72,8 @@ namespace BaseBuilder.Screens.GameScreens
             localGameLogic.AddComponent(localGameState, new BuildOverlay(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new PlayersOverlay(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new ResourceOverlay(content, graphics, graphicsDevice, spriteBatch));
+            localGameLogic.AddComponent(localGameState, new EscapeMenuOverlay(content, graphics, graphicsDevice, spriteBatch));
+            localGameLogic.AddComponent(localGameState, new CaveManWorkerOverlay(content, graphics, graphicsDevice, spriteBatch));
         }
 
         public void Update(int deltaMS)

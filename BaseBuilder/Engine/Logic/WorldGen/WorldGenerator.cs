@@ -41,14 +41,17 @@ namespace BaseBuilder.Engine.Logic.WorldGen
         /// <returns>A tile world 120x80</returns>
         protected virtual TileWorld CreateWorld()
         {
+            const int width = 300;
+            const int height = 200;
+
             var random = new Random();
-            var tiles = new List<Tile>(120 * 80);
+            var tiles = new List<Tile>(width * height);
 
             var tileCollisionMesh = PolygonD2D.UnitSquare;
 
-            for (int y = 0; y < 80; y++)
+            for (int y = 0; y < height; y++)
             {
-                for (int x = 0; x < 120; x++)
+                for (int x = 0; x < width; x++)
                 {
                     var point = new PointI2D(x, y);
                     var rand = random.NextDouble();
@@ -58,7 +61,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
                 }
             }
 
-            return new TileWorld(120, 80, tiles);
+            return new TileWorld(width, height, tiles);
         }
 
         protected virtual List<Player> InitPlayers()

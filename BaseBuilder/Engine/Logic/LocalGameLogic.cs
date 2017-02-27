@@ -28,6 +28,7 @@ namespace BaseBuilder.Engine.Logic
     /// </summary>
     public class LocalGameLogic
     {
+        protected ContentManager content;
         protected int minCameraZoom;
         protected double cameraSpeed;
         protected double cameraZoomSpeed;
@@ -40,8 +41,9 @@ namespace BaseBuilder.Engine.Logic
         KeyboardState? keyboardLast;
         List<Keys> keysPressedReusable;
 
-        public LocalGameLogic()
+        public LocalGameLogic(ContentManager content)
         {
+            this.content = content;
             cameraSpeed = 0.01;
             minCameraZoom = 32;
             cameraZoomSpeed = 0.01;
@@ -244,6 +246,11 @@ namespace BaseBuilder.Engine.Logic
                     return;
                 }
 
+                if(entity != null && entity != localGameState.SelectedEntity)
+                {
+                    SFXUtils.PlaySAXJingle(content);
+                }
+
                 mouseHandled = true;
                 if (localGameState.SelectedEntity == null)
                 {
@@ -323,7 +330,7 @@ namespace BaseBuilder.Engine.Logic
         /// <param name="mouseHandled">If the mouse was already handled</param>
         protected virtual void UpdateCamera(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
         {
-            if (!mouseLast.HasValue || mouseHandled)
+            if (!mouseLast.HasValue || keyboardHandled)
             {
                 return;
             }
@@ -351,7 +358,7 @@ namespace BaseBuilder.Engine.Logic
                 var newZoom = cameraPartialZoom + delta * cameraZoomSpeed;
 
                 newZoom = Math.Min(newZoom, minCameraZoom);
-                newZoom = Math.Max(newZoom, camera.ScreenLocation.Width / world.TileWidth);
+                newZoom = Math.Max(newZoom, Math.Ceiling(camera.ScreenLocation.Width / world.TileWidth));
 
                 double mousePixelX = mouseCurr.Position.X, mousePixelY = mouseCurr.Position.Y;
                 double mouseWorldX, mouseWorldY;

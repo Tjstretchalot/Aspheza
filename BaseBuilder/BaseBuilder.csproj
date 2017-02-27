@@ -148,6 +148,7 @@
     <Compile Include="Screens\GameScreens\BuildOverlays\UnbuiltImmobileEntity.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\UnbuiltSpritesheetImmobileEntity.cs" />
     <Compile Include="Screens\GameScreens\ChatOverlay.cs" />
+    <Compile Include="Screens\GameScreens\EscapeMenuOverlay.cs" />
     <Compile Include="Screens\GameScreens\GameBackgroundMusicComponent.cs" />
     <Compile Include="Screens\GameScreens\GameComponent.cs" />
     <Compile Include="Screens\GameScreens\GameScreen.cs" />
@@ -155,6 +156,9 @@
     <Compile Include="Screens\GameScreens\IGameComponent.cs" />
     <Compile Include="Screens\GameScreens\PlayersOverlay.cs" />
     <Compile Include="Screens\GameScreens\ResourceOverlay.cs" />
+    <Compile Include="Screens\GameScreens\SFXUtils.cs" />
+    <Compile Include="Screens\GameScreens\ToolbarOverlays\CaveManWorkerOverlay.cs" />
+    <Compile Include="Screens\GameScreens\ToolbarOverlays\ToolbarOverlay.cs" />
     <Compile Include="Screens\IScreen.cs" />
     <Compile Include="Screens\IScreenManager.cs" />
     <Compile Include="Screens\IScreenTransition.cs" />

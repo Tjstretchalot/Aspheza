@@ -112,7 +112,7 @@ namespace BaseBuilder.Screens
             var clientConnection = new ClientGameConnection(endpoint, desName);
 
             var screenSize = graphicsDevice.Viewport;
-            var localGameLogic = new LocalGameLogic();
+            var localGameLogic = new LocalGameLogic(content);
 
             while (!clientConnection.Connected)
             {
