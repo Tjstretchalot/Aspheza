@@ -116,12 +116,14 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
 
         UnitPath RewindAndReturnPath(WorkingAStarNode last)
         {
+            int length = 1;
             AStarNode current = new AStarNode();
             current.Location = last.Location;
             
             while(last.Parent != null)
             {
                 last = last.Parent;
+                length++;
 
                 var tmp = new AStarNode();
                 tmp.Next = current;
@@ -129,7 +131,7 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
                 current = tmp;
             }
 
-            return new UnitPath(current);
+            return new UnitPath(current, length);
         }
 
         bool CanPerformMove(PointI2D from, PointI2D moveDir)

@@ -38,6 +38,22 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
         }
 
+        public string PrettyDescription
+        {
+            get
+            {
+                return $"Mining Gold";
+            }
+        }
+
+        public double Progress
+        {
+            get
+            {
+                return 1.0 - ((double)RemainingTimeForNextMS / TimeToMineMS);
+            }
+        }
+
         protected int TimeToMineMS;
         protected int RemainingTimeForNextMS;
 

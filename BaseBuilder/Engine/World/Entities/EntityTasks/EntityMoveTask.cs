@@ -48,9 +48,35 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
         }
 
+        public string PrettyDescription
+        {
+            get
+            {
+                return "Moving";
+            }
+        }
+
+        public double Progress
+        {
+            get
+            {
+                if (Start == null)
+                    return 0;
+                var distanceRemaining = (Destination - Entity.Position).AsVectorD2D().Magnitude;
+                if(distanceRemaining > InitialDistance)
+                {
+                    return 0;
+                }
+
+                return 1 - (distanceRemaining / InitialDistance);
+            }
+        }
+
         protected int EntityID;
         protected MobileEntity Entity;
+        protected PointD2D Start;
         protected PointI2D Destination;
+        protected double InitialDistance;
 
         protected UnitPath Path;
         protected bool Finished;
@@ -67,9 +93,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// <param name="destination">Where the entity is going</param>
         public EntityMoveTask(MobileEntity entity, PointI2D destination)
         {
+            Start = new PointD2D(entity.Position.X, entity.Position.Y);
             Entity = entity;
             EntityID = entity.ID;
             Destination = destination;
+
+            InitialDistance = (Destination - Start).AsVectorD2D().Magnitude;
 
             Path = null;
             FailedToFindPath = false;
@@ -88,9 +117,13 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public EntityMoveTask(SharedGameState gameState, NetIncomingMessage message)
         {
             EntityID = message.ReadInt32();
+            if (message.ReadBoolean())
+                Start = new PointD2D(message);
             Destination = new PointI2D(message);
+            InitialDistance = message.ReadDouble();
 
-            Path = new UnitPath(message);
+            if(message.ReadBoolean())
+                Path = new UnitPath(message);
             Finished = message.ReadBoolean();
             FailedToFindPath = message.ReadBoolean();
 
@@ -106,8 +139,29 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public void Write(NetOutgoingMessage message)
         {
             message.Write(EntityID);
+            if (Start == null)
+            {
+                message.Write(false);
+            }
+            else
+            {
+                message.Write(true);
+                Start.Write(message);
+            }
+
             Destination.Write(message);
-            Path.Write(message);
+            message.Write(InitialDistance);
+
+            if (Path == null)
+            {
+                message.Write(false);
+            }
+            else
+            {
+                message.Write(true);
+                Path.Write(message);
+            }
+
             message.Write(Finished);
             message.Write(FailedToFindPath);
         }
@@ -118,6 +172,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Path = null;
             FailedToFindPath = false;
             Finished = false;
+            Start = null;
         }
 
         /// <summary>
@@ -136,6 +191,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             if(Entity == null)
             {
                 Entity = gameState.World.MobileEntities.Find((me) => me.ID == EntityID);
+            }
+
+            if(Start == null)
+            {
+                Start = new PointD2D(Entity.Position.X, Entity.Position.Y);
+                InitialDistance = (Destination - Start).AsVectorD2D().Magnitude;
             }
 
             if (FailedToFindPath || Finished)
@@ -212,7 +273,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         private void ImplMove(SharedGameState gameState, PointI2D curr, int moveMS)
         {
             var moveVec = new VectorD2D(curr.X - Entity.Position.X, curr.Y - Entity.Position.Y);
-
+            
             var speedUnitsPerMS = Entity.SpeedUnitsPerMS; 
 
             var unitsMaxThisTick = speedUnitsPerMS * moveMS;
@@ -229,10 +290,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 if (Finished)
                     return;
 
+                curr = Path.GetCurrent();
+
                 int msRemaining = moveMS - msToMoveMoveVec;
 
                 if (msRemaining > 0)
-                    ImplMove(gameState, Path.GetCurrent(), msRemaining);
+                    ImplMove(gameState, curr, msRemaining);
             }else
             {
                 var posOffset = moveVec.UnitVector.Scale(unitsMaxThisTick);

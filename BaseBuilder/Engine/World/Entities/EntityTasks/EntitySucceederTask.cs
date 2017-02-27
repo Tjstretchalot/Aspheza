@@ -50,6 +50,22 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
         }
 
+        public string PrettyDescription
+        {
+            get
+            {
+                return Task.PrettyDescription;
+            }
+        }
+
+        public double Progress
+        {
+            get
+            {
+                return Task.Progress;
+            }
+        }
+
         protected IEntityTask Task;
         protected string SpecificName;
         protected bool TaskRunSinceLastReset;

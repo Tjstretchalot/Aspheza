@@ -80,6 +80,22 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
         }
 
+        public string PrettyDescription
+        {
+            get
+            {
+                return Tasks[Counter].PrettyDescription;
+            }
+        }
+
+        public double Progress
+        {
+            get
+            {
+                return Tasks[Counter].Progress;
+            }
+        }
+
         protected string SpecificName;
         protected int Counter;
         protected bool CounterRunAtleastOnce;

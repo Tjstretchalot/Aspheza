@@ -36,6 +36,18 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         string TaskStatus { get; }
 
         /// <summary>
+        /// The description that is displayed to the user for this task
+        /// </summary>
+        string PrettyDescription { get; }
+
+        /// <summary>
+        /// A number between 0 and 1 that indicates the progress made towards
+        /// completing the thing specified in the pretty description. 0 means
+        /// no progress has been made, 1 means the task is complete.
+        /// </summary>
+        double Progress { get; }
+
+        /// <summary>
         /// Simulates time passing for the specified entity
         /// </summary>
         /// <param name="gameState">The game state for the entity</param>

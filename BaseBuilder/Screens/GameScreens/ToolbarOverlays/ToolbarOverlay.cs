@@ -70,7 +70,28 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             Rectangle destRect = new Rectangle(ScreenLocation.X, ScreenLocation.Y, Size.X, Size.Y);
 
             SpriteBatch.Draw(BackgroundTexture, destinationRectangle: destRect);
-            SpriteBatch.Draw(FullProgressBarTexture, destinationRectangle: FullProgressBarRect);
+
+            if (CurrentToolbarEntity.CurrentTask != null)
+            {
+                SpriteBatch.Draw(FullProgressBarTexture, destinationRectangle: FullProgressBarRect);
+                var prog = CurrentToolbarEntity.CurrentTask.Progress;
+                var unoffsetOverlayStartX = (int)(FullProgressBarRect.Width * prog);
+                var overlayStartX = FullProgressBarRect.X + unoffsetOverlayStartX;
+                var overlayWidth = FullProgressBarRect.Width - unoffsetOverlayStartX;
+                if(prog >= 0 && prog < 1)
+                {
+                    var overlayRect = new Rectangle(overlayStartX, FullProgressBarRect.Y, overlayWidth - 1, FullProgressBarRect.Height);
+                    SpriteBatch.Draw(IncompleteProgressBarOverlay, destinationRectangle: overlayRect);
+                }
+
+                int y = FullProgressBarRect.Top - Font.LineSpacing - 2;
+
+                var str = CurrentToolbarEntity.CurrentTask.PrettyDescription;
+                var strWid = Font.MeasureString(str).X;
+                var x = FullProgressBarRect.Center.X - strWid / 2;
+
+                SpriteBatch.DrawString(Font, str, new Vector2(x, y), Color.White);
+            }
         }
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)

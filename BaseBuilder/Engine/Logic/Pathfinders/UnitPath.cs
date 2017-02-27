@@ -18,15 +18,29 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
     /// </remarks>
     public class UnitPath
     {
+        /// <summary>
+        /// How many nodes were in this path initially?
+        /// </summary>
+        public int InitialLength { get; }
+
+        /// <summary>
+        /// How many nodes do we have left?
+        /// </summary>
+        public int LengthRemaining { get; protected set; }
+
         private AStarNode CurrentNode;
 
-        internal UnitPath(AStarNode first)
+        internal UnitPath(AStarNode first, int initialLength)
         {
+            InitialLength = initialLength;
+            LengthRemaining = initialLength;
             CurrentNode = first;
         }
 
         public UnitPath(NetIncomingMessage message)
         {
+            InitialLength = message.ReadInt32();
+            LengthRemaining = message.ReadInt32();
             bool current = message.ReadBoolean();
             if(current)
                 CurrentNode = new AStarNode(message);
@@ -34,6 +48,8 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
 
         public void Write(NetOutgoingMessage message)
         {
+            message.Write(InitialLength);
+            message.Write(LengthRemaining);
             if (CurrentNode == null)
             {
                 message.Write(false);
@@ -62,6 +78,7 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
         /// <returns></returns>
         public bool Next()
         {
+            LengthRemaining--;
             CurrentNode = CurrentNode.Next;
 
             return CurrentNode != null;

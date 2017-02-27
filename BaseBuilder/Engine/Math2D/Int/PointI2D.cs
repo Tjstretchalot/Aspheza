@@ -93,6 +93,14 @@ namespace BaseBuilder.Engine.Math2D
             return p1.X != p2.X || p1.Y != p2.Y;
         }
 
+        public static implicit operator PointD2D(PointI2D p)
+        {
+            if (ReferenceEquals(p, null))
+                return null;
+
+            return new PointD2D(p.X, p.Y);
+        }
+
         public override string ToString()
         {
             return $"({X}, {Y})";

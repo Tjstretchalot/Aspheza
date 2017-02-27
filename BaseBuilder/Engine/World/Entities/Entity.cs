@@ -48,12 +48,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
             get
             {
-                if (_HoverText != null)
-                    return _HoverText;
-
-                if (CurrentTask != null)
-                    return CurrentTask.TaskDescription;
-                return $"Position = ({Position.X}, {Position.Y})";
+                return _HoverText;
             }
         }
 
