@@ -67,6 +67,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             Worker = worker;
             Vein = vein;
+
+            WorkerID = worker.ID;
+            VeinID = vein.ID;
             TimeToMineMS = 3000;
             RemainingTimeForNextMS = TimeToMineMS;
         }
@@ -83,8 +86,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Write(NetOutgoingMessage message)
         {
-            message.Write(Worker.ID);
-            message.Write(Vein.ID);
+            message.Write(WorkerID);
+            message.Write(VeinID);
 
             message.Write(FixedDirection);
             message.Write(TimeToMineMS);
