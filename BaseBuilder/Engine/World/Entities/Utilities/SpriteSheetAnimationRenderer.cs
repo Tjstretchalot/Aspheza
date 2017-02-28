@@ -71,7 +71,7 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
             NextAnimationTickMS -= timeMS;
             if (NextAnimationTickMS <= 0)
             {
-                NextAnimationTickMS = 333;
+                NextAnimationTickMS = 250;
                 if (Direction == Direction.Left)
                 {
                     CurrentDraw = (CurrentDraw + 1) % _LeftMove.Count;
