@@ -69,27 +69,27 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
             
             if(Math.Sign(dx) == -1 && Direction != Direction.Left)
             {
-                CurrentDraw = 1;
+                CurrentDraw = (CurrentDraw + 1) % _LeftMove.Count;
                 Direction = Direction.Left;
-                CurrentRect = _LeftMove[1];
+                CurrentRect = _LeftMove[CurrentDraw];
             }
             else if (Math.Sign(dx) == 1 && Direction != Direction.Right)
             {
-                CurrentDraw = 1;
+                CurrentDraw = (CurrentDraw + 1) % _RightMove.Count;
                 Direction = Direction.Right;
-                CurrentRect = _RightMove[1];
+                CurrentRect = _RightMove[CurrentDraw];
             }
             else if (Math.Sign(dy) == 1 && Direction != Direction.Down)
             {
-                CurrentDraw = 1;
+                CurrentDraw = (CurrentDraw + 1) % _DownMove.Count;
                 Direction = Direction.Down;
-                CurrentRect = _DownMove[1];
+                CurrentRect = _DownMove[CurrentDraw];
             }
             else if (Math.Sign(dy) == -1 && Direction != Direction.Up)
             {
-                CurrentDraw = 1;
+                CurrentDraw = (CurrentDraw + 1) % _UpMove.Count;
                 Direction = Direction.Up;
-                CurrentRect = _UpMove[1];
+                CurrentRect = _UpMove[CurrentDraw];
             }
         }
 
