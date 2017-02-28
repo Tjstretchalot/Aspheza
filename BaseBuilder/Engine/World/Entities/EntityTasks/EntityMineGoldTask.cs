@@ -65,9 +65,6 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public EntityMineGoldTask(CaveManWorker worker, GoldOre vein)
         {
-            Worker = worker;
-            Vein = vein;
-
             WorkerID = worker.ID;
             VeinID = vein.ID;
             TimeToMineMS = 3000;

@@ -328,6 +328,13 @@ namespace BaseBuilder.Engine.Logic
             if (mouseLast.Value.RightButton != ButtonState.Pressed || mouseCurr.RightButton != ButtonState.Released)
                 return;
 
+            if (!keyboardCurr.IsKeyDown(Keys.LeftShift))
+            {
+                var cancelTasksOrder = netContext.GetPoolFromPacketType(typeof(CancelTasksOrder)).GetGamePacketFromPool() as CancelTasksOrder;
+                cancelTasksOrder.EntityID = localGameState.SelectedEntity.ID;
+                localGameState.Orders.Add(cancelTasksOrder);
+            }
+
             mouseHandled = true;
 
             IssueTaskOrder order;

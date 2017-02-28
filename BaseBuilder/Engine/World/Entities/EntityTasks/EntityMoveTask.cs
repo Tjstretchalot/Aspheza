@@ -97,7 +97,6 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public EntityMoveTask(MobileEntity entity, PointI2D destination)
         {
             Start = new PointD2D(entity.Position.X, entity.Position.Y);
-            Entity = entity;
             EntityID = entity.ID;
             Destination = destination;
 
