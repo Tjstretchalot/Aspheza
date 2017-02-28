@@ -218,6 +218,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 if(Path == null)
                 {
                     FailedToFindPath = true;
+                    Cancel(gameState);
                     return EntityTaskStatus.Failure;
                 }
             }
