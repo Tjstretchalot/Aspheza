@@ -151,7 +151,7 @@ namespace BaseBuilder.Engine.Logic
 
             var world = sharedGameState.World;
             var camera = localGameState.Camera;
-            
+
             if ((mouseCurr.RightButton != mouseLast.Value.RightButton) && (mouseLast.Value.RightButton == ButtonState.Pressed))
             {
                 double mousePixelX = mouseCurr.Position.X, mousePixelY = mouseCurr.Position.Y;
@@ -159,12 +159,34 @@ namespace BaseBuilder.Engine.Logic
                 camera.WorldLocationOfPixel(mousePixelX, mousePixelY, out mouseWorldX, out mouseWorldY);
                 mouseWorldX = (int)mouseWorldX;
                 mouseWorldY = (int)mouseWorldY;
-                
+                var mouseWorld = new PointD2D(mouseWorldX, mouseWorldY);
+
                 if (localGameState.SelectedEntity != null && typeof(MobileEntity).IsAssignableFrom(localGameState.SelectedEntity.GetType()))
                 {
                     mouseHandled = true;
+
+                    var tiles = new List<PointI2D>();
+                    localGameState.SelectedEntity.CollisionMesh.TilesIntersectedAt(mouseWorld, tiles);
+                    foreach(var tile in tiles)
+                    {
+                        if (sharedGameState.Reserved.Contains(tile))
+                        {
+                            SFXUtils.PlaySAXJingle(content);
+                            return;
+                        }
+                    }
+
+                    foreach(var ent in sharedGameState.World.GetEntitiesAtLocation(localGameState.SelectedEntity.CollisionMesh, mouseWorld))
+                    {
+                        if(ent != localGameState.SelectedEntity)
+                        {
+                            SFXUtils.PlaySAXJingle(content);
+                            return;
+                        }
+                    }
+
                     //Console.WriteLine($"Issue move order to enitity ID {localGameState.SelectedEntity.ID} To ({mouseWorldX} {mouseWorldY}).");
-                    if(!keyboardCurr.IsKeyDown(Keys.LeftShift))
+                    if (!keyboardCurr.IsKeyDown(Keys.LeftShift))
                     {
                         var cancelTasksOrder = netContext.GetPoolFromPacketType(typeof(CancelTasksOrder)).GetGamePacketFromPool() as CancelTasksOrder;
                         cancelTasksOrder.EntityID = localGameState.SelectedEntity.ID;
