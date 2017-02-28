@@ -148,6 +148,26 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
         }
 
+        /// <summary>
+        /// Called when entity moves
+        /// </summary>
+        /// <param name="sharedState"></param>
+        /// <param name="dx"></param>
+        /// <param name="dy"></param>
+        public virtual void OnMove(SharedGameState sharedState, int timeMS, double dx, double dy)
+        {
+
+        }
+
+        /// <summary>
+        /// Called when entity completes a move
+        /// </summary>
+        /// <param name="sharedState"></param>
+        public virtual void OnStop(SharedGameState sharedState)
+        {
+
+        }
+
         public virtual void SimulateTimePassing(SharedGameState sharedState, int timeMS)
         {
             if (CurrentTask == null && Tasks.Count > 0)

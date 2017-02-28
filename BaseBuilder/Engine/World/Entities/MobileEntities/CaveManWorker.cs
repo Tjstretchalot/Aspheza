@@ -18,6 +18,12 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         private const double SpeedConst = 0.005;
         private static RectangleD2D _CollisionMesh;
 
+
+        static List<Rectangle> DownMove = new List<Rectangle> { new Rectangle(16, 0, 16, 16), new Rectangle(0, 0, 16, 16), new Rectangle(16, 0, 16, 16), new Rectangle(32, 0, 16, 16) };
+        static List<Rectangle> UpMove = new List<Rectangle> { new Rectangle(16, 16, 16, 16), new Rectangle(0, 16, 16, 16), new Rectangle(16, 16, 16, 16), new Rectangle(32, 16, 16, 16) };
+        static List<Rectangle> RightMove = new List<Rectangle> { new Rectangle(16, 32, 16, 16), new Rectangle(0, 32, 16, 16), new Rectangle(16, 32, 16, 16), new Rectangle(32, 32, 16, 16) };
+        static List<Rectangle> LeftMove = new List<Rectangle> { new Rectangle(16, 48, 16, 16), new Rectangle(0, 48, 16, 16), new Rectangle(16, 48, 16, 16), new Rectangle(32, 48, 16, 16) };
+
         public EntityInventory Inventory { get; protected set; }
 
         static CaveManWorker()
@@ -28,7 +34,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         public CaveManWorker(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)
         {
             Inventory = new EntityInventory(6);
-            AnimationRenderer = new SpriteSheetAnimationRenderer("CaveManWorker", new Rectangle(16, 0, 16, 16));
+            AnimationRenderer = new SpriteSheetAnimationRenderer("CaveManWorker", DownMove, UpMove, RightMove, LeftMove);
         }
 
         /// <summary>
@@ -36,7 +42,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         /// </summary>
         public CaveManWorker() : base()
         {
-            AnimationRenderer = new SpriteSheetAnimationRenderer("CaveManWorker", new Rectangle(16, 0, 16, 16));
+            AnimationRenderer = new SpriteSheetAnimationRenderer("CaveManWorker", DownMove, UpMove, RightMove, LeftMove);
             CollisionMesh = _CollisionMesh;
             SpeedUnitsPerMS = SpeedConst;
         }
@@ -57,6 +63,16 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             Inventory.Write(message);
 
             WriteTasks(message);
+        }
+
+        public override void OnMove(SharedGameState sharedState, int timeMS, double dx, double dy)
+        {
+            AnimationRenderer.UpdateSprite(sharedState, timeMS, dx, dy);
+        }
+
+        public override void OnStop(SharedGameState sharedState)
+        {
+            AnimationRenderer.MoveComplete(sharedState);
         }
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)

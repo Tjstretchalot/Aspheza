@@ -254,6 +254,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Entity.Position.X = Destination.X;
             Entity.Position.Y = Destination.Y;
             gameState.World.UpdateTileCollisions(Entity);
+            Entity.OnStop(gameState);
+        }
+
+        void OnMove(SharedGameState gameState, int timeMS, double dx, double dy)
+        {
+            Entity.OnMove(gameState, timeMS, dx, dy);
         }
 
         /// <summary>
@@ -282,9 +288,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             if(EpsilonLessThan(moveVec.MagnitudeSquared, unitsSqMaxThisTick))
             {
                 int msToMoveMoveVec = (int)Math.Round(moveVec.Magnitude / speedUnitsPerMS);
-
+                
                 Entity.Position.X = curr.X;
                 Entity.Position.Y = curr.Y;
+                OnMove(gameState, moveMS, moveVec.DeltaX, moveVec.DeltaY);
 
                 Finished = !Path.Next();
                 if (Finished)
@@ -301,6 +308,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 var posOffset = moveVec.UnitVector.Scale(unitsMaxThisTick);
                 Entity.Position.X += posOffset.DeltaX;
                 Entity.Position.Y += posOffset.DeltaY;
+                OnMove(gameState, moveMS, moveVec.DeltaX, moveVec.DeltaY);
             }
         }
 
