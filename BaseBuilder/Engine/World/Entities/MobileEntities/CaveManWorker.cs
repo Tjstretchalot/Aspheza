@@ -52,6 +52,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             Position = new PointD2D(message);
             ID = message.ReadInt32();
             Inventory = new EntityInventory(message);
+            AnimationRenderer.FromMessage(message);
 
             TasksFromMessage(gameState, message);
         }
@@ -61,6 +62,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             Position.Write(message);
             message.Write(ID);
             Inventory.Write(message);
+            AnimationRenderer.Write(message);
 
             WriteTasks(message);
         }

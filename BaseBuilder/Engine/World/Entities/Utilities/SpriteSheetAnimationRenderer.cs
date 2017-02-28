@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.State;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -35,6 +36,32 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 
             CurrentRect = _DownMove[0];
             CurrentDraw = 0;
+        }
+
+        public void FromMessage(NetIncomingMessage message)
+        {
+            int crX = message.ReadInt32();
+            int crY = message.ReadInt32();
+            int crW = message.ReadInt32();
+            int crH = message.ReadInt32();
+
+            CurrentRect = new Rectangle(crX, crY, crW, crH);
+
+            NextAnimationTickMS = message.ReadInt32();
+            CurrentDraw = message.ReadInt32();
+            Direction = (Direction)message.ReadInt32();
+        }
+
+        public void Write(NetOutgoingMessage message)
+        {
+            message.Write(CurrentRect.X);
+            message.Write(CurrentRect.Y);
+            message.Write(CurrentRect.Width);
+            message.Write(CurrentRect.Height);
+
+            message.Write(NextAnimationTickMS);
+            message.Write(CurrentDraw);
+            message.Write((int)Direction);
         }
 
         private void UpdateDirection(double dx, double dy)
