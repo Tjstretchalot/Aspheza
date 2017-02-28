@@ -28,7 +28,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         public BuildOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {
             CurrentPlaceLocation = new PointD2D(0, 0);
-            Init(new PointI2D(0, 0), new PointI2D(0, 0), 5);
+            Init(new PointI2D(0, 0), new PointI2D(0, 0), 10);
         }
 
         public override void Draw(RenderContext context)
