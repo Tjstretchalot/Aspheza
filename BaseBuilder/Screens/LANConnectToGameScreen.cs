@@ -43,27 +43,35 @@ namespace BaseBuilder.Screens
             var vWidth = graphicsDevice.Viewport.Width;
             var vHeight = graphicsDevice.Viewport.Height;
 
-            var greyPanel = new GreyPanel(new Rectangle((int)(vWidth * 0.1), (int)(vHeight * 0.1), (int)(vWidth * 0.8), (int)(vHeight * 0.8)));
+            var myWidth = (int)Math.Min(vWidth * 0.8, 800);
+            var myHeight = (int)Math.Min(vHeight * 0.8, 600);
 
-            ServerAddressField = UIUtils.CreateTextField(new Point(vWidth / 3, vHeight / 3), new Point(vWidth / 4, 30));
+            var greyPanel = new GreyPanel(new Rectangle(vWidth / 2 - myWidth / 2, vHeight / 2 - myHeight / 2, myWidth, myHeight));
+
+            ServerAddressField = UIUtils.CreateTextField(new Point(-1, -1), new Point(greyPanel.Size.X / 4, 30));
+            ServerAddressField.Center = new Point(greyPanel.Center.X - ServerAddressField.Size.X / 2 - 5, greyPanel.Center.Y - greyPanel.Size.Y / 6);
             ServerAddressField.Text = cfg["server_address"];
             var serverNameFieldText = new Text(new Point(0, 0), "Server Address", content.Load<SpriteFont>("Bitter-Regular"), Color.Black);
 
             serverNameFieldText.Center = new Point(ServerAddressField.Center.X - ServerAddressField.Size.X / 2 + serverNameFieldText.Size.X / 2, ServerAddressField.Center.Y - ServerAddressField.Size.Y / 2 - serverNameFieldText.Size.Y / 2 - 5);
 
-            PortField = UIUtils.CreateTextField(new Point((vWidth * 2) / 3, vHeight / 3), new Point(vWidth / 4, 30));
+            PortField = UIUtils.CreateTextField(new Point(-1, -1), new Point(greyPanel.Size.X / 4, 30));
+            PortField.Center = new Point(greyPanel.Center.X + PortField.Size.X / 2 + 5, greyPanel.Center.Y - greyPanel.Size.Y / 6);
             PortField.Text = cfg["port"];
             var portFieldText = new Text(new Point(0, 0), "Port", content.Load<SpriteFont>("Bitter-Regular"), Color.Black);
 
             portFieldText.Center = new Point(PortField.Center.X - PortField.Size.X / 2 + portFieldText.Size.X / 2, PortField.Center.Y - PortField.Size.Y / 2 - portFieldText.Size.Y / 2 - 5);
 
-            MyNameField = UIUtils.CreateTextField(new Point(vWidth / 2, vHeight / 2), new Point(vWidth / 4, 30));
+            MyNameField = UIUtils.CreateTextField(new Point(greyPanel.Center.X, greyPanel.Center.Y), new Point(greyPanel.Size.X / 4, 30));
             MyNameField.Text = cfg["my_name"];
             var myNameFieldText = new Text(new Point(0, 0), "Your Name", content.Load<SpriteFont>("Bitter-Regular"), Color.Black);
             myNameFieldText.Center = new Point(MyNameField.Center.X - MyNameField.Size.X / 2 + myNameFieldText.Size.X / 2, MyNameField.Center.Y - MyNameField.Size.Y / 2 - myNameFieldText.Size.Y / 2 - 5);
 
-            var startButton = UIUtils.CreateButton(new Point(vWidth / 3, (vHeight * 2) / 3), "Connect", UIUtils.ButtonColor.Green, UIUtils.ButtonSize.Medium);
-            var backButton = UIUtils.CreateButton(new Point((vWidth * 2) / 3, (vHeight * 2) / 3), "Back", UIUtils.ButtonColor.Grey, UIUtils.ButtonSize.Medium);
+            var startButton = UIUtils.CreateButton(new Point(-1, -1), "Connect", UIUtils.ButtonColor.Green, UIUtils.ButtonSize.Medium);
+            startButton.Center = new Point(greyPanel.Center.X - startButton.Size.X / 2 - 5, greyPanel.Center.Y + greyPanel.Size.Y / 6);
+            var backButton = UIUtils.CreateButton(new Point(-1, -1), "Back", UIUtils.ButtonColor.Grey, UIUtils.ButtonSize.Medium);
+            backButton.Center = new Point(greyPanel.Center.X + backButton.Size.X / 2 + 5, greyPanel.Center.Y + greyPanel.Size.Y / 6);
+
 
             backButton.OnPressReleased += BackPressed;
             PortField.OnTextChanged += NumbersOnlyTextFieldOnTextChanged;

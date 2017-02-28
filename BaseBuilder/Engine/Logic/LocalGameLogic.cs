@@ -179,6 +179,114 @@ namespace BaseBuilder.Engine.Logic
         }
 
         /// <summary>
+        /// Determines where e1 should go to get to e2
+        /// </summary>
+        /// <param name="e1">The moving entity</param>
+        /// <param name="e2">The not moving entity</param>
+        /// <returns>Location that if e1 goes to he will be adjacent to e2</returns>
+        protected PointI2D FindDestination(SharedGameState gameState, Entity e1, Entity e2)
+        {
+            /*
+             * Imagine you had two rectangles. Clearly, the only viable locations are either
+             * ones that are e1.Height above e2, e1.Height below e2, e1.Width left of e2, or
+             * e1.Width right of e2.
+             * 
+             * This can be generalized to all polygons by projections upon normal axes like so:
+             * 
+             * ALL potential locations can be found by:
+             * 
+             * For each line = a line in e1 or e2,
+             *   normal = normal of line
+             *   
+             *   p1 = e1 projected onto normal
+             *   p2 = e2 projected onto normal
+             *   
+             *   pl1 = e1 projected onto line
+             *   pl2 = e2 projected onto line
+             *   
+             *   We are going to construct a line that will be parallel to line and go 
+             *   through (p2.Min - p1.length). The lower end of this line will be the same
+             *   as line, and the upper end will be the same as line.
+             *   
+             *   That is to say, we can find a line of potential points by shifting line to
+             *   p2.Min - p1.Length 
+             *   
+             *   Similiarly,
+             *   
+             *   We can find a line of potential points by shifting line to p2.Max + p1.Length
+             */
+
+            Func<PointI2D, bool> isValid = (p) =>
+            {
+                foreach(var e in gameState.World.GetEntitiesAtLocation(e1.CollisionMesh, p, true))
+                {
+                    if (e != e1)
+                        return false;
+                }
+
+                return true;
+            };
+
+            Func<FiniteLineD2D, PointD2D, PointI2D> checkLine = (testLine, shift) =>
+            {
+                foreach(var pt in testLine.Shift(shift.X, shift.Y).GetTilesIntersected())
+                {
+                    if (isValid(pt))
+                        return pt;
+                }
+
+                return null;
+            };
+
+            Func<FiniteLineD2D, PointD2D, PointI2D> tryLine = (line, shift) =>
+            {
+                shift = (shift == null ? PointD2D.Origin : shift);
+
+                var movingProjectedOnNormal = e1.CollisionMesh.ProjectOntoAxis(line.Normal.UnitVector); // UNSHIFTED, DOESNT REQUIRE SHIFT
+                var nmovinProjectedOnNormal = e2.CollisionMesh.ProjectOntoAxis(line.Normal.UnitVector, e2.Position); // SHIFTED
+
+                var movingProjectedOnNormalAsLine = movingProjectedOnNormal.AsFiniteLineD2D(); // UNSHIFTED, DOESNT REQUIRE SHIFT
+                var nmovinProjectedOnNormalAsLine = nmovinProjectedOnNormal.AsFiniteLineD2D(); // SHIFTED
+
+                var movingProjectedOnLine = e1.CollisionMesh.ProjectOntoAxis(line.Axis.UnitVector); // UNSHIFTED, DOESNT REQUIRE SHIFT
+                var nmovinProjectedOnLine = e2.CollisionMesh.ProjectOntoAxis(line.Axis.UnitVector, e2.Position); // SHIFTED
+
+
+                var linePointInNormal = OneDimensionalLine.DistanceOnAxis(line.Normal.UnitVector, line.Start, shift); // SHIFTED
+                
+                var destinationLinePointInNormal = nmovinProjectedOnNormal.Min - movingProjectedOnNormal.Length; // SHIFTED - UNSHIFTED = SHIFTED
+                var shiftRequiredInNormal = destinationLinePointInNormal - linePointInNormal; // SHIFTED - SHIFTED = SHIFTED
+                var shiftRequiredAsLine = new OneDimensionalLine(line.Normal.UnitVector, 0, shiftRequiredInNormal).AsFiniteLineD2D(); // SHIFTED
+                var shiftRequiredAsVector = (shiftRequiredAsLine.End - shiftRequiredAsLine.Start).AsVectorD2D(); // SHIFTED
+                var slightlyTowardsUsOnNormalVector = line.Normal.UnitVector.Scale(Math.Sign(-shiftRequiredInNormal) * 0.05);
+
+                var resultingLine = new FiniteLineD2D(line.Start + shift + shiftRequiredAsVector, line.End + shift + shiftRequiredAsVector); // SHIFT REQUIRED ON line.Start + line.End -> SHIFTED
+                var result = checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED; BUT WE NEED IT NOT TO BE AN EVEN POINT
+                if (result != null/* && false*/)
+                    return result;
+
+                destinationLinePointInNormal = nmovinProjectedOnNormal.Max + movingProjectedOnNormal.Length; // SHIFTED - SHIFTED = SHIFTED
+                shiftRequiredInNormal = destinationLinePointInNormal - linePointInNormal; // SHIFTED - SHIFTED = SHIFTED
+                shiftRequiredAsLine = new OneDimensionalLine(line.Normal.UnitVector, 0, shiftRequiredInNormal).AsFiniteLineD2D(); // SHIFTED
+                shiftRequiredAsVector = (shiftRequiredAsLine.End - shiftRequiredAsLine.Start).AsVectorD2D(); // SHIFTED
+                slightlyTowardsUsOnNormalVector = line.Normal.UnitVector.Scale(Math.Sign(-shiftRequiredInNormal) * 0.05);
+
+
+                resultingLine = new FiniteLineD2D(line.Start + shift + shiftRequiredAsVector, line.End + shift + shiftRequiredAsVector); // SHIFT REQUIRED ON line.Start + line.End -> SHIFTED
+                return /*var pt = */ checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED
+                //return null;
+            };
+            
+            foreach(var line in e2.CollisionMesh.Lines)
+            {
+                var tmp = tryLine(line, e2.Position);
+                if(tmp != null)
+                    return tmp;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// If the user has a CaveManWorker selected and right clicks on gold ore, then he is trying to have
         /// the worker dig ore. For right now, this requires that the worker is already close enough to the ore.
         /// </summary>
@@ -203,10 +311,17 @@ namespace BaseBuilder.Engine.Logic
 
             mouseHandled = true;
 
-            if (!worker.CollisionMesh.Intersects(vein.CollisionMesh, worker.Position, vein.Position, false) && worker.CollisionMesh.MinDistanceTo(vein.CollisionMesh, worker.Position, vein.Position) > 1)
-                return;
+            IssueTaskOrder order;
+            if (!worker.CollisionMesh.Intersects(vein.CollisionMesh, worker.Position, vein.Position, false))
+            {
+                order = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
+                order.Entity = worker;
+                order.Task = new EntityMoveTask(worker, FindDestination(sharedGameState, worker, vein));
+                localGameState.Orders.Add(order);
+                
+            }
 
-            var order = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
+            order = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
             order.Entity = worker;
             order.Task = new EntityMineGoldTask(worker, vein);
             localGameState.Orders.Add(order);

@@ -22,9 +22,12 @@ namespace BaseBuilder.Screens
             var vWidth = graphicsDevice.Viewport.Width;
             var vHeight = graphicsDevice.Viewport.Height;
 
-            var greyPanel = new GreyPanel(new Rectangle((int)(vWidth * 0.1), (int)(vHeight * 0.1), (int)(vWidth * 0.8), (int)(vHeight * 0.8)));
-            var lanButton = UIUtils.CreateButton(new Point(vWidth / 2, vHeight / 3), "Play on LAN", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
-            var backButton = UIUtils.CreateButton(new Point(vWidth / 2, (vHeight * 2) / 3), "Back", UIUtils.ButtonColor.Grey, UIUtils.ButtonSize.Medium);
+            var myWidth = (int)Math.Min(vWidth * 0.8, 800);
+            var myHeight = (int)Math.Min(vHeight * 0.8, 600);
+
+            var greyPanel = new GreyPanel(new Rectangle(vWidth / 2 - myWidth / 2, vHeight / 2 - myHeight / 2, myWidth, myHeight));
+            var lanButton = UIUtils.CreateButton(new Point(greyPanel.Center.X, greyPanel.Center.Y - greyPanel.Size.Y / 6), "Play on LAN", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
+            var backButton = UIUtils.CreateButton(new Point(greyPanel.Center.X, greyPanel.Center.Y + greyPanel.Size.Y / 6), "Back", UIUtils.ButtonColor.Grey, UIUtils.ButtonSize.Medium);
 
             lanButton.OnPressReleased += LANPressed;
             backButton.OnPressReleased += BackPressed;

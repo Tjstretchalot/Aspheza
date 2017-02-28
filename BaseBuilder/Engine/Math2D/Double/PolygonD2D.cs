@@ -257,6 +257,36 @@ namespace BaseBuilder.Engine.Math2D.Double
             return Math.Sqrt(minVecDistSq);
         }
 
+        /// <summary>
+        /// Calculates the minimum vector from this polygon to the other polygon. Result for
+        /// intersecting polygons is arbitrary and meaningless
+        /// </summary>
+        /// <param name="other">The other polygon</param>
+        /// <param name="myPosition">Where this polygon is located</param>
+        /// <param name="otherPosition">Where the other polygon is lcoated</param>
+        /// <returns>The minimum vector from this polygon to the other polygon</returns>
+        public VectorD2D MinVectorTo(PolygonD2D other, PointD2D myPosition = null, PointD2D otherPosition = null)
+        {
+            VectorD2D minVec = null;
+            double minVecDistSq = double.MaxValue;
+
+            foreach (var line in Lines)
+            {
+                foreach (var line2 in other.Lines)
+                {
+                    var vec = line.MinVectorTo(line2, myPosition, otherPosition);
+
+                    if (vec.MagnitudeSquared < minVecDistSq)
+                    {
+                        minVecDistSq = vec.MagnitudeSquared;
+                        minVec = vec;
+                    }
+                }
+            }
+
+            return minVec;
+        }
+
 
         /// <summary>
         /// Equivalent to Intersects(Polygon), except instead of describing the polygon using this class only requires
@@ -466,7 +496,7 @@ namespace BaseBuilder.Engine.Math2D.Double
 
                 var line = new FiniteLineD2D(lineVertices[0], lineVertices[1]);
                 
-                var list = line.GetTilesIntersected(true);
+                var list = line.GetTilesIntersected(strict: true);
 
                 foreach (PointI2D point in list)
                 {

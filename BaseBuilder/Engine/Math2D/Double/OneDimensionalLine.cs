@@ -220,10 +220,20 @@ namespace BaseBuilder.Engine.Math2D.Double
             if (IsPoint)
                 throw new InvalidOperationException("This line is actually a point - you should have checked using IsPoint. The correct method is AsPointD2D");
             
-            var start = new PointD2D(Start * Axis.CosTheta, Start * Axis.SinTheta);
-            var end = new PointD2D(End * Axis.CosTheta, End * Axis.SinTheta);
+            var start = PointOnAxis(Axis, Start);
+            var end = PointOnAxis(Axis, End);
 
             return new FiniteLineD2D(start, end);
+        }
+
+        public static PointD2D PointOnAxis(VectorD2D axis, double point)
+        {
+            return new PointD2D(point * axis.CosTheta, point * axis.SinTheta);
+        }
+
+        public static double DistanceOnAxis(VectorD2D axis, PointD2D point, PointD2D shift=null)
+        {
+            return axis.DeltaX * (point.X + (shift == null ? 0 : shift.X)) + axis.DeltaY * (point.Y + (shift == null ? 0 : shift.Y));
         }
 
         /// <summary>

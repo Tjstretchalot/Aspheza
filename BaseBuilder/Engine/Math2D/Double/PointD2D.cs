@@ -9,6 +9,13 @@ namespace BaseBuilder.Engine.Math2D.Double
 {
     public class PointD2D
     {
+        public static PointD2D Origin;
+        
+        static PointD2D()
+        {
+            Origin = new PointD2D(0, 0);
+        }
+
         public double X;
         public double Y;
 
@@ -34,10 +41,20 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             return new PointD2D(p1.X + p2.X, p1.Y + p2.Y);
         }
-        
+
+        public static PointD2D operator +(PointD2D p1, VectorD2D v2)
+        {
+            return new PointD2D(p1.X + v2.DeltaX, p1.Y + v2.DeltaY);
+        }
+
         public static PointD2D operator -(PointD2D p1, PointD2D p2)
         {
             return new PointD2D(p1.X - p2.X, p1.Y - p2.Y);
+        }
+
+        public static PointD2D operator -(PointD2D p1, VectorD2D v2)
+        {
+            return new PointD2D(p1.X - v2.DeltaX, p1.Y - v2.DeltaY);
         }
 
         public static PointD2D operator *(PointD2D p1, double scalar)

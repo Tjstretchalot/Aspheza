@@ -175,7 +175,24 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
         void AddToOpen(WorkingAStarNode node)
         {
             // sorted by score in descending order
-            LogicUtils.BinaryInsert(Open, node, (n1, n2) => Math.Sign(n2.CombinedScore - n1.CombinedScore));
+            LogicUtils.BinaryInsert(Open, node, (n1, n2) => {
+                if(n1.CombinedScore == n2.CombinedScore && n1.Parent != null && n2.Parent != null && n1.Parent.Parent != null && n2.Parent.Parent != null)
+                {
+                    // All this does is if the scores are the same, prefer the one that has the same movement direction as its parent.
+
+                    var d1px = n1.Parent.Parent.Location.X - n1.Parent.Location.X;
+                    var d1py = n1.Parent.Parent.Location.Y - n1.Parent.Location.Y;
+
+                    var d1x = n1.Parent.Location.X - n1.Location.X;
+                    var d1y = n1.Parent.Location.Y - n1.Location.Y;
+
+                    if (d1px == d1x && d1py == d1y)
+                        return 1;
+                    else
+                        return -1;
+                }
+                return Math.Sign(n2.CombinedScore - n1.CombinedScore);
+            });
         }
 
 
@@ -198,7 +215,8 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
 
         double Heuristic(PointI2D pos)
         {
-            return (End - pos).DistanceToSquared(PointI2D.Origin);
+            //return (End - pos).DistanceToSquared(PointI2D.Origin);
+            return Math.Abs(End.X - pos.X) + Math.Abs(End.Y - pos.Y);
         }
 
         double Score(PointI2D from, PointI2D to, PointI2D offset)
@@ -215,25 +233,25 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
             {
                 ReusedPoints = new PointI2D[]
                 {
-                    new PointI2D(-1, -1),
-                    new PointI2D(-1,  0),
-                    new PointI2D(-1,  1),
-                    new PointI2D(0,  -1),
-                    new PointI2D(0,   1),
-                    new PointI2D(1,  -1),
-                    new PointI2D(1,   0),
-                    new PointI2D(1,   1),
+                    new PointI2D(-1, -1), // 0
+                    new PointI2D(-1,  0), // 1
+                    new PointI2D(-1,  1), // 2
+                    new PointI2D(0,  -1), // 3
+                    new PointI2D(0,   1), // 4
+                    new PointI2D(1,  -1), // 5
+                    new PointI2D(1,   0), // 6
+                    new PointI2D(1,   1), // 7
                 };
             }
             if(pos.X > 0)
             {
-                if (pos.Y > 0)
-                    yield return ReusedPoints[0];
+                // if (pos.Y > 0)
+                //     yield return ReusedPoints[0];
 
                 yield return ReusedPoints[1];
 
-                if (pos.Y < World.TileHeight - 1)
-                    yield return ReusedPoints[2];
+                //if (pos.Y < World.TileHeight - 1)
+                //    yield return ReusedPoints[2];
             }
 
             if (pos.Y > 0)
@@ -244,13 +262,13 @@ namespace BaseBuilder.Engine.Logic.Pathfinders
 
             if(pos.X < World.TileWidth - 1)
             {
-                if (pos.Y > 0)
-                    yield return ReusedPoints[5];
+                // if (pos.Y > 0)
+                //    yield return ReusedPoints[5];
 
                 yield return ReusedPoints[6];
 
-                if (pos.Y < World.TileHeight - 1)
-                    yield return ReusedPoints[7];
+                // if (pos.Y < World.TileHeight - 1)
+                //     yield return ReusedPoints[7];
             }
         }
     }
