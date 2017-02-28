@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static BaseBuilder.Engine.Math2D.Double.MathUtilsD2D;
 
 namespace BaseBuilder.Engine.Logic
 {
@@ -164,6 +165,12 @@ namespace BaseBuilder.Engine.Logic
                 if (localGameState.SelectedEntity != null && typeof(MobileEntity).IsAssignableFrom(localGameState.SelectedEntity.GetType()))
                 {
                     mouseHandled = true;
+
+                    if(EpsilonEqual(localGameState.SelectedEntity.Position.X, mouseWorldX) && EpsilonEqual(localGameState.SelectedEntity.Position.Y, mouseWorldY))
+                    {
+                        SFXUtils.PlaySAXJingle(content);
+                        return;
+                    }
 
                     var tiles = new List<PointI2D>();
                     localGameState.SelectedEntity.CollisionMesh.TilesIntersectedAt(mouseWorld, tiles);
