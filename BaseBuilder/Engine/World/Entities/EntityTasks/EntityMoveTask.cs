@@ -182,7 +182,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Cancel(SharedGameState gameState)
         {
-            Entity.OnStop(gameState);
+            Entity?.OnStop(gameState);
             gameState.Reserved.Remove(Destination);
         }
 
