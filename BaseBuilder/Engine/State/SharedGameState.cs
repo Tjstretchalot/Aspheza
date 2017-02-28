@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Logic.Pathfinders;
 using BaseBuilder.Engine.Logic.Players;
+using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State.Resources;
 using BaseBuilder.Engine.World;
 using System;
@@ -53,6 +54,11 @@ namespace BaseBuilder.Engine.State
         /// </summary>
         public List<Tuple<string, int>> RecentMessages;
 
+        /// <summary>
+        /// The list of locations that are "reserved" for pathfinding.
+        /// </summary>
+        public List<PointI2D> Reserved;
+
         public int GetUniqueEntityID()
         {
             return EntityIDCounter++;
@@ -66,6 +72,7 @@ namespace BaseBuilder.Engine.State
             Pathfinder = new EnhancedAStarPathfinder();
             RecentMessages = new List<Tuple<string, int>>();
             Resources = new MaterialManager();
+            Reserved = new List<PointI2D>();
         }
 
         /// <summary>

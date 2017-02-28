@@ -285,18 +285,25 @@ namespace BaseBuilder.Engine.World
             point.Y = startingTop;
             point.X = startingLeft;
 
-            for (int x = leftMostVisibleTileX; x <= rightMostVisibleTileX; x++)
+            if (context.CollisionDebug)
             {
-                for (int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
+                for (int x = leftMostVisibleTileX; x <= rightMostVisibleTileX; x++)
                 {
-                    if (context.CollisionDebug && TileToEntities[TileAt(x, y)].Count > 0)
+                    for (int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
                     {
-                        context.SpriteBatch.DrawString(context.DefaultFont, "C", new Vector2((int)(point.X + 0.5 * context.Camera.Zoom - cSize.X / 2), (int)(point.Y + 0.5 * context.Camera.Zoom - cSize.Y / 2)), Color.Red);
+                        if (TileToEntities[TileAt(x, y)].Count > 0)
+                        {
+                            context.SpriteBatch.DrawString(context.DefaultFont, "C", new Vector2((int)(point.X + 0.5 * context.Camera.Zoom - cSize.X / 2), (int)(point.Y + 0.5 * context.Camera.Zoom - cSize.Y / 2)), Color.Red);
+                        }
+                        if(context.__SharedGameState.Reserved.Any((p) => p.X == x && p.Y == y))
+                        {
+                            context.SpriteBatch.DrawString(context.DefaultFont, "R", new Vector2((int)(point.X + 0.5 * context.Camera.Zoom - cSize.X / 2), (int)(point.Y + 0.5 * context.Camera.Zoom - cSize.Y / 2)), Color.Blue);
+                        }
+                        point.Y += context.Camera.Zoom;
                     }
-                    point.Y += context.Camera.Zoom;
+                    point.Y = startingTop;
+                    point.X += context.Camera.Zoom;
                 }
-                point.Y = startingTop;
-                point.X += context.Camera.Zoom;
             }
 
             //context.SpriteBatch.DrawString(context.DebugFont, $"tiles: ({leftMostVisibleTileX}, {topMostVisibleTileY}) to ({rightMostVisibleTileX}, {bottomMostVisibleTileY}); starting = {startingLeft}, {startingTop}", new Microsoft.Xna.Framework.Vector2(5, 25), Color.White);

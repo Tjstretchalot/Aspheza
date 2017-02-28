@@ -113,6 +113,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Failed = false;
         }
 
+        public void Cancel(SharedGameState gameState)
+        {
+             Task.Cancel(gameState);
+        }
+
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
             if (Failed)

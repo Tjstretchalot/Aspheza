@@ -76,6 +76,12 @@ namespace BaseBuilder.Engine.Logic
         [OrderHandler(typeof(IssueTaskOrder))]
         public void OnTaskOrder(SharedGameState gameState, Player player, IssueTaskOrder order)
         {
+            if(typeof(EntityMoveTask).IsAssignableFrom(order.Task.GetType()))
+            {
+                var mt = order.Task as EntityMoveTask;
+
+                gameState.Reserved.Add(mt.Destination);
+            }
             order.Entity.QueueTask(order.Task);
         }
 
@@ -89,7 +95,7 @@ namespace BaseBuilder.Engine.Logic
             if (entity == null)
                 throw new InvalidProgramException("cancel tasks order on null entity?");
 
-            entity.ClearTasks();
+            entity.ClearTasks(gameState);
         }
 
         [OrderHandler(typeof(IssueMessageOrder))]

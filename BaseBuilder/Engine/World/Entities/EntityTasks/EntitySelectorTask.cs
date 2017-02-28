@@ -185,6 +185,14 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Counter = 0;
         }
 
+        public void Cancel(SharedGameState gameState)
+        {
+            foreach(var task in Tasks)
+            {
+                task.Cancel(gameState);
+            }
+        }
+
         public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
         {
             foreach (var task in Tasks)

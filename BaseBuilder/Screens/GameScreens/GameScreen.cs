@@ -96,6 +96,7 @@ namespace BaseBuilder.Screens.GameScreens
             renderContext.GraphicsDevice = graphicsDevice;
             renderContext.DefaultFont = debugFont;
             renderContext.CollisionDebug = localGameState.CollisionDebug;
+            renderContext.__SharedGameState = sharedGameState;
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             sharedGameState.World.Render(renderContext);

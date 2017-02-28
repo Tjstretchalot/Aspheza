@@ -93,6 +93,13 @@ namespace BaseBuilder.Engine.Networking.Packets
             }
 
             SharedState.Resources = new MaterialManager(message);
+
+            var numReserved = message.ReadInt32();
+
+            for(var i = 0; i < numReserved; i++)
+            {
+                SharedState.Reserved.Add(new PointI2D(message));
+            }
         }
 
         public override void SaveTo(NetContext context, SharedGameState gameState, NetOutgoingMessage message)
@@ -153,6 +160,13 @@ namespace BaseBuilder.Engine.Networking.Packets
             }
 
             SharedState.Resources.Write(message);
+
+            message.Write(SharedState.Reserved.Count);
+
+            foreach(var res in SharedState.Reserved)
+            {
+                res.Write(message);
+            }
         }
 
         public override void Clear()

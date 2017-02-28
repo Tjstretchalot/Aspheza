@@ -69,6 +69,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         void Reset(SharedGameState gameState);
 
         /// <summary>
+        /// Called when a task that was issued has been cancelled, regardless of if update has been called
+        /// </summary>
+        /// <param name="gameState">game state</param>
+        void Cancel(SharedGameState gameState);
+
+        /// <summary>
         /// Writes this task to the outgoing message
         /// </summary>
         /// <param name="message"></param>

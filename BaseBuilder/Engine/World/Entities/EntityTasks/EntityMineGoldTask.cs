@@ -54,6 +54,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
         }
 
+        protected bool FixedDirection;
         protected int TimeToMineMS;
         protected int RemainingTimeForNextMS;
 
@@ -75,6 +76,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             WorkerID = message.ReadInt32();
             VeinID = message.ReadInt32();
 
+            FixedDirection = message.ReadBoolean();
             TimeToMineMS = message.ReadInt32();
             RemainingTimeForNextMS = message.ReadInt32();
         }
@@ -83,12 +85,18 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             message.Write(Worker.ID);
             message.Write(Vein.ID);
+
+            message.Write(FixedDirection);
             message.Write(TimeToMineMS);
             message.Write(RemainingTimeForNextMS);
         }
 
 
         public void Reset(SharedGameState gameState)
+        {
+        }
+
+        public void Cancel(SharedGameState gameState)
         {
         }
 
@@ -106,6 +114,26 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 Worker = gameState.World.MobileEntities.Find((e) => e.ID == WorkerID) as CaveManWorker;
                 if (Worker == null)
                     throw new InvalidProgramException("Impossible");
+            }
+
+            if(!FixedDirection)
+            {
+                if(Worker.CollisionMesh.Left + Worker.Position.X >= Vein.CollisionMesh.Right + Vein.Position.X)
+                {
+                    Worker.OnMove(gameState, 0, -1, 0);
+                }else if(Worker.CollisionMesh.Right + Worker.Position.X <= Vein.CollisionMesh.Left + Vein.Position.X)
+                {
+                    Worker.OnMove(gameState, 0, 1, 0);
+                }else if(Worker.CollisionMesh.Top + Worker.Position.Y >= Vein.CollisionMesh.Bottom + Vein.Position.Y)
+                {
+                    Worker.OnMove(gameState, 0, 0, -1);
+                }else
+                {
+                    Worker.OnMove(gameState, 0, 0, 1);
+                }
+                Worker.OnStop(gameState);
+
+                FixedDirection = true;
             }
 
             if (!Worker.Inventory.HaveRoomFor(Material.GoldOre, 1))

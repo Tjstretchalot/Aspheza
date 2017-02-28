@@ -62,6 +62,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             {
                 if (Start == null)
                     return 0;
+                if (EpsilonEqual(Destination.X, Entity.Position.X) && EpsilonEqual(Destination.Y, Entity.Position.Y))
+                    return 1;
+
                 var distanceRemaining = (Destination - Entity.Position).AsVectorD2D().Magnitude;
                 if(distanceRemaining > InitialDistance)
                 {
@@ -75,7 +78,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         protected int EntityID;
         protected MobileEntity Entity;
         protected PointD2D Start;
-        protected PointI2D Destination;
+        public PointI2D Destination;
         protected double InitialDistance;
 
         protected UnitPath Path;
@@ -173,6 +176,14 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             FailedToFindPath = false;
             Finished = false;
             Start = null;
+
+            gameState.Reserved.Add(Destination);
+        }
+
+        public void Cancel(SharedGameState gameState)
+        {
+            Entity.OnStop(gameState);
+            gameState.Reserved.Remove(Destination);
         }
 
         /// <summary>
@@ -255,6 +266,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Entity.Position.Y = Destination.Y;
             gameState.World.UpdateTileCollisions(Entity);
             Entity.OnStop(gameState);
+            gameState.Reserved.Remove(Destination);
         }
 
         void OnMove(SharedGameState gameState, int timeMS, double dx, double dy)

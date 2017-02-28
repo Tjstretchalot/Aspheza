@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BaseBuilder.Engine.State;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// <summary>
         /// Clear all tasks for this entity
         /// </summary>
-        void ClearTasks();
+        /// <param name="gameState">the game state</param>
+        void ClearTasks(SharedGameState gameState);
     }
 }

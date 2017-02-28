@@ -218,7 +218,26 @@ namespace BaseBuilder.Engine.Logic
 
             Func<PointI2D, bool> isValid = (p) =>
             {
-                foreach(var e in gameState.World.GetEntitiesAtLocation(e1.CollisionMesh, p, true))
+                if (gameState.Reserved.Contains(p))
+                    return false;
+
+                // Top left
+                if (p.X < e2.CollisionMesh.Left + e2.Position.X && p.Y < e2.CollisionMesh.Top + e2.Position.Y)
+                    return false;
+
+                // Top right
+                if (p.X >= e2.CollisionMesh.Right + e2.Position.X && p.Y < e2.CollisionMesh.Top + e2.Position.Y)
+                    return false;
+
+                // Bottom left
+                if (p.X < e2.CollisionMesh.Left + e2.Position.X && p.Y >= e2.CollisionMesh.Bottom + e2.Position.Y)
+                    return false;
+
+                // Bottom right
+                if (p.X >= e2.CollisionMesh.Right + e2.Position.X && p.Y >= e2.CollisionMesh.Bottom + e2.Position.Y)
+                    return false;
+
+                foreach (var e in gameState.World.GetEntitiesAtLocation(e1.CollisionMesh, p, true))
                 {
                     if (e != e1)
                         return false;

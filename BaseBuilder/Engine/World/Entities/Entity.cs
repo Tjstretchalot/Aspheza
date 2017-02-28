@@ -214,10 +214,15 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             Tasks.Enqueue(task);
         }
 
-        public void ClearTasks()
+        public void ClearTasks(SharedGameState gameState)
         {
+            CurrentTask?.Cancel(gameState);
             CurrentTask = null;
-            Tasks.Clear();
+
+            while(Tasks.Count > 0)
+            {
+                Tasks.Dequeue().Cancel(gameState);
+            }
         }
     }
 }
