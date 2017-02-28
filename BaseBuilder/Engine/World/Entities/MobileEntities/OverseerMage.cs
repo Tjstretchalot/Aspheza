@@ -56,7 +56,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            SpriteRenderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, overlay);
+            SpriteRenderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, (int)(CollisionMesh.Right - CollisionMesh.Left), (int)(CollisionMesh.Bottom - CollisionMesh.Top), overlay);
         }
     }
 }

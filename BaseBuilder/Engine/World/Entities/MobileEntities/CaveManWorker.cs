@@ -28,7 +28,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         public CaveManWorker(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)
         {
             Inventory = new EntityInventory(6);
-            AnimationRenderer = new SpriteSheetAnimationRenderer();
+            AnimationRenderer = new SpriteSheetAnimationRenderer("CaveManWorker", new Rectangle(16, 0, 16, 16));
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         /// </summary>
         public CaveManWorker() : base()
         {
-            AnimationRenderer = new SpriteSheetAnimationRenderer();
+            AnimationRenderer = new SpriteSheetAnimationRenderer("CaveManWorker", new Rectangle(16, 0, 16, 16));
             CollisionMesh = _CollisionMesh;
             SpeedUnitsPerMS = SpeedConst;
         }
@@ -61,7 +61,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            AnimationRenderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, overlay);
+            AnimationRenderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, (int)(CollisionMesh.Right - CollisionMesh.Left), (int)(CollisionMesh.Bottom - CollisionMesh.Top), overlay);
         }
     }
 }
