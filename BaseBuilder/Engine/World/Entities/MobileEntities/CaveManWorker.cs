@@ -1,16 +1,20 @@
 ﻿using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World.Entities.Utilities;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BaseBuilder.Engine.Context;
+using Microsoft.Xna.Framework;
 
 namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
     public class CaveManWorker : MobileEntity
     {
+        private SpriteSheetAnimationRenderer AnimationRenderer;
         private const double SpeedConst = 0.005;
         private static RectangleD2D _CollisionMesh;
 
@@ -21,9 +25,10 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             _CollisionMesh = new RectangleD2D(1, 1);
         }
 
-        public CaveManWorker(PointD2D position, int id) : base(position, _CollisionMesh, id, "CaveManWorker", SpeedConst)
+        public CaveManWorker(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)
         {
             Inventory = new EntityInventory(6);
+            AnimationRenderer = new SpriteSheetAnimationRenderer();
         }
 
         /// <summary>
@@ -31,7 +36,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         /// </summary>
         public CaveManWorker() : base()
         {
-            SpriteName = "CaveManWorker";
+            AnimationRenderer = new SpriteSheetAnimationRenderer();
             CollisionMesh = _CollisionMesh;
             SpeedUnitsPerMS = SpeedConst;
         }
@@ -52,6 +57,11 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             Inventory.Write(message);
 
             WriteTasks(message);
+        }
+
+        public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
+        {
+            AnimationRenderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, overlay);
         }
     }
 }

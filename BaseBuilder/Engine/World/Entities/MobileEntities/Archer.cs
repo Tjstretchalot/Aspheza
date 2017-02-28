@@ -1,16 +1,20 @@
 ﻿using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World.Entities.Utilities;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BaseBuilder.Engine.Context;
+using Microsoft.Xna.Framework;
 
 namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
     public class Archer : MobileEntity
     {
+        private SpriteRenderer SpriteRenderer;
         private const double SpeedConst = 0.005;
         private static RectangleD2D _CollisionMesh;
 
@@ -19,8 +23,9 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             _CollisionMesh = new RectangleD2D(1, 1);
         }
 
-        public Archer(PointD2D position, int id) : base(position, _CollisionMesh, id, "Archer", SpeedConst)
+        public Archer(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)
         {
+            SpriteRenderer = new SpriteRenderer("Archer");
         }
 
         /// <summary>
@@ -28,7 +33,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         /// </summary>
         public Archer() : base()
         {
-            SpriteName = "Archer";
+            SpriteRenderer = new SpriteRenderer("Archer");
             CollisionMesh = _CollisionMesh;
             SpeedUnitsPerMS = SpeedConst;
         }
@@ -47,6 +52,11 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             message.Write(ID);
 
             WriteTasks(message);
+        }
+
+        public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
+        {
+            SpriteRenderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, overlay);
         }
     }
 }

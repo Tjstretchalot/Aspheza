@@ -123,6 +123,8 @@
     <Compile Include="Engine\World\Entities\MobileEntities\OverseerMage.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\Overseer.cs" />
     <Compile Include="Engine\World\Entities\SpriteEntity.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\SpriteRenderer.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\SpriteSheetAnimationRenderer.cs" />
     <Compile Include="Engine\World\EntityEventArgs.cs" />
     <Compile Include="Engine\World\Events.cs" />
     <Compile Include="Engine\World\Tiles\DirtTile.cs" />

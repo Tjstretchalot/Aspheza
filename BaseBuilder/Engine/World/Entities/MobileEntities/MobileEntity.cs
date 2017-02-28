@@ -8,11 +8,11 @@ using BaseBuilder.Engine.Math2D.Double;
 
 namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
-    public abstract class MobileEntity : SpriteEntity
+    public abstract class MobileEntity : Entity
     {
         public double SpeedUnitsPerMS;
 
-        public MobileEntity(PointD2D position, PolygonD2D collisionMesh, int id, string spriteName, double speed) : base(position, collisionMesh, id, spriteName)
+        public MobileEntity(PointD2D position, PolygonD2D collisionMesh, int id, double speed) : base(position, collisionMesh, id)
         {
             SpeedUnitsPerMS = speed;
         }
