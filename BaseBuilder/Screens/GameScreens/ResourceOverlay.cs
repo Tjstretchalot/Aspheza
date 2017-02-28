@@ -39,7 +39,7 @@ namespace BaseBuilder.Screens.GameScreens
 
             var str = $"{MatManager.AmountOf(mat)}";
             var strHeight = context.DefaultFont.MeasureString(str).Y;
-            context.SpriteBatch.DrawString(context.DefaultFont, str, new Vector2(x + 18, y + 8 - (strHeight / 2)), Color.White);
+            context.SpriteBatch.DrawString(context.DefaultFont, str, new Vector2(x + 36, y + 16 - (strHeight / 2)), Color.White);
         }
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)

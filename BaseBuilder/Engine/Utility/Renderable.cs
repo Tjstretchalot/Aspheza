@@ -15,6 +15,11 @@ namespace BaseBuilder.Engine.Utility
     public interface Renderable
     {
         /// <summary>
+        /// The text to display when this is hovered on. May be null
+        /// </summary>
+        string HoverText { get; }
+
+        /// <summary>
         /// Renders this instance at the specified location. When rendering any internal
         /// position is not taken into account - a sprite or equivalent is rendered at the 
         /// specified position on the screen.

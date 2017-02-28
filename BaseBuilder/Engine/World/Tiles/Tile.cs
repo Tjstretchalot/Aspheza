@@ -27,7 +27,9 @@ namespace BaseBuilder.Engine.World.Tiles
         /// reflect the position.
         /// </summary>
         public RectangleD2D CollisionMesh;
-        
+
+        public string HoverText { get { return null; } }
+
         protected Tile(PointI2D position, RectangleD2D collisionMesh)
         {
             Position = position;

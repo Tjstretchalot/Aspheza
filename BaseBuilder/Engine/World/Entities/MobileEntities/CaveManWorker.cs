@@ -14,6 +14,8 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         private const double SpeedConst = 0.005;
         private static RectangleD2D _CollisionMesh;
 
+        public EntityInventory Inventory { get; protected set; }
+
         static CaveManWorker()
         {
             _CollisionMesh = new RectangleD2D(1, 1);
@@ -21,6 +23,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 
         public CaveManWorker(PointD2D position, int id) : base(position, _CollisionMesh, id, "CaveManWorker", SpeedConst)
         {
+            Inventory = new EntityInventory(6);
         }
 
         /// <summary>
@@ -37,6 +40,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         {
             Position = new PointD2D(message);
             ID = message.ReadInt32();
+            Inventory = new EntityInventory(message);
 
             TasksFromMessage(gameState, message);
         }
@@ -45,6 +49,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         {
             Position.Write(message);
             message.Write(ID);
+            Inventory.Write(message);
 
             WriteTasks(message);
         }

@@ -17,18 +17,21 @@ namespace BaseBuilder.Engine.State.Resources
 
         static Material()
         {
-            GoldOre = new Material("materials", new Rectangle(0, 0, 16, 16), 1);
+            GoldOre = new Material("materials", new Rectangle(0, 0, 32, 32), "Gold Ore\nSmelts into gold", 1);
         }
 
         public int ID { get; }
 
+        public string HoverText { get; }
+
         private string SpriteName;
         private Rectangle SourceRect;
 
-        private Material(string spriteName, Rectangle sourceRect, int id)
+        private Material(string spriteName, Rectangle sourceRect, string hoverText, int id)
         {
             SpriteName = spriteName;
             SourceRect = sourceRect;
+            HoverText = hoverText;
             ID = id;
         }
 
@@ -36,7 +39,7 @@ namespace BaseBuilder.Engine.State.Resources
         {
             var texture = context.Content.Load<Texture2D>(SpriteName);
 
-            var destRect = new Rectangle((int)screenTopLeft.X, (int)screenTopLeft.Y, 16, 16);
+            var destRect = new Rectangle((int)screenTopLeft.X, (int)screenTopLeft.Y, 32, 32);
 
             context.SpriteBatch.Draw(texture, sourceRectangle: SourceRect, destinationRectangle: destRect, color: overlay);
         }
@@ -47,6 +50,45 @@ namespace BaseBuilder.Engine.State.Resources
                 return GoldOre;
 
             throw new InvalidProgramException($"No material with id {id}");
+        }
+
+        public static bool operator ==(Material m1, Material m2)
+        {
+            if (ReferenceEquals(m1, null) && ReferenceEquals(m2, null))
+                return true;
+
+            if (ReferenceEquals(m1, null) || ReferenceEquals(m2, null))
+                return false;
+
+            return m1.ID == m2.ID;
+        }
+
+        public static bool operator !=(Material m1, Material m2)
+        {
+            if (ReferenceEquals(m1, null) && ReferenceEquals(m2, null))
+                return false;
+
+            if (ReferenceEquals(m1, null) || ReferenceEquals(m2, null))
+                return true;
+
+            return m1.ID != m2.ID;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var m2 = obj as Material;
+
+            return this == m2;
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"Material [ID={ID}, HoverText={HoverText}]";
         }
     }
 }

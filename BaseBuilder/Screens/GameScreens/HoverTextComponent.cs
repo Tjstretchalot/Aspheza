@@ -19,10 +19,10 @@ namespace BaseBuilder.Screens.GameScreens
     /// </summary>
     public class HoverTextComponent : MyGameComponent
     {
-        private Point HoverTextMouseLoc;
-        private string HoverText;
+        protected Point HoverTextMouseLoc;
+        protected string HoverText;
 
-        private Texture2D BackgroundTexture;
+        protected Texture2D BackgroundTexture;
 
         public HoverTextComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {

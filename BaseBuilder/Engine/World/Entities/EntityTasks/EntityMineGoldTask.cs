@@ -108,11 +108,15 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                     throw new InvalidProgramException("Impossible");
             }
 
+            if (!Worker.Inventory.HaveRoomFor(Material.GoldOre, 1))
+                return EntityTaskStatus.Success;
+
             RemainingTimeForNextMS -= timeMS;
 
             if(RemainingTimeForNextMS <= 0)
             {
-                gameState.Resources.AddMaterial(Material.GoldOre, 1);
+                Worker.Inventory.AddMaterial(Material.GoldOre, 1);
+
                 RemainingTimeForNextMS = TimeToMineMS;
             }
 

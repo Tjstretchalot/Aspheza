@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Input;
+using BaseBuilder.Engine.Utility;
 
 namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
 {
@@ -49,8 +50,8 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
         /// The entity that the toolbar is currently being displayed for
         /// </summary>
         protected Entity CurrentToolbarEntity;
-        
 
+        
         public ToolbarOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {
             const int height = 200;
@@ -67,6 +68,11 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             if (CurrentToolbarEntity == null)
                 return;
 
+            DrawImpl(context);
+        }
+
+        protected virtual void DrawImpl(RenderContext context)
+        {
             Rectangle destRect = new Rectangle(ScreenLocation.X, ScreenLocation.Y, Size.X, Size.Y);
 
             SpriteBatch.Draw(BackgroundTexture, destinationRectangle: destRect);
@@ -78,7 +84,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 var unoffsetOverlayStartX = (int)(FullProgressBarRect.Width * prog);
                 var overlayStartX = FullProgressBarRect.X + unoffsetOverlayStartX;
                 var overlayWidth = FullProgressBarRect.Width - unoffsetOverlayStartX;
-                if(prog >= 0 && prog < 1)
+                if (prog >= 0 && prog < 1)
                 {
                     var overlayRect = new Rectangle(overlayStartX, FullProgressBarRect.Y, overlayWidth - 1, FullProgressBarRect.Height);
                     SpriteBatch.Draw(IncompleteProgressBarOverlay, destinationRectangle: overlayRect);

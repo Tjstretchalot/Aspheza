@@ -29,6 +29,8 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             }
         }
 
+        public string HoverText { get { return null; } }
+
         public ImmobileEntity CreateEntity(PointD2D location)
         {
             var tmp = CurrentEntity;
