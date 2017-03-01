@@ -11,6 +11,6 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
     /// </summary>
     public interface Container : Thing
     {
-        EntityInventory Inventory { get; set; }
+        EntityInventory Inventory { get; }
     }
 }

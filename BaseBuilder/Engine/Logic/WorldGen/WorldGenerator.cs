@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Engine.Logic.WorldGen
 {
@@ -78,8 +79,10 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             var wcx = TileWorld.TileWidth / 2;
             var wcy = TileWorld.TileHeight / 2;
             TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(wcx + 0, wcy), SharedGameState.GetUniqueEntityID()));
-            
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 2, wcy + 0), SharedGameState.GetUniqueEntityID()));
+
+            var tmp = new CaveManWorker(new PointD2D(wcx - 2, wcy + 0), SharedGameState.GetUniqueEntityID());
+            tmp.Inventory.AddMaterial(Material.WheatSeed, 1);
+            TileWorld.AddMobileEntity(tmp);
             TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 2, wcy + 1), SharedGameState.GetUniqueEntityID()));
             TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 1, wcy + 2), SharedGameState.GetUniqueEntityID()));
             TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 0, wcy + 2), SharedGameState.GetUniqueEntityID()));

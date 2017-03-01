@@ -24,20 +24,38 @@ namespace BaseBuilder.Engine.World.Entities
         /// If a material is not in this dictionary, a limit of 1 is assumed.
         /// </summary>
         protected Dictionary<Material, int> MaterialsToMaxStackCount;
+        
+        /// <summary>
+        /// Called when material is added to this inventory
+        /// </summary>
+        public event EventHandler OnMaterialAdded;
+
+        /// <summary>
+        /// Called when material is removed from this inventory
+        /// </summary>
+        public event EventHandler OnMaterialRemoved;
+
+        /// <summary>
+        /// Returns true if the specified material is allowed in this inventory
+        /// right now
+        /// </summary>
+        protected Func<Material, bool> AcceptsMaterialFunc;
 
         /// <summary>
         /// Initializes an empty inventory with the specifeid number of
         /// max items
         /// </summary>
         /// <param name="maxItems">Maximum number of items</param>
+        /// <param name="acceptsMatFunc">If this inv</param>
         /// <exception cref="ArgumentOutOfRangeException">If maxItems is not strictly positive</exception>
-        public EntityInventory(int maxItems)
+        public EntityInventory(int maxItems, Func<Material, bool> acceptsMatFunc = null)
         {
             if (maxItems <= 0)
                 throw new ArgumentOutOfRangeException(nameof(maxItems), maxItems, "Max items must be strictly positive");
 
             Inventory = new Tuple<Material, int>[maxItems];
             MaterialsToMaxStackCount = new Dictionary<Material, int>();
+            AcceptsMaterialFunc = (acceptsMatFunc == null ? (m) => true : acceptsMatFunc);
         }
 
         /// <summary>
@@ -197,6 +215,9 @@ namespace BaseBuilder.Engine.World.Entities
             if (amount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(amount), amount, "Amount must be strictly positive");
 
+            if (!AcceptsMaterialFunc(material))
+                return false;
+
             int spacesFound = 0;
 
             for(int i = 0; i < Inventory.Length; i++)
@@ -261,6 +282,9 @@ namespace BaseBuilder.Engine.World.Entities
             if (maxAmount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(maxAmount), maxAmount, "Max amount must be strictly positive");
 
+            if (!AcceptsMaterialFunc(material))
+                return 0;
+
             // Add to existing stacks
 
             int amountAdded = 0;
@@ -280,6 +304,7 @@ namespace BaseBuilder.Engine.World.Entities
                             // There is enough space
                             int amountToAdd = maxAmount - amountAdded;
                             Inventory[i] = Tuple.Create(material, Inventory[i].Item2 + amountToAdd);
+                            OnMaterialAdded?.Invoke(this, EventArgs.Empty);
                             return maxAmount;
                         }else // if(spaceAvailable + amountAdded < amount)
                         {
@@ -302,6 +327,7 @@ namespace BaseBuilder.Engine.World.Entities
                         // There is enough space
                         int amountToAdd = maxAmount - amountAdded;
                         Inventory[i] = Tuple.Create(material, amountToAdd);
+                        OnMaterialAdded?.Invoke(this, EventArgs.Empty);
                         return maxAmount;
                     }else
                     {
@@ -312,6 +338,7 @@ namespace BaseBuilder.Engine.World.Entities
                 }
             }
 
+            OnMaterialAdded?.Invoke(this, EventArgs.Empty);
             return amountAdded;
         }
 
@@ -350,6 +377,7 @@ namespace BaseBuilder.Engine.World.Entities
                                 // There is more than we need here
                                 int amountToRemove = maxAmount - amountRemoved;
                                 Inventory[i] = Tuple.Create(material, Inventory[i].Item2 - amountToRemove);
+                                OnMaterialRemoved?.Invoke(this, EventArgs.Empty);
                                 return maxAmount;
                             }else if(Inventory[i].Item2 + amountRemoved == maxAmount)
                             {
@@ -377,6 +405,7 @@ namespace BaseBuilder.Engine.World.Entities
                         // There is more than we need here
                         int amountToRemove = maxAmount - amountRemoved;
                         Inventory[i] = Tuple.Create(material, Inventory[i].Item2 - amountToRemove);
+                        OnMaterialRemoved?.Invoke(this, EventArgs.Empty);
                         return maxAmount;
                     }
                     else if (Inventory[i].Item2 + amountRemoved == maxAmount)
@@ -394,6 +423,7 @@ namespace BaseBuilder.Engine.World.Entities
                 }
             }
 
+            OnMaterialRemoved?.Invoke(this, EventArgs.Empty);
             return amountRemoved;
         }
     }

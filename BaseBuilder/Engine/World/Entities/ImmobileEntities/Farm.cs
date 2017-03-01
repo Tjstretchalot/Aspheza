@@ -10,10 +10,11 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.World.Entities.Utilities;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
-    public class Farm : ImmobileEntity
+    public class Farm : ImmobileEntity, Container
     {
         protected static PolygonD2D _CollisionMesh;
         protected SpriteRenderer Renderer;
@@ -30,11 +31,17 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             _CollisionMesh = new RectangleD2D(4, 4);
         }
 
+        // This is used as a prop, it never has anything in it
+        public EntityInventory Inventory { get; protected set; }
+
         public Farm(PointD2D position, int id) : base(position, _CollisionMesh, id)
         {
             CollisionMesh = _CollisionMesh;
             GrowthState = GrowthState.Empty;
             Renderer = new SpriteRenderer("Farms", EmptyDrawRec);
+            Inventory = new EntityInventory(1, IsASeed);
+
+            Inventory.OnMaterialAdded += OnItemAdded;
         }
 
         public Farm() : base()
@@ -50,6 +57,24 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             {
                 PlantFarm(1);
             }
+        }
+
+        protected bool IsASeed(Material mat)
+        {
+            return mat == Material.CarrotSeed || mat == Material.WheatSeed;
+        }
+
+        protected void OnItemAdded(object sender, EventArgs args)
+        {
+            var mat = Inventory.MaterialAt(0).Item1;
+
+            if (!IsASeed(mat))
+                return;
+
+            if (mat == Material.WheatSeed)
+                PlantFarm(1);
+            else if (mat == Material.CarrotSeed)
+                PlantFarm(2);
         }
 
         /// <summary>
@@ -106,6 +131,9 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Position = new PointD2D(message);
             ID = message.ReadInt32();
             GrowthState = (GrowthState)message.ReadInt32();
+            Inventory = new EntityInventory(message);
+
+            Inventory.OnMaterialAdded += OnItemAdded;
 
             TasksFromMessage(gameState, message);
         }
@@ -115,6 +143,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Position.Write(message);
             message.Write(ID);
             message.Write((int)GrowthState);
+            Inventory.Write(message);
 
             WriteTasks(message);
         }
