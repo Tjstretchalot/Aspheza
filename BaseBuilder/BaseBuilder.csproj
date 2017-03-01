@@ -97,7 +97,9 @@
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMineGoldTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMoveTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TaskIdentifier.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\Farm.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\GoldOre.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\GrowthState.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\House.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityFailerTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityRepeaterTask.cs" />

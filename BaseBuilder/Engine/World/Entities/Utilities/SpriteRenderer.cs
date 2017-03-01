@@ -12,7 +12,7 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
     public class SpriteRenderer 
     {
         protected string SpriteName;
-        protected Rectangle SourceRect;
+        public Rectangle SourceRect;
 
         public SpriteRenderer(string spriteName, Rectangle sourceRect)
         {
