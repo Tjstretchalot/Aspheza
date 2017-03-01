@@ -31,6 +31,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Register(typeof(EntitySequenceTask), 6);
             Register(typeof(EntitySucceederTask), 7);
             Register(typeof(EntityMineGoldTask), 8);
+            Register(typeof(EntityHarvestTask), 9);
+            Register(typeof(EntityGiveItemTask), 10);
         }
 
         public static void Register(Type type, short id)

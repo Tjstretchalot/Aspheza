@@ -17,6 +17,7 @@ using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.Logic;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
+using BaseBuilder.Engine.World.WorldObject.Entities;
 
 namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
 {
@@ -213,7 +214,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             else if (CarryingIndex != -1 && current.LeftButton == ButtonState.Released)
             {
                 double mouseWorldX, mouseWorldY;
-               localGameState.Camera.WorldLocationOfPixel(current.Position.X, current.Position.Y, out mouseWorldX, out mouseWorldY);
+                localGameState.Camera.WorldLocationOfPixel(current.Position.X, current.Position.Y, out mouseWorldX, out mouseWorldY);
 
                 if (mouseWorldX < 0 || mouseWorldY < 0 || mouseWorldX >= sharedGameState.World.TileWidth || mouseWorldY >= sharedGameState.World.TileHeight)
                 {
@@ -268,11 +269,10 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                     return true;
                 }
 
-                var pool = netContext.GetPoolFromPacketType(typeof(TransferItemsOrder));
-                var order = pool.GetGamePacketFromPool() as TransferItemsOrder;
-                order.From = BaseInventory;
-                order.To = cont;
-                order.Index = CarryingIndex;
+                var pool = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder));
+                var order = pool.GetGamePacketFromPool() as IssueTaskOrder;
+                order.Entity = (Entity)BaseInventory;
+                order.Task = new EntityGiveItemTask(BaseInventory, cont, CarryingIndex);
                 localGameState.Orders.Add(order);
 
                 HideIndex = CarryingIndex;

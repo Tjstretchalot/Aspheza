@@ -16,12 +16,16 @@ namespace BaseBuilder.Engine.State.Resources
         public static Material GoldOre { get; }
         public static Material CarrotSeed { get; }
         public static Material WheatSeed { get; }
+        public static Material Carrot { get; }
+        public static Material Wheat { get; }
 
         static Material()
         {
             GoldOre = new Material("materials", new Rectangle(0, 0, 32, 32), "Gold Ore\nSmelts into gold", 1);
             CarrotSeed = new Material("materials", new Rectangle(32, 0, 32, 32), "Carrot Seed\nCan be planted in a farm to grow into carrots", 2);
             WheatSeed = new Material("materials", new Rectangle(64, 0, 32, 32), "Wheat Seed\nCan be planted in a farm to grow into wheat", 3);
+            Carrot = new Material("materials", new Rectangle(32, 0, 32, 32), "Carrot\nAn average source of food", 4);
+            Wheat = new Material("materials", new Rectangle(64, 0, 32, 32), "Wheat\nCan be made into flour via a mill. Also serves as\na poor source of food", 5);
         }
 
         public int ID { get; }

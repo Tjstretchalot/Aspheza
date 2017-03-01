@@ -412,6 +412,52 @@ namespace BaseBuilder.Engine.Logic
         }
 
         /// <summary>
+        /// If the player has a worker selected and right clicks a harvestable that is ready to harvest,
+        /// harvest the thing
+        /// </summary>
+        /// <param name="sharedGameState"></param>
+        /// <param name="localGameState"></param>
+        /// <param name="netContext"></param>
+        /// <param name="elapsedMS"></param>
+        /// <param name="keyboardHandled"></param>
+        /// <param name="mouseHandled"></param>
+        protected void CheckForHarvestOrder(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
+        {
+            if (mouseHandled)
+                return;
+            var worker = localGameState.SelectedEntity as CaveManWorker;
+            var farm = localGameState.HoveredEntity as Harvestable;
+            if (worker == null || farm == null || !farm.ReadyToHarvest(sharedGameState))
+                return;
+
+            if (mouseLast.Value.RightButton != ButtonState.Pressed || mouseCurr.RightButton != ButtonState.Released)
+                return;
+
+            if (!keyboardCurr.IsKeyDown(Keys.LeftShift))
+            {
+                var cancelTasksOrder = netContext.GetPoolFromPacketType(typeof(CancelTasksOrder)).GetGamePacketFromPool() as CancelTasksOrder;
+                cancelTasksOrder.EntityID = localGameState.SelectedEntity.ID;
+                localGameState.Orders.Add(cancelTasksOrder);
+            }
+
+            mouseHandled = true;
+
+            IssueTaskOrder order;
+            if (!worker.CollisionMesh.Intersects(farm.CollisionMesh, worker.Position, farm.Position, false))
+            {
+                order = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
+                order.Entity = worker;
+                order.Task = new EntityMoveTask(worker, FindDestination(sharedGameState, worker, farm));
+                localGameState.Orders.Add(order);
+
+            }
+
+            order = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
+            order.Entity = worker;
+            order.Task = new EntityHarvestTask(worker, farm, 5000);
+            localGameState.Orders.Add(order);
+        }
+        /// <summary>
         /// Checks if an entity was selected this frame. An entity is selected when the user left-clicks while
         /// HoveredEntity is not null.
         /// </summary>
@@ -608,6 +654,7 @@ namespace BaseBuilder.Engine.Logic
             CheckForSelect(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             UpdateCamera(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForDigGoldOreOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
+            CheckForHarvestOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForMoveOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
 
             mouseLast = mouseCurr;

@@ -14,7 +14,7 @@ using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
-    public class Farm : ImmobileEntity, Container
+    public class Farm : ImmobileEntity, Container, Harvestable
     {
         protected static PolygonD2D _CollisionMesh;
         protected SpriteRenderer Renderer;
@@ -120,7 +120,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             }
         }
 
-        public void HarvestFarm()
+        protected void ClearFarm()
         {
             GrowthState = GrowthState.Empty;
             Renderer.SourceRect = EmptyDrawRec;
@@ -154,5 +154,48 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 4, 4, overlay);
         }
 
+        public bool ReadyToHarvest(SharedGameState sharedGameState)
+        {
+            return GrowthState == GrowthState.CarrotsHarvestable || GrowthState == GrowthState.WheatHarvestable;
+        }
+
+        public void TryHarvest(SharedGameState sharedGameState, Container reciever)
+        {
+            Material mat;
+            int amt;
+
+            if(GrowthState == GrowthState.CarrotsHarvestable)
+            {
+                mat = Material.Carrot;
+                amt = 1;
+            }else if(GrowthState == GrowthState.WheatHarvestable)
+            {
+                mat = Material.Wheat;
+                amt = 1;
+            }else
+            {
+                return;
+            }
+
+            if (!reciever.Inventory.HaveRoomFor(mat, amt))
+                return;
+
+            reciever.Inventory.AddMaterial(mat, amt);
+            ClearFarm();
+        }
+
+        public string GetHarvestNamePretty()
+        {
+            if(GrowthState == GrowthState.CarrotsHarvestable)
+            {
+                return "Carrots";
+            }else if(GrowthState == GrowthState.WheatHarvestable)
+            {
+                return "Wheat";
+            }else
+            {
+                return "Nothing";
+            }
+        }
     }
 }

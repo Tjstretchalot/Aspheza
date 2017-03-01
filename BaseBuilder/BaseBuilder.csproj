@@ -52,7 +52,6 @@
     <Compile Include="Engine\Logic\Orders\DeconstructOrder.cs" />
     <Compile Include="Engine\Logic\Orders\IssueMessageOrder.cs" />
     <Compile Include="Engine\Logic\Orders\IssueTaskOrder.cs" />
-    <Compile Include="Engine\Logic\Orders\TransferItemsOrder.cs" />
     <Compile Include="Engine\Logic\Pathfinders\AStarNode.cs" />
     <Compile Include="Engine\Logic\Pathfinders\EnhancedAStarPathfinder.cs" />
     <Compile Include="Engine\Logic\Pathfinders\UnitPath.cs" />
@@ -94,6 +93,8 @@
     <Compile Include="Engine\World\Entities\Entity.cs" />
     <Compile Include="Engine\World\Entities\EntityIdentifier.cs" />
     <Compile Include="Engine\World\Entities\EntityInventory.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntityGiveItemTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntityHarvestingTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMineGoldTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMoveTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TaskIdentifier.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Engine\World\Entities\Utilities\Container.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Direction.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Directional.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Harvestable.cs" />
     <Compile Include="Engine\World\Entities\Utilities\SpriteRenderer.cs" />
     <Compile Include="Engine\World\Entities\Utilities\SpriteSheetAnimationRenderer.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Thing.cs" />
