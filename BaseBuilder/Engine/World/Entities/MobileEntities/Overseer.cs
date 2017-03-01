@@ -25,7 +25,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         
         public Overseer(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)
         {
-            SpriteRenderer = new SpriteRenderer("Overseer");
+            SpriteRenderer = new SpriteRenderer("Overseer", new Rectangle(0, 0, 16, 16));
         }
         
         /// <summary>
@@ -33,7 +33,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         /// </summary>
         public Overseer() : base()
         {
-            SpriteRenderer = new SpriteRenderer("Overseer");
+            SpriteRenderer = new SpriteRenderer("Overseer", new Rectangle(0, 0, 16, 16));
             CollisionMesh = _CollisionMesh;
             SpeedUnitsPerMS = SpeedConst;
         }

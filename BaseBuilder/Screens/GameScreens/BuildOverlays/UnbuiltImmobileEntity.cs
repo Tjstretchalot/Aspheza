@@ -29,5 +29,12 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         /// <param name="location">The location to spawn the entity</param>
         /// <returns>The entity</returns>
         ImmobileEntity CreateEntity(PointD2D location);
+
+        /// <summary>
+        /// Tries to rotate. If direction > 0, tries to rotate clockwise. Otherwise, tries
+        /// to rotate counterclockwise
+        /// </summary>
+        /// <param name="direction">Direction to rotate in</param>
+        void TryRotate(int direction);
     }
 }

@@ -416,7 +416,8 @@ namespace BaseBuilder.Engine.Logic
                     return;
                 }
 
-                if(entity != null && entity != localGameState.SelectedEntity)
+                var entityAsMobile = entity as MobileEntity;
+                if(entityAsMobile != null && entity != localGameState.SelectedEntity)
                 {
                     SFXUtils.PlaySAXJingle(content);
                 }
@@ -500,25 +501,28 @@ namespace BaseBuilder.Engine.Logic
         /// <param name="mouseHandled">If the mouse was already handled</param>
         protected virtual void UpdateCamera(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
         {
-            if (!mouseLast.HasValue || keyboardHandled)
+            if (!mouseLast.HasValue)
             {
                 return;
             }
 
             var world = sharedGameState.World;
             var camera = localGameState.Camera;
-            
-            if (keyboardCurr.IsKeyDown(Keys.Left))
-                cameraPartialTopLeft.X = Math.Max(0, cameraPartialTopLeft.X - cameraSpeed * elapsedMS);
-            if (keyboardCurr.IsKeyDown(Keys.Right))
-                cameraPartialTopLeft.X = Math.Min(world.TileWidth - camera.VisibleWorldWidth - 1, cameraPartialTopLeft.X + cameraSpeed * elapsedMS);
 
-            if (keyboardCurr.IsKeyDown(Keys.Up))
-                cameraPartialTopLeft.Y = Math.Max(0, cameraPartialTopLeft.Y - cameraSpeed * elapsedMS);
-            if (keyboardCurr.IsKeyDown(Keys.Down))
-                cameraPartialTopLeft.Y = Math.Min(world.TileHeight - camera.VisibleWorldHeight - 1, cameraPartialTopLeft.Y + cameraSpeed * elapsedMS);
-            
-            if (mouseCurr.ScrollWheelValue != mouseLast.Value.ScrollWheelValue)
+            if (!keyboardHandled)
+            {
+                if (keyboardCurr.IsKeyDown(Keys.Left))
+                    cameraPartialTopLeft.X = Math.Max(0, cameraPartialTopLeft.X - cameraSpeed * elapsedMS);
+                if (keyboardCurr.IsKeyDown(Keys.Right))
+                    cameraPartialTopLeft.X = Math.Min(world.TileWidth - camera.VisibleWorldWidth - 1, cameraPartialTopLeft.X + cameraSpeed * elapsedMS);
+
+                if (keyboardCurr.IsKeyDown(Keys.Up))
+                    cameraPartialTopLeft.Y = Math.Max(0, cameraPartialTopLeft.Y - cameraSpeed * elapsedMS);
+                if (keyboardCurr.IsKeyDown(Keys.Down))
+                    cameraPartialTopLeft.Y = Math.Min(world.TileHeight - camera.VisibleWorldHeight - 1, cameraPartialTopLeft.Y + cameraSpeed * elapsedMS);
+            }
+
+            if (!mouseHandled && mouseCurr.ScrollWheelValue != mouseLast.Value.ScrollWheelValue)
             {
                 var delta = mouseCurr.ScrollWheelValue - mouseLast.Value.ScrollWheelValue;
 

@@ -25,7 +25,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 
         public Archer(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)
         {
-            SpriteRenderer = new SpriteRenderer("Archer");
+            SpriteRenderer = new SpriteRenderer("Archer", new Rectangle(0, 0, 16, 16));
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         /// </summary>
         public Archer() : base()
         {
-            SpriteRenderer = new SpriteRenderer("Archer");
+            SpriteRenderer = new SpriteRenderer("Archer", new Rectangle(0, 0, 16, 16));
             CollisionMesh = _CollisionMesh;
             SpeedUnitsPerMS = SpeedConst;
         }

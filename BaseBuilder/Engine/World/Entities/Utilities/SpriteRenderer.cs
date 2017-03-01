@@ -12,10 +12,12 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
     public class SpriteRenderer 
     {
         protected string SpriteName;
+        protected Rectangle SourceRect;
 
-        public SpriteRenderer(string spriteName)
+        public SpriteRenderer(string spriteName, Rectangle sourceRect)
         {
             SpriteName = spriteName;
+            SourceRect = sourceRect;
         }
 
         public void Render(RenderContext context, int x, int y, int w, int h, Color overlay)
@@ -23,10 +25,11 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
             var texture = context.Content.Load<Texture2D>(SpriteName);
 
             context.SpriteBatch.Draw(texture,
-                new Rectangle(
+                sourceRectangle: SourceRect,
+                destinationRectangle: new Rectangle(
                     (int)(x), (int)(y),
                     (int)(w * context.Camera.Zoom), (int)(h * context.Camera.Zoom)
-                    ), overlay);
+                    ), color: overlay);
         }
     }
 }

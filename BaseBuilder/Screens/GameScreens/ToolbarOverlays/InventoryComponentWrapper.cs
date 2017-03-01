@@ -46,6 +46,12 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 return;
 
             matAt.Item1.Render(context, screenTopLeft, overlay);
+
+            var str = $"{matAt.Item2}";
+
+            var strSize = context.DefaultFont.MeasureString(str);
+
+            context.SpriteBatch.DrawString(context.DefaultFont, str, new Vector2((int)(screenTopLeft.X + 32 - strSize.X - 2), (int)(screenTopLeft.Y + 32 - strSize.Y - 2)), Color.White);
         }
     }
 }

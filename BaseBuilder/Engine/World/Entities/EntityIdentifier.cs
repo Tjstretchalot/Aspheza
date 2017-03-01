@@ -36,6 +36,7 @@ namespace BaseBuilder.Engine.World.Entities
             Register(typeof(Sign), 1003);
             Register(typeof(Tree), 1004);
             Register(typeof(GoldOre), 1005);
+            Register(typeof(StorageBarn), 1006);
         }
 
         public static void Register(Type entityType, short id)

@@ -13,6 +13,7 @@ using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Input;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.Logic.Orders;
+using BaseBuilder.Engine.World.Entities.Utilities;
 
 namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
@@ -21,9 +22,12 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
     /// </summary>
     public class BuildOverlay : MyGameComponent
     {
+        protected static Color PlaceableColor = new Color(200, 200, 100);
         protected UnbuiltImmobileEntity BuildingToPlace;
         protected PointD2D CurrentPlaceLocation;
         protected bool CantPlace;
+
+        protected int ScrollWheelAmountToNext;
 
         public BuildOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {
@@ -37,7 +41,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             {
                 var placeLocationScreen = new PointD2D((int)context.Camera.PixelLocationOfWorldX(CurrentPlaceLocation.X), (int)context.Camera.PixelLocationOfWorldY(CurrentPlaceLocation.Y));
 
-                BuildingToPlace.Render(context, placeLocationScreen, CantPlace ? Color.Red : Color.DarkBlue);
+                BuildingToPlace.Render(context, placeLocationScreen, CantPlace ? Color.Red : PlaceableColor);
             }
         }
 
@@ -47,7 +51,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             {
                 if (last.IsKeyDown(Keys.B) && current.IsKeyUp(Keys.B))
                 {
-                    BuildingToPlace = new UnbuiltImmobileEntityAsDelegator(() => new House(new PointD2D(0, 0), sharedGameState.GetUniqueEntityID()));
+                    BuildingToPlace = new UnbuiltImmobileEntityAsDelegator(() => new StorageBarn(new PointD2D(0, 0), sharedGameState.GetUniqueEntityID(), Direction.Down));
                     return true;
                 }
             }else
@@ -81,9 +85,14 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 
             var desLeft = current.Position.X - ((BuildingToPlace.CollisionMesh.Right - BuildingToPlace.CollisionMesh.Left) * localGameState.Camera.Zoom) / 2.0;
             var desTop = current.Position.Y - ((BuildingToPlace.CollisionMesh.Bottom - BuildingToPlace.CollisionMesh.Top) * localGameState.Camera.Zoom) / 2.0;
+
+            // Snap to tiles
+            CurrentPlaceLocation.X = (int)Math.Round(localGameState.Camera.WorldLocationOfPixelX(desLeft));
+            CurrentPlaceLocation.Y = (int)Math.Round(localGameState.Camera.WorldLocationOfPixelY(desTop));
+
             // Snap to half-tiles
-            CurrentPlaceLocation.X = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelX(desLeft) * 2)) / 2.0;
-            CurrentPlaceLocation.Y = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelY(desTop) * 2)) / 2.0;
+            //CurrentPlaceLocation.X = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelX(desLeft) * 2)) / 2.0;
+            //CurrentPlaceLocation.Y = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelY(desTop) * 2)) / 2.0;
 
             // Don't snap to grid
             //CurrentPlaceLocation.X = localGameState.Camera.WorldLocationOfPixelX(current.Position.X);
@@ -96,11 +105,6 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 break;
             }
 
-            if(CantPlace)
-            {
-                foreach (var tmp in sharedGameState.World.GetEntitiesAtLocation(BuildingToPlace.CollisionMesh, CurrentPlaceLocation)) { } // debug
-            }
-
             if (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released && !CantPlace)
             {
                 var ent = BuildingToPlace.CreateEntity(new PointD2D(CurrentPlaceLocation.X, CurrentPlaceLocation.Y));
@@ -108,6 +112,18 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 var order = netContext.GetPoolFromPacketType(typeof(BuildOrder)).GetGamePacketFromPool() as BuildOrder;
                 order.Entity = ent;
                 localGameState.Orders.Add(order);
+            }else if(last.ScrollWheelValue != current.ScrollWheelValue)
+            {
+                var deltaScrollWheel = current.ScrollWheelValue - last.ScrollWheelValue;
+
+                ScrollWheelAmountToNext -= Math.Abs(deltaScrollWheel);
+
+                if(ScrollWheelAmountToNext <= 0)
+                {
+                    ScrollWheelAmountToNext = 100;
+
+                    BuildingToPlace.TryRotate(Math.Sign(deltaScrollWheel));
+                }
             }
             return true;
         }
