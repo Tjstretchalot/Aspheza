@@ -52,7 +52,9 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             var res = base.HandleMouseState(sharedGameState, localGameState, netContext, last, current);
 
             res = InventoryOverlayComp.HandleMouseState(sharedGameState, localGameState, netContext, last, current) || res;
-
+            
+            if (CurrentToolbarEntity == null)
+                return false;
             return res;
         }
 
