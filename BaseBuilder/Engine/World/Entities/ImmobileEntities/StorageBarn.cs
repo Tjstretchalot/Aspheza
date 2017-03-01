@@ -18,13 +18,13 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         static StorageBarn()
         {
-            PolygonD2D collisionMeshHorizontal = new RectangleD2D(6, 3);
-            PolygonD2D collisionMeshVertical = new RectangleD2D(3, 6);
+            PolygonD2D collisionMeshHorizontal = new RectangleD2D(100 / 16, 86 / 16);
+            PolygonD2D collisionMeshVertical = new RectangleD2D(74 / 16, 116 / 16);
 
-            var sourceRectLeft = new Rectangle(0, 0, 96, 48);
-            var sourceRectRight = new Rectangle(96, 0, 96, 48);
-            var sourceRectUp = new Rectangle(0, 48, 48, 96);
-            var sourceRectDown = new Rectangle(48, 48, 48, 96);
+            var sourceRectLeft = new Rectangle(0, 0, 100, 86);
+            var sourceRectRight = new Rectangle(102, 0, 100, 86);
+            var sourceRectUp = new Rectangle(0, 87, 74, 116);
+            var sourceRectDown = new Rectangle(76, 87, 74, 116);
 
             DirectionToSourceRectAndCollisionMesh = new Dictionary<Direction, Tuple<Rectangle, PolygonD2D>>{
                 { Direction.Down, Tuple.Create(sourceRectDown, collisionMeshVertical) },
