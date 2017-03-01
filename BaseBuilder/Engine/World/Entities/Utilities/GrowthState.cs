@@ -2,6 +2,6 @@
 {
     public enum GrowthState
     {
-        Empty = 0, WheatPlanted, BeansPlanted, WheatHarvestable, BeansHarvestable
+        Empty = 0, WheatPlanted, WheatHarvestable, CarrotsPlanted, CarrotsHarvestable
     }
 }

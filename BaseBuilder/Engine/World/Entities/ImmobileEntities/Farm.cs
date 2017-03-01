@@ -91,7 +91,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             }
             else if (plantOption == 2)
             {
-                GrowthState = GrowthState.BeansPlanted;
+                GrowthState = GrowthState.CarrotsPlanted;
                 TimeUntilGownMS = 10000;
                 Renderer.SourceRect = PlantedDrawRec;
             }
@@ -101,20 +101,20 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
             base.SimulateTimePassing(sharedState, timeMS);
 
-            if(GrowthState == GrowthState.BeansPlanted || GrowthState == GrowthState.WheatPlanted)
+            if(GrowthState == GrowthState.CarrotsPlanted || GrowthState == GrowthState.WheatPlanted)
             {
                 TimeUntilGownMS -= timeMS;
                 if (TimeUntilGownMS <= 0)
                 {
-                    if (GrowthState == GrowthState.BeansPlanted)
-                    {
-                        GrowthState = GrowthState.BeansHarvestable;
-                        Renderer.SourceRect = BeansHarvestDrawRec;
-                    }
-                    else if (GrowthState == GrowthState.WheatPlanted)
+                    if (GrowthState == GrowthState.WheatPlanted)
                     {
                         GrowthState = GrowthState.WheatHarvestable;
                         Renderer.SourceRect = WheatHarvestDrawRec;
+                    }
+                    else if (GrowthState == GrowthState.CarrotsPlanted)
+                    {
+                        GrowthState = GrowthState.CarrotsHarvestable;
+                        Renderer.SourceRect = BeansHarvestDrawRec;
                     }
                 }
             }
