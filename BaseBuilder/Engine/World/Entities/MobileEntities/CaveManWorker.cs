@@ -12,19 +12,18 @@ using Microsoft.Xna.Framework;
 
 namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
-    public class CaveManWorker : MobileEntity
+    public class CaveManWorker : MobileEntity, Container
     {
         private SpriteSheetAnimationRenderer AnimationRenderer;
         private const double SpeedConst = 0.005;
         private static RectangleD2D _CollisionMesh;
-
-
+        
         static List<Rectangle> DownMove = new List<Rectangle> { new Rectangle(16, 0, 16, 16), new Rectangle(0, 0, 16, 16), new Rectangle(16, 0, 16, 16), new Rectangle(32, 0, 16, 16) };
         static List<Rectangle> UpMove = new List<Rectangle> { new Rectangle(16, 16, 16, 16), new Rectangle(0, 16, 16, 16), new Rectangle(16, 16, 16, 16), new Rectangle(32, 16, 16, 16) };
         static List<Rectangle> RightMove = new List<Rectangle> { new Rectangle(16, 32, 16, 16), new Rectangle(0, 32, 16, 16), new Rectangle(16, 32, 16, 16), new Rectangle(32, 32, 16, 16) };
         static List<Rectangle> LeftMove = new List<Rectangle> { new Rectangle(16, 48, 16, 16), new Rectangle(0, 48, 16, 16), new Rectangle(16, 48, 16, 16), new Rectangle(32, 48, 16, 16) };
 
-        public EntityInventory Inventory { get; protected set; }
+        public EntityInventory Inventory { get; set; }
 
         static CaveManWorker()
         {

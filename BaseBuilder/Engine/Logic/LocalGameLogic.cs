@@ -7,6 +7,7 @@ using BaseBuilder.Engine.World;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
+using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using BaseBuilder.Screens.GameScreens;
 using Microsoft.Xna.Framework;
@@ -213,7 +214,7 @@ namespace BaseBuilder.Engine.Logic
         /// <param name="e1">The moving entity</param>
         /// <param name="e2">The not moving entity</param>
         /// <returns>Location that if e1 goes to he will be adjacent to e2</returns>
-        protected PointI2D FindDestination(SharedGameState gameState, Entity e1, Entity e2)
+        public static PointI2D FindDestination(SharedGameState gameState, MobileEntity e1, Thing e2)
         {
             /*
              * Imagine you had two rectangles. Clearly, the only viable locations are either
@@ -244,6 +245,30 @@ namespace BaseBuilder.Engine.Logic
              *   
              *   We can find a line of potential points by shifting line to p2.Max + p1.Length
              */
+
+            PointI2D best = null;
+            double bestDistance = -1;
+
+            Action<PointI2D> foundChoice = (p) =>
+            {
+                if (best != null && bestDistance <= 0)
+                    return;
+
+                if(e1.CollisionMesh.Intersects(PolygonD2D.UnitSquare, e1.Position, p))
+                {
+                    best = p;
+                    bestDistance = 0;
+                    return;
+                }
+
+                var dist = e1.CollisionMesh.MinDistanceTo(PolygonD2D.UnitSquare, e1.Position, p);
+
+                if(best == null || dist < bestDistance)
+                {
+                    best = p;
+                    bestDistance = dist;
+                }
+            };
 
             Func<PointI2D, bool> isValid = (p) =>
             {
@@ -286,7 +311,7 @@ namespace BaseBuilder.Engine.Logic
                 return null;
             };
 
-            Func<FiniteLineD2D, PointD2D, PointI2D> tryLine = (line, shift) =>
+            Action<FiniteLineD2D, PointD2D> tryLine = (line, shift) =>
             {
                 shift = (shift == null ? PointD2D.Origin : shift);
 
@@ -311,7 +336,7 @@ namespace BaseBuilder.Engine.Logic
                 var resultingLine = new FiniteLineD2D(line.Start + shift + shiftRequiredAsVector, line.End + shift + shiftRequiredAsVector); // SHIFT REQUIRED ON line.Start + line.End -> SHIFTED
                 var result = checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED; BUT WE NEED IT NOT TO BE AN EVEN POINT
                 if (result != null/* && false*/)
-                    return result;
+                    foundChoice(result);
 
                 destinationLinePointInNormal = nmovinProjectedOnNormal.Max + movingProjectedOnNormal.Length; // SHIFTED - SHIFTED = SHIFTED
                 shiftRequiredInNormal = destinationLinePointInNormal - linePointInNormal; // SHIFTED - SHIFTED = SHIFTED
@@ -321,17 +346,21 @@ namespace BaseBuilder.Engine.Logic
 
 
                 resultingLine = new FiniteLineD2D(line.Start + shift + shiftRequiredAsVector, line.End + shift + shiftRequiredAsVector); // SHIFT REQUIRED ON line.Start + line.End -> SHIFTED
-                return /*var pt = */ checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED
+                result = checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED
+                if (result != null)
+                    foundChoice(result);
                 //return null;
             };
-            
+
+            var goodEnoughDistance = e1.CollisionMesh.MinDistanceTo(e2.CollisionMesh, e1.Position, e2.Position);
             foreach(var line in e2.CollisionMesh.Lines)
             {
-                var tmp = tryLine(line, e2.Position);
-                if(tmp != null)
-                    return tmp;
+                tryLine(line, e2.Position);
+                if (best != null && bestDistance <= goodEnoughDistance)
+                    return best;
             }
-            return null;
+
+            return best;
         }
 
         /// <summary>

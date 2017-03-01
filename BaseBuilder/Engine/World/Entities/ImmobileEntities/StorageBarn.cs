@@ -9,10 +9,11 @@ using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.State;
 using Lidgren.Network;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
-    public class StorageBarn : ImmobileEntity, Directional
+    public class StorageBarn : ImmobileEntity, Directional, Container
     {
         protected static Dictionary<Direction, Tuple<Rectangle, PolygonD2D>> DirectionToSourceRectAndCollisionMesh;
 
@@ -50,13 +51,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             }
         }
 
-        public EntityInventory Inventory;
+        public EntityInventory Inventory { get; set; }
         protected SpriteRenderer Renderer;
 
         public StorageBarn(PointD2D position, int id, Direction direction) : base(position, null, id)
         {
             Direction = direction;
             Inventory = new EntityInventory(40);
+            Inventory.SetStackSizeFor(Material.GoldOre, 10);
         }
 
         /// <summary>

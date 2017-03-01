@@ -166,6 +166,19 @@ namespace BaseBuilder.Engine.World.Entities
 
             return Inventory[index];
         }
+
+        /// <summary>
+        /// Removes the material at the specified index. Does nothing if there is nothing
+        /// at that index.
+        /// </summary>
+        /// <param name="index">The index</param>
+        public void RemoveMaterialAt(int index)
+        {
+            if (index < 0 || index > Inventory.Length)
+                throw new ArgumentOutOfRangeException(nameof(index), index, $"Index must be 0 <= index <= {Inventory.Length}");
+
+            Inventory[index] = null;
+        }
         
         /// <summary>
         /// Returns true if there is enough room in this inventory to add the specified

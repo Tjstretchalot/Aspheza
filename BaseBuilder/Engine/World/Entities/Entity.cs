@@ -4,6 +4,7 @@ using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.Utility;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
+using BaseBuilder.Engine.World.Entities.Utilities;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
@@ -25,7 +26,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
     /// 
     /// Furthermore, entities are able to render themselves.
     /// </remarks>
-    public abstract class Entity : Renderable, ITaskable
+    public abstract class Entity : Renderable, ITaskable, Thing
     {
         public int ID { get; protected set; }
         /// <summary>

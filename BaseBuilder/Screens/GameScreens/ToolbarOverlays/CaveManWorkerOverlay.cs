@@ -52,7 +52,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
         {
             var res = base.HandleMouseState(sharedGameState, localGameState, netContext, last, current);
 
-            InventoryOverlayComp.HandleMouseState(sharedGameState, localGameState, netContext, last, current);
+            res = InventoryOverlayComp.HandleMouseState(sharedGameState, localGameState, netContext, last, current) || res;
 
             return res;
         }
@@ -69,19 +69,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             base.UpdateToolbarEntity(newEntity);
 
             var caveman = (CaveManWorker)newEntity;
-            if(newEntity == null)
-            {
-                for(int i = 0; i < 6; i++)
-                {
-                    InventoryOverlayComp.SetItemAt(i, null);
-                }
-            }else
-            {
-                for(int i = 0; i < 6; i++)
-                {
-                    InventoryOverlayComp.SetItemAt(i, new InventoryComponentWrapper(caveman.Inventory, i));
-                }
-            }
+            InventoryOverlayComp.SetInventory(caveman); // works if null
         }
 
         protected override bool IsOverlayFor(Entity selected)

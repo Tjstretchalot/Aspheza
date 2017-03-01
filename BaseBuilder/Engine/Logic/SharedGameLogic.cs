@@ -125,5 +125,14 @@ namespace BaseBuilder.Engine.Logic
 
             gameState.World.RemoveImmobileEntity(ent as ImmobileEntity);
         }
+
+        [OrderHandler(typeof(TransferItemsOrder))]
+        public void OnTransferItemsOrder(SharedGameState gameState, Player player, TransferItemsOrder order)
+        {
+            var mat = order.From.Inventory.MaterialAt(order.Index);
+
+            order.From.Inventory.RemoveMaterialAt(order.Index);
+            order.To.Inventory.AddMaterial(mat.Item1, mat.Item2);
+        }
     }
 }
