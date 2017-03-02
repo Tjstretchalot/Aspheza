@@ -37,6 +37,7 @@ namespace BaseBuilder
             Content.RootDirectory = "Content";
             frameCounter = new FrameCounter();
 
+            Window.Title = "Aspheza";
             IsMouseVisible = true;
             IsFixedTimeStep = false;
             graphics.PreferMultiSampling = true;
@@ -69,7 +70,7 @@ namespace BaseBuilder
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             screenManager = new ScreenManager();
-            screenManager.SetInitialScreen(new LANHostGameScreen(screenManager, Content, graphics, GraphicsDevice, spriteBatch));
+            screenManager.SetInitialScreen(new SplashScreen(screenManager, Content, graphics, GraphicsDevice, spriteBatch));
         }
 
         /// <summary>
