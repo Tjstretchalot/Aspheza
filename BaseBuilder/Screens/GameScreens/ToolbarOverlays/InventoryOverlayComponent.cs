@@ -18,6 +18,7 @@ using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.Logic;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
 using BaseBuilder.Engine.World.WorldObject.Entities;
+using BaseBuilder.Engine.World.Entities;
 
 namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
 {
@@ -48,10 +49,16 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
         /// </summary>
         protected Renderable[] InventoryLocationsToItems;
 
+
+        /// <summary>
+        /// The current container entity that we are showing
+        /// </summary>
+        protected Container BaseEntity;
+
         /// <summary>
         /// The current inventory that we are showing
         /// </summary>
-        protected Container BaseInventory;
+        protected EntityInventory BaseInventory;
 
         /// <summary>
         /// The index that is currently hovered on. -1 for nothing
@@ -94,12 +101,21 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             Init(new PointI2D(invVisualLoc.X, invVisualLoc.Y), new PointI2D(invVisualLoc.Width, invVisualLoc.Height), 1);
         }
 
-        public void SetInventory(Container container)
+        public void SetInventory(Container container, EntityInventory inventory = null)
         {
-            BaseInventory = container;
+            BaseEntity = container;
+            if (container != null)
+            {
+                if (inventory != null)
+                    BaseInventory = inventory;
+                else
+                    BaseInventory = container.Inventory;
+            }
+            else
+                BaseInventory = null;
             for (int i = 0; i < InventoryLocationsToItems.Length; i++)
             {
-                InventoryLocationsToItems[i] = (container == null ? null : new InventoryComponentWrapper(container.Inventory, i));
+                InventoryLocationsToItems[i] = (container == null ? null : new InventoryComponentWrapper(BaseInventory, i));
             }
         }
 
@@ -188,7 +204,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
 
             if (CarryingIndex != -1)
             {
-                var matTup = BaseInventory.Inventory.MaterialAt(CarryingIndex);
+                var matTup = BaseInventory.MaterialAt(CarryingIndex);
                 if (matTup == null)
                 {
                     CarryingIndex = -1;
@@ -201,7 +217,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 if (InventoryLocationsToItems[HoveredIndex] == null)
                     return true;
 
-                var mat = BaseInventory.Inventory.MaterialAt(HoveredIndex);
+                var mat = BaseInventory.MaterialAt(HoveredIndex);
                 if(mat == null)
                 {
                     return true;
@@ -230,12 +246,12 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 }
 
                 var cancelTasksOrder = netContext.GetPoolFromPacketType(typeof(CancelTasksOrder)).GetGamePacketFromPool() as CancelTasksOrder;
-                cancelTasksOrder.EntityID = BaseInventory.ID;
+                cancelTasksOrder.EntityID = BaseEntity.ID;
                 localGameState.Orders.Add(cancelTasksOrder);
 
-                if (!BaseInventory.CollisionMesh.Intersects(cont.CollisionMesh, BaseInventory.Position, cont.Position) && BaseInventory.CollisionMesh.MinDistanceTo(cont.CollisionMesh, BaseInventory.Position, cont.Position) >= 1)
+                if (!BaseEntity.CollisionMesh.Intersects(cont.CollisionMesh, BaseEntity.Position, cont.Position) && BaseEntity.CollisionMesh.MinDistanceTo(cont.CollisionMesh, BaseEntity.Position, cont.Position) >= 1)
                 {
-                    var mob = BaseInventory as MobileEntity;
+                    var mob = BaseEntity as MobileEntity;
 
                     if (mob != null)
                     {
@@ -260,7 +276,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                     }
                 }
                 
-                var tup = BaseInventory.Inventory.MaterialAt(CarryingIndex);
+                var tup = BaseInventory.MaterialAt(CarryingIndex);
                 var mat = tup.Item1;
                 var amt = tup.Item2;
                 if (!cont.Inventory.HaveRoomFor(mat, amt))
@@ -271,8 +287,8 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
 
                 var pool = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder));
                 var order = pool.GetGamePacketFromPool() as IssueTaskOrder;
-                order.Entity = (Entity)BaseInventory;
-                order.Task = new EntityGiveItemTask(BaseInventory, cont, CarryingIndex);
+                order.Entity = (Entity)BaseEntity;
+                order.Task = new EntityGiveItemTask(BaseEntity, cont, CarryingIndex);
                 localGameState.Orders.Add(order);
 
                 HideIndex = CarryingIndex;

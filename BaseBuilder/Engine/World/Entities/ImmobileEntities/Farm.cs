@@ -18,10 +18,11 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
     public class Farm : ImmobileEntity, Container, Harvestable
     {
         protected static PolygonD2D _CollisionMesh;
-        protected SpriteRenderer Renderer;
 
         protected int TimeUntilGownMS;
         GrowthState GrowthState;
+
+        protected SpriteRenderer Renderer;
         static Rectangle EmptyDrawRec = new Rectangle(0, 0, 64, 68);
         static Rectangle PlantedDrawRec = new Rectangle(0, 69, 64, 68);
         static Rectangle CarrotHarvestDrawRec = new Rectangle(65, 53, 64, 84);
@@ -51,16 +52,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             CollisionMesh = _CollisionMesh;
             Renderer = new SpriteRenderer("Farms", EmptyDrawRec);
         }
-
-        public override void Update(UpdateContext context)
-        {
-            base.Update(context);
-            if(Selected)
-            {
-                PlantFarm(1);
-            }
-        }
-
+        
         protected bool IsASeed(Material mat)
         {
             return mat == Material.CarrotSeed || mat == Material.WheatSeed;

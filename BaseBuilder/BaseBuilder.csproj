@@ -100,6 +100,7 @@
     <Compile Include="Engine\World\Entities\EntityTasks\TaskIdentifier.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Farm.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\GoldOre.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\WaterMill.cs" />
     <Compile Include="Engine\World\Entities\Utilities\DirectionUtils.cs" />
     <Compile Include="Engine\World\Entities\Utilities\GrowthState.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\House.cs" />
@@ -183,6 +184,7 @@
     <Compile Include="Screens\GameScreens\ToolbarOverlays\InventoryOverlayComponent.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\StorageBarnOverlay.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\ToolbarOverlay.cs" />
+    <Compile Include="Screens\GameScreens\ToolbarOverlays\WaterMillOverlay.cs" />
     <Compile Include="Screens\IScreen.cs" />
     <Compile Include="Screens\IScreenManager.cs" />
     <Compile Include="Screens\IScreenTransition.cs" />
@@ -222,6 +224,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\tile_water_anim.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\WaterMill.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="_my_icon.ico" />
