@@ -260,7 +260,8 @@ namespace BaseBuilder.Engine.World
             {
                 for(int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
                 {
-                    TileAt(x, y).Render(context, point, Color.White);
+                    var tile = TileAt(x, y);
+                    tile.Render(context, point, Color.White);
                     point.Y += context.Camera.Zoom;
                 }
 
@@ -326,12 +327,12 @@ namespace BaseBuilder.Engine.World
         /// <summary>
         /// Called when loading is complete.
         /// </summary>
-        /// <param name="context">The context</param>
-        public void LoadingDone(UpdateContext context)
+        /// <param name="gameState">The gameState</param>
+        public void LoadingDone(SharedGameState gameState)
         {
             foreach(var tile in Tiles)
             {
-                tile.Loaded(context);
+                tile.Loaded(gameState);
             }
         }
 
@@ -342,6 +343,14 @@ namespace BaseBuilder.Engine.World
         /// <param name="context">The context</param>
         public void Update(UpdateContext context)
         {
+            for(int x = 0; x < TileWidth; x++)
+            {
+                for(int y = 0; y < TileHeight; y++)
+                {
+                    TileAt(x, y).Update(context);
+                }
+            }
+
             foreach(var e in MobileEntities)
             {
                 e.Update(context);

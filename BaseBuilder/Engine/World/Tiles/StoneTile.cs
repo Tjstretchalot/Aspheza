@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,10 @@ namespace BaseBuilder.Engine.World.Tiles
         }
 
         public StoneTile(PointI2D position, RectangleD2D collisionMesh) : base(position, collisionMesh, "TileSet", sourceRect)
+        {
+        }
+
+        public StoneTile(PointI2D position, RectangleD2D collisionMesh, NetIncomingMessage message) : this(position, collisionMesh)
         {
         }
     }

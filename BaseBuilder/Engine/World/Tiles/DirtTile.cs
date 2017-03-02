@@ -7,6 +7,7 @@ using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D.Double;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.Math2D;
+using Lidgren.Network;
 
 namespace BaseBuilder.Engine.World.Tiles
 {
@@ -25,14 +26,7 @@ namespace BaseBuilder.Engine.World.Tiles
         {
         }
 
-
-        protected bool GrassAtRelative(UpdateContext context, int rx, int ry)
-        {
-            var tile = GetTileFromRelative(context, rx, ry);
-            if (tile == null)
-                return true;
-
-            return GetType().IsAssignableFrom(tile.GetType());
-        }
+        public DirtTile(PointI2D position, RectangleD2D collisionMesh, NetIncomingMessage message) : this(position, collisionMesh)
+        { }
     }
 }

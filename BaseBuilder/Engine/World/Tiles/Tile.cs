@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D;
 using Microsoft.Xna.Framework;
+using Lidgren.Network;
+using BaseBuilder.Engine.State;
 
 namespace BaseBuilder.Engine.World.Tiles
 {
@@ -37,10 +39,17 @@ namespace BaseBuilder.Engine.World.Tiles
         }
 
         /// <summary>
+        /// Writes any information besides tile position, type, and collision message to the message to be called
+        /// with the (PointI2D position, RectangleD2D collisionMesh, NetIncomingMessage message
+        /// </summary>
+        /// <param name="message"></param>
+        public abstract void Write(NetOutgoingMessage message);
+
+        /// <summary>
         /// Called when the world is done loading.
         /// </summary>
         /// <param name="context">The context</param>
-        public virtual void Loaded(UpdateContext context)
+        public virtual void Loaded(SharedGameState gameState)
         {
         }
 
@@ -52,12 +61,12 @@ namespace BaseBuilder.Engine.World.Tiles
         {
         }
 
-        public Tile GetTileFromRelative(UpdateContext context, int rx, int ry)
+        public Tile GetTileFromRelative(TileWorld world, int rx, int ry)
         {
-            if (!context.World.ContainsTile(Position.X + rx, Position.Y + ry))
+            if (!world.ContainsTile(Position.X + rx, Position.Y + ry))
                 return null;
 
-            return context.World.TileAt(Position.X + rx, Position.Y + ry);
+            return world.TileAt(Position.X + rx, Position.Y + ry);
         }
         
 
@@ -66,5 +75,11 @@ namespace BaseBuilder.Engine.World.Tiles
         /// See <see cref="Renderable"/>
         /// </summary>
         public abstract void Render(RenderContext context, PointD2D screenTopLeft, Color overlay);
+
+        /// <summary>
+        /// Should be called every frame to update animations
+        /// </summary>
+        /// <param name="context">the context</param>
+        public virtual void Update(UpdateContext context) { }
     }
 }

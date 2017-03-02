@@ -21,6 +21,7 @@ using Microsoft.Xna.Framework.Media;
 using BaseBuilder.Screens.GameScreens.BuildOverlays;
 using Microsoft.Xna.Framework.Audio;
 using BaseBuilder.Screens.GameScreens.ToolbarOverlays;
+using System.Diagnostics;
 
 namespace BaseBuilder.Screens.GameScreens
 {
@@ -40,9 +41,11 @@ namespace BaseBuilder.Screens.GameScreens
         LocalGameState localGameState;
         GameConnection gameConnection;
 
+        UpdateContext updateContext;
         RenderContext renderContext;
 
         SpriteFont debugFont;
+
 
         public GameScreen(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, 
             LocalGameLogic localGameLogic, SharedGameState sharedGameState, LocalGameState localGameState, GameConnection gameConnection)
@@ -60,7 +63,7 @@ namespace BaseBuilder.Screens.GameScreens
             InitComponents();
 
             localGameState.EnsureInititialized(sharedGameState);
-            
+
         }
         
         protected void InitComponents()
@@ -82,6 +85,11 @@ namespace BaseBuilder.Screens.GameScreens
             localGameLogic.HandleUserInput(sharedGameState, localGameState, gameConnection.Context, deltaMS);
             gameConnection.ConsiderGameUpdate();
             localGameLogic.UpdateTasks(sharedGameState, localGameState, content);
+
+            updateContext.ElapsedMS = deltaMS;
+            updateContext.World = sharedGameState.World;
+
+            sharedGameState.World.Update(updateContext);
         }
 
         public void Draw()

@@ -13,8 +13,6 @@ namespace BaseBuilder.Engine.Context
     public struct UpdateContext
     {
         public TileWorld World;
-
-        public int GameTimeMS;
         public int ElapsedMS;
     }
 }

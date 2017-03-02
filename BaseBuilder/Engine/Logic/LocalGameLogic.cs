@@ -602,7 +602,7 @@ namespace BaseBuilder.Engine.Logic
                 var newZoom = cameraPartialZoom + delta * cameraZoomSpeed;
 
                 newZoom = Math.Min(newZoom, minCameraZoom);
-                newZoom = Math.Max(newZoom, Math.Ceiling(camera.ScreenLocation.Width / world.TileWidth));
+                newZoom = Math.Max(Math.Max(newZoom, Math.Ceiling(camera.ScreenLocation.Width / world.TileWidth)), 8); // looks bad less than 8
 
                 double mousePixelX = mouseCurr.Position.X, mousePixelY = mouseCurr.Position.Y;
                 double mouseWorldX, mouseWorldY;
@@ -625,6 +625,7 @@ namespace BaseBuilder.Engine.Logic
             }
 
             // the goal is that the camera can move in increments of one pixel. One pixel = (1 world unit / Zoom).
+            
             int pixelTopLeftX = (int)Math.Round(cameraPartialTopLeft.X * camera.Zoom);
             int pixelTopLeftY = (int)Math.Round(cameraPartialTopLeft.Y * camera.Zoom);
             camera.WorldTopLeft.X = pixelTopLeftX / camera.Zoom;

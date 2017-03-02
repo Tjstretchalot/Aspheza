@@ -9,10 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.Utility;
 using BaseBuilder.Engine.Math2D;
+using Lidgren.Network;
 
 namespace BaseBuilder.Engine.World.Tiles
 {
-    public class SpriteTile : Tile
+    public abstract class SpriteTile : Tile
     {
         protected string SpriteName;
         protected Rectangle SourceRect;
@@ -27,14 +28,18 @@ namespace BaseBuilder.Engine.World.Tiles
             drawRect = new Rectangle();
         }
 
+        public override void Write(NetOutgoingMessage message)
+        {
+        }
+
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
             var texture = context.Content.Load<Texture2D>(SpriteName);
 
-            drawRect.X = (int)(screenTopLeft.X + CollisionMesh.Left * context.Camera.Zoom);
-            drawRect.Y = (int)(screenTopLeft.Y + CollisionMesh.Top * context.Camera.Zoom);
-            drawRect.Width = (int)(CollisionMesh.Width * context.Camera.Zoom);
-            drawRect.Height = (int)(CollisionMesh.Height * context.Camera.Zoom);
+            drawRect.X = (int)screenTopLeft.X;
+            drawRect.Y = (int)screenTopLeft.Y;
+            drawRect.Width = (int)(context.Camera.Zoom);
+            drawRect.Height = (int)(context.Camera.Zoom);
 
             context.SpriteBatch.Draw(texture, sourceRectangle: SourceRect, destinationRectangle: drawRect, color: overlay);
         }

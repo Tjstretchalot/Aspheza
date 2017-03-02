@@ -26,6 +26,8 @@ namespace BaseBuilder.Engine.Utility
         /// </summary>
         /// <param name="context">Render context.</param>
         /// <param name="bounds">Bounds to render in.</param>
+        /// <param name="overlay">The color to overlay</param>
+        /// <param name="timeSinceLastRenderMS">The time since last render in milliseconds. May be used for animations</param>
         void Render(RenderContext context, PointD2D screenTopLeft, Color overlay);
     }
 }

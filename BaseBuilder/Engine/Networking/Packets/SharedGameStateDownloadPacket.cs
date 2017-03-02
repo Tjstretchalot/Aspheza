@@ -45,7 +45,7 @@ namespace BaseBuilder.Engine.Networking.Packets
                     var pos = new PointI2D(x, y);
                     var tileType = message.ReadInt16();
 
-                    var tile = TileIdentifier.InitTile(TileIdentifier.GetTypeOfID(tileType), pos);
+                    var tile = TileIdentifier.InitTile(TileIdentifier.GetTypeOfID(tileType), pos, message);
                     tiles.Add(tile);
                 }
             }
@@ -117,6 +117,7 @@ namespace BaseBuilder.Engine.Networking.Packets
                     var tile = SharedState.World.Tiles[counter++];
 
                     message.Write(TileIdentifier.GetIDOfTile(tile.GetType()));
+                    tile.Write(message);
                 }
             }
 

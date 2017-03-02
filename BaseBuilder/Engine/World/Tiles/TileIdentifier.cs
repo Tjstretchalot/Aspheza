@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +21,14 @@ namespace BaseBuilder.Engine.World.Tiles
 
         static TileIdentifier()
         {
-            TileConstructorParamTypes = new Type[] { typeof(PointI2D), typeof(RectangleD2D) };
+            TileConstructorParamTypes = new Type[] { typeof(NetIncomingMessage) };
             IdsToTiles = new Dictionary<short, Type>();
             TilesToIds = new Dictionary<Type, short>();
 
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(DirtTile).TypeHandle);
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(GrassTile).TypeHandle);
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(StoneTile).TypeHandle);
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(WaterTile).TypeHandle);
         }
 
         public static void Register(Type tileType, short id)
@@ -45,9 +47,9 @@ namespace BaseBuilder.Engine.World.Tiles
             return IdsToTiles[id];
         }
 
-        public static Tile InitTile(Type type, PointI2D position)
+        public static Tile InitTile(Type type, PointI2D pos, NetIncomingMessage message)
         {
-            return (Tile) type.GetConstructor(TileConstructorParamTypes).Invoke(new object[] { position, PolygonD2D.UnitSquare });
+            return (Tile) type.GetConstructor(TileConstructorParamTypes).Invoke(new object[] { pos, PolygonD2D.UnitSquare, message });
         }
     }
 }

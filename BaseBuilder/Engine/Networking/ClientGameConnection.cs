@@ -147,6 +147,8 @@ namespace BaseBuilder.Engine.Networking
         {
             SharedState = packet.SharedState;
             LocalPlayerID = packet.LocalPlayerID;
+            
+            SharedState.World.LoadingDone(SharedState);
 
             var readyForSync = (ReadyForSyncPacket)Context.GetPoolFromPacketType(typeof(ReadyForSyncPacket)).GetGamePacketFromPool();
             readyForSync.PlayerID = packet.LocalPlayerID;

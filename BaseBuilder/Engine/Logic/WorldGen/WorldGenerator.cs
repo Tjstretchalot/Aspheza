@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree;
 using BaseBuilder.Engine.State.Resources;
+using BaseBuilder.Engine.World.Entities.Utilities;
 
 namespace BaseBuilder.Engine.Logic.WorldGen
 {
@@ -55,9 +56,11 @@ namespace BaseBuilder.Engine.Logic.WorldGen
                 for (int x = 0; x < width; x++)
                 {
                     var point = new PointI2D(x, y);
-                    var rand = random.NextDouble();
 
-                    tiles.Add(new GrassTile(point, tileCollisionMesh));
+                    if (x != 100)
+                        tiles.Add(new GrassTile(point, tileCollisionMesh));
+                    else
+                        tiles.Add(new WaterTile(point, tileCollisionMesh, Direction.Down));
 
                 }
             }
@@ -82,6 +85,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
 
             var tmp = new CaveManWorker(new PointD2D(wcx - 2, wcy + 0), SharedGameState.GetUniqueEntityID());
             tmp.Inventory.AddMaterial(Material.WheatSeed, 1);
+            tmp.Inventory.AddMaterial(Material.CarrotSeed, 1);
             TileWorld.AddMobileEntity(tmp);
             TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 2, wcy + 1), SharedGameState.GetUniqueEntityID()));
             TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 1, wcy + 2), SharedGameState.GetUniqueEntityID()));
@@ -125,6 +129,8 @@ namespace BaseBuilder.Engine.Logic.WorldGen
 
             InitOverseers();
             InitBuildings();
+
+            TileWorld.LoadingDone(SharedGameState);
         }
     }
 }
