@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.State.Resources;
+using BaseBuilder.Engine.World.Entities.Utilities;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -118,20 +119,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
             if(!FixedDirection)
             {
-                if(Worker.CollisionMesh.Left + Worker.Position.X >= Vein.CollisionMesh.Right + Vein.Position.X)
-                {
-                    Worker.OnMove(gameState, 0, -1, 0);
-                }else if(Worker.CollisionMesh.Right + Worker.Position.X <= Vein.CollisionMesh.Left + Vein.Position.X)
-                {
-                    Worker.OnMove(gameState, 0, 1, 0);
-                }else if(Worker.CollisionMesh.Top + Worker.Position.Y >= Vein.CollisionMesh.Bottom + Vein.Position.Y)
-                {
-                    Worker.OnMove(gameState, 0, 0, -1);
-                }else
-                {
-                    Worker.OnMove(gameState, 0, 0, 1);
-                }
-                Worker.OnStop(gameState);
+                DirectionUtils.Face(gameState, Worker, Vein);
 
                 FixedDirection = true;
             }

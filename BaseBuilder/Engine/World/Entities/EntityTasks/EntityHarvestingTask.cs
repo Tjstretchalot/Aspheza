@@ -7,6 +7,7 @@ using BaseBuilder.Engine.State;
 using Lidgren.Network;
 using Microsoft.Xna.Framework.Content;
 using BaseBuilder.Engine.World.Entities.Utilities;
+using BaseBuilder.Engine.World.Entities.MobileEntities;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -64,6 +65,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         protected int TimeLeftMS;
         protected string ThingToHarvest;
 
+        protected bool FixedDirection;
+
         public EntityHarvestTask(Container harvester, Harvestable harvested, int timeReqMS)
         {
             HarvesterID = harvester.ID;
@@ -72,6 +75,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             TotalTimeRequiredMS = timeReqMS;
             TimeLeftMS = TotalTimeRequiredMS;
             ThingToHarvest = harvested.GetHarvestNamePretty();
+
+            FixedDirection = false;
         }
 
         public EntityHarvestTask(NetIncomingMessage message)
@@ -82,6 +87,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             TotalTimeRequiredMS = message.ReadInt32();
             TimeLeftMS = message.ReadInt32();
             ThingToHarvest = message.ReadString();
+
+            FixedDirection = message.ReadBoolean();
         }
 
         public void Write(NetOutgoingMessage message)
@@ -92,6 +99,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             message.Write(TotalTimeRequiredMS);
             message.Write(TimeLeftMS);
             message.Write(ThingToHarvest);
+
+            message.Write(FixedDirection);
         }
 
         public void Cancel(SharedGameState gameState)
@@ -113,6 +122,15 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
             if (!Harvested.ReadyToHarvest(gameState))
                 return EntityTaskStatus.Failure;
+
+            if(!FixedDirection)
+            {
+                FixedDirection = true;
+
+                var mobileHarv = Harvester as MobileEntity;
+                if(mobileHarv != null)
+                    DirectionUtils.Face(gameState, mobileHarv, Harvested);
+            }
 
             TimeLeftMS -= timeMS;
 

@@ -118,6 +118,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             from.Inventory.RemoveMaterialAt(Index);
             to.Inventory.AddMaterial(mat.Item1, mat.Item2);
 
+            if (FromMobile)
+                DirectionUtils.Face(gameState, (MobileEntity)from, to);
+
             return EntityTaskStatus.Success;
         }
 

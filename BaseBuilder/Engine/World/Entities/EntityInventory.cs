@@ -21,7 +21,7 @@ namespace BaseBuilder.Engine.World.Entities
         /// The inventory determines the max stack count, that way you can have 
         /// dudes that are better at holding certain materials than others.
         /// 
-        /// If a material is not in this dictionary, a limit of 1 is assumed.
+        /// If a material is not in this dictionary, a limit of DefaultStackSize is assumed.
         /// </summary>
         protected Dictionary<Material, int> MaterialsToMaxStackCount;
         
@@ -42,6 +42,11 @@ namespace BaseBuilder.Engine.World.Entities
         protected Func<Material, bool> AcceptsMaterialFunc;
 
         /// <summary>
+        /// Stack size to assume if none given
+        /// </summary>
+        protected int DefaultStackSize;
+
+        /// <summary>
         /// Initializes an empty inventory with the specifeid number of
         /// max items
         /// </summary>
@@ -56,6 +61,7 @@ namespace BaseBuilder.Engine.World.Entities
             Inventory = new Tuple<Material, int>[maxItems];
             MaterialsToMaxStackCount = new Dictionary<Material, int>();
             AcceptsMaterialFunc = (acceptsMatFunc == null ? (m) => true : acceptsMatFunc);
+            DefaultStackSize = 1;
         }
 
         /// <summary>
@@ -92,6 +98,8 @@ namespace BaseBuilder.Engine.World.Entities
 
                 MaterialsToMaxStackCount.Add(Material.GetMaterialByID(matID), max);
             }
+
+            DefaultStackSize = message.ReadInt32();
         }
 
         /// <summary>
@@ -126,6 +134,20 @@ namespace BaseBuilder.Engine.World.Entities
                 message.Write(kvp.Key.ID);
                 message.Write(kvp.Value);
             }
+
+            message.Write(DefaultStackSize);
+        }
+
+        /// <summary>
+        /// Sets the default stack size - the stack size that is assumed if none is set.
+        /// </summary>
+        /// <param name="defaultStackSize">New default stack size</param>
+        public void SetDefaultStackSize(int defaultStackSize)
+        {
+            if (defaultStackSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(defaultStackSize), defaultStackSize, "Default stack size must be strictly positive");
+
+            DefaultStackSize = defaultStackSize;
         }
 
         /// <summary>
@@ -142,7 +164,7 @@ namespace BaseBuilder.Engine.World.Entities
             int result;
             if (MaterialsToMaxStackCount.TryGetValue(material, out result))
                 return result;
-            return 1;
+            return DefaultStackSize;
         }
 
         /// <summary>

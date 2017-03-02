@@ -58,7 +58,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
             Direction = direction;
             Inventory = new EntityInventory(40);
-            Inventory.SetStackSizeFor(Material.GoldOre, 10);
+            Inventory.SetDefaultStackSize(10);
         }
 
         /// <summary>

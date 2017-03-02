@@ -267,19 +267,19 @@ namespace BaseBuilder.Engine.World
                 point.Y = startingTop;
                 point.X += context.Camera.Zoom;
             }
-
-            foreach(var immobile in ImmobileEntities)
-            {
-                context.Camera.PixelLocationOfWorld(immobile.Position.X, immobile.Position.Y, out point.X, out point.Y);
-
-                immobile.Render(context, point, immobile.Selected ? Color.LightBlue : Color.White);
-            }
-
+            
             foreach(var mobile in MobileEntities)
             {
                 context.Camera.PixelLocationOfWorld(mobile.Position.X, mobile.Position.Y, out point.X, out point.Y);
 
                 mobile.Render(context, point, mobile.Selected ? Color.LightBlue : Color.White);
+            }
+
+            foreach (var immobile in ImmobileEntities)
+            {
+                context.Camera.PixelLocationOfWorld(immobile.Position.X, immobile.Position.Y, out point.X, out point.Y);
+
+                immobile.Render(context, point, immobile.Selected ? Color.LightBlue : Color.White);
             }
 
             point.Y = startingTop;

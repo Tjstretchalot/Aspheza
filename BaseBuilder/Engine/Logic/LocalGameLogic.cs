@@ -261,7 +261,7 @@ namespace BaseBuilder.Engine.Logic
                     return;
                 }
 
-                var dist = e1.CollisionMesh.MinDistanceTo(PolygonD2D.UnitSquare, e1.Position, p);
+                var dist = Math.Abs(e1.Position.X - p.X) + Math.Abs(e1.Position.Y - p.Y);
 
                 if(best == null || dist < bestDistance)
                 {
@@ -300,15 +300,15 @@ namespace BaseBuilder.Engine.Logic
                 return true;
             };
 
-            Func<FiniteLineD2D, PointD2D, PointI2D> checkLine = (testLine, shift) =>
+            Action<FiniteLineD2D, PointD2D> checkLine = (testLine, shift) =>
             {
                 foreach(var pt in testLine.Shift(shift.X, shift.Y).GetTilesIntersected())
                 {
                     if (isValid(pt))
-                        return pt;
+                    {
+                        foundChoice(pt);
+                    }
                 }
-
-                return null;
             };
 
             Action<FiniteLineD2D, PointD2D> tryLine = (line, shift) =>
@@ -334,9 +334,7 @@ namespace BaseBuilder.Engine.Logic
                 var slightlyTowardsUsOnNormalVector = line.Normal.UnitVector.Scale(Math.Sign(-shiftRequiredInNormal) * 0.05);
 
                 var resultingLine = new FiniteLineD2D(line.Start + shift + shiftRequiredAsVector, line.End + shift + shiftRequiredAsVector); // SHIFT REQUIRED ON line.Start + line.End -> SHIFTED
-                var result = checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED; BUT WE NEED IT NOT TO BE AN EVEN POINT
-                if (result != null/* && false*/)
-                    foundChoice(result);
+                checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED; BUT WE NEED IT NOT TO BE AN EVEN POINT
 
                 destinationLinePointInNormal = nmovinProjectedOnNormal.Max + movingProjectedOnNormal.Length; // SHIFTED - SHIFTED = SHIFTED
                 shiftRequiredInNormal = destinationLinePointInNormal - linePointInNormal; // SHIFTED - SHIFTED = SHIFTED
@@ -346,13 +344,10 @@ namespace BaseBuilder.Engine.Logic
 
 
                 resultingLine = new FiniteLineD2D(line.Start + shift + shiftRequiredAsVector, line.End + shift + shiftRequiredAsVector); // SHIFT REQUIRED ON line.Start + line.End -> SHIFTED
-                result = checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED
-                if (result != null)
-                    foundChoice(result);
-                //return null;
+                checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED
             };
 
-            var goodEnoughDistance = e1.CollisionMesh.MinDistanceTo(e2.CollisionMesh, e1.Position, e2.Position);
+            var goodEnoughDistance = 0;// e1.CollisionMesh.MinDistanceTo(e2.CollisionMesh, e1.Position, e2.Position);
             foreach(var line in e2.CollisionMesh.Lines)
             {
                 tryLine(line, e2.Position);

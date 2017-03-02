@@ -100,6 +100,7 @@
     <Compile Include="Engine\World\Entities\EntityTasks\TaskIdentifier.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Farm.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\GoldOre.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\DirectionUtils.cs" />
     <Compile Include="Engine\World\Entities\Utilities\GrowthState.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\House.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityFailerTask.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Engine\World\Entities\Utilities\Direction.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Directional.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Harvestable.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\RandomUtils.cs" />
     <Compile Include="Engine\World\Entities\Utilities\SpriteRenderer.cs" />
     <Compile Include="Engine\World\Entities\Utilities\SpriteSheetAnimationRenderer.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Thing.cs" />

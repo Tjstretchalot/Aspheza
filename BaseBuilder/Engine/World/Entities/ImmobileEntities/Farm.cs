@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.State.Resources;
+using System.IO;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
@@ -36,6 +37,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public Farm(PointD2D position, int id) : base(position, _CollisionMesh, id)
         {
+            _HoverText = "A rudimentary farm. It's currently not growing anything";
             CollisionMesh = _CollisionMesh;
             GrowthState = GrowthState.Empty;
             Renderer = new SpriteRenderer("Farms", EmptyDrawRec);
@@ -85,12 +87,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
             if(plantOption == 1)
             {
+                _HoverText = "A rudimentary farm. It's currently growing wheat, but\nit's not done yet.";
                 GrowthState = GrowthState.WheatPlanted;
                 TimeUntilGownMS = 10000;
                 Renderer.SourceRect = PlantedDrawRec;
             }
             else if (plantOption == 2)
             {
+                _HoverText = "A rudimentary farm. It's currently growing carrots, but\nit's not done yet.";
                 GrowthState = GrowthState.CarrotsPlanted;
                 TimeUntilGownMS = 10000;
                 Renderer.SourceRect = PlantedDrawRec;
@@ -110,9 +114,11 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                     {
                         GrowthState = GrowthState.WheatHarvestable;
                         Renderer.SourceRect = WheatHarvestDrawRec;
+                        _HoverText = "A rudimentary farm. It has some wheat\nwhich is ready to harvest.";
                     }
                     else if (GrowthState == GrowthState.CarrotsPlanted)
                     {
+                        _HoverText = "A rudimentary farm. It has some carrots\nwhich are ready to harvest.";
                         GrowthState = GrowthState.CarrotsHarvestable;
                         Renderer.SourceRect = CarrotHarvestDrawRec;
                     }
@@ -122,8 +128,10 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         protected void ClearFarm()
         {
+            Inventory.RemoveMaterialAt(0);
             GrowthState = GrowthState.Empty;
             Renderer.SourceRect = EmptyDrawRec;
+            _HoverText = "A rudimentary farm. It's currently not growing anything";
         }
 
         public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)
@@ -132,9 +140,10 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             ID = message.ReadInt32();
             GrowthState = (GrowthState)message.ReadInt32();
             Inventory = new EntityInventory(message);
+            _HoverText = message.ReadString();
 
             Inventory.OnMaterialAdded += OnItemAdded;
-
+            
             TasksFromMessage(gameState, message);
         }
 
@@ -144,6 +153,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             message.Write(ID);
             message.Write((int)GrowthState);
             Inventory.Write(message);
+            message.Write(_HoverText);
 
             WriteTasks(message);
         }
@@ -191,26 +201,43 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public void TryHarvest(SharedGameState sharedGameState, Container reciever)
         {
-            Material mat;
-            int amt;
+            int numSeeds = RandomUtils.GetNetSafeRandom(sharedGameState).Next(2) + 1;
 
             if(GrowthState == GrowthState.CarrotsHarvestable)
             {
-                mat = Material.Carrot;
-                amt = 1;
-            }else if(GrowthState == GrowthState.WheatHarvestable)
+                if (!reciever.Inventory.HaveRoomFor(Material.Carrot, 1))
+                    return;
+
+                reciever.Inventory.AddMaterial(Material.Carrot, 1);
+
+                if (!reciever.Inventory.HaveRoomFor(Material.CarrotSeed, numSeeds))
+                {
+                    ClearFarm();
+                    return;
+                }
+
+                reciever.Inventory.AddMaterial(Material.CarrotSeed, numSeeds);
+            }
+            else if(GrowthState == GrowthState.WheatHarvestable)
             {
-                mat = Material.Wheat;
-                amt = 1;
-            }else
+                if (!reciever.Inventory.HaveRoomFor(Material.Wheat, 1))
+                    return;
+
+                reciever.Inventory.AddMaterial(Material.Wheat, 1);
+
+                if (!reciever.Inventory.HaveRoomFor(Material.WheatSeed, numSeeds))
+                {
+                    ClearFarm();
+                    return;
+                }
+
+                reciever.Inventory.AddMaterial(Material.WheatSeed, numSeeds);
+            }
+            else
             {
                 return;
             }
 
-            if (!reciever.Inventory.HaveRoomFor(mat, amt))
-                return;
-
-            reciever.Inventory.AddMaterial(mat, amt);
             ClearFarm();
         }
 
