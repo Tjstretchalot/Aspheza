@@ -20,7 +20,7 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
             SourceRect = sourceRect;
         }
 
-        public void Render(RenderContext context, int x, int y, int w, int h, Color overlay)
+        public void Render(RenderContext context, int x, int y, double w, double h, Color overlay)
         {
             var texture = context.Content.Load<Texture2D>(SpriteName);
 

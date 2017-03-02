@@ -23,9 +23,9 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         GrowthState GrowthState;
         static Rectangle EmptyDrawRec = new Rectangle(0, 0, 64, 68);
         static Rectangle PlantedDrawRec = new Rectangle(0, 69, 64, 68);
-        static Rectangle BeansHarvestDrawRec = new Rectangle(65, 53, 64, 84);
+        static Rectangle CarrotHarvestDrawRec = new Rectangle(65, 53, 64, 84);
         static Rectangle WheatHarvestDrawRec = new Rectangle(130, 49, 64, 88);
-
+        
         static Farm()
         {
             _CollisionMesh = new RectangleD2D(4, 4);
@@ -114,7 +114,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                     else if (GrowthState == GrowthState.CarrotsPlanted)
                     {
                         GrowthState = GrowthState.CarrotsHarvestable;
-                        Renderer.SourceRect = BeansHarvestDrawRec;
+                        Renderer.SourceRect = CarrotHarvestDrawRec;
                     }
                 }
             }
@@ -150,8 +150,38 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            var text = context.Content.Load<Texture2D>("Farms");
-            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 4, 4, overlay);
+            int endX;
+            int endY;
+            double worldWidth;
+            double worldHeight;
+
+            switch (GrowthState)
+            {
+                case GrowthState.WheatHarvestable:
+                    worldWidth = 4;
+                    worldHeight = 88.0 / 16;
+                    endX = (int)(screenTopLeft.X);
+                    endY = (int)(screenTopLeft.Y - worldHeight * (20.0 / 88) * context.Camera.Zoom);
+                    break;
+                case GrowthState.CarrotsHarvestable:
+                    worldWidth = 4;
+                    worldHeight = 84.0 / 16;
+                    endX = (int)(screenTopLeft.X);
+                    endY = (int)(screenTopLeft.Y - worldHeight * (16.0 / 84) * context.Camera.Zoom);
+                    break;
+                case GrowthState.CarrotsPlanted:
+                case GrowthState.WheatPlanted:
+                case GrowthState.Empty:
+                    endX = (int)(screenTopLeft.X);
+                    endY = (int)(screenTopLeft.Y);
+                    worldWidth = 4;
+                    worldHeight = 68.0 / 16;
+                    break;
+                default:
+                    throw new InvalidProgramException();
+            }
+
+            Renderer.Render(context, endX, endY, worldWidth, worldHeight, overlay);
         }
 
         public bool ReadyToHarvest(SharedGameState sharedGameState)
