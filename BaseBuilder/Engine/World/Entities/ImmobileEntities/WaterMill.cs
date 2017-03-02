@@ -33,6 +33,44 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         public EntityInventory Inventory { get; protected set; } 
         public EntityInventory InventoryMilled { get; protected set; }
 
+        public override string HoverText
+        {
+            get
+            {
+                var result = new StringBuilder();
+
+                result.Append("Water mill - mills wheat into flour.");
+
+                if (Milling)
+                {
+                    result.Append("\nIt has ");
+                    result.Append(Inventory.MaterialAt(0).Item2);
+                    result.Append(" bushel");
+                    if (Inventory.MaterialAt(0).Item2 > 1)
+                        result.Append("s");
+
+                    result.Append(" of wheat ready to mill.");
+                }
+
+                var millMat = InventoryMilled.MaterialAt(0);
+                if(millMat != null)
+                {
+                    result.Append("\nIt has ").Append(millMat.Item2).Append(" bag");
+                    if (InventoryMilled.MaterialAt(0).Item2 > 1)
+                        result.Append("s");
+                    result.Append(" of flour ready for pickup.");
+
+                    if(millMat.Item2 == InventoryMilled.GetStackSizeFor(millMat.Item1))
+                    {
+                        result.Append("\nIt cannot hold any more flour.");
+                    }
+                }
+                
+
+                return result.ToString();
+            }
+        }
+
         static WaterMill()
         {
             _CollisionMesh = new RectangleD2D(11, 6);
@@ -40,7 +78,6 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         
         public WaterMill(PointD2D position, int id) : base(position, _CollisionMesh, id)
         {
-            _HoverText = "A water powered mill. It's not currently making flour";
             CollisionMesh = _CollisionMesh;
             CurrentAnimationLocation = 0;
             Renderer = new SpriteRenderer("WaterMill", AnimationRecs[0]);
@@ -81,7 +118,6 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             {
                 Milling = true;
                 TimeUntilNextMillCompletionMS = 5000;
-                _HoverText = "A water powered mill. It's currently making flour.";
             }
         }
 
@@ -111,7 +147,6 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                         if (Inventory.GetAmountOf(Material.Wheat) == 0)
                         {
                             Milling = false;
-                            _HoverText = "A water powered mill. It's not currently making flour";
                         }
                     }
                 }

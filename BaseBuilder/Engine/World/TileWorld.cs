@@ -256,31 +256,38 @@ namespace BaseBuilder.Engine.World
             {
                 cSize = context.DefaultFont.MeasureString("C");
             }
+            
             for(int x = leftMostVisibleTileX; x <= rightMostVisibleTileX; x++)
             {
                 for(int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
                 {
                     var tile = TileAt(x, y);
                     tile.Render(context, point, Color.White);
+                    
                     point.Y += context.Camera.Zoom;
                 }
 
                 point.Y = startingTop;
                 point.X += context.Camera.Zoom;
             }
-            
-            foreach(var mobile in MobileEntities)
+
+
+            List<int> drawnIDS = new List<int>();
+            for (int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
             {
-                context.Camera.PixelLocationOfWorld(mobile.Position.X, mobile.Position.Y, out point.X, out point.Y);
-
-                mobile.Render(context, point, mobile.Selected ? Color.LightBlue : Color.White);
-            }
-
-            foreach (var immobile in ImmobileEntities)
-            {
-                context.Camera.PixelLocationOfWorld(immobile.Position.X, immobile.Position.Y, out point.X, out point.Y);
-
-                immobile.Render(context, point, immobile.Selected ? Color.LightBlue : Color.White);
+                for (int x = leftMostVisibleTileX; x <= rightMostVisibleTileX; x++)
+                {
+                    var tile = TileAt(x, y);
+                    foreach (var ent in TileToEntities[tile])
+                    {
+                        if (!drawnIDS.Contains(ent.ID))
+                        {
+                            drawnIDS.Add(ent.ID);
+                            context.Camera.PixelLocationOfWorld(ent.Position.X, ent.Position.Y, out point.X, out point.Y);
+                            ent.Render(context, point, ent.Selected ? Color.LightBlue : Color.White);
+                        }
+                    }
+                }
             }
 
             point.Y = startingTop;

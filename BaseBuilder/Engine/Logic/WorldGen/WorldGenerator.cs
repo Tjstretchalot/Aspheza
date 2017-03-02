@@ -57,7 +57,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
                 {
                     var point = new PointI2D(x, y);
 
-                    if (x != 100)
+                    if (x != 128 && x != 129 && x != 130)
                         tiles.Add(new GrassTile(point, tileCollisionMesh));
                     else
                         tiles.Add(new WaterTile(point, tileCollisionMesh, Direction.Down));

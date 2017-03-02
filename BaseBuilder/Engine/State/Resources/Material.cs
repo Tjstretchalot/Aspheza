@@ -27,7 +27,7 @@ namespace BaseBuilder.Engine.State.Resources
             WheatSeed = new Material("materials", new Rectangle(66, 0, 32, 32), "Wheat Seed\nCan be planted in a farm to grow into wheat", 3);
             Carrot = new Material("materials", new Rectangle(33, 66, 32, 32), "Carrot\nAn average source of food", 4);
             Wheat = new Material("materials", new Rectangle(66, 33, 32, 32), "Wheat\nCan be made into flour via a mill. Also serves as\na poor source of food", 5);
-            Flour = new Material("materials", new Rectangle(0, 33, 32, 32), "Flour", 6);
+            Flour = new Material("materials", new Rectangle(0, 33, 32, 32), "Flour\nCan be made into bread via a bakery.", 6);
         }
 
         public int ID { get; }

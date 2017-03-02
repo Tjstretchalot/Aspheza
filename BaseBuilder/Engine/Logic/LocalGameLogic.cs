@@ -46,7 +46,7 @@ namespace BaseBuilder.Engine.Logic
         public LocalGameLogic(ContentManager content)
         {
             this.content = content;
-            cameraSpeed = 0.01;
+            cameraSpeed = 0.03;
             minCameraZoom = 32;
             cameraZoomSpeed = 0.01;
 
