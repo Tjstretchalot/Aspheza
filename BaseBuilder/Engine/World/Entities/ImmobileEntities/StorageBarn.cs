@@ -51,6 +51,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             }
         }
 
+        public override string UnbuiltHoverText
+        {
+            get
+            {
+                return "Barn - holds stuff.";
+            }
+        }
+
         public EntityInventory Inventory { get; set; }
         protected SpriteRenderer Renderer;
 

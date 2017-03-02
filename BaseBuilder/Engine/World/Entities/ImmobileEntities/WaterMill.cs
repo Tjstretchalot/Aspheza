@@ -33,6 +33,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         public EntityInventory Inventory { get; protected set; } 
         public EntityInventory InventoryMilled { get; protected set; }
 
+        public override string UnbuiltHoverText
+        {
+            get
+            {
+                return "Water mill - mills wheat into flour.";
+            }
+        }
+
         public override string HoverText
         {
             get

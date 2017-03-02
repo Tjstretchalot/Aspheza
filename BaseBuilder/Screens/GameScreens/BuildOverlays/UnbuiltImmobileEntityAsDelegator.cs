@@ -30,7 +30,9 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             }
         }
 
-        public string HoverText { get { return null; } }
+        public string HoverText { get { return CurrentEntity.HoverText; } }
+
+        public string UnbuiltHoverText {  get { return CurrentEntity.UnbuiltHoverText; } }
 
         public ImmobileEntity CreateEntity(PointD2D location)
         {

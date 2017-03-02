@@ -10,6 +10,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
     public abstract class ImmobileEntity : Entity
     {
+        public virtual string UnbuiltHoverText { get { return null; }  }
+
         public ImmobileEntity(PointD2D position, PolygonD2D collisionMesh, int id) : base(position, collisionMesh, id)
         {
         }

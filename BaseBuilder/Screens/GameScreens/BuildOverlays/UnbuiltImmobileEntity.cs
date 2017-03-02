@@ -24,6 +24,11 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         PolygonD2D CollisionMesh { get; }
 
         /// <summary>
+        /// The unbuilt hover text
+        /// </summary>
+        string UnbuiltHoverText { get; }
+
+        /// <summary>
         /// Creates the entity at the specified location
         /// </summary>
         /// <param name="location">The location to spawn the entity</param>

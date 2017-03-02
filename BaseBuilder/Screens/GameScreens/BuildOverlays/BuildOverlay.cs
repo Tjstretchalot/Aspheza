@@ -22,6 +22,9 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
     /// </summary>
     public class BuildOverlay : MyGameComponent
     {
+        protected BuildOverlayMenuComponent Menu;
+        protected bool MenuVisible;
+
         protected static Color PlaceableColor = new Color(200, 200, 100);
         protected UnbuiltImmobileEntity BuildingToPlace;
         protected PointD2D CurrentPlaceLocation;
@@ -33,38 +36,49 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         {
             CurrentPlaceLocation = new PointD2D(0, 0);
             Init(new PointI2D(0, 0), new PointI2D(0, 0), 10);
+
+            Menu = new BuildOverlayMenuComponent(content, graphics, graphicsDevice, spriteBatch);
         }
 
         public override void Draw(RenderContext context)
         {
+            if (!MenuVisible)
+                return;
+
             if (BuildingToPlace != null)
             {
                 var placeLocationScreen = new PointD2D((int)context.Camera.PixelLocationOfWorldX(CurrentPlaceLocation.X), (int)context.Camera.PixelLocationOfWorldY(CurrentPlaceLocation.Y));
 
                 BuildingToPlace.Render(context, placeLocationScreen, CantPlace ? Color.Red : PlaceableColor);
             }
+            
+            Menu.Draw(context);
         }
 
         public override bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame)
         {
-            if (BuildingToPlace == null)
+            bool tmp = false;
+            if (!MenuVisible)
             {
-                if (last.IsKeyDown(Keys.B) && current.IsKeyUp(Keys.B))
+                if (keysReleasedThisFrame.Contains(Keys.B))
                 {
-                    BuildingToPlace = new UnbuiltImmobileEntityAsDelegator(() => new StorageBarn(new PointD2D(0, 0), sharedGameState.GetUniqueEntityID(), Direction.Down));
+                    MenuVisible = true;
                     return true;
                 }
             }else
             {
-                if(last.IsKeyDown(Keys.Escape) && current.IsKeyUp(Keys.Escape))
+                if(keysReleasedThisFrame.Contains(Keys.Escape))
                 {
-                    BuildingToPlace = null;
+                    MenuVisible = false;
                     return true;
+                }else
+                {
+                    tmp = Menu.HandleKeyboardState(sharedGameState, localGameState, netContext, last, current, keysReleasedThisFrame);
                 }
             }
 
 
-            if(last.IsKeyDown(Keys.Delete) && current.IsKeyUp(Keys.Delete))
+            if(keysReleasedThisFrame.Contains(Keys.Delete))
             {
                 var immobileSel = localGameState.SelectedEntity as ImmobileEntity;
 
@@ -73,15 +87,22 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                     var order = netContext.GetPoolFromPacketType(typeof(DeconstructOrder)).GetGamePacketFromPool() as DeconstructOrder;
                     order.EntityID = immobileSel.ID;
                     localGameState.Orders.Add(order);
+                    return true;
                 }
             }
-            return false;
+
+            return tmp;
         }
 
         public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
         {
-            if (BuildingToPlace == null)
+            if (!MenuVisible)
                 return false;
+
+            bool tmp = Menu.HandleMouseState(sharedGameState, localGameState, netContext, last, current);
+            BuildingToPlace = Menu.Current;
+            if (BuildingToPlace == null)
+                return tmp;
 
             var desLeft = current.Position.X - ((BuildingToPlace.CollisionMesh.Right - BuildingToPlace.CollisionMesh.Left) * localGameState.Camera.Zoom) / 2.0;
             var desTop = current.Position.Y - ((BuildingToPlace.CollisionMesh.Bottom - BuildingToPlace.CollisionMesh.Top) * localGameState.Camera.Zoom) / 2.0;
@@ -126,6 +147,18 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 }
             }
             return true;
+        }
+
+        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
+        {
+            base.Update(sharedGameState, localGameState, netContext, timeMS);
+            Menu.Update(sharedGameState, localGameState, netContext, timeMS);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            Menu.Dispose();
         }
     }
 }

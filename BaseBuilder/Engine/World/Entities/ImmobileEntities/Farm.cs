@@ -36,6 +36,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         // This is used as a prop, it never has anything in it
         public EntityInventory Inventory { get; protected set; }
 
+        public override string UnbuiltHoverText
+        {
+            get
+            {
+                return "Farm - used for growing crops";
+            }
+        }
+
         public Farm(PointD2D position, int id) : base(position, _CollisionMesh, id)
         {
             _HoverText = "A rudimentary farm. It's currently not growing anything";
