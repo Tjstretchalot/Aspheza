@@ -18,12 +18,12 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         protected static List<Tuple<Rectangle, PointD2D>> _SourceRectsToOffsetLocations;
         protected static string _SheetName;
         
-        private static PolygonD2D _CollisionMesh;
+        private static CollisionMeshD2D _CollisionMesh;
 
         static MageTower()
         {
 
-            _CollisionMesh = new RectangleD2D(3, 4);
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D>{ new RectangleD2D(3, 4) });
 
             _SourceRectsToOffsetLocations = new List<Tuple<Rectangle, PointD2D>>();
 

@@ -35,10 +35,10 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public PointD2D Position { get; protected set; }
 
         /// <summary>
-        /// The polygon that can be used for intersection. Recall this does not itself
+        /// The collision mesh that can be used for intersection. Recall this does not itself
         /// reflect the position.
         /// </summary>
-        public PolygonD2D CollisionMesh { get; protected set; }
+        public CollisionMeshD2D CollisionMesh { get; protected set; }
 
         /// <summary>
         /// Not-null if this entity has text on hover
@@ -61,7 +61,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public Queue<IEntityTask> Tasks;
         public IEntityTask CurrentTask;
         
-        protected Entity(PointD2D position, PolygonD2D collisionMesh, int id)
+        protected Entity(PointD2D position, CollisionMeshD2D collisionMesh, int id)
         {
             Position = position;
             CollisionMesh = collisionMesh;
@@ -120,7 +120,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public virtual void FromMessage(SharedGameState gameState, NetIncomingMessage message)
         {
             Position = new PointD2D(message);
-            CollisionMesh = new PolygonD2D(message);
+            CollisionMesh = new CollisionMeshD2D(message);
             ID = message.ReadInt32();
 
             TasksFromMessage(gameState, message);
@@ -188,7 +188,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         }
 
-        protected void Init(PointD2D position, PolygonD2D collisionMesh)
+        protected void Init(PointD2D position, CollisionMeshD2D collisionMesh)
         {
             Position = position;
             CollisionMesh = collisionMesh;
@@ -198,11 +198,10 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// Returns true if this Entity contains the specified point. Returns false otherwise.
         /// </summary>
         /// <param name="point">The point to check.</param>
-        /// <param name="strict">False if touching constitutes intersection, true otherwise.</param>
-        /// <returns></returns>
-        public bool Contains(PointD2D point, bool strict = false)
+        /// <returns>If this entity contains the specified point</returns>
+        public bool Contains(PointD2D point)
         {
-            return CollisionMesh.Contains(point, Position, strict);
+            return CollisionMesh.Contains(point, Position);
         }
 
         public void TilesIntersectedAt(List<PointI2D> list)

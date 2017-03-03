@@ -72,6 +72,16 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// </summary>
         public double Right { get; protected set; }
 
+        /// <summary>
+        /// The axis-aligned bounding box width of this polygon
+        /// </summary>
+        public double Width { get; protected set; }
+
+        /// <summary>
+        /// The axis-aligned bounding box height of this polygon
+        /// </summary>
+        public double Height { get; protected set; }
+
         protected PointD2D _Midpoint;
 
         /// <summary>
@@ -118,6 +128,8 @@ namespace BaseBuilder.Engine.Math2D.Double
             {
                 Vertices.Add(new PointD2D(message));
             }
+
+            Init(Vertices);
         }
 
         public void Write(NetOutgoingMessage message)
@@ -177,6 +189,9 @@ namespace BaseBuilder.Engine.Math2D.Double
             }
 
             RemoveRedundantNormals(UniqueUnitNormals);
+
+            Width = Right - Left;
+            Height = Bottom - Top;
         }
 
         /// <summary>

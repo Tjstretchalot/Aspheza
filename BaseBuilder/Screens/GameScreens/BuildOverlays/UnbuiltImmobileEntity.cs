@@ -21,7 +21,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         /// <summary>
         /// The collision mesh used for this unbuilt entity
         /// </summary>
-        PolygonD2D CollisionMesh { get; }
+        CollisionMeshD2D CollisionMesh { get; }
 
         /// <summary>
         /// The unbuilt hover text

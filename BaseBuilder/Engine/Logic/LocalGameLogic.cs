@@ -254,7 +254,7 @@ namespace BaseBuilder.Engine.Logic
                 if (best != null && bestDistance <= 0)
                     return;
 
-                if(e1.CollisionMesh.Intersects(PolygonD2D.UnitSquare, e1.Position, p))
+                if(e1.CollisionMesh.Intersects(CollisionMeshD2D.UnitSquare, e1.Position, p))
                 {
                     best = p;
                     bestDistance = 0;
@@ -315,14 +315,14 @@ namespace BaseBuilder.Engine.Logic
             {
                 shift = (shift == null ? PointD2D.Origin : shift);
 
-                var movingProjectedOnNormal = e1.CollisionMesh.ProjectOntoAxis(line.Normal.UnitVector); // UNSHIFTED, DOESNT REQUIRE SHIFT
-                var nmovinProjectedOnNormal = e2.CollisionMesh.ProjectOntoAxis(line.Normal.UnitVector, e2.Position); // SHIFTED
+                var movingProjectedOnNormal = e1.CollisionMesh.BoundingBox.ProjectOntoAxis(line.Normal.UnitVector); // UNSHIFTED, DOESNT REQUIRE SHIFT
+                var nmovinProjectedOnNormal = e2.CollisionMesh.BoundingBox.ProjectOntoAxis(line.Normal.UnitVector, e2.Position); // SHIFTED
 
                 var movingProjectedOnNormalAsLine = movingProjectedOnNormal.AsFiniteLineD2D(); // UNSHIFTED, DOESNT REQUIRE SHIFT
                 var nmovinProjectedOnNormalAsLine = nmovinProjectedOnNormal.AsFiniteLineD2D(); // SHIFTED
 
-                var movingProjectedOnLine = e1.CollisionMesh.ProjectOntoAxis(line.Axis.UnitVector); // UNSHIFTED, DOESNT REQUIRE SHIFT
-                var nmovinProjectedOnLine = e2.CollisionMesh.ProjectOntoAxis(line.Axis.UnitVector, e2.Position); // SHIFTED
+                var movingProjectedOnLine = e1.CollisionMesh.BoundingBox.ProjectOntoAxis(line.Axis.UnitVector); // UNSHIFTED, DOESNT REQUIRE SHIFT
+                var nmovinProjectedOnLine = e2.CollisionMesh.BoundingBox.ProjectOntoAxis(line.Axis.UnitVector, e2.Position); // SHIFTED
 
 
                 var linePointInNormal = OneDimensionalLine.DistanceOnAxis(line.Normal.UnitVector, line.Start, shift); // SHIFTED
@@ -348,7 +348,7 @@ namespace BaseBuilder.Engine.Logic
             };
 
             var goodEnoughDistance = 0;// e1.CollisionMesh.MinDistanceTo(e2.CollisionMesh, e1.Position, e2.Position);
-            foreach(var line in e2.CollisionMesh.Lines)
+            foreach(var line in e2.CollisionMesh.BoundingBox.Lines)
             {
                 tryLine(line, e2.Position);
                 if (best != null && bestDistance <= goodEnoughDistance)

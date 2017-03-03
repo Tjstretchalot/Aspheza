@@ -12,7 +12,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
     {
         public virtual string UnbuiltHoverText { get { return null; }  }
 
-        public ImmobileEntity(PointD2D position, PolygonD2D collisionMesh, int id) : base(position, collisionMesh, id)
+        public ImmobileEntity(PointD2D position, CollisionMeshD2D collisionMesh, int id) : base(position, collisionMesh, id)
         {
         }
 

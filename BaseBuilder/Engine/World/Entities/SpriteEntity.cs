@@ -18,7 +18,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
     {
         protected string SpriteName;
 
-        public SpriteEntity(PointD2D position, PolygonD2D collisionMesh, int id, string spriteName) : base(position, collisionMesh, id)
+        public SpriteEntity(PointD2D position, CollisionMeshD2D collisionMesh, int id, string spriteName) : base(position, collisionMesh, id)
         {
             SpriteName = spriteName;
         }

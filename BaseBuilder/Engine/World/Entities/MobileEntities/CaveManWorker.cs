@@ -16,7 +16,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
     {
         private SpriteSheetAnimationRenderer AnimationRenderer;
         private const double SpeedConst = 0.005;
-        private static RectangleD2D _CollisionMesh;
+        private static CollisionMeshD2D _CollisionMesh;
         
         static List<Rectangle> DownMove = new List<Rectangle> { new Rectangle(16, 0, 16, 16), new Rectangle(0, 0, 16, 16), new Rectangle(16, 0, 16, 16), new Rectangle(32, 0, 16, 16) };
         static List<Rectangle> UpMove = new List<Rectangle> { new Rectangle(16, 16, 16, 16), new Rectangle(0, 16, 16, 16), new Rectangle(16, 16, 16, 16), new Rectangle(32, 16, 16, 16) };
@@ -27,7 +27,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 
         static CaveManWorker()
         {
-            _CollisionMesh = new RectangleD2D(1, 1);
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(1, 1) });
         }
 
         public CaveManWorker(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)

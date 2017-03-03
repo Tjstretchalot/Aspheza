@@ -17,14 +17,37 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
     public class Tavern : ImmobileEntity
     {
-        protected static PolygonD2D _CollisionMesh;
+        protected static CollisionMeshD2D _CollisionMesh;
 
         protected SpriteRenderer Renderer;
         static Rectangle SourceRec = new Rectangle(0, 0, 218, 212);
                 
         static Tavern()
         {
-            _CollisionMesh = new PolygonD2D(new List<PointD2D> { new PointD2D(0, 5), new PointD2D(10, 0), new PointD2D(13.625, 0), new PointD2D(13.625, 13), new PointD2D(9.5625, 13), new PointD2D(0, 10.5) });
+            double scale = 1 / 32.0;
+            var pixelPolys = new List<List<PointD2D>>
+            {
+                new List<PointD2D> { new PointD2D(0, 90), new PointD2D(30, 60), new PointD2D(33, 60), new PointD2D(52, 78), new PointD2D(52, 168), new PointD2D(0, 168) },
+                new List<PointD2D> { new PointD2D(52, 80), new PointD2D(102, 80), new PointD2D(102, 168), new PointD2D(52, 168) },
+                new List<PointD2D> { new PointD2D(102, 80), new PointD2D(120, 60), new PointD2D(154, 90), new PointD2D(154, 168), new PointD2D(102, 168) },
+                new List<PointD2D> { new PointD2D(154, 0), new PointD2D(218, 0), new PointD2D(218, 212), new PointD2D(154, 212) },
+
+                new List<PointD2D> { new PointD2D(60, 168), new PointD2D(60, 174), new PointD2D(70, 186), new PointD2D(102, 181), new PointD2D(102, 168) }
+            };
+
+            var worldPolys = new List<PolygonD2D>();
+            foreach(var poly in pixelPolys)
+            {
+                var worldList = new List<PointD2D>();
+                foreach(var pixelP in poly)
+                {
+                    worldList.Add(new PointD2D(pixelP.X * scale, pixelP.Y * scale));
+                }
+
+                worldPolys.Add(new PolygonD2D(worldList));
+            }
+
+            _CollisionMesh = new CollisionMeshD2D(worldPolys);
         }
 
         public Tavern(PointD2D position, int id) : base(position, _CollisionMesh, id)
@@ -61,7 +84,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 218 / 16.0, 212 / 16.0, overlay);
+            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 218 / 32.0, 212 / 32.0, overlay);
         }
     }
 }

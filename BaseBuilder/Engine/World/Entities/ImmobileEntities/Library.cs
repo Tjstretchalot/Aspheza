@@ -17,14 +17,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
     public class Library : ImmobileEntity
     {
-        protected static PolygonD2D _CollisionMesh;
+        protected static CollisionMeshD2D _CollisionMesh;
         
         protected SpriteRenderer Renderer;
         static Rectangle SourceRec = new Rectangle(0, 0, 132, 164);
 
         static Library()
         {
-            _CollisionMesh = new RectangleD2D(8, 10);
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(8, 10) });
         }
 
         public Library(PointD2D position, int id) : base(position, _CollisionMesh, id)

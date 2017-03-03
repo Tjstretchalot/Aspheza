@@ -20,6 +20,6 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
         /// <summary>
         /// The collision mesh
         /// </summary>
-        PolygonD2D CollisionMesh { get; }
+        CollisionMeshD2D CollisionMesh { get; }
     }
 }

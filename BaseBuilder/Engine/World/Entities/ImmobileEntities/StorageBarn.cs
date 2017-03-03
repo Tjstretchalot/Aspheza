@@ -15,19 +15,19 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
     public class StorageBarn : ImmobileEntity, Directional, Container
     {
-        protected static Dictionary<Direction, Tuple<Rectangle, PolygonD2D>> DirectionToSourceRectAndCollisionMesh;
+        protected static Dictionary<Direction, Tuple<Rectangle, CollisionMeshD2D>> DirectionToSourceRectAndCollisionMesh;
 
         static StorageBarn()
         {
-            PolygonD2D collisionMeshHorizontal = new RectangleD2D(100 / 16, 86 / 16);
-            PolygonD2D collisionMeshVertical = new RectangleD2D(74 / 16, 116 / 16);
+            CollisionMeshD2D collisionMeshHorizontal = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(100 / 16, 86 / 16) });
+            CollisionMeshD2D collisionMeshVertical = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(74 / 16, 116 / 16) });
 
             var sourceRectLeft = new Rectangle(0, 0, 100, 86);
             var sourceRectRight = new Rectangle(102, 0, 100, 86);
             var sourceRectUp = new Rectangle(0, 87, 74, 116);
             var sourceRectDown = new Rectangle(76, 87, 74, 116);
 
-            DirectionToSourceRectAndCollisionMesh = new Dictionary<Direction, Tuple<Rectangle, PolygonD2D>>{
+            DirectionToSourceRectAndCollisionMesh = new Dictionary<Direction, Tuple<Rectangle, CollisionMeshD2D>>{
                 { Direction.Down, Tuple.Create(sourceRectDown, collisionMeshVertical) },
                 { Direction.Up, Tuple.Create(sourceRectUp, collisionMeshVertical) },
                 { Direction.Left, Tuple.Create(sourceRectLeft, collisionMeshHorizontal) },

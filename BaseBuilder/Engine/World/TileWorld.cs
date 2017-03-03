@@ -411,28 +411,26 @@ namespace BaseBuilder.Engine.World
         /// </summary>
         /// <param name="location">The location to see if falls within an entity</param>
         /// <returns></returns>
-        public Entity GetEntityAtLocation(int x, int y)
+        public Entity GetEntityAtLocation(double x, double y)
         {
-            var tile = TileAt(x, y);
+            var tile = TileAt((int)x, (int)y);
             var entities = TileToEntities[tile];
-
-            if (entities.Count == 0)
-                return null;
             
-            return entities[0];
+            foreach(var ent in entities)
+            {
+                if (ent.Contains(new PointD2D(x, y)))
+                    return ent;
+            }
+
+            return null;
         }
 
         public Entity GetEntityAtLocation(PointD2D location)
         {
-            return GetEntityAtLocation((int)location.X, (int)location.Y);
-        }
-
-        public Entity GetEntityAtLocation(PointI2D location)
-        {
             return GetEntityAtLocation(location.X, location.Y);
         }
 
-        public IEnumerable<Entity> GetEntitiesAtLocation(PolygonD2D poly, PointD2D myPosition, bool strict = true)
+        public IEnumerable<Entity> GetEntitiesAtLocation(CollisionMeshD2D poly, PointD2D myPosition, bool strict = true)
         {
             List<PointI2D> tiles = new List<PointI2D>();
             poly.TilesIntersectedAt(myPosition, tiles);

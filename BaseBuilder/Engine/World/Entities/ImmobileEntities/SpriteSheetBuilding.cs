@@ -18,7 +18,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         protected string SheetName;
 
 
-        public SpriteSheetBuilding(PointD2D position, PolygonD2D collisionMesh, int id, string sheetName, List<Tuple<Rectangle, PointD2D>> sourceRectsToOffsetLocations) : base(position, collisionMesh, id)
+        public SpriteSheetBuilding(PointD2D position, CollisionMeshD2D collisionMesh, int id, string sheetName, List<Tuple<Rectangle, PointD2D>> sourceRectsToOffsetLocations) : base(position, collisionMesh, id)
         {
             SheetName = sheetName;
             SourceRectsToOffsetLocations = sourceRectsToOffsetLocations;

@@ -17,7 +17,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
     public class Farm : ImmobileEntity, Container, Harvestable
     {
-        protected static PolygonD2D _CollisionMesh;
+        protected static CollisionMeshD2D _CollisionMesh;
 
         protected int TimeUntilGownMS;
         GrowthState GrowthState;
@@ -30,7 +30,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         
         static Farm()
         {
-            _CollisionMesh = new RectangleD2D(4, 4);
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(4, 4) });
         }
 
         // This is used as a prop, it never has anything in it

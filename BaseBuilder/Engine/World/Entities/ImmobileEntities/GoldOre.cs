@@ -14,11 +14,11 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
     public class GoldOre : ImmobileEntity
     {
-        protected static PolygonD2D _CollisionMesh;
+        protected static CollisionMeshD2D _CollisionMesh;
 
         static GoldOre()
         {
-            _CollisionMesh = new RectangleD2D(4, 4);
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(4, 4) });
         }
 
         public GoldOre(PointD2D position, int id) : base(position, _CollisionMesh, id)

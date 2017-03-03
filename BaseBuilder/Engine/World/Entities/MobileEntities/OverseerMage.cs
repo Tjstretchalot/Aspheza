@@ -16,11 +16,11 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
     {
         private SpriteRenderer SpriteRenderer;
         private const double SpeedConst = 0.005;
-        private static RectangleD2D _CollisionMesh;
+        private static CollisionMeshD2D _CollisionMesh;
 
         static OverseerMage()
         {
-            _CollisionMesh = new RectangleD2D(1, 1);
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(1, 1) });
         }
         
         public OverseerMage(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)

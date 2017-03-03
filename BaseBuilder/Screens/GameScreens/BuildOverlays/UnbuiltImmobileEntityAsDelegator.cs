@@ -22,7 +22,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             CurrentEntity = entityCreator();
         }
 
-        public PolygonD2D CollisionMesh
+        public CollisionMeshD2D CollisionMesh
         {
             get
             {

@@ -17,7 +17,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
     public class WaterMill : ImmobileEntity, Container, Harvestable
     {
-        protected static PolygonD2D _CollisionMesh;
+        protected static CollisionMeshD2D _CollisionMesh;
 
         protected bool Milling;
         protected int TimeUntilNextMillCompletionMS;
@@ -81,7 +81,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         static WaterMill()
         {
-            _CollisionMesh = new RectangleD2D(11, 6);
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(11, 6) });
         }
         
         public WaterMill(PointD2D position, int id) : base(position, _CollisionMesh, id)

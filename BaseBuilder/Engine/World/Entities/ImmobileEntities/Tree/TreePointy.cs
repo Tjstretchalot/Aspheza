@@ -18,13 +18,13 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
         protected static List<Tuple<Rectangle, PointD2D>> _SourceRectsToOffsetLocations;
         protected static string _SheetName;
 
-        private static PolygonD2D _CollisionMesh;
+        private static CollisionMeshD2D _CollisionMesh;
 
         static TreePointy()
         {
             _SheetName = "roguelikeSheet_transparent";
 
-            _CollisionMesh = new RectangleD2D(1, 2);
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(1, 2) });
 
             _SourceRectsToOffsetLocations = new List<Tuple<Rectangle, PointD2D>>();
 

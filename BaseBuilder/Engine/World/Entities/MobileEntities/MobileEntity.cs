@@ -12,7 +12,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
     {
         public double SpeedUnitsPerMS;
 
-        public MobileEntity(PointD2D position, PolygonD2D collisionMesh, int id, double speed) : base(position, collisionMesh, id)
+        public MobileEntity(PointD2D position, CollisionMeshD2D collisionMesh, int id, double speed) : base(position, collisionMesh, id)
         {
             SpeedUnitsPerMS = speed;
         }

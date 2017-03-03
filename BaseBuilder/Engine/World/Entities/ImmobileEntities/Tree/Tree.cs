@@ -21,7 +21,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
         {
         }
 
-        public Tree(PointD2D position, PolygonD2D collisionMesh, int id, List<Tuple<Rectangle, PointD2D>> sourceRectsToOffsetLocations, TreeSize size, TreeStyle style, TreeColor color) : base(position, collisionMesh, id, "roguelikeSheet_transparent", sourceRectsToOffsetLocations)
+        public Tree(PointD2D position, CollisionMeshD2D collisionMesh, int id, List<Tuple<Rectangle, PointD2D>> sourceRectsToOffsetLocations, TreeSize size, TreeStyle style, TreeColor color) : base(position, collisionMesh, id, "roguelikeSheet_transparent", sourceRectsToOffsetLocations)
         {
             Size = size;
             Style = style;

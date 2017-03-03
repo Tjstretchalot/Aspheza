@@ -17,7 +17,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
     public class Bakery : ImmobileEntity, Container, Harvestable
     {
-        protected static PolygonD2D _CollisionMesh;
+        protected static CollisionMeshD2D _CollisionMesh;
 
         protected bool Baking;
         protected int TimeUntilNextBakeCompletionMS;
@@ -72,7 +72,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         static Bakery()
         {
-            _CollisionMesh = new RectangleD2D(5, 3.5);
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D>{ new RectangleD2D(5, 3.5) });
         }
 
         public Bakery(PointD2D position, int id) : base(position, _CollisionMesh, id)
