@@ -168,7 +168,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 156 / 16.0, 114 / 16.0, overlay);
+            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 156 / 32.0, 114 / 32.0, overlay);
         }
 
         public bool ReadyToHarvest(SharedGameState sharedGameState)
