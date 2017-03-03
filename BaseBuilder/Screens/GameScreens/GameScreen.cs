@@ -63,7 +63,7 @@ namespace BaseBuilder.Screens.GameScreens
             InitComponents();
 
             localGameState.EnsureInititialized(sharedGameState);
-
+            localGameLogic.CenterCamera(sharedGameState, localGameState);
         }
         
         protected void InitComponents()

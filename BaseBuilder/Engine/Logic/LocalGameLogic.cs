@@ -656,5 +656,15 @@ namespace BaseBuilder.Engine.Logic
             mouseLast = mouseCurr;
             keyboardLast = keyboardCurr;
         }
+
+        public void CenterCamera(SharedGameState sharedGameState, LocalGameState localGameState)
+        {
+            cameraPartialTopLeft = new PointD2D(sharedGameState.World.TileWidth / 2 - localGameState.Camera.VisibleWorldWidth / 2, sharedGameState.World.TileHeight / 2 - localGameState.Camera.VisibleWorldHeight / 2);
+
+            int pixelTopLeftX = (int)Math.Round(cameraPartialTopLeft.X * localGameState.Camera.Zoom);
+            int pixelTopLeftY = (int)Math.Round(cameraPartialTopLeft.Y * localGameState.Camera.Zoom);
+            localGameState.Camera.WorldTopLeft.X = pixelTopLeftX / localGameState.Camera.Zoom;
+            localGameState.Camera.WorldTopLeft.Y = pixelTopLeftY / localGameState.Camera.Zoom;
+        }
     }
 }

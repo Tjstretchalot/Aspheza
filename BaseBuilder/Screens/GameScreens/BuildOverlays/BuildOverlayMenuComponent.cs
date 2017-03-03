@@ -93,6 +93,8 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                  new FarmBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
                  new WaterMillOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
                  new BakeryBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
+                 new LibraryBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
+                 new TempleBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch)
             };
 
             MyRectIfNoScrollbar = new Rectangle(MyVisualRect.X, MyVisualRect.Y, MyVisualRect.Width, 5); // 5px padding on top
@@ -193,8 +195,8 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             if(last.ScrollWheelValue != current.ScrollWheelValue)
             {
                 // Scrolling was requested
-
-                var deltaScroll = (int)Math.Round((current.ScrollWheelValue - last.ScrollWheelValue) * 0.03);
+                
+                var deltaScroll = (int)Math.Round((current.ScrollWheelValue - last.ScrollWheelValue) * 0.07);
                 var desiredNewScrollY = ScrollBarYOffset + deltaScroll;
 
                 // Can't scroll things to cause them to go down visually

@@ -41,9 +41,15 @@ namespace BaseBuilder
             IsMouseVisible = true;
             IsFixedTimeStep = false;
             graphics.PreferMultiSampling = true;
-            //graphics.IsFullScreen = true;
-            //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            /*
+            graphics.IsFullScreen = true;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            */
+
+            graphics.IsFullScreen = false;
+            graphics.PreferredBackBufferWidth = 1152;
+            graphics.PreferredBackBufferHeight = 648;
         }
 
         /// <summary>
