@@ -19,6 +19,7 @@ namespace BaseBuilder.Engine.State.Resources
         public static Material Carrot { get; }
         public static Material Wheat { get; }
         public static Material Flour { get; }
+        public static Material Bread { get; }
 
         static Material()
         {
@@ -28,6 +29,7 @@ namespace BaseBuilder.Engine.State.Resources
             Carrot = new Material("materials", new Rectangle(33, 66, 32, 32), "Carrot\nAn average source of food", 4);
             Wheat = new Material("materials", new Rectangle(66, 33, 32, 32), "Wheat\nCan be made into flour via a mill. Also serves as\na poor source of food", 5);
             Flour = new Material("materials", new Rectangle(0, 33, 32, 32), "Flour\nCan be made into bread via a bakery.", 6);
+            Bread = new Material("materials", new Rectangle(0, 66, 32, 32), "Bread.", 6);
         }
 
         public int ID { get; }

@@ -39,6 +39,10 @@ namespace BaseBuilder.Engine.World.Entities
             Register(typeof(StorageBarn), 1006);
             Register(typeof(Farm), 1007);
             Register(typeof(WaterMill), 1008);
+            Register(typeof(Bakery), 1009);
+            Register(typeof(Tavern), 1010);
+            Register(typeof(Library), 1011);
+            Register(typeof(Temple), 1012);
         }
 
         public static void Register(Type entityType, short id)

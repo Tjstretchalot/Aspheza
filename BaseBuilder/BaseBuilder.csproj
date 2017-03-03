@@ -98,8 +98,12 @@
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMineGoldTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMoveTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TaskIdentifier.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\Bakery.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Farm.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\GoldOre.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\Library.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\Tavern.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\Temple.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\WaterMill.cs" />
     <Compile Include="Engine\World\Entities\Utilities\DirectionUtils.cs" />
     <Compile Include="Engine\World\Entities\Utilities\GrowthState.cs" />
@@ -224,6 +228,18 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Bakery.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Library.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Tavern.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Temple.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\tile_water_anim.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

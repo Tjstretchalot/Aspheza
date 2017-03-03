@@ -118,6 +118,10 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy + 0), SharedGameState.GetUniqueEntityID()));
             TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy - 5), SharedGameState.GetUniqueEntityID()));
             TileWorld.AddImmobileEntity(new WaterMill(new PointD2D(wcx - 30, wcy + 5), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(new Bakery(new PointD2D(wcx - 10, wcy - 15), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(new Tavern(new PointD2D(wcx + 10, wcy - 15), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(new Library(new PointD2D(wcx + 30, wcy - 15), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(new Temple(new PointD2D(wcx + 40, wcy - 15), SharedGameState.GetUniqueEntityID()));
         }
         
         public void Create(GraphicsDevice graphicsDevice)
