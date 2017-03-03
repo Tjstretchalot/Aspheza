@@ -57,7 +57,6 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 
         public override bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame)
         {
-            bool tmp = false;
             if (!MenuVisible)
             {
                 if (keysReleasedThisFrame.Contains(Keys.B))
@@ -69,11 +68,15 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             {
                 if(keysReleasedThisFrame.Contains(Keys.Escape))
                 {
-                    MenuVisible = false;
+                    if (Menu.Current != null)
+                        Menu.ClearSelection();
+                    else
+                        MenuVisible = false;
                     return true;
                 }else
                 {
-                    tmp = Menu.HandleKeyboardState(sharedGameState, localGameState, netContext, last, current, keysReleasedThisFrame);
+                    if (Menu.HandleKeyboardState(sharedGameState, localGameState, netContext, last, current, keysReleasedThisFrame))
+                        return true;
                 }
             }
 
@@ -91,7 +94,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 }
             }
 
-            return tmp;
+            return false;
         }
 
         public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
@@ -99,10 +102,12 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             if (!MenuVisible)
                 return false;
 
-            bool tmp = Menu.HandleMouseState(sharedGameState, localGameState, netContext, last, current);
+            if (Menu.HandleMouseState(sharedGameState, localGameState, netContext, last, current))
+                return true;
+
             BuildingToPlace = Menu.Current;
             if (BuildingToPlace == null)
-                return tmp;
+                return false;
 
             var desLeft = current.Position.X - ((BuildingToPlace.CollisionMesh.Right - BuildingToPlace.CollisionMesh.Left) * localGameState.Camera.Zoom) / 2.0;
             var desTop = current.Position.Y - ((BuildingToPlace.CollisionMesh.Bottom - BuildingToPlace.CollisionMesh.Top) * localGameState.Camera.Zoom) / 2.0;
@@ -120,10 +125,19 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             //CurrentPlaceLocation.Y = localGameState.Camera.WorldLocationOfPixelY(current.Position.Y);
 
             CantPlace = false;
-            foreach (var ent in sharedGameState.World.GetEntitiesAtLocation(BuildingToPlace.CollisionMesh, CurrentPlaceLocation))
+            if (CurrentPlaceLocation.X < 0 || CurrentPlaceLocation.Y < 0 ||
+                CurrentPlaceLocation.X + BuildingToPlace.CollisionMesh.Right >= sharedGameState.World.TileWidth ||
+                CurrentPlaceLocation.Y + BuildingToPlace.CollisionMesh.Bottom >= sharedGameState.World.TileHeight)
             {
                 CantPlace = true;
-                break;
+            }
+            else
+            {
+                foreach (var ent in sharedGameState.World.GetEntitiesAtLocation(BuildingToPlace.CollisionMesh, CurrentPlaceLocation))
+                {
+                    CantPlace = true;
+                    break;
+                }
             }
 
             if (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released && !CantPlace)
@@ -133,6 +147,8 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 var order = netContext.GetPoolFromPacketType(typeof(BuildOrder)).GetGamePacketFromPool() as BuildOrder;
                 order.Entity = ent;
                 localGameState.Orders.Add(order);
+
+                Menu.ClearSelection();
             }else if(last.ScrollWheelValue != current.ScrollWheelValue)
             {
                 var deltaScrollWheel = current.ScrollWheelValue - last.ScrollWheelValue;

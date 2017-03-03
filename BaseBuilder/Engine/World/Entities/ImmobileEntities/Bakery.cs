@@ -72,7 +72,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         static Bakery()
         {
-            _CollisionMesh = new RectangleD2D(10, 7);
+            _CollisionMesh = new RectangleD2D(5, 3.5);
         }
 
         public Bakery(PointD2D position, int id) : base(position, _CollisionMesh, id)

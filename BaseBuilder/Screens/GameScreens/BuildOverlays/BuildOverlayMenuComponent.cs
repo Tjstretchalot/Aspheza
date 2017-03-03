@@ -21,12 +21,30 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
     /// This draws the menu for the build overlay and is not used as a standalone
     /// game component.
     /// </summary>
-    public class BuildOverlayMenuComponent : HoverTextComponent
+    public class BuildOverlayMenuComponent : MyGameComponent
     {
         /// <summary>
         /// The list of unbuilt entities that can be chosen from
         /// </summary>
-        protected List<Tuple<UnbuiltImmobileEntity, int>> ChoicesAndYSpacing;
+        protected List<BuildOverlayMenuItem> MenuItems;
+
+        /// <summary>
+        /// The current index in menu items that is hovered, or -1 if
+        /// nothing is currently hovered
+        /// </summary>
+        protected int HoveredIndex;
+
+        /// <summary>
+        /// The current index in menu items that is selected, or -1 if
+        /// nothing is currently selected
+        /// </summary>
+        protected int SelectedIndex;
+
+
+        /// <summary>
+        /// The current selected unbuilt entity
+        /// </summary>
+        public UnbuiltImmobileEntity Current { get; protected set; }
 
         /// <summary>
         /// The camera for this menu.
@@ -39,25 +57,24 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         protected RenderContext MyContext;
 
         /// <summary>
-        /// The currently selected index
-        /// </summary>
-        protected int CurrentIndex;
-
-        public UnbuiltImmobileEntity Current
-        {
-            get
-            {
-                if (CurrentIndex == -1)
-                    return null;
-
-                return ChoicesAndYSpacing[CurrentIndex].Item1;
-            }
-        }
-
-        /// <summary>
         /// The background texture
         /// </summary>
         protected Texture2D MenuBackgroundTexture;
+
+        /// <summary>
+        /// Where this menu is visually
+        /// </summary>
+        protected Rectangle MyVisualRect;
+
+        /// <summary>
+        /// The size of this menu if there were no scrollbar
+        /// </summary>
+        protected Rectangle MyRectIfNoScrollbar;
+
+        /// <summary>
+        /// The y offset caused by the scroll bar
+        /// </summary>
+        protected int ScrollBarYOffset;
 
         public BuildOverlayMenuComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {
@@ -66,66 +83,132 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             MenuBackgroundTexture = new Texture2D(graphicsDevice, 1, 1);
             MenuBackgroundTexture.SetData(new[] { Color.Gray });
 
-            MenuCamera = new Camera(new PointD2D(0, 0), new RectangleD2D(Size.X, Size.Y, ScreenLocation.X, ScreenLocation.Y), 16);
-            CurrentIndex = -1;
+            MyVisualRect = new Rectangle(ScreenLocation.X, ScreenLocation.Y, Size.X, Size.Y);
+
+            HoveredIndex = -1;
+            SelectedIndex = -1;
+
+            MenuItems = new List<BuildOverlayMenuItem>{
+                 new BarnBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
+                 new FarmBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
+                 new WaterMillOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
+                 new BakeryBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
+            };
+
+            MyRectIfNoScrollbar = new Rectangle(MyVisualRect.X, MyVisualRect.Y, MyVisualRect.Width, 5); // 5px padding on top
+
+            foreach(var item in MenuItems)
+            {
+                item.Location = new PointI2D((int)(MyVisualRect.Width / 2 - item.VisualCollisionMesh.Width / 2), MyRectIfNoScrollbar.Height);
+
+                MyRectIfNoScrollbar.Height += (int)(item.VisualCollisionMesh.Height + 3); // 3px padding between each
+            }
+
+            MyRectIfNoScrollbar.Height += 5; // 5px padding on bottom
         }
 
         public override void Draw(RenderContext context)
         {
-            if (ChoicesAndYSpacing == null)
-                return;
+            SpriteBatch.Draw(MenuBackgroundTexture, MyVisualRect, Color.White);
 
-            MyContext.Camera = MenuCamera;
-            MyContext.Content = context.Content;
-            MyContext.Graphics = context.Graphics;
-            MyContext.GraphicsDevice = context.GraphicsDevice;
-            MyContext.SpriteBatch = context.SpriteBatch;
-            MyContext.DefaultFont = context.DefaultFont;
-            MyContext.CollisionDebug = context.CollisionDebug;
-
-            SpriteBatch.Draw(MenuBackgroundTexture, new Rectangle(ScreenLocation.X, ScreenLocation.Y, Size.X, Size.Y), Color.White);
-            
-            PointD2D drawPoint = new PointD2D(MenuCamera.ScreenLocation.Left, MenuCamera.ScreenLocation.Top + 5);
-            var mouseState = Mouse.GetState();
-            HoverText = null;
-            for (int i = 0; i < ChoicesAndYSpacing.Count; i++)
+            for(int i = 0; i < MenuItems.Count; i++)
             {
-                double trueWidth = (ChoicesAndYSpacing[i].Item1.CollisionMesh.Right - ChoicesAndYSpacing[i].Item1.CollisionMesh.Left) * MenuCamera.Zoom;
-                drawPoint.X = ScreenLocation.X + Size.X / 2 - trueWidth / 2;
-                if (mouseState.Position.X >= drawPoint.X && mouseState.Position.X <= drawPoint.X + trueWidth
-                    && mouseState.Position.Y >= drawPoint.Y && mouseState.Position.Y <= drawPoint.Y + ChoicesAndYSpacing[i].Item2)
-                {
-                    HoverText = ChoicesAndYSpacing[i].Item1.UnbuiltHoverText;
-
-                    if (mouseState.LeftButton == ButtonState.Pressed)
-                    {
-                        CurrentIndex = i;
-                    }
-                }
-
-
-                ChoicesAndYSpacing[i].Item1.Render(MyContext, drawPoint, CurrentIndex == i ? Color.Azure : Color.White);
-                drawPoint.Y += ChoicesAndYSpacing[i].Item2;
+                MenuItems[i].Render(MyVisualRect, ScrollBarYOffset, i == SelectedIndex);
             }
-
-            HoverTextMouseLoc = mouseState.Position;
-            base.Draw(context);
         }
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {
-            if (ChoicesAndYSpacing == null)
+            for (int i = 0; i < MenuItems.Count; i++)
             {
-                ChoicesAndYSpacing = new List<Tuple<UnbuiltImmobileEntity, int>>
-                {
-                      Tuple.Create((UnbuiltImmobileEntity)new UnbuiltImmobileEntityAsDelegator(() => new StorageBarn(new PointD2D(0, 0), sharedGameState.GetUniqueEntityID(), Direction.Right)), 74 + 3 + 5),
-                      Tuple.Create((UnbuiltImmobileEntity)new UnbuiltImmobileEntityAsDelegator(() => new Farm(new PointD2D(0, 0), sharedGameState.GetUniqueEntityID())), 64 + 5),
-                      Tuple.Create((UnbuiltImmobileEntity)new UnbuiltImmobileEntityAsDelegator(() => new WaterMill(new PointD2D(0, 0), sharedGameState.GetUniqueEntityID())), 100),
-                };
+                MenuItems[i].Update(timeMS, i == SelectedIndex);
             }
         }
-    
-    
+
+        public void ClearSelection()
+        {
+            SelectedIndex = -1;
+            Current = null;
+        }
+
+        public override bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame)
+        {
+            return false;
+        }
+
+        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        {
+            if (!MyVisualRect.Contains(current.Position))
+                return false;
+
+            bool foundHover = false;
+            if(HoveredIndex != -1)
+            {
+                if(MenuItems[HoveredIndex].ContainsMouse(MyVisualRect, ScrollBarYOffset, current.Position))
+                {
+                    foundHover = true;
+                }
+            }
+
+            if(!foundHover)
+            {
+                for(int i = 0; i < MenuItems.Count; i++)
+                {
+                    if(i != HoveredIndex && MenuItems[i].ContainsMouse(MyVisualRect, ScrollBarYOffset, current.Position))
+                    {
+                        // Hover changed from HoveredIndex to i
+                        HoveredIndex = i;
+                        foundHover = true;
+                        break;
+                    }
+                }
+            }
+            
+            if(!foundHover && HoveredIndex != -1)
+            {
+                // Previously something was hovered, but now nothing is hovered.
+                HoveredIndex = -1;
+            }
+
+            if(last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
+            {
+                if(HoveredIndex != -1 && !MenuItems[HoveredIndex].Selectable && SelectedIndex != -1)
+                {
+                    // Tried to select something that isn't selectable and had something selected, causing
+                    // us to lose that selection
+                    SelectedIndex = -1;
+                    Current = null;
+                }else if(SelectedIndex != HoveredIndex)
+                {
+                    // The selected item changed
+                    SelectedIndex = HoveredIndex;
+
+                    if (SelectedIndex == -1)
+                        Current = null;
+                    else
+                        Current = MenuItems[SelectedIndex].CreateUnbuiltImmobileEntity(sharedGameState);
+                }
+            }
+
+            if(last.ScrollWheelValue != current.ScrollWheelValue)
+            {
+                // Scrolling was requested
+
+                var deltaScroll = (int)Math.Round((current.ScrollWheelValue - last.ScrollWheelValue) * 0.03);
+                var desiredNewScrollY = ScrollBarYOffset + deltaScroll;
+
+                // Can't scroll things to cause them to go down visually
+                desiredNewScrollY = Math.Min(desiredNewScrollY, 0);
+
+                // Can't scroll past the bottom
+                desiredNewScrollY = Math.Max(desiredNewScrollY, -(MyRectIfNoScrollbar.Height - MyVisualRect.Height));
+
+                ScrollBarYOffset = desiredNewScrollY;
+            }
+
+            return true;
+        }
+
         public override void Dispose()
         {
             base.Dispose();
