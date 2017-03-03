@@ -78,7 +78,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 
         public BuildOverlayMenuComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {
-            Init(new PointI2D(graphicsDevice.Viewport.Width - 200, 25), new PointI2D(200, graphicsDevice.Viewport.Height - 250), 2);
+            Init(new PointI2D(graphicsDevice.Viewport.Width - 300, 25), new PointI2D(250, graphicsDevice.Viewport.Height - 250), 2);
 
             MenuBackgroundTexture = new Texture2D(graphicsDevice, 1, 1);
             MenuBackgroundTexture.SetData(new[] { Color.Gray });
@@ -94,7 +94,8 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                  new WaterMillOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
                  new BakeryBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
                  new LibraryBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
-                 new TempleBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch)
+                 new TempleBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
+                 new TavernBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch)
             };
 
             MyRectIfNoScrollbar = new Rectangle(MyVisualRect.X, MyVisualRect.Y, MyVisualRect.Width, 5); // 5px padding on top

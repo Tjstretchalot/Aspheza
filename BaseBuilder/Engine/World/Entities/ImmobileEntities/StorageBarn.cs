@@ -67,6 +67,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Direction = direction;
             Inventory = new EntityInventory(40);
             Inventory.SetDefaultStackSize(10);
+            _HoverText = "Storage Barn\nHolds a lot of stuff";
         }
 
         /// <summary>
@@ -74,7 +75,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         /// </summary>
         public StorageBarn() : base()
         {
-
+            _HoverText = "Storage Barn\nHolds a lot of stuff";
         }
 
         public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)

@@ -24,7 +24,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         static Temple()
         {
-            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(6, 8) });
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(3, 4) });
         }
 
         public Temple(PointD2D position, int id) : base(position, _CollisionMesh, id)
@@ -61,7 +61,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 100 / 16.0, 132 / 16.0, overlay);
+            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 100 / 32.0, 132 / 32.0, overlay);
         }
     }
 }

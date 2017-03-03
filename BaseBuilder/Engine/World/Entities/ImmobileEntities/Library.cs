@@ -24,7 +24,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         static Library()
         {
-            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(8, 10) });
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(4, 5) });
         }
 
         public Library(PointD2D position, int id) : base(position, _CollisionMesh, id)
@@ -61,7 +61,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 132 / 16.0, 164 / 16.0, overlay);
+            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 132 / 32.0, 164 / 32.0, overlay);
         }
     }
 }
