@@ -83,6 +83,22 @@ namespace BaseBuilder.Engine.Networking.Packets
                 SharedState.World.AddImmobileEntity((ImmobileEntity)EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(entID), SharedState, message));
             }
 
+            var numMobileEntsQueuedForRem = message.ReadInt32();
+            for(var i = 0; i < numMobileEntsQueuedForRem; i++)
+            {
+                var entID = message.ReadInt32();
+
+                SharedState.World.RemoveMobileEntity(SharedState.World.MobileEntities.Find((m) => m.ID == entID));
+            }
+
+            var numImmobileEntsQueuedForRem = message.ReadInt32();
+            for (var i = 0; i < numImmobileEntsQueuedForRem; i++)
+            {
+                var entID = message.ReadInt32();
+
+                SharedState.World.RemoveImmobileEntity(SharedState.World.ImmobileEntities.Find((im) => im.ID == entID));
+            }
+
             var numRecentMessages = message.ReadInt32();
             for (var i = 0; i < numRecentMessages; i++)
             {
@@ -150,6 +166,20 @@ namespace BaseBuilder.Engine.Networking.Packets
                 message.Write(EntityIdentifier.GetIDOfEntity(immobile.GetType()));
 
                 immobile.Write(message);
+            }
+
+            message.Write(SharedState.World.MobileEntitiesQueuedForRemoval.Count);
+
+            foreach(var mobile in SharedState.World.MobileEntitiesQueuedForRemoval)
+            {
+                message.Write(mobile.ID);
+            }
+
+            message.Write(SharedState.World.ImmobileEntitiesQueuedForRemoval.Count);
+
+            foreach(var immobile in SharedState.World.ImmobileEntitiesQueuedForRemoval)
+            {
+                message.Write(immobile.ID);
             }
 
             message.Write(SharedState.RecentMessages.Count);

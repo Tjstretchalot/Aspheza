@@ -8,14 +8,18 @@ using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
+using BaseBuilder.Engine.World.Entities.Utilities;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 {
-    public class Tree : SpriteSheetBuilding
+    public class Tree : SpriteSheetBuilding, Harvestable
     {
         protected TreeSize Size;
         protected TreeStyle Style;
         protected TreeColor Color;
+
+        protected int WoodRemaining;
 
         public Tree() : base()
         {
@@ -26,6 +30,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             Size = size;
             Style = style;
             Color = color;
+            WoodRemaining = (int)size + 1;
         }
 
         public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)
@@ -35,6 +40,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             Size = (TreeSize)message.ReadInt32();
             Style = (TreeStyle)message.ReadInt32();
             Color = (TreeColor)message.ReadInt32();
+            WoodRemaining = message.ReadInt32();
 
             TasksFromMessage(gameState, message);
 
@@ -52,8 +58,36 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             message.Write((int)Size);
             message.Write((int)Style);
             message.Write((int)Color);
+            message.Write(WoodRemaining);
 
             WriteTasks(message);
+        }
+
+        public bool ReadyToHarvest(SharedGameState sharedGameState)
+        {
+            return true;
+        }
+
+        public string GetHarvestNamePretty()
+        {
+            return "Wood";
+        }
+
+        public void TryHarvest(SharedGameState sharedGameState, Container reciever)
+        {
+            var mat = Material.Wood;
+            int amt = 1;
+
+            if (!reciever.Inventory.HaveRoomFor(mat, amt))
+                return;
+
+            reciever.Inventory.AddMaterial(mat, amt);
+            WoodRemaining -= amt;
+
+            if(WoodRemaining <= 0)
+            {
+                sharedGameState.World.RemoveImmobileEntity(this);
+            }
         }
     }
 }

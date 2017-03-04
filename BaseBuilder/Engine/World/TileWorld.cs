@@ -46,6 +46,9 @@ namespace BaseBuilder.Engine.World
         protected Dictionary<Entity, List<Tile>> EntityToTiles;
         protected Dictionary<Tile, List<Entity>> TileToEntities;
 
+        public List<MobileEntity> MobileEntitiesQueuedForRemoval;
+        public List<ImmobileEntity> ImmobileEntitiesQueuedForRemoval;
+
         public event EventHandler OnEntityAdded;
         public event EventHandler OnEntityRemoved;
 
@@ -75,6 +78,9 @@ namespace BaseBuilder.Engine.World
             {
                 TileToEntities.Add(tile, new List<Entity>());
             }
+
+            MobileEntitiesQueuedForRemoval = new List<MobileEntity>();
+            ImmobileEntitiesQueuedForRemoval = new List<ImmobileEntity>();
         }
 
         /// <summary>
@@ -93,11 +99,19 @@ namespace BaseBuilder.Engine.World
             OnEntityAdded?.Invoke(this, new EntityEventArgs(entity));
         }
 
+        public void RemoveMobileEntity(MobileEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            MobileEntitiesQueuedForRemoval.Add(entity);
+        }
+
         /// <summary>
         /// Remove a mobile entity from the world
         /// </summary>
         /// <param name="entity">The entity to remove</param>
-        public void RemoveMobileEntity(MobileEntity entity)
+        public void RemoveMobileEntityImpl(MobileEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -123,11 +137,18 @@ namespace BaseBuilder.Engine.World
             OnEntityAdded?.Invoke(this, new EntityEventArgs(entity));
         }
         
+        public void RemoveImmobileEntity(ImmobileEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            ImmobileEntitiesQueuedForRemoval.Add(entity);
+        }
         /// <summary>
         /// Remove an immobile entity from the world
         /// </summary>
         /// <param name="entity">The entity to remove</param>
-        public void RemoveImmobileEntity(ImmobileEntity entity)
+        public void RemoveImmobileEntityImpl(ImmobileEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -321,9 +342,25 @@ namespace BaseBuilder.Engine.World
             //context.SpriteBatch.DrawString(context.DebugFont, $"tiles: ({leftMostVisibleTileX}, {topMostVisibleTileY}) to ({rightMostVisibleTileX}, {bottomMostVisibleTileY}); starting = {startingLeft}, {startingTop}", new Microsoft.Xna.Framework.Vector2(5, 25), Color.White);
         }
 
+        protected void CleanupEntities()
+        {
+            foreach (var mobileEntity in MobileEntitiesQueuedForRemoval)
+            {
+                RemoveMobileEntityImpl(mobileEntity);
+            }
+            MobileEntitiesQueuedForRemoval.Clear();
+
+            foreach (var immobileEntity in ImmobileEntitiesQueuedForRemoval)
+            {
+                RemoveImmobileEntityImpl(immobileEntity);
+            }
+            ImmobileEntitiesQueuedForRemoval.Clear();
+        }
 
         public void SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
+            CleanupEntities();
+
             foreach(var mobileEntity in MobileEntities)
             {
                 mobileEntity.SimulateTimePassing(gameState, timeMS);
@@ -333,6 +370,8 @@ namespace BaseBuilder.Engine.World
             {
                 immobileEntity.SimulateTimePassing(gameState, timeMS);
             }
+
+            CleanupEntities();
         }
 
         /// <summary>
