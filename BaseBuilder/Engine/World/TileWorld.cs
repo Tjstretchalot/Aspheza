@@ -230,7 +230,11 @@ namespace BaseBuilder.Engine.World
 
         public bool IsPassable(int locX, int locY, MobileEntity ent)
         {
-            var entities = TileToEntities[TileAt(locX, locY)];
+            var tile = TileAt(locX, locY);
+            if (!tile.Ground)
+                return false;
+
+            var entities = TileToEntities[tile];
             return !entities.Any((e) => e != ent);
         }
 

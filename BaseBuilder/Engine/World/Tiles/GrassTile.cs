@@ -21,7 +21,10 @@ namespace BaseBuilder.Engine.World.Tiles
             sourceRect = new Rectangle(0, 32, 32, 32);
             TileIdentifier.Register(typeof(GrassTile), ID);
         }
-        
+
+        public override bool Ground { get { return true; } }
+        public override bool Water { get { return false; } }
+
         public GrassTile(PointI2D position, RectangleD2D collisionMesh) : base(position, collisionMesh, "TileSet", sourceRect)
         {
         }

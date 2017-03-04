@@ -32,7 +32,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// <summary>
         /// Where the entity is located in the world.
         /// </summary>
-        public PointD2D Position { get; protected set; }
+        public PointD2D Position { get; set; }
 
         /// <summary>
         /// The collision mesh that can be used for intersection. Recall this does not itself

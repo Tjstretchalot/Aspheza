@@ -183,6 +183,7 @@
     <Compile Include="Screens\GameScreens\BuildOverlays\TempleBuildOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\UnbuiltImmobileEntity.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\UnbuiltImmobileEntityAsDelegator.cs" />
+    <Compile Include="Screens\GameScreens\BuildOverlays\UnbuiltWaterMillEntity.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\WaterMillOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\ChatOverlay.cs" />
     <Compile Include="Screens\GameScreens\EscapeMenuOverlay.cs" />

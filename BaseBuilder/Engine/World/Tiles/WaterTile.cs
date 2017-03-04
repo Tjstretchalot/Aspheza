@@ -53,6 +53,9 @@ namespace BaseBuilder.Engine.World.Tiles
             DirectionsToCenterFlows.Add(Direction.Down, downFlow);
         }
 
+        public override bool Ground { get { return false; } }
+        public override bool Water { get { return true; } }
+
         protected Rectangle DestRect;
         protected Rectangle SrcRect;
         protected List<Rectangle> SourceRectsFlowingOneAnimationCycle;

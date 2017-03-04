@@ -21,6 +21,9 @@ namespace BaseBuilder.Engine.World.Tiles
             TileIdentifier.Register(typeof(StoneTile), ID);
         }
 
+        public override bool Ground { get { return true; } }
+        public override bool Water { get { return false; } }
+
         public StoneTile(PointI2D position, RectangleD2D collisionMesh) : base(position, collisionMesh, "TileSet", sourceRect)
         {
         }

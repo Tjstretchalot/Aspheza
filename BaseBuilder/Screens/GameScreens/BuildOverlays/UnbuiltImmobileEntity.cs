@@ -8,6 +8,7 @@ using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D.Double;
 using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
+using BaseBuilder.Engine.State;
 
 namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
@@ -41,5 +42,13 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         /// </summary>
         /// <param name="direction">Direction to rotate in</param>
         void TryRotate(int direction);
+
+        /// <summary>
+        /// Determines if the tiles at the current place location are viable for this entity.
+        /// </summary>
+        /// <param name="sharedGameState">The shared game state</param>
+        /// <param name="currentPlaceLocation">The current place location</param>
+        /// <returns>If the current place location tiles are valid</returns>
+        bool TilesAreValid(SharedGameState sharedGameState, PointD2D currentPlaceLocation);
     }
 }

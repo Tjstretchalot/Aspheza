@@ -138,6 +138,11 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                     CantPlace = true;
                     break;
                 }
+
+                if(!CantPlace)
+                {
+                    CantPlace = !BuildingToPlace.TilesAreValid(sharedGameState, CurrentPlaceLocation);
+                }
             }
 
             if (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released && !CantPlace)

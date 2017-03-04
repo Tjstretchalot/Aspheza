@@ -57,7 +57,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
                 {
                     var point = new PointI2D(x, y);
 
-                    if (x != 128 && x != 129 && x != 130)
+                    if (x != 200 && x != 201 && x != 202)
                         tiles.Add(new GrassTile(point, tileCollisionMesh));
                     else
                         tiles.Add(new WaterTile(point, tileCollisionMesh, Direction.Down));
@@ -99,6 +99,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
         {
             var wcx = TileWorld.TileWidth / 2;
             var wcy = TileWorld.TileHeight / 2;
+
             TileWorld.AddImmobileEntity(new House(new PointD2D(wcx - 0.5, wcy - 4), SharedGameState.GetUniqueEntityID()));
             TileWorld.AddImmobileEntity(new Sign(new PointD2D(wcx + 5, wcy + 1), SharedGameState.GetUniqueEntityID(), "Welcome to the game!"));
             TileWorld.AddImmobileEntity(new GoldOre(new PointD2D(wcx - 10, wcy + 5), SharedGameState.GetUniqueEntityID()));
@@ -126,6 +127,96 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             TileWorld.AddImmobileEntity(new Temple(new PointD2D(wcx + 40, wcy - 15), SharedGameState.GetUniqueEntityID()));
             */
         }
+
+        protected void InitTrees()
+        {
+            var rand = new Random();
+            var wcx = TileWorld.TileWidth / 2;
+            var wcy = TileWorld.TileHeight / 2;
+
+            TreeSize size;
+            TreeStyle style;
+            TreeColor color;
+
+            ImmobileEntity nextTree = TreeUtils.InitTree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green);
+            var pos = new PointD2D(0, 0);
+            List<PointI2D> tilePositions = new List<PointI2D>();
+            for (int y = 10; y < TileWorld.TileHeight - 10; y++)
+            {
+                for (int x = 10; x < TileWorld.TileWidth - 10; x++)
+                {
+                    var distToCenterManh = Math.Abs(x - wcx) + Math.Abs(y - wcy);
+                    if (distToCenterManh < 10)
+                        continue;
+
+                    pos.X = x;
+                    pos.Y = y;
+
+                    if (rand.NextDouble() < 0.05)
+                    {
+                        bool badSpot = false;
+                        foreach (var confl in TileWorld.GetEntitiesAtLocation(nextTree.CollisionMesh, pos))
+                        {
+                            badSpot = true;
+                            break;
+                        }
+                        if (badSpot)
+                            continue;
+
+                        nextTree.CollisionMesh.TilesIntersectedAt(pos, tilePositions);
+                        foreach (var tilePos in tilePositions)
+                        {
+                            if (!TileWorld.TileAt(tilePos.X, tilePos.Y).Ground)
+                            {
+                                badSpot = true;
+                                break;
+                            }
+                        }
+                        if (badSpot)
+                            continue;
+
+                        nextTree.Position = new PointD2D(pos.X, pos.Y);
+                        TileWorld.AddImmobileEntity(nextTree);
+
+                        var tmp = rand.Next(2);
+                        switch(tmp)
+                        {
+                            case 0:
+                                size = TreeSize.Large;
+                                break;
+                            case 1:
+                                size = TreeSize.Small;
+                                break;
+                            default:
+                                throw new InvalidProgramException();
+                        }
+
+                        tmp = rand.Next(2);
+                        switch(tmp)
+                        {
+                            case 0:
+                                style = TreeStyle.Pointy;
+                                break;
+                            case 1:
+                                style = TreeStyle.Rounded;
+                                break;
+                            default:
+                                throw new InvalidProgramException();
+                        }
+
+                        tmp = rand.Next(100);
+                        if (tmp < 85)
+                            color = TreeColor.Green;
+                        else if (tmp < 95)
+                            color = TreeColor.Red;
+                        else
+                            color = TreeColor.Blue;
+
+                        nextTree = TreeUtils.InitTree(new PointD2D(0, 0), SharedGameState.GetUniqueEntityID(), size, style, color);
+                    }
+                }
+            }
+        }
         
         public void Create(GraphicsDevice graphicsDevice)
         {
@@ -139,6 +230,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             
             InitOverseers();
             InitBuildings();
+            InitTrees();
 
             TileWorld.LoadingDone(SharedGameState);
         }

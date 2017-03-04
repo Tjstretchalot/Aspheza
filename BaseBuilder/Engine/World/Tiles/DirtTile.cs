@@ -16,6 +16,9 @@ namespace BaseBuilder.Engine.World.Tiles
         private static short ID = 1;
         private static Rectangle sourceRect;
 
+        public override bool Ground { get { return true; } }
+        public override bool Water {  get { return false; } }
+
         static DirtTile()
         {
             sourceRect = new Rectangle(0, 0, 32, 32);

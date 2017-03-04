@@ -32,6 +32,16 @@ namespace BaseBuilder.Engine.World.Tiles
 
         public string HoverText { get { return null; } }
 
+        /// <summary>
+        /// If this tile can be used as ground
+        /// </summary>
+        public abstract bool Ground { get; }
+
+        /// <summary>
+        /// If this tile can be used as water
+        /// </summary>
+        public abstract bool Water { get; }
+
         protected Tile(PointI2D position, RectangleD2D collisionMesh)
         {
             Position = position;

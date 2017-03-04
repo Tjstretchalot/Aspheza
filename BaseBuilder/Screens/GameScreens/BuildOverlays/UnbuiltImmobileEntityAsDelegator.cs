@@ -8,6 +8,8 @@ using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.World.Entities.Utilities;
+using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.Math2D;
 
 namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
@@ -88,6 +90,21 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 }
                 directional.Direction = newDir;
             }
+        }
+
+        public virtual bool TilesAreValid(SharedGameState gameState, PointD2D placeLocation)
+        {
+            var tiles = new List<PointI2D>();
+            CurrentEntity.CollisionMesh.TilesIntersectedAt(placeLocation, tiles);
+
+            foreach(var tilePos in tiles)
+            {
+                var tile = gameState.World.TileAt(tilePos.X, tilePos.Y);
+                if (!tile.Ground)
+                    return false;
+            }
+
+            return true;
         }
     }
 }
