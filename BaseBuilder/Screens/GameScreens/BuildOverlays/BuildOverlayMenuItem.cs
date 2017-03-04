@@ -8,6 +8,7 @@ using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using BaseBuilder.Engine.Logic.Orders;
 
 namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
@@ -82,7 +83,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         /// <param name="selected">If this menu item is currently selected</param>
         public abstract void Render(Rectangle menuScreenLocation, int yOffset, bool selected);
 
-        protected void DrawTexture(Rectangle menuScreenLocation, int yOffset, Texture2D texture, PointI2D textureLocation, Color overlay)
+        protected void DrawTexture(Rectangle menuScreenLocation, int yOffset, Texture2D texture, PointI2D textureLocation, Rectangle fullSrcRect, Color overlay)
         {
             Rectangle destRect, srcRect;
             // We need to take care of the following situations:
@@ -114,7 +115,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 var heightVisible = textureLocation.Y + VisualCollisionMesh.Height + yOffset;
 
                 destRect = new Rectangle(textureLocation.X + menuScreenLocation.X, menuScreenLocation.Y, (int)VisualCollisionMesh.Width, (int)heightVisible);
-                srcRect = new Rectangle(0, (int)(VisualCollisionMesh.Height - heightVisible), (int)VisualCollisionMesh.Width, (int)heightVisible);
+                srcRect = new Rectangle(fullSrcRect.X, fullSrcRect.Y + (int)(VisualCollisionMesh.Height - heightVisible), (int)VisualCollisionMesh.Width, (int)heightVisible);
 
                 SpriteBatch.Draw(texture, destRect, srcRect, overlay);
                 return;
@@ -129,7 +130,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 var heightVisible = menuScreenLocation.Height - (textureLocation.Y + yOffset);
 
                 destRect = new Rectangle(textureLocation.X + menuScreenLocation.X, menuScreenLocation.Y + menuScreenLocation.Height - heightVisible, (int)VisualCollisionMesh.Width, heightVisible);
-                srcRect = new Rectangle(0, 0, (int)VisualCollisionMesh.Width, heightVisible);
+                srcRect = new Rectangle(fullSrcRect.X, fullSrcRect.Y, (int)VisualCollisionMesh.Width, heightVisible);
 
                 SpriteBatch.Draw(texture, destRect, srcRect, overlay);
                 return;
@@ -139,7 +140,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             //   We're fully visible
 
             destRect = new Rectangle(textureLocation.X + menuScreenLocation.X, textureLocation.Y + menuScreenLocation.Y + yOffset, (int)VisualCollisionMesh.Width, (int)VisualCollisionMesh.Height);
-            srcRect = new Rectangle(0, 0, (int)VisualCollisionMesh.Width, (int)VisualCollisionMesh.Height);
+            srcRect = new Rectangle(fullSrcRect.X, fullSrcRect.Y, (int)VisualCollisionMesh.Width, (int)VisualCollisionMesh.Height);
 
             SpriteBatch.Draw(texture, destRect, srcRect, overlay);
         }
@@ -157,5 +158,24 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         /// <param name="gameState">The current shared game state</param>
         /// <returns>Unbuilt immobile entity version of this item</returns>
         public abstract UnbuiltImmobileEntity CreateUnbuiltImmobileEntity(SharedGameState gameState);
+
+        /// <summary>
+        /// Tries to build the entity at the specified location with the specified unbuilt immobile entity.
+        /// </summary>
+        /// <param name="sharedGameState">Shared game state</param>
+        /// <param name="localGameState">Local game state</param>
+        /// <param name="netContext">Net context</param>
+        /// <param name="placeLoc">Top-left location for the building</param>
+        /// <param name="buildingToPlace">The building to place</param>
+        /// <returns>If an entity was built</returns>
+        public virtual bool TryBuildEntity(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, PointD2D placeLoc, UnbuiltImmobileEntity buildingToPlace)
+        {
+            var ent = buildingToPlace.CreateEntity(new PointD2D(placeLoc.X, placeLoc.Y));
+
+            var order = netContext.GetPoolFromPacketType(typeof(BuildOrder)).GetGamePacketFromPool() as BuildOrder;
+            order.Entity = ent;
+            localGameState.Orders.Add(order);
+            return true;
+        }
     }
 }

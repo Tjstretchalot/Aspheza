@@ -21,6 +21,7 @@ namespace BaseBuilder.Engine.State.Resources
         public static Material Flour { get; }
         public static Material Bread { get; }
         public static Material Wood { get; }
+        public static Material Sapling { get; }
 
         static Material()
         {
@@ -31,7 +32,8 @@ namespace BaseBuilder.Engine.State.Resources
             Wheat = new Material("materials", new Rectangle(66, 33, 32, 32), "Wheat\nCan be made into flour via a mill. Also serves as\na poor source of food", 5);
             Flour = new Material("materials", new Rectangle(0, 33, 32, 32), "Flour\nCan be made into bread via a bakery.", 6);
             Bread = new Material("materials", new Rectangle(0, 66, 32, 32), "Bread.", 7);
-            Wood = new Material("materials", new Rectangle(0, 0, 32, 32), "Wood\nUsed to make buildings.", 8);
+            Wood = new Material("materials", new Rectangle(99, 0, 32, 32), "Wood\nUsed to make buildings.", 8);
+            Sapling = new Material("materials", new Rectangle(66, 66, 32, 32), "Sapling\nCan be planted for new trees", 9);
         }
 
         public int ID { get; }

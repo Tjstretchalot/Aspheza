@@ -15,9 +15,9 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
         /// </summary>
         /// <param name="gameState">The game stae</param>
         /// <returns>The net safe random</returns>
-        public static Random GetNetSafeRandom(SharedGameState gameState)
+        public static Random GetNetSafeRandom(SharedGameState gameState, int consistentThing)
         {
-            return new Random(gameState.GameTimeMS);
+            return new Random(gameState.GameTimeMS + consistentThing);
         }
     }
 }

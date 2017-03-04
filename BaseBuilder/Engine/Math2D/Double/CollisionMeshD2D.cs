@@ -229,7 +229,7 @@ namespace BaseBuilder.Engine.Math2D.Double
 
                     if (tmp != null)
                     {
-                        if (result != null)
+                        if (result == null)
                             result = tmp;
                         else
                             result += tmp;

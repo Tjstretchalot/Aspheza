@@ -7,6 +7,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Screens.Transitions;
+using BaseBuilder.Screens.GameScreens;
+using BaseBuilder.Engine.Logic;
+using BaseBuilder.Engine.Networking;
+using BaseBuilder.Engine.Logic.WorldGen;
 
 namespace BaseBuilder.Screens
 {
@@ -73,11 +77,32 @@ namespace BaseBuilder.Screens
                     }
                     break;
                 case SplashState.FadingOut:
-                    var newScreen = new MainMenuScreen(screenManager, content, graphics, graphicsDevice, spriteBatch);
-                    newScreen.Update(0);
-                    screenManager.TransitionTo(newScreen, new CrossFadeTransition(content, graphics, graphicsDevice, spriteBatch, this, newScreen), 1000);
+                    //var newScreen = new MainMenuScreen(screenManager, content, graphics, graphicsDevice, spriteBatch);
+                    //newScreen.Update(0);
+                    //screenManager.TransitionTo(newScreen, new CrossFadeTransition(content, graphics, graphicsDevice, spriteBatch, this, newScreen), 1000);
+                    SkipToHostGame();
                     break;
             }
+        }
+
+        protected void SkipToHostGame()
+        {
+            var generator = new WorldGenerator();
+            generator.Create(graphicsDevice);
+            var localGameState = generator.LocalGameState;
+            var sharedGameState = generator.SharedGameState;
+            sharedGameState.Players[0].Name = "Host";
+
+            var sharedGameLogic = new SharedGameLogic();
+
+            var serverConnection = new ServerGameConnection(localGameState, sharedGameState, sharedGameLogic, 5178);
+
+            var localGameLogic = new LocalGameLogic(content);
+            serverConnection.BeginListening();
+
+            var gameScreen = new GameScreen(content, graphics, graphicsDevice, spriteBatch, localGameLogic, sharedGameState, localGameState, serverConnection);
+            gameScreen.Update(0);
+            screenManager.TransitionTo(gameScreen, new CrossFadeTransition(content, graphics, graphicsDevice, spriteBatch, this, gameScreen), 750);
         }
         
     }

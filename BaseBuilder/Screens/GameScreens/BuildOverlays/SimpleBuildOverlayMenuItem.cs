@@ -19,7 +19,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         {
             var texture = Content.Load<Texture2D>(SpriteName);
 
-            DrawTexture(menuScreenLocation, yOffset, texture, Location, selected ? Color.Azure : Color.White);
+            DrawTexture(menuScreenLocation, yOffset, texture, Location, new Rectangle(0, 0, texture.Width, texture.Height), selected ? Color.Azure : Color.White);
         }
 
         public override void Update(int elapsedMS, bool selected)

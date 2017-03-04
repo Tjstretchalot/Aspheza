@@ -138,7 +138,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             TreeStyle style;
             TreeColor color;
 
-            ImmobileEntity nextTree = TreeUtils.InitTree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green);
+            ImmobileEntity nextTree = new Tree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green);
             var pos = new PointD2D(0, 0);
             List<PointI2D> tilePositions = new List<PointI2D>();
             for (int y = 10; y < TileWorld.TileHeight - 10; y++)
@@ -178,7 +178,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
                         nextTree.Position = new PointD2D(pos.X, pos.Y);
                         TileWorld.AddImmobileEntity(nextTree);
 
-                        var tmp = rand.Next(2);
+                        var tmp = rand.Next(3);
                         switch(tmp)
                         {
                             case 0:
@@ -186,6 +186,9 @@ namespace BaseBuilder.Engine.Logic.WorldGen
                                 break;
                             case 1:
                                 size = TreeSize.Small;
+                                break;
+                            case 2:
+                                size = TreeSize.Sapling;
                                 break;
                             default:
                                 throw new InvalidProgramException();
@@ -212,7 +215,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
                         else
                             color = TreeColor.Blue;
 
-                        nextTree = TreeUtils.InitTree(new PointD2D(0, 0), SharedGameState.GetUniqueEntityID(), size, style, color);
+                        nextTree = new Tree(new PointD2D(0, 0), SharedGameState.GetUniqueEntityID(), size, style, color);
                     }
                 }
             }

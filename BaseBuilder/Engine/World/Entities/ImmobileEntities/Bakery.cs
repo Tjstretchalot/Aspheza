@@ -186,8 +186,10 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public string GetHarvestNamePretty()
         {
-            if (InventoryBaked.GetAmountOf(Material.Flour) == 0)
+            if (InventoryBaked.GetAmountOf(Material.Bread) == 0)
+            {
                 return "Nothing";
+            }
             else
             {
                 return "Bread";

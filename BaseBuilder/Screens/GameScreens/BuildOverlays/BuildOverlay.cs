@@ -147,12 +147,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 
             if (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released && !CantPlace)
             {
-                var ent = BuildingToPlace.CreateEntity(new PointD2D(CurrentPlaceLocation.X, CurrentPlaceLocation.Y));
-
-                var order = netContext.GetPoolFromPacketType(typeof(BuildOrder)).GetGamePacketFromPool() as BuildOrder;
-                order.Entity = ent;
-                localGameState.Orders.Add(order);
-
+                Menu.TryBuildEntity(sharedGameState, localGameState, netContext, CurrentPlaceLocation, BuildingToPlace);
                 Menu.ClearSelection();
             }else if(last.ScrollWheelValue != current.ScrollWheelValue)
             {

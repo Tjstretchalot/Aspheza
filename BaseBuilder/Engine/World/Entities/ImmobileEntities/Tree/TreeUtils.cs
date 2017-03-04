@@ -10,14 +10,15 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 {
     public class TreeUtils
     {
-
+        private static Tuple<CollisionMeshD2D, List<Tuple<Rectangle, PointD2D>>> SaplingConstructorParams;
         private static Dictionary<Tuple<TreeSize, TreeStyle, TreeColor>, Tuple<CollisionMeshD2D, List<Tuple<Rectangle, PointD2D>>>> TreeTypeToConstructorParams;
         
         static TreeUtils()
         {
             var largeMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(1, 2) });
             var smallMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(1, 1) });
-            
+
+            SaplingConstructorParams = Tuple.Create(smallMesh, new List<Tuple<Rectangle, PointD2D>> { Tuple.Create(new Rectangle(66, 66, 32, 32), new PointD2D(0, 0)) });
             TreeTypeToConstructorParams = new Dictionary<Tuple<TreeSize, TreeStyle, TreeColor>, Tuple<CollisionMeshD2D, List<Tuple<Rectangle, PointD2D>>>>()
             {
                 { Tuple.Create(TreeSize.Small, TreeStyle.Pointy, TreeColor.Green), Tuple.Create(smallMesh, new List<Tuple<Rectangle, PointD2D>> { Tuple.Create(new Rectangle(272, 153, 16, 16), new PointD2D(0, 0)) }) },
@@ -38,29 +39,11 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             
         }
 
-        /// <summary>
-        /// Create a new tree of specified size, style, and color at specified position
-        /// </summary>
-        /// <param name="position">Top left point for the tree</param>
-        /// <param name="id">Unique entity id</param>
-        /// <param name="size">Size of the tree to be created; large or small</param>
-        /// <param name="style">Style of tree to be created; pointy top or rounded top</param>
-        /// <param name="color">Color of the tree to be created; green, red, or blue</param>
-        /// <returns></returns>
-        public static ImmobileEntity InitTree(PointD2D position, int id, TreeSize size, TreeStyle style, TreeColor color)
-        {
-            var tree = new List<Tuple<Rectangle, PointD2D>>();
-            CollisionMeshD2D collisionMesh;
-
-            var tuple = GetCollisionMesh(size, style, color);
-            tree = tuple.Item2;
-            collisionMesh = tuple.Item1;
-
-            return new Tree(position, collisionMesh, id, tree, size, style, color);
-        }
-
         public static Tuple<CollisionMeshD2D, List<Tuple<Rectangle, PointD2D>>> GetCollisionMesh(TreeSize size, TreeStyle style, TreeColor color)
         {
+            if (size == TreeSize.Sapling)
+                return SaplingConstructorParams;
+
             return TreeTypeToConstructorParams[Tuple.Create(size, style, color)];
         }
     }

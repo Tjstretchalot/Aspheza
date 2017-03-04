@@ -201,7 +201,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public void TryHarvest(SharedGameState sharedGameState, Container reciever)
         {
-            int numSeeds = RandomUtils.GetNetSafeRandom(sharedGameState).Next(2) + 1;
+            int numSeeds = RandomUtils.GetNetSafeRandom(sharedGameState, Position.GetHashCode()).Next(2) + 1;
 
             if(GrowthState == GrowthState.CarrotsHarvestable)
             {

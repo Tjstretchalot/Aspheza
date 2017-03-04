@@ -14,6 +14,8 @@ using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using Microsoft.Xna.Framework.Input;
+using BaseBuilder.Engine.World.Entities.MobileEntities;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
@@ -76,6 +78,12 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         /// </summary>
         protected int ScrollBarYOffset;
 
+        /// <summary>
+        /// If we added the sapling in the menu at the moment, this is the
+        /// location in the menu. Otherwise it's -1
+        /// </summary>
+        protected int SaplingIndex;
+
         public BuildOverlayMenuComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {
             Init(new PointI2D(graphicsDevice.Viewport.Width - 300, 25), new PointI2D(250, graphicsDevice.Viewport.Height - 250), 2);
@@ -108,6 +116,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             }
 
             MyRectIfNoScrollbar.Height += 5; // 5px padding on bottom
+            SaplingIndex = -1;
         }
 
         public override void Draw(RenderContext context)
@@ -125,6 +134,28 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             for (int i = 0; i < MenuItems.Count; i++)
             {
                 MenuItems[i].Update(timeMS, i == SelectedIndex);
+            }
+
+            var worker = localGameState.SelectedEntity as CaveManWorker;
+            if(worker != null && worker.Inventory.GetAmountOf(Material.Sapling) > 0)
+            {
+                if(SaplingIndex == -1)
+                {
+                    SaplingIndex = MenuItems.Count;
+                    var item = new SaplingBuildOverlayMenuItem(Content, Graphics, GraphicsDevice, SpriteBatch);
+                    MenuItems.Add(item);
+
+                    item.Location = new PointI2D((int)(MyVisualRect.Width / 2 - item.VisualCollisionMesh.Width / 2), MyRectIfNoScrollbar.Height);
+
+                    MyRectIfNoScrollbar.Height += (int)(item.VisualCollisionMesh.Height + 3);
+                }
+            }else if(SaplingIndex != -1)
+            {
+                var item = MenuItems[SaplingIndex];
+                MyRectIfNoScrollbar.Height -= (int)(item.VisualCollisionMesh.Height + 3);
+
+                MenuItems.RemoveAt(SaplingIndex);
+                SaplingIndex = -1;
             }
         }
 
@@ -210,6 +241,11 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             }
 
             return true;
+        }
+
+        public bool TryBuildEntity(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, PointD2D currentPlaceLocation, UnbuiltImmobileEntity buildingToPlace)
+        {
+            return MenuItems[SelectedIndex].TryBuildEntity(sharedGameState, localGameState, netContext, currentPlaceLocation, buildingToPlace);
         }
 
         public override void Dispose()

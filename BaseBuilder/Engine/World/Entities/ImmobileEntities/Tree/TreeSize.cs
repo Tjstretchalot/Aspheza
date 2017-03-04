@@ -8,7 +8,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 {
     public enum TreeSize
     {
-        Small = 0,
+        Sapling = 0,
+        Small,
         Large
     }
 }

@@ -19,18 +19,22 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
         protected TreeStyle Style;
         protected TreeColor Color;
 
-        protected int WoodRemaining;
+        protected bool GrowthTimeNeedsRandoming;
+        protected int GrowthTimeRemainingMS;
 
         public Tree() : base()
         {
         }
 
-        public Tree(PointD2D position, CollisionMeshD2D collisionMesh, int id, List<Tuple<Rectangle, PointD2D>> sourceRectsToOffsetLocations, TreeSize size, TreeStyle style, TreeColor color) : base(position, collisionMesh, id, "roguelikeSheet_transparent", sourceRectsToOffsetLocations)
+        public Tree(PointD2D position, int id, TreeSize size, TreeStyle style, TreeColor color) : base(position, null, id, null, null)
         {
             Size = size;
             Style = style;
             Color = color;
-            WoodRemaining = (int)size + 1;
+
+            GrowthTimeNeedsRandoming = true;
+
+            SizeStyleOrColorChanged();
         }
 
         public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)
@@ -40,15 +44,12 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             Size = (TreeSize)message.ReadInt32();
             Style = (TreeStyle)message.ReadInt32();
             Color = (TreeColor)message.ReadInt32();
-            WoodRemaining = message.ReadInt32();
+            GrowthTimeRemainingMS = message.ReadInt32();
+            GrowthTimeNeedsRandoming = message.ReadBoolean();
 
             TasksFromMessage(gameState, message);
 
-
-            var dataFromInfo = TreeUtils.GetCollisionMesh(Size, Style, Color);
-            CollisionMesh = dataFromInfo.Item1;
-            SourceRectsToOffsetLocations = dataFromInfo.Item2;
-            SheetName = "roguelikeSheet_transparent";
+            SizeStyleOrColorChanged();
         }
 
         public override void Write(NetOutgoingMessage message)
@@ -58,14 +59,83 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             message.Write((int)Size);
             message.Write((int)Style);
             message.Write((int)Color);
-            message.Write(WoodRemaining);
+            message.Write(GrowthTimeRemainingMS);
+            message.Write(GrowthTimeNeedsRandoming);
 
             WriteTasks(message);
         }
 
+        public override void SimulateTimePassing(SharedGameState sharedState, int timeMS)
+        {
+            base.SimulateTimePassing(sharedState, timeMS);
+
+            if(GrowthTimeNeedsRandoming)
+            {
+                GrowthTimeRemainingMS = RandomUtils.GetNetSafeRandom(sharedState, Position.GetHashCode()).Next(10000) + 15000;
+                GrowthTimeNeedsRandoming = false;
+            }
+
+            GrowthTimeRemainingMS -= timeMS;
+
+            if(GrowthTimeRemainingMS <= 0)
+            {
+                GrowthTimeNeedsRandoming = true;
+
+                switch(Size)
+                {
+                    case TreeSize.Sapling:
+                        Size = TreeSize.Small;
+                        SizeStyleOrColorChanged();
+                        break;
+                    case TreeSize.Small:
+                        var tileAbove = sharedState.World.TileAt((int)Position.X, (int)(Position.Y - 1));
+                        bool growFailed = !tileAbove.Ground;
+                        if(!growFailed)
+                        {
+                            foreach(var e in sharedState.World.GetEntitiesAtLocation(CollisionMeshD2D.UnitSquare, tileAbove.Position))
+                            {
+                                growFailed = true;
+                                break;
+                            }
+                        }
+
+                        if (!growFailed)
+                        {
+                            Size = TreeSize.Large;
+                            SizeStyleOrColorChanged();
+                            Position.Y -= 1;
+                            sharedState.World.UpdateTileCollisions(this);
+                        }
+                        break;
+                    case TreeSize.Large:
+                        Size = TreeSize.Sapling;
+                        SizeStyleOrColorChanged();
+                        Position.Y += 1;
+                        sharedState.World.UpdateTileCollisions(this);
+                        break;
+                }
+
+            }
+        }
+
+        protected void SizeStyleOrColorChanged()
+        {
+            var dataFromInfo = TreeUtils.GetCollisionMesh(Size, Style, Color);
+            CollisionMesh = dataFromInfo.Item1;
+            SourceRectsToOffsetLocations = dataFromInfo.Item2;
+
+            if (Size == TreeSize.Sapling)
+                SheetName = "materials";
+            else
+                SheetName = "roguelikeSheet_transparent";
+        }
+
         public bool ReadyToHarvest(SharedGameState sharedGameState)
         {
-            return true;
+            if(Size == TreeSize.Small || Size == TreeSize.Large)
+                return true;
+
+            return false;
         }
 
         public string GetHarvestNamePretty()
@@ -75,18 +145,30 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 
         public void TryHarvest(SharedGameState sharedGameState, Container reciever)
         {
-            var mat = Material.Wood;
-            int amt = 1;
-
-            if (!reciever.Inventory.HaveRoomFor(mat, amt))
-                return;
-
-            reciever.Inventory.AddMaterial(mat, amt);
-            WoodRemaining -= amt;
-
-            if(WoodRemaining <= 0)
+            switch(Size)
             {
-                sharedGameState.World.RemoveImmobileEntity(this);
+                case TreeSize.Sapling:
+                    return;
+                case TreeSize.Small:
+                    if (!reciever.Inventory.HaveRoomFor(Tuple.Create(Material.Sapling, 1), Tuple.Create(Material.Wood, 1)))
+                        return;
+
+                    reciever.Inventory.AddMaterial(Material.Sapling, 1);
+                    reciever.Inventory.AddMaterial(Material.Wood, 1);
+                    sharedGameState.World.RemoveImmobileEntity(this);
+                    break;
+                case TreeSize.Large:
+                    if (!reciever.Inventory.HaveRoomFor(Material.Wood, 1))
+                        return;
+
+                    reciever.Inventory.AddMaterial(Material.Wood, 1);
+                    Size = TreeSize.Small;
+                    Position.Y += 1;
+                    sharedGameState.World.UpdateTileCollisions(this);
+                    SizeStyleOrColorChanged();
+                    break;
+                default:
+                    throw new InvalidProgramException();
             }
         }
     }

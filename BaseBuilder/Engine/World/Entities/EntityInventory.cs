@@ -24,7 +24,7 @@ namespace BaseBuilder.Engine.World.Entities
         /// If a material is not in this dictionary, a limit of DefaultStackSize is assumed.
         /// </summary>
         protected Dictionary<Material, int> MaterialsToMaxStackCount;
-        
+
         /// <summary>
         /// Called when material is added to this inventory
         /// </summary>
@@ -77,9 +77,9 @@ namespace BaseBuilder.Engine.World.Entities
             int maxItems = message.ReadInt32();
 
             Inventory = new Tuple<Material, int>[maxItems];
-            for(int i = 0; i < maxItems; i++)
+            for (int i = 0; i < maxItems; i++)
             {
-                if(message.ReadBoolean())
+                if (message.ReadBoolean())
                 {
                     int matID = message.ReadInt32();
                     int count = message.ReadInt32();
@@ -91,7 +91,7 @@ namespace BaseBuilder.Engine.World.Entities
             int numMatsMaxStackCount = message.ReadInt32();
             MaterialsToMaxStackCount = new Dictionary<Material, int>(numMatsMaxStackCount);
 
-            for(int i = 0; i < numMatsMaxStackCount; i++)
+            for (int i = 0; i < numMatsMaxStackCount; i++)
             {
                 int matID = message.ReadInt32();
                 int max = message.ReadInt32();
@@ -114,12 +114,12 @@ namespace BaseBuilder.Engine.World.Entities
 
             message.Write(Inventory.Length);
 
-            for(int i = 0; i < Inventory.Length; i++)
+            for (int i = 0; i < Inventory.Length; i++)
             {
-                if(Inventory[i] == null)
+                if (Inventory[i] == null)
                 {
                     message.Write(false);
-                }else
+                } else
                 {
                     message.Write(true);
                     message.Write(Inventory[i].Item1.ID);
@@ -129,7 +129,7 @@ namespace BaseBuilder.Engine.World.Entities
 
             message.Write(MaterialsToMaxStackCount.Count);
 
-            foreach(var kvp in MaterialsToMaxStackCount)
+            foreach (var kvp in MaterialsToMaxStackCount)
             {
                 message.Write(kvp.Key.ID);
                 message.Write(kvp.Value);
@@ -184,9 +184,9 @@ namespace BaseBuilder.Engine.World.Entities
 
             if (amount == 1)
             {
-                if(MaterialsToMaxStackCount.ContainsKey(material))
+                if (MaterialsToMaxStackCount.ContainsKey(material))
                     MaterialsToMaxStackCount.Remove(material);
-            }else
+            } else
             {
                 MaterialsToMaxStackCount[material] = amount;
             }
@@ -219,7 +219,7 @@ namespace BaseBuilder.Engine.World.Entities
 
             Inventory[index] = null;
         }
-        
+
         /// <summary>
         /// Returns true if there is enough room in this inventory to add the specified
         /// amount of material, otherwise returns false.
@@ -242,15 +242,15 @@ namespace BaseBuilder.Engine.World.Entities
 
             int spacesFound = 0;
 
-            for(int i = 0; i < Inventory.Length; i++)
+            for (int i = 0; i < Inventory.Length; i++)
             {
-                if(Inventory[i] == null)
+                if (Inventory[i] == null)
                 {
                     spacesFound += GetStackSizeFor(material);
 
                     if (spacesFound >= amount)
                         return true;
-                }else if(Inventory[i].Item1 == material)
+                } else if (Inventory[i].Item1 == material)
                 {
                     spacesFound += GetStackSizeFor(material) - Inventory[i].Item2;
 
@@ -260,6 +260,79 @@ namespace BaseBuilder.Engine.World.Entities
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Determines if there is room in this inventory for all of the specified
+        /// materials. Must not contain any duplicate materials.
+        /// </summary>
+        /// <param name="materials">The materials</param>
+        /// <returns>If there is room in this inventory for all of the materials</returns>
+        public bool HaveRoomFor(params Tuple<Material, int>[] materials)
+        {
+            if (materials.Length == 0)
+                return true;
+
+#if DEBUG
+            for(int i = 0; i < materials.Length; i++)
+            {
+                for(int j = i + 1; j < materials.Length; j++)
+                {
+                    if (materials[i].Item1 == materials[j].Item1)
+                    {
+                        var matStr = string.Join(", ", new List<Tuple<Material, int>>(materials).ConvertAll((tup) => $"{tup.Item1}x{tup.Item2}"));
+                        throw new InvalidOperationException($"Duplicate materials! materials={matStr}");
+                    }
+                }
+            }
+#endif
+
+            var usedIndexes = new HashSet<int>();
+
+            foreach(var mat in materials)
+            {
+                int spacesFound = 0;
+
+                for(int i = 0; i < Inventory.Length; i++)
+                {
+                    if (usedIndexes.Contains(i))
+                        continue;
+
+                    if (Inventory[i] == null)
+                        continue;
+
+                    if(Inventory[i].Item1 == mat.Item1)
+                    {
+                        spacesFound += GetStackSizeFor(mat.Item1) - Inventory[i].Item2;
+
+                        if (spacesFound >= mat.Item2)
+                            break;
+                    }
+                }
+
+                if (spacesFound >= mat.Item2)
+                    continue;
+
+                for(int i = 0; i < Inventory.Length; i++)
+                {
+                    if (usedIndexes.Contains(i))
+                        continue;
+
+                    if (Inventory[i] == null)
+                    {
+                        usedIndexes.Add(i);
+                        spacesFound += GetStackSizeFor(mat.Item1);
+
+                        if (spacesFound >= mat.Item2)
+                            break;
+                    }
+                }
+
+                if (spacesFound < mat.Item2)
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
