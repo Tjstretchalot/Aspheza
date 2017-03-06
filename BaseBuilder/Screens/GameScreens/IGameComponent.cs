@@ -60,6 +60,13 @@ namespace BaseBuilder.Screens.GameScreens
         bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame);
 
         /// <summary>
+        /// This is called prior to the main SpriteBatch#Begin and can be used to
+        /// write offscreen. 
+        /// </summary>
+        /// <param name="renderContext">Render context</param>
+        void PreDraw(RenderContext renderContext);
+
+        /// <summary>
         /// Draws this component to the screen
         /// </summary>
         void Draw(RenderContext context);

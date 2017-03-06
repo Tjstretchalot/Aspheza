@@ -42,6 +42,10 @@ namespace BaseBuilder.Screens.GameScreens
             Z = z;
         }
 
+        public virtual void PreDraw(RenderContext renderContext)
+        {
+        }
+
         public abstract void Draw(RenderContext context);
 
         public virtual bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame)

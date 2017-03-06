@@ -96,17 +96,22 @@ namespace BaseBuilder.Screens.GameScreens
         public void Draw()
         {
             graphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO game states and stuff
-
+            
             renderContext.Graphics = graphics;
-            renderContext.SpriteBatch = spriteBatch;
+            renderContext.SpriteBatch = null;
             renderContext.Content = content;
             renderContext.Camera = localGameState.Camera;
             renderContext.GraphicsDevice = graphicsDevice;
             renderContext.DefaultFont = debugFont;
             renderContext.CollisionDebug = localGameState.CollisionDebug;
             renderContext.__SharedGameState = sharedGameState;
+
+            foreach(var comp in localGameState.Components)
+            {
+                comp.PreDraw(renderContext);
+            }
+            
+            renderContext.SpriteBatch = spriteBatch;
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             sharedGameState.World.Render(renderContext);

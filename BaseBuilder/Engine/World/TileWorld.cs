@@ -136,7 +136,7 @@ namespace BaseBuilder.Engine.World
 
             OnEntityAdded?.Invoke(this, new EntityEventArgs(entity));
         }
-        
+
         public void RemoveImmobileEntity(ImmobileEntity entity)
         {
             if (entity == null)
@@ -258,6 +258,7 @@ namespace BaseBuilder.Engine.World
             var entities = TileToEntities[tile];
             return !entities.Any((e) => e != ent);
         }
+
 
         /// <summary>
         /// Renders the world in the given context.
