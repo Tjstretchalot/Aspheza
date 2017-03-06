@@ -71,7 +71,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 
             if(GrowthTimeNeedsRandoming)
             {
-                GrowthTimeRemainingMS = RandomUtils.GetNetSafeRandom(sharedState, Position.GetHashCode()).Next(10000) + 15000;
+                GrowthTimeRemainingMS = RandomUtils.GetNetSafeRandom(sharedState, Position.GetHashCode()).Next(75000) + 45000;
                 GrowthTimeNeedsRandoming = false;
             }
 
@@ -150,10 +150,10 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
                 case TreeSize.Sapling:
                     return;
                 case TreeSize.Small:
-                    if (!reciever.Inventory.HaveRoomFor(Tuple.Create(Material.Sapling, 1), Tuple.Create(Material.Wood, 1)))
+                    if (!reciever.Inventory.HaveRoomFor(Tuple.Create(Material.Sapling, 2), Tuple.Create(Material.Wood, 1)))
                         return;
 
-                    reciever.Inventory.AddMaterial(Material.Sapling, 1);
+                    reciever.Inventory.AddMaterial(Material.Sapling, 2);
                     reciever.Inventory.AddMaterial(Material.Wood, 1);
                     sharedGameState.World.RemoveImmobileEntity(this);
                     break;

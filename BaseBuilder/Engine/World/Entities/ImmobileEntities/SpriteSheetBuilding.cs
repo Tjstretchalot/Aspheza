@@ -15,7 +15,22 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
      public class SpriteSheetBuilding : ImmobileEntity
     {
         protected List<Tuple<Rectangle, PointD2D>> SourceRectsToOffsetLocations;
-        protected string SheetName;
+        private string _SheetName;
+        protected string SheetName
+        {
+            get
+            {
+                return _SheetName;
+            }
+
+            set
+            {
+                Texture = null;
+                _SheetName = value;
+            }
+        }
+
+        protected Texture2D Texture;
 
 
         public SpriteSheetBuilding(PointD2D position, CollisionMeshD2D collisionMesh, int id, string sheetName, List<Tuple<Rectangle, PointD2D>> sourceRectsToOffsetLocations) : base(position, collisionMesh, id)
@@ -32,7 +47,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            var sheet = context.Content.Load<Texture2D>(SheetName);
+            if(Texture == null)
+                Texture = context.Content.Load<Texture2D>(SheetName);
 
             foreach (var tuple in SourceRectsToOffsetLocations)
             {
@@ -41,7 +57,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                 var destRect = new Rectangle(
                         (int)(offset.X * context.Camera.Zoom + screenTopLeft.X), (int)(offset.Y * context.Camera.Zoom + screenTopLeft.Y), (int)context.Camera.Zoom, (int)context.Camera.Zoom
                     );
-                context.SpriteBatch.Draw(sheet, sourceRectangle: sourceRect, destinationRectangle: destRect, color: overlay);
+                context.SpriteBatch.Draw(Texture, sourceRectangle: sourceRect, destinationRectangle: destRect, color: overlay);
             }
         }
     }

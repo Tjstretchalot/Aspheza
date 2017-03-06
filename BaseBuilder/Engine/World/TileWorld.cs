@@ -265,6 +265,9 @@ namespace BaseBuilder.Engine.World
         /// <param name="context">Render context</param>
         public void Render(RenderContext context)
         {
+            var tileWidth = TileWidth;
+            var tileHeight = TileHeight;
+
             int leftMostVisibleTileX = (int)(context.Camera.WorldTopLeft.X);
             int topMostVisibleTileY = (int)(context.Camera.WorldTopLeft.Y);
             int rightMostVisibleTileX = (int)Math.Ceiling(context.Camera.WorldTopLeft.X + context.Camera.VisibleWorldWidth);
@@ -286,7 +289,7 @@ namespace BaseBuilder.Engine.World
             {
                 for(int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
                 {
-                    var tile = TileAt(x, y);
+                    var tile = Tiles[x + y * tileWidth]; // profiled this change
                     tile.Render(context, point, Color.White);
                     
                     point.Y += context.Camera.Zoom;
@@ -297,12 +300,12 @@ namespace BaseBuilder.Engine.World
             }
 
 
-            List<int> drawnIDS = new List<int>();
+            var drawnIDS = new HashSet<int>();
             for (int y = topMostVisibleTileY; y <= bottomMostVisibleTileY; y++)
             {
                 for (int x = leftMostVisibleTileX; x <= rightMostVisibleTileX; x++)
                 {
-                    var tile = TileAt(x, y);
+                    var tile = Tiles[x + y * tileWidth];
                     foreach (var ent in TileToEntities[tile])
                     {
                         if (!drawnIDS.Contains(ent.ID))
@@ -393,11 +396,15 @@ namespace BaseBuilder.Engine.World
         /// <param name="context">The context</param>
         public void Update(UpdateContext context)
         {
-            for(int x = 0; x < TileWidth; x++)
+            var tileWidth = TileWidth;
+            var tileHeight = TileHeight;
+            
+            for(int x = 0; x < tileWidth; x++)
             {
                 for(int y = 0; y < TileHeight; y++)
                 {
-                    TileAt(x, y).Update(context);
+                    // i performance profiled this change from TileAt, it's actually significant
+                    Tiles[x + y * tileHeight].Update(context);
                 }
             }
 
@@ -481,8 +488,12 @@ namespace BaseBuilder.Engine.World
             var alreadyChecked = new List<Entity>();
             foreach (var location in tiles)
             {
-                var ent = GetEntityAtLocation(location);
-                if (ent == null || alreadyChecked.Contains(ent))
+                var tile = TileAt(location.X, location.Y);
+                var ents = TileToEntities[tile];
+                if (ents.Count == 0)
+                    continue;
+                var ent = ents[0];
+                if (alreadyChecked.Contains(ent))
                     continue;
                 alreadyChecked.Add(ent);
                 if (ent.CollisionMesh.Intersects(poly, ent.Position, myPosition, strict))

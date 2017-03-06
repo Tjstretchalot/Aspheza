@@ -29,12 +29,14 @@ namespace BaseBuilder.Engine.Logic.WorldGen
         protected List<Player> Players;
         protected int LocalPlayerID;
 
+        protected Random RanGen;
+
         public SharedGameState SharedGameState;
         public LocalGameState LocalGameState;
 
         public WorldGenerator()
         {
-
+            RanGen = new Random();
         }
 
         /// <summary>
@@ -128,94 +130,176 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             */
         }
 
-        protected void InitTrees()
+        private void TrySpawnTree(PointI2D pos, ref ImmobileEntity nextTree)
         {
-            var rand = new Random();
-            var wcx = TileWorld.TileWidth / 2;
-            var wcy = TileWorld.TileHeight / 2;
-
             TreeSize size;
             TreeStyle style;
             TreeColor color;
 
-            ImmobileEntity nextTree = new Tree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green);
-            var pos = new PointD2D(0, 0);
-            List<PointI2D> tilePositions = new List<PointI2D>();
-            for (int y = 10; y < TileWorld.TileHeight - 10; y++)
+            var tilePositions = new List<PointI2D>();
+
+            bool badSpot = false;
+            foreach (var confl in TileWorld.GetEntitiesAtLocation(nextTree.CollisionMesh, pos))
             {
-                for (int x = 10; x < TileWorld.TileWidth - 10; x++)
+                badSpot = true;
+                break;
+            }
+            if (badSpot)
+                return;
+
+            nextTree.CollisionMesh.TilesIntersectedAt(pos, tilePositions);
+            foreach (var tilePos in tilePositions)
+            {
+                if (!TileWorld.TileAt(tilePos.X, tilePos.Y).Ground)
+                {
+                    badSpot = true;
+                    break;
+                }
+            }
+            if (badSpot)
+                return;
+
+            nextTree.Position = new PointD2D(pos.X, pos.Y);
+            TileWorld.AddImmobileEntity(nextTree);
+
+            var tmp = RanGen.Next(3);
+            switch (tmp)
+            {
+                case 0:
+                    size = TreeSize.Large;
+                    break;
+                case 1:
+                    size = TreeSize.Small;
+                    break;
+                case 2:
+                    size = TreeSize.Sapling;
+                    break;
+                default:
+                    throw new InvalidProgramException();
+            }
+
+            tmp = RanGen.Next(2);
+            switch (tmp)
+            {
+                case 0:
+                    style = TreeStyle.Pointy;
+                    break;
+                case 1:
+                    style = TreeStyle.Rounded;
+                    break;
+                default:
+                    throw new InvalidProgramException();
+            }
+
+            tmp = RanGen.Next(100);
+            if (tmp < 85)
+                color = TreeColor.Green;
+            else if (tmp < 95)
+                color = TreeColor.Red;
+            else
+                color = TreeColor.Blue;
+
+            nextTree = new Tree(new PointD2D(0, 0), SharedGameState.GetUniqueEntityID(), size, style, color);
+        }
+        
+        protected void SpawnTreeEpitrochoid(PointI2D pos, int x, int y, ref ImmobileEntity nextTree, double a, double b, double c, double scale)
+        {
+            for (var t = -10.0; t <= 10.0; t += 0.01)
+            {
+                var tx2 = (a + b) * Math.Cos(t) - c * Math.Cos(((a / b) + 1) * t);
+                var ty2 = (a + b) * Math.Sin(t) - c * Math.Sin(((a / b) + 1) * t);
+
+                var x2 = (tx2 * scale) + x;
+                var y2 = (ty2 * scale) + y;
+
+                if (x2 < 5 || y2 < 5 || x2 >= TileWorld.TileWidth - 5 || y2 >= TileWorld.TileHeight - 5)
+                    continue;
+
+                pos.X = (int)Math.Round(x2);
+                pos.Y = (int)Math.Round(y2);
+                TrySpawnTree(pos, ref nextTree);
+            }
+        }
+
+        protected void SpawnTreeEllipse(PointI2D pos, int cx, int cy, ref ImmobileEntity nextTree, int width, int height)
+        {
+            width = width / 2;
+            height = height / 2;
+            int hh = height * height;
+            int ww = width * width;
+            int hhww = hh * ww;
+            int x0 = width;
+            int dx = 0;
+
+            // do the horizontal diameter
+            for (int x = -width; x <= width; x++)
+            {
+                pos.X = cx + x;
+                pos.Y = cy;
+                if (RanGen.NextDouble() < 0.2)
+                    TrySpawnTree(pos, ref nextTree);
+            }
+
+            // now do both halves at the same time, away from the diameter
+            for (int y = 1; y <= height; y++)
+            {
+                int x1 = x0 - (dx - 1);  // try slopes of dx - 1 or more
+                for (; x1 > 0; x1--)
+                    if (x1 * x1 * hh + y * y * ww <= hhww)
+                        break;
+                dx = x0 - x1;  // current approximation of the slope
+                x0 = x1;
+
+                for (int x = -x0; x <= x0; x++)
+                {
+                    pos.X = cx + x;
+                    pos.Y = cy - y;
+                    if (RanGen.NextDouble() < 0.2)
+                        TrySpawnTree(pos, ref nextTree);
+
+                    pos.X = cx + x;
+                    pos.Y = cy + y;
+                    if (RanGen.NextDouble() < 0.2)
+                        TrySpawnTree(pos, ref nextTree);
+                }
+            }
+        }
+
+        protected void SpawnTreeSetup1(PointI2D pos, int x, int y, double desWidth, double desHeight, ref ImmobileEntity nextTree)
+        {
+            var a = 1.0;
+            var b = 3.0 / 5.0;
+            var c = 1.2;
+            var scale = desWidth / 7.0;
+
+            SpawnTreeEpitrochoid(pos, x, y, ref nextTree, a, b, c, scale);
+        }
+        
+        protected void InitTrees()
+        {
+            const int forestAvgWidth = 20;
+            const int forestAvgHeight = 20;
+
+            var wcx = TileWorld.TileWidth / 2;
+            var wcy = TileWorld.TileHeight / 2;
+            
+            ImmobileEntity nextTree = new Tree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green);
+            var pos = new PointI2D(0, 0);
+            
+            for (int y = forestAvgHeight; y < TileWorld.TileHeight - forestAvgHeight; y++)
+            {
+                for (int x = forestAvgWidth; x < TileWorld.TileWidth - forestAvgWidth; x++)
                 {
                     var distToCenterManh = Math.Abs(x - wcx) + Math.Abs(y - wcy);
-                    if (distToCenterManh < 10)
+                    if (distToCenterManh < 50)
                         continue;
 
-                    pos.X = x;
-                    pos.Y = y;
-
-                    if (rand.NextDouble() < 0.05)
+                    if (RanGen.NextDouble() < 0.001)
                     {
-                        bool badSpot = false;
-                        foreach (var confl in TileWorld.GetEntitiesAtLocation(nextTree.CollisionMesh, pos))
-                        {
-                            badSpot = true;
-                            break;
-                        }
-                        if (badSpot)
-                            continue;
+                        var desiredWidth = (forestAvgWidth / 2 + RanGen.Next(forestAvgWidth));
+                        var desiredHeight = (forestAvgHeight / 2 + RanGen.Next(forestAvgHeight));
 
-                        nextTree.CollisionMesh.TilesIntersectedAt(pos, tilePositions);
-                        foreach (var tilePos in tilePositions)
-                        {
-                            if (!TileWorld.TileAt(tilePos.X, tilePos.Y).Ground)
-                            {
-                                badSpot = true;
-                                break;
-                            }
-                        }
-                        if (badSpot)
-                            continue;
-
-                        nextTree.Position = new PointD2D(pos.X, pos.Y);
-                        TileWorld.AddImmobileEntity(nextTree);
-
-                        var tmp = rand.Next(3);
-                        switch(tmp)
-                        {
-                            case 0:
-                                size = TreeSize.Large;
-                                break;
-                            case 1:
-                                size = TreeSize.Small;
-                                break;
-                            case 2:
-                                size = TreeSize.Sapling;
-                                break;
-                            default:
-                                throw new InvalidProgramException();
-                        }
-
-                        tmp = rand.Next(2);
-                        switch(tmp)
-                        {
-                            case 0:
-                                style = TreeStyle.Pointy;
-                                break;
-                            case 1:
-                                style = TreeStyle.Rounded;
-                                break;
-                            default:
-                                throw new InvalidProgramException();
-                        }
-
-                        tmp = rand.Next(100);
-                        if (tmp < 85)
-                            color = TreeColor.Green;
-                        else if (tmp < 95)
-                            color = TreeColor.Red;
-                        else
-                            color = TreeColor.Blue;
-
-                        nextTree = new Tree(new PointD2D(0, 0), SharedGameState.GetUniqueEntityID(), size, style, color);
+                        SpawnTreeEllipse(pos, x, y, ref nextTree, desiredWidth, desiredHeight);
                     }
                 }
             }

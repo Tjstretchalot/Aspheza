@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
 using Microsoft.Xna.Framework;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
@@ -33,6 +34,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         public CaveManWorker(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)
         {
             Inventory = new EntityInventory(6);
+            Inventory.SetStackSizeFor(Material.Sapling, 5);
             AnimationRenderer = new SpriteSheetAnimationRenderer("CaveManWorker", DownMove, UpMove, RightMove, LeftMove);
         }
 
