@@ -19,6 +19,23 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         event EventHandler TaskFinishing;
 
         /// <summary>
+        /// This event should be raised whenever the current task completes
+        /// and after the next task is set.
+        /// </summary>
+        event EventHandler TaskFinished;
+
+        /// <summary>
+        /// This event should be raised whenever a new task is about to be
+        /// started but before it is set
+        /// </summary>
+        event EventHandler TaskStarting;
+
+        /// <summary>
+        /// This event should be raised after a new task is started.
+        /// </summary>
+        event EventHandler TaskStarted;
+
+        /// <summary>
         /// This event should be raised whenever ClearTasks is called but NOT 
         /// when replace tasks is called
         /// </summary>
