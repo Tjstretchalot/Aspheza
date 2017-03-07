@@ -29,6 +29,9 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
     public abstract class Entity : Renderable, ITaskable, Thing
     {
         public int ID { get; protected set; }
+
+        public bool Destroyed { get; set; }
+
         /// <summary>
         /// Where the entity is located in the world.
         /// </summary>
@@ -52,21 +55,27 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
                 return _HoverText;
             }
         }
+        
 
         /// <summary>
         /// Is this entity currently selected
         /// </summary>
         public bool Selected;
 
-        public Queue<IEntityTask> Tasks;
-        public IEntityTask CurrentTask;
-        
+        public Queue<IEntityTask> TaskQueue { get; set; }
+        public IEntityTask CurrentTask { get; set; }
+
+        public event EventHandler TaskFinishing;
+        public event EventHandler TasksCancelled;
+        public event EventHandler TasksReplacing;
+        public event EventHandler TasksReplaced;
+
         protected Entity(PointD2D position, CollisionMeshD2D collisionMesh, int id)
         {
             Position = position;
             CollisionMesh = collisionMesh;
             ID = id;
-            Tasks = new Queue<IEntityTask>();
+            TaskQueue = new Queue<IEntityTask>();
         }
 
         /// <summary>
@@ -79,11 +88,11 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         protected virtual void TasksFromMessage(SharedGameState gameState, NetIncomingMessage message)
         {
             var numTasks = message.ReadInt16();
-            Tasks = new Queue<IEntityTask>(numTasks);
+            TaskQueue = new Queue<IEntityTask>(numTasks);
             for(int i = 0; i < numTasks; i++)
             {
                 var taskID = message.ReadInt16();
-                Tasks.Enqueue(TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message));
+                TaskQueue.Enqueue(TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message));
             }
 
             bool currentTask = message.ReadBoolean();
@@ -96,10 +105,10 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         protected virtual void WriteTasks(NetOutgoingMessage message)
         {
-            message.Write((short)Tasks.Count);
-            for(int i = 0; i < Tasks.Count; i++)
+            message.Write((short)TaskQueue.Count);
+            for(int i = 0; i < TaskQueue.Count; i++)
             {
-                var task = Tasks.ElementAt(i);
+                var task = TaskQueue.ElementAt(i);
 
                 message.Write(TaskIdentifier.GetIDOfTask(task.GetType()));
                 task.Write(message);
@@ -171,9 +180,9 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         public virtual void SimulateTimePassing(SharedGameState sharedState, int timeMS)
         {
-            if (CurrentTask == null && Tasks.Count > 0)
+            if (CurrentTask == null && TaskQueue.Count > 0)
             {
-                CurrentTask = Tasks.Dequeue();
+                CurrentTask = TaskQueue.Dequeue();
             }
 
             if (CurrentTask != null)
@@ -211,7 +220,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         public void QueueTask(IEntityTask task)
         {
-            Tasks.Enqueue(task);
+            TaskQueue.Enqueue(task);
         }
 
         public void ClearTasks(SharedGameState gameState)
@@ -219,10 +228,15 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             CurrentTask?.Cancel(gameState);
             CurrentTask = null;
 
-            while(Tasks.Count > 0)
+            while(TaskQueue.Count > 0)
             {
-                Tasks.Dequeue().Cancel(gameState);
+                TaskQueue.Dequeue().Cancel(gameState);
             }
+        }
+
+        public void ReplaceTasks(Queue<IEntityTask> newQueue)
+        {
+            throw new NotImplementedException();
         }
     }
 }

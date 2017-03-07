@@ -116,6 +116,8 @@ namespace BaseBuilder.Engine.World
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
+            entity.Destroyed = true;
+
             MobileEntities.Remove(entity);
             RemoveTileCollisions(entity);
 
@@ -131,6 +133,7 @@ namespace BaseBuilder.Engine.World
             {
                 throw new ArgumentNullException(nameof(entity));
             }
+
             ImmobileEntities.Add(entity);
             AddTileCollisions(entity);
 
@@ -152,6 +155,8 @@ namespace BaseBuilder.Engine.World
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
+
+            entity.Destroyed = true;
 
             ImmobileEntities.Remove(entity);
             RemoveTileCollisions(entity);

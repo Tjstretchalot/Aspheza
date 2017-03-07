@@ -13,6 +13,11 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
         int ID { get; }
 
         /// <summary>
+        /// If this thing has been removed from the world.
+        /// </summary>
+        bool Destroyed { get; set; }
+
+        /// <summary>
         /// The position
         /// </summary>
         PointD2D Position { get; }
@@ -21,5 +26,6 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
         /// The collision mesh
         /// </summary>
         CollisionMeshD2D CollisionMesh { get; }
+
     }
 }

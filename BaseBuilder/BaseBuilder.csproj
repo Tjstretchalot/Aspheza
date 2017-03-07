@@ -90,6 +90,7 @@
     <Compile Include="Engine\State\Resources\Material.cs" />
     <Compile Include="Engine\State\Resources\MaterialManager.cs" />
     <Compile Include="Engine\State\SharedGameState.cs" />
+    <Compile Include="Engine\Utility\BiDictionary.cs" />
     <Compile Include="Engine\Utility\Renderable.cs" />
     <Compile Include="Engine\World\Entities\Entity.cs" />
     <Compile Include="Engine\World\Entities\EntityIdentifier.cs" />
@@ -196,6 +197,15 @@
     <Compile Include="Screens\GameScreens\PlayersOverlay.cs" />
     <Compile Include="Screens\GameScreens\ResourceOverlay.cs" />
     <Compile Include="Screens\GameScreens\SFXUtils.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\AddTaskOverlayComponent.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\InspectTaskOverlayComponent.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\LiveTaskOverlayComponent.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\ScrollableComponent.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\FailerTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ITaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\TaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\TaskItemIdentifier.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskMenuOverlay.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\CaveManWorkerOverlay.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\InventoryComponentWrapper.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\InventoryOverlayComponent.cs" />
@@ -243,6 +253,7 @@
     <Content Include="Content\Bakery.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\icons.png" />
     <Content Include="Content\Library.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
