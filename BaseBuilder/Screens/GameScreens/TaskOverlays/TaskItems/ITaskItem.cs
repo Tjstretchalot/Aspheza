@@ -2,6 +2,7 @@
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,23 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
     /// </summary>
     public interface ITaskItem
     {
+        /// <summary>
+        /// Triggered when this task item will require a redraw.
+        /// </summary>
+        event EventHandler InspectRedrawRequired;
+
+        /// <summary>
+        /// Triggered when this task item is drawn in the inspect
+        /// overlay and wants to add a child.
+        /// </summary>
+        event EventHandler InspectAddPressed;
+
+        /// <summary>
+        /// Triggered when this task item is drawn in the 
+        /// delete overlay and wants to delete itself.
+        /// </summary>
+        event EventHandler InspectDeletePressed;
+
         /// <summary>
         /// Gets the children of this task item. A task item does
         /// not draw its own children in the live menu.
@@ -34,18 +52,6 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         /// true if this item is expandable
         /// </summary>
         bool Expanded { get; set; }
-
-        /// <summary>
-        /// Gets the height of this task item when nto expanded on 
-        /// the live view, in pixels.
-        /// </summary>
-        int LiveMinimizedHeight { get; }
-
-        /// <summary>
-        /// Gets the height of this task item when expanded on the
-        /// live view, in pixels.
-        /// </summary>
-        int LiveExpandedHeight { get; }
 
         /// <summary>
         /// The size that this item takes up in the inspect menu.
@@ -88,9 +94,41 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         /// <summary>
         /// Draws this task, with the top left at the specified point.
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="context">Render context</param>
+        /// <param name="x">Top-left x</param>
+        /// <param name="y">Top-left y</param>
         void DrawInspect(RenderContext context, int x, int y);
+
+        /// <summary>
+        /// Updates this task item when in the mouse state, for things like
+        /// button presses.
+        /// </summary>
+        /// <param name="sharedGameState">Shared state</param>
+        /// <param name="localGameState">Local state</param>
+        /// <param name="netContext">The net context</param>
+        /// <param name="timeMS">The time in milliseconds since last update</param>
+        void UpdateInspect(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS);
+
+        /// <summary>
+        /// Handles the mouse state in the inspect menu. Only called if currently live
+        /// in the mouse state and the mouse is inside the mouse state and it is this
+        /// task items turn to consume the mouse. The mouse positions are adjusted to
+        /// be relative to the draw position (i.e. if your drawn on an offscreen texture at
+        /// 0,0 and that texture is drawn onto the screen at 50,50, the mouse positions
+        /// here will be based on 0,0 not 50,50)
+        /// </summary>
+        /// <param name="sharedGameState">Shared game state</param>
+        /// <param name="localGameState">Local game state</param>
+        /// <param name="netContext">Net context</param>
+        /// <param name="last">The last mouse state</param>
+        /// <param name="current">The current mouse state</param>
+        /// <returns>If the mouse was handled</returns>
+        bool HandleInspectMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current);
+
+        /// <summary>
+        /// Disposes of anything required for the inspect menu. It should still be
+        /// able to run again if LoadedOrChanged is called.
+        /// </summary>
+        void DisposeInspect();
     }
 }

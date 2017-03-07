@@ -186,6 +186,16 @@ namespace BaseBuilder.Screens.Components
         /// This is when you should treat the button as clicked.
         /// </summary>
         public event EventHandler OnPressReleased;
+
+        /// <summary>
+        /// Triggered when hover changes
+        /// </summary>
+        public event EventHandler OnHoveredChanged;
+
+        /// <summary>
+        /// Triggered when pressed changes
+        /// </summary>
+        public event EventHandler OnPressedChanged;
         
         internal Vector2? _TextDestinationVec;
 
@@ -312,6 +322,11 @@ namespace BaseBuilder.Screens.Components
                 if (newHovered && Hovered)
                     OnPressReleased?.Invoke(this, EventArgs.Empty);
             }
+
+            if (pressedChanged)
+                OnPressedChanged?.Invoke(this, EventArgs.Empty);
+            if(hoveredChanged)
+                OnHoveredChanged?.Invoke(this, EventArgs.Empty);
 
             Pressed = newPressed;
             Hovered = newHovered;

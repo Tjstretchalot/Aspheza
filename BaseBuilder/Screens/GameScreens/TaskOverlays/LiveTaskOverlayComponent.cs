@@ -21,14 +21,49 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
     /// </summary>
     public class LiveTaskOverlayComponent : MyGameComponent
     {
+        /// <summary>
+        /// Called when no task is selected then a task is selected
+        /// </summary>
         public event EventHandler TaskSelected;
+
+        /// <summary>
+        /// Called whenever a task is selected then no task is selected.
+        /// </summary>
         public event EventHandler TaskUnselected;
+
+        /// <summary>
+        /// Called when a task is selected and then a different task is selecetd
+        /// </summary>
+        public event EventHandler TaskSelectionChanged;
+
+        /// <summary>
+        /// Called when a new task should be added
+        /// </summary>
         public event EventHandler TaskAddPressed;
+
+        /// <summary>
+        /// Called when the start button is pressed
+        /// </summary>
         public event EventHandler StartPressed;
+
+        /// <summary>
+        /// Called when the stop button is pressed
+        /// </summary>
         public event EventHandler StopPressed;
-        public event EventHandler TaskDeletePressed;
+
+        /// <summary>
+        /// Called when a task is expanded
+        /// </summary>
         public event EventHandler TaskExpanded;
+
+        /// <summary>
+        /// Called when a task is minimized
+        /// </summary>
         public event EventHandler TaskMinimized;
+
+        /// <summary>
+        /// Called whenever this component will need to be redrawn
+        /// </summary>
         public event EventHandler RedrawRequired;
 
         /// <summary>
@@ -48,8 +83,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// </summary>
         public ITaskItem Hovered;
         
+
         protected ITaskable Taskable;
-        protected List<ITaskItem> TaskItems;
+        protected ICollection<ITaskItem> TaskItems;
         protected BiDictionary<Rectangle, ITaskItem> ExpandOrMinimizeIconLocationsToTaskItems;
         
         protected BiDictionary<Rectangle, ITaskItem> SelectLocationsToTaskItems;
@@ -135,26 +171,133 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                     rect = new Rectangle(ScreenLocation.X + xPadding + 11, y, (int)strSize.X, (int)strSize.Y);
                     SelectLocationsToTaskItems[task] = rect;
                 }
-                context.SpriteBatch.DrawString(context.DefaultFont, task.TaskName, new Vector2(rect.X, rect.Y), Color.White);   
+                context.SpriteBatch.DrawString(context.DefaultFont, task.TaskName, new Vector2(rect.X, rect.Y), Color.White);
+
+                y += (int)(strSize.Y + 2);
             }
         }
 
         public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
         {
-            return false;
+            bool foundSideHover = false;
+            foreach(var pair in ExpandOrMinimizeIconLocationsToTaskItems.KVPs)
+            {
+                var rect = pair.Item1;
+                var item = pair.Item2;
+
+                if(rect.Contains(current.Position))
+                {
+                    foundSideHover = true;
+                    if(SideHovered != item)
+                    {
+                        SideHovered = item;
+                        RedrawRequired?.Invoke(null, EventArgs.Empty);
+                    }
+
+                    if(last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
+                    {
+                        if (item.Expanded)
+                        {
+                            item.Expanded = false;
+                            TaskMinimized?.Invoke(null, EventArgs.Empty);
+                        }
+                        else
+                        {
+                            item.Expanded = true;
+                            TaskExpanded?.Invoke(null, EventArgs.Empty);
+                        }
+
+                        RedrawRequired?.Invoke(null, EventArgs.Empty);
+                    }
+
+                    break;
+                }
+            }
+
+            if(!foundSideHover && SideHovered != null)
+            {
+                SideHovered = null;
+                RedrawRequired?.Invoke(null, EventArgs.Empty);
+            }
+
+            if (foundSideHover)
+                return true;
+
+            var foundHover = false;
+            foreach(var kvp in SelectLocationsToTaskItems.KVPs)
+            {
+                var rect = kvp.Item1;
+                var item = kvp.Item2;
+
+                if(rect.Contains(current.Position))
+                {
+                    foundHover = true;
+                    if (Hovered != item)
+                    {
+                        Hovered = item;
+                        RedrawRequired?.Invoke(null, EventArgs.Empty);
+                    }
+                    break;
+                }
+            }
+
+            if(!foundHover && Hovered != null)
+            {
+                Hovered = null;
+
+                if(last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
+                {
+                    Selected = null;
+                    TaskUnselected?.Invoke(null, EventArgs.Empty);
+                }
+            }else if(foundHover)
+            {
+                if (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
+                {
+                    if(Selected == null)
+                    {
+                        Selected = Hovered;
+                        TaskSelected?.Invoke(null, EventArgs.Empty);
+                    }else if(Selected != Hovered)
+                    {
+                        Selected = Hovered;
+                        TaskSelectionChanged?.Invoke(null, EventArgs.Empty);
+                    }
+                }
+            }
+
+            return true;
         }
 
         protected void CreateTaskItemsFromTaskable()
         {
-            TaskItems = new List<ITaskItem>();
+            var queue = Taskable.TaskQueue.ToArray();
+            var taskItems = new LinkedList<ITaskItem>();
+            
+            if (Taskable.CurrentTask != null)
+                taskItems.AddLast(TaskItemIdentifier.Init(Taskable.CurrentTask));
+            for (int i = 0; i < queue.Length; i++)
+            {
+                taskItems.AddLast(TaskItemIdentifier.Init(queue[i]));
+            }
+
+            TaskItems = taskItems;
         }
 
+        void CreateTaskItemsFromTaskableAndRedraw(object sender, EventArgs args)
+        {
+            CreateTaskItemsFromTaskable();
+            RedrawRequired?.Invoke(null, EventArgs.Empty);
+        }
         /// <summary>
         /// Sets this live task overlay component to listen for any changes on the taskable.
         /// </summary>
         protected void ListenForTaskEvents()
         {
-
+            Taskable.TaskFinished += CreateTaskItemsFromTaskableAndRedraw;
+            Taskable.TasksCancelled += CreateTaskItemsFromTaskableAndRedraw;
+            Taskable.TasksReplaced += CreateTaskItemsFromTaskableAndRedraw;
+            //Taskable.TaskQueued += CreateTaskItemsFromTaskableAndRedraw;
         }
 
         /// <summary>
@@ -162,9 +305,36 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// </summary>
         protected void RecalculateSize()
         {
-            //int y = 5;
+            var font = Content.Load<SpriteFont>("Bitter-Regular");
+
+            int height = 5;
+
+            int widestStringX = 0;
+
+            var stack = new LinkedList<ITaskItem>();
+
+            foreach(var item in TaskItems)
+            {
+                stack.AddLast(item);
+            }
+
+            while(stack.Count > 0)
+            {
+                var item = stack.First.Value;
+                stack.RemoveFirst();
+
+                var strSize = font.MeasureString(item.TaskName);
+
+                widestStringX = (int)Math.Max(widestStringX, strSize.X);
+                height += (int)(strSize.Y + 2);
+            }
 
             
+
+            height += 5;
+            int width = 5 + 11 + widestStringX + 5; // 5px padding + 8 px expand/minimize + 3px padding + string + 5 px padding
+             // TODO buttons
+            Size = new PointI2D(width, height);
         }
     }
 }

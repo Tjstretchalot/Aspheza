@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,9 +24,31 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             EntityTaskTypesToTaskItemType[entityTaskType] = taskItemType;
         }
 
-        public ITaskItem InitTaskItemFromEntityTask(IEntityTask task)
+        public static ITaskItem Init(IEntityTask task)
         {
-            return null; // todo
+            var itemType = EntityTaskTypesToTaskItemType[task.GetType()];
+
+            ConstructorInfo cstr = null;
+
+            var constructors = task.GetType().GetConstructors();
+            foreach(var constructor in constructors)
+            {
+                var cstrParams = constructor.GetParameters();
+
+                if (cstrParams.Length != 1)
+                    continue;
+
+                if(cstrParams[0].ParameterType.IsAssignableFrom(task.GetType()))
+                {
+                    cstr = constructor;
+                    break;
+                }
+            }
+
+            if (cstr == null)
+                throw new InvalidProgramException($"Could not find a constructor that accepts {task.GetType().FullName} for {itemType.GetType().FullName}");
+
+            return cstr.Invoke(new object[] { task }) as ITaskItem;
         }
     }
 }

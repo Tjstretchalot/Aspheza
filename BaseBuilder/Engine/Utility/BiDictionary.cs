@@ -5,6 +5,19 @@ namespace BaseBuilder.Engine.Utility
 {
     public class BiDictionary<TFirst, TSecond>
     {
+        public IEnumerable<Tuple<TFirst, TSecond>> KVPs
+        {
+            get
+            {
+                var keys = FirstToSecond.Keys;
+
+                foreach(var key in keys)
+                {
+                    yield return Tuple.Create(key, FirstToSecond[key]);
+                }
+            }
+        }
+
         private IDictionary<TFirst, TSecond> FirstToSecond;
         private IDictionary<TSecond, TFirst> SecondToFirst;
 
@@ -12,6 +25,16 @@ namespace BaseBuilder.Engine.Utility
         {
             FirstToSecond = new Dictionary<TFirst, TSecond>();
             SecondToFirst = new Dictionary<TSecond, TFirst>();
+        }
+
+        public ICollection<TFirst> GetFirstKeys()
+        {
+            return FirstToSecond.Keys;
+        }
+
+        public ICollection<TSecond> GetSecondKeys()
+        {
+            return SecondToFirst.Keys;
         }
 
         public void Add(TFirst first, TSecond second)

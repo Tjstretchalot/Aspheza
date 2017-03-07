@@ -83,13 +83,21 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             {
                 SourceRect.X = 0;
                 SourceRect.Y = -ScrollOffsetY;
-                SourceRect.Width = Size.X;
-                SourceRect.Height = Size.Y;
+                SourceRect.Width = WrappedComponent.Size.X;
+                SourceRect.Height = Math.Min(Size.Y, WrappedComponent.Size.Y);
 
-                DrawRect.X = ScreenLocation.X;
-                DrawRect.Y = ScreenLocation.Y;
-                DrawRect.Width = Size.X;
-                DrawRect.Height = Size.Y;
+                if (Size.X > WrappedComponent.Size.X)
+                    DrawRect.X = ScreenLocation.X + Size.X / 2 - WrappedComponent.Size.X / 2;
+                else
+                    DrawRect.X = ScreenLocation.X;
+
+                if (Size.Y > WrappedComponent.Size.Y)
+                    DrawRect.Y = ScreenLocation.Y + Size.Y / 2 - WrappedComponent.Size.Y / 2;
+                else
+                    DrawRect.Y = ScreenLocation.Y;
+
+                DrawRect.Width = SourceRect.Width;
+                DrawRect.Height = SourceRect.Height;
 
                 context.SpriteBatch.Draw(CurrentRender, DrawRect, SourceRect, Color.White);
             }
