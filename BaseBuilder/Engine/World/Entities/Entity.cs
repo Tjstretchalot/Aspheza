@@ -69,6 +69,10 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public event EventHandler TasksCancelled;
         public event EventHandler TasksReplacing;
         public event EventHandler TasksReplaced;
+        public event EventHandler TaskFinished;
+        public event EventHandler TaskStarting;
+        public event EventHandler TaskStarted;
+        bool NewTask;
 
         protected Entity(PointD2D position, CollisionMeshD2D collisionMesh, int id)
         {
@@ -182,15 +186,24 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
             if (CurrentTask == null && TaskQueue.Count > 0)
             {
+                TaskStarting?.Invoke(null, EventArgs.Empty);
                 CurrentTask = TaskQueue.Dequeue();
+                NewTask = true;
             }
 
             if (CurrentTask != null)
             {
+                if(NewTask)
+                {
+                    TaskStarted?.Invoke(null, EventArgs.Empty);
+                    TaskStarted?.Invoke(null, EventArgs.Empty);
+                    NewTask = false;
+                }
                 var status = CurrentTask.SimulateTimePassing(sharedState, timeMS);
 
                 if(status != EntityTaskStatus.Running)
                 {
+                    TaskFinishing?.Invoke(null, EventArgs.Empty);
                     CurrentTask = null;
                 }
             }
@@ -225,6 +238,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         public void ClearTasks(SharedGameState gameState)
         {
+            TasksCancelled?.Invoke(null, EventArgs.Empty);
             CurrentTask?.Cancel(gameState);
             CurrentTask = null;
 
@@ -236,7 +250,14 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         public void ReplaceTasks(Queue<IEntityTask> newQueue)
         {
-            throw new NotImplementedException();
+            TasksReplacing?.Invoke(null, EventArgs.Empty);
+
+            CurrentTask = null;
+            TaskQueue.Clear();
+            TaskQueue = newQueue;
+            CurrentTask = TaskQueue.Dequeue();
+
+            TasksReplaced?.Invoke(null, EventArgs.Empty);
         }
     }
 }
