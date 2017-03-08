@@ -22,14 +22,18 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         public virtual PointI2D InspectSize { get; protected set; }
 
         public virtual string TaskName { get; protected set; }
-        
+
+        public ITaskItem Parent { get; set; }
+
+        public IEntityTask Task { get; set; }
+
         public abstract IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext);
 
         public abstract void DrawInspect(RenderContext context, int x, int y);
 
         public abstract bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext);
 
-        public abstract void LoadedOrChanged(SharedGameState sharedState, LocalGameState localState, NetContext netContext, RenderContext renderContext);
+        public abstract void LoadedOrChanged(RenderContext renderContext);
 
         public virtual void UpdateInspect(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {

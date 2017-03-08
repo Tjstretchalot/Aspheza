@@ -102,6 +102,7 @@ far.";
             if (task == null)
                 throw new ArgumentNullException(nameof(task));
 
+            Task = task;
             Children = new List<ITaskItem>();
 
             InspectDescription = _InspectDescription;
@@ -124,9 +125,9 @@ far.";
             TaskName = "Give Item";
         }
 
-        protected override void CalculateHeightPostButtonsAndInitButtons(SharedGameState sharedState, LocalGameState localState, NetContext netContext, RenderContext renderContext, ref int height, int width)
+        protected override void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
         {
-            base.CalculateHeightPostButtonsAndInitButtons(sharedState, localState, netContext, renderContext, ref height, width);
+            base.CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
         }
 
         public override IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext)

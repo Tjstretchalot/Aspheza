@@ -25,8 +25,11 @@ or success, the failer task will return failure.";
             if (task == null)
                 throw new ArgumentNullException(nameof(task));
 
+            Task = task;
             Children = new List<ITaskItem>(1);
-            Children.Add(TaskItemIdentifier.Init(task.Child));
+            var child = TaskItemIdentifier.Init(task.Child);
+            child.Parent = this;
+            Children.Add(child);
 
             InspectDescription = _InspectDescription;
             Expandable = true;

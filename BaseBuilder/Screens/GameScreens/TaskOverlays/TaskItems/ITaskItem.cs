@@ -36,6 +36,16 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         event EventHandler InspectDeletePressed;
 
         /// <summary>
+        /// Gets or sets the parent of this task item.
+        /// </summary>
+        ITaskItem Parent { get; set;  }
+
+        /// <summary>
+        /// Gets or sets the task that corresponds with this task item
+        /// </summary>
+        IEntityTask Task { get; set; }
+
+        /// <summary>
         /// Gets the children of this task item. A task item does
         /// not draw its own children in the live menu.
         /// </summary>
@@ -76,11 +86,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         /// Called before accessing any visual-related components or when there
         /// was a change to the underlying task.
         /// </summary>
-        /// <param name="sharedState">The shared state</param>
-        /// <param name="localState">The local state</param>
-        /// <param name="netContext">The next context</param>
         /// <param name="renderContext">The render context</param>
-        void LoadedOrChanged(SharedGameState sharedState, LocalGameState localState, NetContext netContext, RenderContext renderContext);
+        void LoadedOrChanged(RenderContext renderContext);
 
         /// <summary>
         /// Create the entity task that corresponds to this task item.

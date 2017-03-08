@@ -11,7 +11,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
     public class HarvestTaskItem : SimpleTaskItem
     {
-        const string _InspectDescription = "WIP";
+        const string _InspectDescription = @"Harvests something, such as a farm, tree, or 
+production building.";
 
         /// <summary>
         /// Converts the specified task into the task item.
@@ -22,6 +23,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             if (task == null)
                 throw new ArgumentNullException(nameof(task));
 
+            Task = task;
             Children = new List<ITaskItem>();
             InspectDescription = _InspectDescription;
             Expandable = false;

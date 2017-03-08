@@ -70,7 +70,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// <summary>
         /// Gets the queued task, not including the current task.
         /// </summary>
-        Queue<IEntityTask> TaskQueue { get; }
+        Queue<IEntityTask> TaskQueue { get; set; }
 
         /// <summary>
         /// Queue the specified task to occur once the entity has finished other tasks

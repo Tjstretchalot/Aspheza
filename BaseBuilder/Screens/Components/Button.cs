@@ -93,6 +93,7 @@ namespace BaseBuilder.Screens.Components
             set
             {
                 _Location = null;
+                _TextDestinationVec = null;
                 _Center = value;
             }
         }

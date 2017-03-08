@@ -478,7 +478,7 @@ namespace BaseBuilder.Engine.Logic
         /// If the mouse has already been handled. Selecting an entity requires the mouse
         /// is not already handled and does handle the mouse
         /// </param>
-        protected void CheckForSelect(SharedGameState sharedGameState, LocalGameState localGameState, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
+        protected void CheckForSelect(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
         {
             if (!mouseLast.HasValue || mouseHandled)
             {
@@ -497,6 +497,12 @@ namespace BaseBuilder.Engine.Logic
 
                     localGameState.SelectedEntity.Selected = false;
                     localGameState.SelectedEntity = entity;
+
+                    foreach(var kvp in TaskComponents)
+                    {
+                        RemoveComponent(localGameState, kvp.Value);
+                    }
+                    TaskComponents.Clear();
                     return;
                 }
 
@@ -507,7 +513,7 @@ namespace BaseBuilder.Engine.Logic
 
                     if(!TaskComponents.ContainsKey(entityAsMobile))
                     {
-                        var comp = new TaskMenuOverlay(content, graphics, graphicsDevice, spriteBatch, entityAsMobile);
+                        var comp = new TaskMenuOverlay(content, graphics, graphicsDevice, spriteBatch, localGameState, netContext, entityAsMobile);
                         AddComponent(localGameState, comp);
                         TaskComponents.Add(entityAsMobile, comp);
                     }
@@ -668,7 +674,7 @@ namespace BaseBuilder.Engine.Logic
             UpdateComponents(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForCollisionDebugUpdate(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForHovering(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
-            CheckForSelect(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
+            CheckForSelect(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
             UpdateCamera(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForDigGoldOreOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForHarvestOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);

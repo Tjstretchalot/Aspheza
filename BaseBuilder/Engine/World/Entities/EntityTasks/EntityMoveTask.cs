@@ -96,11 +96,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// <param name="destination">Where the entity is going</param>
         public EntityMoveTask(MobileEntity entity, PointI2D destination)
         {
-            Start = new PointD2D(entity.Position.X, entity.Position.Y);
+            Start = null;
             EntityID = entity.ID;
             Destination = destination;
 
-            InitialDistance = (Destination - Start).AsVectorD2D().Magnitude;
 
             Path = null;
             FailedToFindPath = false;

@@ -22,6 +22,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             if (task == null)
                 throw new ArgumentNullException(nameof(task));
 
+            Task = task;
             Children = new List<ITaskItem>();
 
             InspectDescription = _InspectDescription;

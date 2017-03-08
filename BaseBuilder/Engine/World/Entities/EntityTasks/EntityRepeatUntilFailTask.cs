@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
-    public class EntityRepeatUntilFailTask
+    public class EntityRepeatUntilFailTask : IEntityTask
     {
         protected string _TaskDescription;
         public string TaskDescription

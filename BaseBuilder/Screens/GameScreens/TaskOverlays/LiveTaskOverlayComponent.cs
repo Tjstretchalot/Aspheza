@@ -7,9 +7,10 @@ using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
 using BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems;
 using BaseBuilder.Engine.State;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using BaseBuilder.Engine.Utility;
+using BaseBuilder.Screens.Components;
+using Microsoft.Xna.Framework.Input;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 {
@@ -82,7 +83,16 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// to happen visually.
         /// </summary>
         public ITaskItem Hovered;
+
+        /// <summary>
+        /// The button for adding a new task 
+        /// </summary>
+        protected Button AddButton;
         
+        /// <summary>
+        /// The button for toggling if an entity is completing his tasks
+        /// </summary>
+        protected Button PauseResumeButton;
 
         protected ITaskable Taskable;
         protected ICollection<ITaskItem> TaskItems;
@@ -107,7 +117,6 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             CreateTaskItemsFromTaskable();
 
             ListenForTaskEvents();
-            RecalculateSize();
 
             BackgroundTexture = new Texture2D(graphicsDevice, 1, 1);
             BackgroundTexture.SetData(new[] { Color.Gray });
@@ -117,6 +126,15 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             MinimizeSourceRect = new Rectangle(9, 0, 8, 8);
 
             RedrawRequired += (sender, args) => { RecalculateSize(); };
+
+            AddButton = UIUtils.CreateButton(new Point(0, 0), "Add Task", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
+            PauseResumeButton = UIUtils.CreateButton(new Point(0, 0), "Stop", UIUtils.ButtonColor.Yellow, UIUtils.ButtonSize.Medium);
+
+            AddButton.OnHoveredChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
+            AddButton.OnPressedChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
+            PauseResumeButton.OnHoveredChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
+            PauseResumeButton.OnPressedChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
+            RecalculateSize();
         }
 
         public override void Draw(RenderContext context)
@@ -177,10 +195,16 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
                 y += (int)(strSize.Y + 2);
             }
+
+            AddButton.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
+            PauseResumeButton.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
         }
 
         public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
         {
+            bool handled = false;
+            AddButton.HandleMouseState(Content, last, current, ref handled);
+            PauseResumeButton.HandleMouseState(Content, last, current, ref handled);
             bool foundSideHover = false;
             foreach(var pair in ExpandOrMinimizeIconLocationsToTaskItems.KVPs)
             {
@@ -332,11 +356,18 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 height += (int)(strSize.Y + 2);
             }
 
+            var widestThing = Math.Max(widestStringX, PauseResumeButton.Size.X);
+            widestThing = Math.Max(widestThing, AddButton.Size.X);
+            int width = 5 + 11 + widestThing + 5; // 5px padding + 8 px expand/minimize + 3px padding + string + 5 px padding
             
+            height += 5;
+            PauseResumeButton.Center = new Point(width / 2, height + PauseResumeButton.Size.Y / 2);
+            height += PauseResumeButton.Size.Y + 3;
+            AddButton.Center = new Point(width / 2, height + AddButton.Size.Y / 2);
+            height += AddButton.Size.Y;
 
             height += 5;
-            int width = 5 + 11 + widestStringX + 5; // 5px padding + 8 px expand/minimize + 3px padding + string + 5 px padding
-             // TODO buttons
+
             Size = new PointI2D(width, height);
         }
     }

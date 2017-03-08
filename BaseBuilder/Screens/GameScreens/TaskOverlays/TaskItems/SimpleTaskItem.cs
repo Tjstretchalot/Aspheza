@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static BaseBuilder.Screens.Components.UIUtils;
+using Microsoft.Xna.Framework.Input;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
@@ -33,14 +34,17 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         protected Texture2D BackgroundTexture;
         protected Texture2D LineTexture;
 
-        protected virtual void InitializeThings(SharedGameState sharedState, LocalGameState localState, NetContext netContext, RenderContext renderContext)
+        protected virtual void InitializeThings(RenderContext renderContext)
         {
             Content = renderContext.Content;
 
             if (DeleteButton == null)
             {
                 DeleteButton = CreateButton(new Point(0, 0), "Delete", ButtonColor.Yellow, ButtonSize.Medium);
-                DeleteButton.OnHoveredChanged += (sender, args) => InspectRedrawRequired?.Invoke(this, EventArgs.Empty);
+                DeleteButton.OnHoveredChanged += (sender, args) =>
+                {
+                    InspectRedrawRequired?.Invoke(this, EventArgs.Empty);
+                };
                 DeleteButton.OnPressedChanged += (sender, args) => InspectRedrawRequired?.Invoke(this, EventArgs.Empty);
                 DeleteButton.OnPressReleased += (sender, args) => InspectDeletePressed?.Invoke(this, args);
             }
@@ -66,13 +70,18 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             }
         }
 
-        protected virtual int CalculateWidth(SharedGameState sharedState, LocalGameState localState, NetContext netContext, RenderContext renderContext)
+        protected virtual int CalculateWidth(RenderContext renderContext)
         {
             var descriptionSize = renderContext.DefaultFont.MeasureString(InspectDescription);
-            return (int)(5 + Math.Max(Math.Max(descriptionSize.X, DeleteButton.Size.X), SetChildButton.Size.X) + 5);
+            var width = Math.Max(descriptionSize.X, DeleteButton.Size.X);
+
+            if (Expandable)
+                width = Math.Max(width, SetChildButton.Size.X);
+
+            return (int)(5 + width + 5);
         }
 
-        protected virtual int CalculateHeightPreButtons(SharedGameState sharedState, LocalGameState localState, NetContext netContext, RenderContext renderContext)
+        protected virtual int CalculateHeightPreButtons(RenderContext renderContext)
         {
             var descriptionSize = renderContext.DefaultFont.MeasureString(InspectDescription);
             var height = (int)(5 + descriptionSize.Y); // 5 px padding + description
@@ -82,7 +91,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             return height;
         }
 
-        protected virtual void CalculateHeightPostButtonsAndInitButtons(SharedGameState sharedState, LocalGameState localState, NetContext netContext, RenderContext renderContext, ref int height, int width)
+        protected virtual void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
         {
             if (Expandable)
             {
@@ -90,21 +99,21 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
                 height += SetChildButton.Size.Y + 3;
             }
 
-            DeleteButton.Center = new Point((width / 2) - (DeleteButton.Size.X / 2), height + (DeleteButton.Size.Y / 2));
+            DeleteButton.Center = new Point(width / 2, height + (DeleteButton.Size.Y / 2));
             height += DeleteButton.Size.Y;
 
             height += 5; // padding
         }
 
-        public override void LoadedOrChanged(SharedGameState sharedState, LocalGameState localState, NetContext netContext, RenderContext renderContext)
+        public override void LoadedOrChanged(RenderContext renderContext)
         {
-            InitializeThings(sharedState, localState, netContext, renderContext);
+            InitializeThings(renderContext);
 
-            var width = CalculateWidth(sharedState, localState, netContext, renderContext);
+            var width = CalculateWidth(renderContext);
 
-            var height = CalculateHeightPreButtons(sharedState, localState, netContext, renderContext);
+            var height = CalculateHeightPreButtons(renderContext);
 
-            CalculateHeightPostButtonsAndInitButtons(sharedState, localState, netContext, renderContext, ref height, width);
+            CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
 
             InspectSize = new PointI2D(width, height);
             ButtonShiftLast = new PointI2D(0, 0);
@@ -148,6 +157,14 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
                 SetChildButton.Update(Content, timeMS);
 
             DeleteButton.Update(Content, timeMS);
+        }
+
+        public override bool HandleInspectMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        {
+            bool handled = false;
+            SetChildButton?.HandleMouseState(Content, last, current, ref handled);
+            DeleteButton.HandleMouseState(Content, last, current, ref handled);
+            return handled;
         }
 
         public override void DisposeInspect()

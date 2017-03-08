@@ -264,7 +264,8 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             CurrentTask = null;
             TaskQueue.Clear();
             TaskQueue = newQueue;
-            CurrentTask = TaskQueue.Dequeue();
+            if(TaskQueue.Count > 0)
+                CurrentTask = TaskQueue.Dequeue();
 
             TasksReplaced?.Invoke(null, EventArgs.Empty);
         }

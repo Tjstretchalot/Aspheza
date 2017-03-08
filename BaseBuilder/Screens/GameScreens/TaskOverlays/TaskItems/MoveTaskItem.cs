@@ -11,7 +11,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
     public class MoveTaskItem : SimpleTaskItem
     {
-        const string _InspectDescription = "WIP";
+        const string _InspectDescription = "Moves this unit to a specific location.";
 
         /// <summary>
         /// Converts the specified task into the task item.
@@ -22,6 +22,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             if (task == null)
                 throw new ArgumentNullException(nameof(task));
 
+            Task = task;
             Children = new List<ITaskItem>();
             InspectDescription = _InspectDescription;
             Expandable = false;

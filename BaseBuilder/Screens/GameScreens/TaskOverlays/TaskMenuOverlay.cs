@@ -13,6 +13,8 @@ using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using Microsoft.Xna.Framework.Input;
+using BaseBuilder.Engine.Logic.Orders;
+using BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 {
@@ -39,7 +41,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         protected ScrollableComponentWrapper InspectScrollableOverlay;
         protected ScrollableComponentWrapper AddScrollableOverlay;
 
-        public TaskMenuOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, ITaskable taskable) : base(content, graphics, graphicsDevice, spriteBatch)
+        public TaskMenuOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, LocalGameState localState, NetContext netContext, ITaskable taskable) : base(content, graphics, graphicsDevice, spriteBatch)
         {
             Taskable = taskable;
 
@@ -69,30 +71,74 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
                     AddOverlay.RedrawRequired += (sender3, args3) =>
                     {
-                        AddScrollableOverlay.Invalidate();
+                        AddScrollableOverlay?.Invalidate();
                     };
                 };
 
                 InspectOverlay.RedrawRequired += (sender2, args2) =>
                 {
-                    InspectScrollableOverlay.Invalidate();
+                    InspectScrollableOverlay?.Invalidate();
+                };
+
+                InspectOverlay.DeletePressed += (sender2, args2) =>
+                {
+                    var toDelete = LiveOverlay.Selected;
+                    if(toDelete.Parent == null)
+                    {
+                        if(ReferenceEquals(toDelete.Task, Taskable.CurrentTask))
+                        {
+                            var newQueue = new Queue<IEntityTask>();
+                            var replQueue = new List<IEntityTask>();
+
+                            newQueue.Enqueue(Taskable.CurrentTask);
+
+                            while(Taskable.TaskQueue.Count > 0)
+                            {
+                                var tmp = Taskable.TaskQueue.Dequeue();
+
+                                newQueue.Enqueue(tmp);
+                                replQueue.Add(tmp);
+                            }
+
+                            Taskable.TaskQueue = newQueue;
+
+                            var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
+                            order.Entity = Taskable as Entity;
+                            order.NewQueue = replQueue;
+                            localState.Orders.Add(order);
+                        }
+                        else
+                        {
+                            var newQueue = new Queue<IEntityTask>();
+                            var replQueue = new List<IEntityTask>();
+                            
+                            replQueue.Add(Taskable.CurrentTask);
+                            
+                            while(Taskable.TaskQueue.Count > 0)
+                            {
+                                var tmp = Taskable.TaskQueue.Dequeue();
+                                newQueue.Enqueue(tmp);
+
+                                if (!ReferenceEquals(toDelete.Task, tmp))
+                                    replQueue.Add(tmp);
+                            }
+
+                            Taskable.TaskQueue = newQueue;
+                            
+                            var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
+                            order.Entity = Taskable as Entity;
+                            order.NewQueue = replQueue;
+                            localState.Orders.Add(order);
+                        }
+                    }
+
+                    DisposeInspect();
                 };
             };
 
             LiveOverlay.TaskUnselected += (sender, args) =>
             {
-                InspectScrollableOverlay.Dispose();
-
-                InspectOverlay = null;
-                InspectScrollableOverlay = null;
-
-                if(AddOverlay != null)
-                {
-                    AddScrollableOverlay.Dispose();
-
-                    AddOverlay = null;
-                    AddScrollableOverlay = null;
-                }
+                DisposeInspect();
             };
 
             LiveOverlay.RedrawRequired += (sender, args) =>
@@ -100,6 +146,23 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 LiveScrollableOverlay.Invalidate();
             };
             
+        }
+
+        void DisposeInspect()
+        {
+            LiveOverlay.Selected = null;
+            InspectScrollableOverlay.Dispose();
+
+            InspectOverlay = null;
+            InspectScrollableOverlay = null;
+
+            if (AddOverlay != null)
+            {
+                AddScrollableOverlay.Dispose();
+
+                AddOverlay = null;
+                AddScrollableOverlay = null;
+            }
         }
 
         public override void PreDraw(RenderContext renderContext)

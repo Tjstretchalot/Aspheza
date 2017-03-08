@@ -24,6 +24,7 @@ namespace BaseBuilder.Engine.Context
         public const int CHANGE_NAME_PACKET_ID = 204;
         public const int BUILD_ORDER_PACKET_ID = 205;
         public const int DECONSTRUCT_ORDER_PACKET_ID = 206;
+        public const int REPLACE_TASKS_PACKET_ID = 207;
 
         public List<GamePacketPool> GamePacketPools;
         public Dictionary<Type, int> PacketTypesToIndexInGamePacketPools;
@@ -59,6 +60,7 @@ namespace BaseBuilder.Engine.Context
             RegisterPacketType(CHANGE_NAME_PACKET_ID,          typeof(ChangeNameOrder));
             RegisterPacketType(BUILD_ORDER_PACKET_ID,          typeof(BuildOrder));
             RegisterPacketType(DECONSTRUCT_ORDER_PACKET_ID,    typeof(DeconstructOrder));
+            RegisterPacketType(REPLACE_TASKS_PACKET_ID,        typeof(ReplaceTasksOrder));
         }
 
         public GamePacketPool GetPoolFromPacketType(Type type)

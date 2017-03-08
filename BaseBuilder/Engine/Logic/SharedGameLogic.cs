@@ -125,5 +125,17 @@ namespace BaseBuilder.Engine.Logic
 
             gameState.World.RemoveImmobileEntity(ent as ImmobileEntity);
         }
+
+        [OrderHandler(typeof(ReplaceTasksOrder))]
+        public void OnReplaceTasksOrder(SharedGameState gameState, Player player, ReplaceTasksOrder order)
+        {
+            var queueifed = new Queue<IEntityTask>();
+            for(int i = order.NewQueue.Count - 1; i >= 0; i--)
+            {
+                queueifed.Enqueue(order.NewQueue[i]);
+            }
+
+            order.Entity.ReplaceTasks(queueifed);
+        }
     }
 }
