@@ -169,6 +169,8 @@
     <Compile Include="Screens\Components\FrameCounter.cs" />
     <Compile Include="Screens\Components\GreyPanel.cs" />
     <Compile Include="Screens\Components\IResizableComponent.cs" />
+    <Compile Include="Screens\Components\RadioButton.cs" />
+    <Compile Include="Screens\Components\RadioButtonGroup.cs" />
     <Compile Include="Screens\Components\Text.cs" />
     <Compile Include="Screens\Components\TextureComponent.cs" />
     <Compile Include="Screens\Components\UIUtils.cs" />

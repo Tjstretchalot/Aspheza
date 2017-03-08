@@ -421,3 +421,15 @@
 /processorParam:Quality=Best
 /build:Sounds/jingles_SAX16.ogg
 
+#begin UI/switch7.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:UI/switch7.ogg
+
+#begin UI/switch8.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:UI/switch8.ogg
+
