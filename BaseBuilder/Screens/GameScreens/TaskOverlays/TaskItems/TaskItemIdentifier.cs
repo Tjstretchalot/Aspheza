@@ -39,7 +39,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
             ConstructorInfo cstr = null;
 
-            var constructors = task.GetType().GetConstructors();
+            var constructors = itemType.GetConstructors();
             foreach(var constructor in constructors)
             {
                 var cstrParams = constructor.GetParameters();
@@ -55,7 +55,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             }
 
             if (cstr == null)
-                throw new InvalidProgramException($"Could not find a constructor that accepts {task.GetType().FullName} for {itemType.GetType().FullName}");
+                throw new InvalidProgramException($"Could not find a constructor that accepts {task.GetType().FullName} for {itemType.FullName}");
 
             return cstr.Invoke(new object[] { task }) as ITaskItem;
         }

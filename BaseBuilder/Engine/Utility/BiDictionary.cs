@@ -76,13 +76,20 @@ namespace BaseBuilder.Engine.Utility
         public TSecond this[TFirst first]
         {
             get { return GetByFirst(first);  }
-            set { Add(first, value); }
+            set
+            {
+                FirstToSecond[first] = value;
+                SecondToFirst[value] = first;
+            }
         }
 
         public TFirst this[TSecond second]
         {
             get { return GetBySecond(second); }
-            set { Add(value, second); }
+            set {
+                FirstToSecond[value] = second;
+                SecondToFirst[second] = value;
+            }
         }
     }
 }

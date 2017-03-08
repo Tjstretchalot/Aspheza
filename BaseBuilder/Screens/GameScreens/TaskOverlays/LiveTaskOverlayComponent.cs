@@ -115,6 +115,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             IconsTexture = content.Load<Texture2D>("icons");
             ExpandSourceRect = new Rectangle(0, 0, 8, 8);
             MinimizeSourceRect = new Rectangle(9, 0, 8, 8);
+
+            RedrawRequired += (sender, args) => { RecalculateSize(); };
         }
 
         public override void Draw(RenderContext context)
@@ -297,7 +299,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             Taskable.TaskFinished += CreateTaskItemsFromTaskableAndRedraw;
             Taskable.TasksCancelled += CreateTaskItemsFromTaskableAndRedraw;
             Taskable.TasksReplaced += CreateTaskItemsFromTaskableAndRedraw;
-            //Taskable.TaskQueued += CreateTaskItemsFromTaskableAndRedraw;
+            Taskable.TaskStarted += CreateTaskItemsFromTaskableAndRedraw;
         }
 
         /// <summary>
