@@ -72,8 +72,6 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public event EventHandler TaskFinished;
         public event EventHandler TaskStarting;
         public event EventHandler TaskStarted;
-        bool NewTask;
-        bool FinishedTask;
 
         protected Entity(PointD2D position, CollisionMeshD2D collisionMesh, int id)
         {
@@ -189,29 +187,28 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             {
                 TaskStarting?.Invoke(null, EventArgs.Empty);
                 CurrentTask = TaskQueue.Dequeue();
-                NewTask = true;
-
-                if(FinishedTask)
-                {
-                    TaskFinished?.Invoke(null, EventArgs.Empty);
-                    FinishedTask = false;
-                }
+                TaskStarted?.Invoke(null, EventArgs.Empty);
             }
 
             if (CurrentTask != null)
             {
-                if(NewTask)
-                {
-                    TaskStarted?.Invoke(null, EventArgs.Empty);
-                    NewTask = false;
-                }
-                var status = CurrentTask.SimulateTimePassing(sharedState, timeMS);
+                var taskstatus = CurrentTask.SimulateTimePassing(sharedState, timeMS);
 
-                if(status != EntityTaskStatus.Running)
+                if (taskstatus != EntityTaskStatus.Running)
                 {
                     TaskFinishing?.Invoke(null, EventArgs.Empty);
-                    CurrentTask = null;
-                    FinishedTask = true;
+                    if (TaskQueue.Count > 0)
+                    {
+                        TaskStarting?.Invoke(null, EventArgs.Empty);
+                        CurrentTask = TaskQueue.Dequeue();
+                        TaskFinished?.Invoke(null, EventArgs.Empty);
+                        TaskStarted?.Invoke(null, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        CurrentTask = null;
+                        TaskFinished?.Invoke(null, EventArgs.Empty);
+                    }
                 }
             }
 
@@ -246,6 +243,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public void ClearTasks(SharedGameState gameState)
         {
             TasksCancelled?.Invoke(null, EventArgs.Empty);
+
             CurrentTask?.Cancel(gameState);
             CurrentTask = null;
 
