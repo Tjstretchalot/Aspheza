@@ -476,12 +476,12 @@ namespace BaseBuilder.Screens.Components
             return null;
         }
 
-        public bool HandleMouseState(ContentManager content, MouseState last, MouseState current)
+        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled)
         {
             var mousePos = current.Position;
             var mouseDown = current.LeftButton == ButtonState.Pressed;
 
-            var newHover = Location.Contains(mousePos);
+            var newHover = !handled && Location.Contains(mousePos);
             var newFocus = (mouseDown ? newHover : Focused);
 
             if (newFocus != Focused)
@@ -502,13 +502,13 @@ namespace BaseBuilder.Screens.Components
                 }
             }
 
-            return Focused;
+            handled = handled || newHover;
         }
 
-        public bool HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState keyboardState)
+        public void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState keyboardState, ref bool handled)
         {
-            if (!Focused)
-                return false;
+            if (!Focused || handled)
+                return;
 
             var pressedKeys = keyboardState.GetPressedKeys();
 
@@ -558,7 +558,7 @@ namespace BaseBuilder.Screens.Components
 
             KeysPressedLastUpdate = pressedKeys;
 
-            return true;
+            handled = true;
         }
 
         public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)

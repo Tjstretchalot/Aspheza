@@ -294,9 +294,9 @@ namespace BaseBuilder.Screens.Components
         {
         }
 
-        public bool HandleMouseState(ContentManager content, MouseState last, MouseState mouse)
+        public void HandleMouseState(ContentManager content, MouseState last, MouseState mouse, ref bool handled)
         {
-            var newHovered = ContainsPoint(mouse.Position.X, mouse.Position.Y);
+            var newHovered = !handled && ContainsPoint(mouse.Position.X, mouse.Position.Y);
             var newPressed = (newHovered && mouse.LeftButton == ButtonState.Pressed);
 
             var pressedChanged = Pressed != newPressed;
@@ -329,7 +329,9 @@ namespace BaseBuilder.Screens.Components
             }
 
             if (pressedChanged)
+            {
                 OnPressedChanged?.Invoke(this, EventArgs.Empty);
+            }
             if (hoveredChanged)
                 OnHoveredChanged?.Invoke(this, EventArgs.Empty);
 
@@ -339,12 +341,11 @@ namespace BaseBuilder.Screens.Components
             if (pressedChanged || hoveredChanged)
                 _Location = null;
 
-            return Hovered;
+            handled = handled || Hovered;
         }
 
-        public bool HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current)
+        public void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current, ref bool handled)
         {
-            return false;
         }
 
         /// <summary>

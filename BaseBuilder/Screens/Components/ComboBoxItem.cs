@@ -104,6 +104,12 @@ namespace BaseBuilder.Screens.Components
             BackgroundTexture.SetData(new[] { new Color(Color.Black, 0.8f) });
         }
 
+        public void SkippingDraw()
+        {
+            Hovered = false;
+            DrawRect = new Rectangle(-1, -1, 1, 1);
+        }
+
         /// <summary>
         /// This needs to be called before the first call to render or minimum size functions and when the scroll bar changes.
         /// </summary>
@@ -136,24 +142,35 @@ namespace BaseBuilder.Screens.Components
             if (RenderTarget != null)
                 return;
 
-            if (myYOffset + scrollYOffset + Size.Y <= itemsVisibleRect.Top)
+            var ourTop = itemsVisibleRect.Top + myYOffset + scrollYOffset;
+            var ourBottom = ourTop + Size.Y;
+            
+            // Render targets actually look a little different than directly rendering on the 
+            // screen. So we're going to just always draw from render targets. To see the effect,
+            // uncomment these early returns and scroll a large textbox, the parts that came from
+            // offscreen BEFORE you hover them will stay as render targets, whereas ones that have
+            // never touched the edge of the screen / have been hovered on since then will be 
+            // drawn directly.
+            /*
+            if (ourBottom <= itemsVisibleRect.Top)
                 return; // Our bottom is above the visible top
 
-            if (myYOffset + scrollYOffset >= itemsVisibleRect.Bottom)
+            if (ourTop >= itemsVisibleRect.Bottom)
                 return; // Our top is below the visible bottom
 
-            if (myYOffset + scrollYOffset >= itemsVisibleRect.Y && myYOffset + scrollYOffset + Size.Y <= itemsVisibleRect.Bottom)
+            if (ourTop >= itemsVisibleRect.Top && ourBottom <= itemsVisibleRect.Bottom)
                 return; // our top is below the visible top and our bottom is above the visible bottom
-
-            // rip in pieces we need to draw offscreen
+            */
+            
 
             RenderTarget = new RenderTarget2D(graphicsDevice, Size.X, Size.Y);
 
             graphicsDevice.SetRenderTarget(RenderTarget);
 
+            graphicsDevice.Clear(Color.White);
             var spriteBatch = new SpriteBatch(graphicsDevice);
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
 
             DrawImpl(content, graphics, graphicsDevice, spriteBatch, 0, 0);
 
@@ -183,10 +200,16 @@ namespace BaseBuilder.Screens.Components
             }
 
             if (itemsVisibleRect.Top + myYOffset + scrollYOffset + Size.Y <= itemsVisibleRect.Top)
+            {
+                SkippingDraw();
                 return; // Our bottom is above the visible top
+            }
 
             if (itemsVisibleRect.Top + myYOffset + scrollYOffset >= itemsVisibleRect.Bottom)
+            {
+                SkippingDraw();
                 return; // Our top is below the visible bottom
+            }
 
             // Always use a render target if it is available
             if (RenderTarget != null)
@@ -223,6 +246,7 @@ namespace BaseBuilder.Screens.Components
                 DrawRect.Height = destRect.Height;
 
                 spriteBatch.Draw(RenderTarget, destRect, sourceRect, Color.White);
+                return;
             }
 
             // Otherwise just draw the whole thing
@@ -248,12 +272,13 @@ namespace BaseBuilder.Screens.Components
 
             spriteBatch.Draw(BackgroundTexture, new Rectangle(x, y, Size.X, Size.Y), Color.White);
 
-            spriteBatch.DrawString(Font, Text, new Vector2(x + Size.X / 2 - MinSize.X / 2, y + Size.Y / 2 - MinSize.Y / 2), Hovered ? Color.White : new Color(Color.White, 0.6f));
+            spriteBatch.DrawString(Font, Text, new Vector2(x + Size.X / 2 - MinSize.X / 2, y + Size.Y / 2 - MinSize.Y / 2), Hovered ? Color.White : Color.LightGray);
         }
 
-        public bool HandleMouseState(MouseState last, MouseState current)
+        public void HandleMouseState(MouseState last, MouseState current, ref bool handled)
         {
-            var newHovered = DrawRect.Contains(current.Position);
+            var newHovered = !handled && DrawRect.Contains(current.Position);
+
             if(newHovered != Hovered)
             {
                 if(RenderTarget != null)
@@ -264,12 +289,11 @@ namespace BaseBuilder.Screens.Components
             }
 
             Hovered = newHovered;
-            return Hovered;
+            handled = handled || Hovered;
         }
 
-        public bool HandleKeyboardState(KeyboardState last, KeyboardState current)
+        public void HandleKeyboardState(KeyboardState last, KeyboardState current, ref bool handled)
         {
-            return false;
         }
 
         public void Update(int elapsedMS)

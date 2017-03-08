@@ -137,14 +137,12 @@ namespace BaseBuilder.Screens.Components
                 new Color(238, 238, 238), new Color(153, 153, 153), Color.White, 15, 4, 2);
         }
 
-        public bool HandleMouseState(ContentManager content, MouseState last, MouseState current)
+        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled)
         {
-            return false;
         }
 
-        public bool HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current)
+        public void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current, ref bool handled)
         {
-            return false;
         }
 
         public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)

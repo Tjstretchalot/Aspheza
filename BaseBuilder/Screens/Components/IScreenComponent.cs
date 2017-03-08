@@ -34,14 +34,15 @@ namespace BaseBuilder.Screens.Components
         void Update(ContentManager content, int deltaMS);
 
         /// <summary>
-        /// Handles the mouse state, returning if other components should
-        /// get a chance to handle the mouse state
+        /// Handles the mouse state. There is a boolean to mark if events have been handled
+        /// already.
         /// </summary>
         /// <param name="content">The content</param>
         /// <param name="last">The last mouse state</param>
         /// <param name="current">The current mouse state</param>
+        /// <param name="handled">If the mouse has been "handled". This means don't act on clicks, but ok to handle position</param>
         /// <returns>If the mouse was handled</returns>
-        bool HandleMouseState(ContentManager content, MouseState last, MouseState current);
+        void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled);
 
         /// <summary>
         /// Handles the keyboard state, returning if other components should
@@ -50,8 +51,9 @@ namespace BaseBuilder.Screens.Components
         /// <param name="content">The content</param>
         /// <param name="last">The last keyboard state</param>
         /// <param name="current">The current keyboard state</param>
+        /// <param name="handled">If the keyboard has been handled</param>
         /// <returns>If the keyboard was handled</returns>
-        bool HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current);
+        void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current, ref bool handled);
 
         /// <summary>
         /// Called prior to the main sprite batch begin

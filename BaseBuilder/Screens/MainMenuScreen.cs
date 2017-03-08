@@ -30,21 +30,8 @@ namespace BaseBuilder.Screens
             var multiplayerButton = UIUtils.CreateButton(new Point(greyPanel.Center.X, greyPanel.Center.Y - greyPanel.Size.Y / 6), "Multiplayer", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
 
             multiplayerButton.OnPressReleased += MultiplayerPressed;
-            
-            var testing = new ComboBox(new List<ComboBoxItem> {
-                new ComboBoxItem("Bitter-Regular", "Item 1"),
-                new ComboBoxItem("Bitter-Regular", "Item 2"),
-                new ComboBoxItem("Bitter-Regular", "Item 4"),
-                new ComboBoxItem("Bitter-Regular", "Item 5"),
-                new ComboBoxItem("Bitter-Regular", "Item 6"),
-                new ComboBoxItem("Bitter-Regular", "Item 7"),
-                new ComboBoxItem("Bitter-Regular", "Item 8"),
-            }, new Point(300, 50));
-            testing.EnsureInitialized(content, graphics, graphicsDevice);
-            testing.Center = new Point(vWidth / 2 - testing.Size.X / 2, multiplayerButton.Center.Y - multiplayerButton.Center.Y / 2 - testing.Size.Y / 2 - 5);
 
             Components.Add(greyPanel);
-            Components.Add(testing);
             Components.Add(multiplayerButton);
             base.Initialize();
         }

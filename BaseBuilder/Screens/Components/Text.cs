@@ -108,14 +108,12 @@ namespace BaseBuilder.Screens.Components
         {
         }
 
-        public bool HandleMouseState(ContentManager content, MouseState last, MouseState current)
+        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled)
         {
-            return false;
         }
 
-        public bool HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current)
+        public void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current, ref bool handled)
         {
-            return false;
         }
 
         public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)

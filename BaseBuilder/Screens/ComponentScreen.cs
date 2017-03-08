@@ -47,12 +47,13 @@ namespace BaseBuilder.Screens
             if (!Initialized)
                 return;
 
-            graphicsDevice.Clear(Color.White);
 
-            foreach(var component in Components)
+            foreach (var component in Components)
             {
                 component.PreDraw(content, graphics, graphicsDevice);
             }
+
+            graphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
 
@@ -80,15 +81,11 @@ namespace BaseBuilder.Screens
             {
                 bool mouseHandled = false;
                 bool keyboardHandled = false;
-                foreach(var component in Components)
+                for(int i = Components.Count - 1; i >= 0; i--)
                 {
-                    if (!mouseHandled && component.HandleMouseState(content, MouseLast.Value, currMouse))
-                        mouseHandled = true;
-                    if (!keyboardHandled && component.HandleKeyboardState(content, KeyboardLast.Value, currKeyboard))
-                        keyboardHandled = true;
-
-                    if (mouseHandled && keyboardHandled)
-                        break;
+                    var component = Components[i];
+                    component.HandleMouseState(content, MouseLast.Value, currMouse, ref mouseHandled);
+                    component.HandleKeyboardState(content, KeyboardLast.Value, currKeyboard, ref keyboardHandled);
                 }
             }
             MouseLast = currMouse;
