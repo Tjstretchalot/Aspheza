@@ -235,7 +235,7 @@ namespace BaseBuilder.Screens.Components
                 UnpushSoundEffect = content.Load<SoundEffect>(UnpushSoundEffectName);
         }
 
-        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled)
+        public virtual void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled)
         {
             var newHovered = !handled && DrawRect.Contains(current.Position);
             var justPressed = newHovered && (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released);

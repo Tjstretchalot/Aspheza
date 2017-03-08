@@ -164,6 +164,7 @@
     </Compile>
     <Compile Include="Screens\Components\Button.cs" />
     <Compile Include="Screens\ComponentScreen.cs" />
+    <Compile Include="Screens\Components\CheckBox.cs" />
     <Compile Include="Screens\Components\ComboBox.cs" />
     <Compile Include="Screens\Components\ComboBoxItem.cs" />
     <Compile Include="Screens\Components\FrameCounter.cs" />

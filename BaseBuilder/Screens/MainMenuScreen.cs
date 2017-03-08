@@ -33,6 +33,7 @@ namespace BaseBuilder.Screens
 
             Components.Add(greyPanel);
             Components.Add(multiplayerButton);
+            
             base.Initialize();
         }
 
