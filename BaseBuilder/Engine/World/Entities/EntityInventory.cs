@@ -336,6 +336,25 @@ namespace BaseBuilder.Engine.World.Entities
         }
 
         /// <summary>
+        /// Returns a Dictionary of material to amount held for this container
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<Material, int> GetSimplifiedInvitory()
+        {
+            var result = new Dictionary<Material, int>();
+
+            int amount;
+            foreach (Material mat in Enum.GetValues(typeof(Material)))
+            {
+                amount = GetAmountOf(mat);
+                if (amount > 0)
+                    result.Add(mat, amount);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Determines the amount of the specified material in this inventory
         /// </summary>
         /// <param name="material">The material</param>

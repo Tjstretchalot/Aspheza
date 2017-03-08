@@ -99,7 +99,16 @@
     <Compile Include="Engine\World\Entities\EntityTasks\EntityHarvestingTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMineGoldTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMoveTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\IFindTarget.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\ITransferResultDecider.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TaskIdentifier.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\Transferer.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\TransferItemTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\ITransferRestrictors.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\OnlyTransferMaterial.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\PreventTransferOfMaterial.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\TargetMinLeft.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\TransferIdentifier.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Bakery.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Farm.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\GoldOre.cs" />
