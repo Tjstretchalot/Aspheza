@@ -73,6 +73,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public event EventHandler TaskStarting;
         public event EventHandler TaskStarted;
         bool NewTask;
+        bool FinishedTask;
 
         protected Entity(PointD2D position, CollisionMeshD2D collisionMesh, int id)
         {
@@ -188,8 +189,13 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             {
                 TaskStarting?.Invoke(null, EventArgs.Empty);
                 CurrentTask = TaskQueue.Dequeue();
-                TaskFinished?.Invoke(null, EventArgs.Empty);
                 NewTask = true;
+
+                if(FinishedTask)
+                {
+                    TaskFinished?.Invoke(null, EventArgs.Empty);
+                    FinishedTask = false;
+                }
             }
 
             if (CurrentTask != null)
@@ -205,6 +211,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
                 {
                     TaskFinishing?.Invoke(null, EventArgs.Empty);
                     CurrentTask = null;
+                    FinishedTask = true;
                 }
             }
 
