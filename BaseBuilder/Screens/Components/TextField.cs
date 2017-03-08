@@ -341,10 +341,14 @@ namespace BaseBuilder.Screens.Components
                     }
                 }
 
-                foreach(var kvp in KeysToIgnoreTime)
+                var keys = KeysToIgnoreTime.Keys;
+                var keysCopied = new List<Keys>();
+                keysCopied.AddRange(keys);
+                foreach(var key in keysCopied)
                 {
-                    if(kvp.Value > 0)
-                        KeysToIgnoreTime[kvp.Key] = kvp.Value - deltaMS;
+                    var val = KeysToIgnoreTime[key];
+                    if(val > 0)
+                        KeysToIgnoreTime[key] = val - deltaMS;
                 }
             }
         }
