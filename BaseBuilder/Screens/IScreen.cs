@@ -22,5 +22,10 @@ namespace BaseBuilder.Screens
         /// Draws the screen.
         /// </summary>
         void Draw();
+
+        /// <summary>
+        /// Disposes of this screen
+        /// </summary>
+        void Dispose();
     }
 }

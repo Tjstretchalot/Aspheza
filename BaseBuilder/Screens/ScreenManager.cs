@@ -61,7 +61,8 @@ namespace BaseBuilder.Screens
             if(TransitionComplete.HasValue && TransitionComplete.Value)
             {
                 CurrentTransition.Finished();
-
+                
+                _CurrentScreen.Dispose();
                 _CurrentScreen = NewScreen;
 
                 CurrentTransition = null;

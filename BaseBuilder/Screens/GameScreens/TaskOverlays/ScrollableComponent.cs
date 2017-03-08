@@ -74,6 +74,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             myContext.SpriteBatch.End();
 
             myContext.GraphicsDevice.SetRenderTarget(null);
+
+            myContext.SpriteBatch.Dispose();
             
         }
 

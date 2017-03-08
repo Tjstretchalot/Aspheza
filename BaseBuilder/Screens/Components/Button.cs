@@ -292,29 +292,34 @@ namespace BaseBuilder.Screens.Components
         /// <param name="deltaMS">Time in milliseconds since the last call to update</param>
         public void Update(ContentManager content, int deltaMS)
         {
-            var mouse = Mouse.GetState();
+        }
+
+        public bool HandleMouseState(ContentManager content, MouseState last, MouseState mouse)
+        {
             var newHovered = ContainsPoint(mouse.Position.X, mouse.Position.Y);
             var newPressed = (newHovered && mouse.LeftButton == ButtonState.Pressed);
 
             var pressedChanged = Pressed != newPressed;
             var hoveredChanged = Hovered != newHovered;
 
-            if(newHovered && !Hovered)
+            if (newHovered && !Hovered)
             {
                 // Mouse entered
                 content.Load<SoundEffect>(MouseEnterSFXName).Play();
-                
-            }else if(!newHovered && Hovered)
+
+            }
+            else if (!newHovered && Hovered)
             {
                 // Mouse left
                 content.Load<SoundEffect>(MouseLeaveSFXName).Play();
             }
 
-            if(newPressed && !Pressed)
+            if (newPressed && !Pressed)
             {
                 // Mouse pressed
                 content.Load<SoundEffect>(PressedSFXName).Play();
-            }else if(!newPressed && Pressed)
+            }
+            else if (!newPressed && Pressed)
             {
                 // Mouse unpressed
                 content.Load<SoundEffect>(UnpressedSFXName).Play();
@@ -325,14 +330,21 @@ namespace BaseBuilder.Screens.Components
 
             if (pressedChanged)
                 OnPressedChanged?.Invoke(this, EventArgs.Empty);
-            if(hoveredChanged)
+            if (hoveredChanged)
                 OnHoveredChanged?.Invoke(this, EventArgs.Empty);
 
             Pressed = newPressed;
             Hovered = newHovered;
 
-            if(pressedChanged || hoveredChanged)
+            if (pressedChanged || hoveredChanged)
                 _Location = null;
+
+            return Hovered;
+        }
+
+        public bool HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current)
+        {
+            return false;
         }
 
         /// <summary>
@@ -364,6 +376,14 @@ namespace BaseBuilder.Screens.Components
                 spriteBatch.Draw(sourceText, Location, sourceRect, Color.White);
                 spriteBatch.DrawString(font, Text, _TextDestinationVec.Value, textColor);
             }
+        }
+
+        public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)
+        {
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

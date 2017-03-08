@@ -126,5 +126,10 @@ namespace BaseBuilder.Screens.GameScreens
             spriteBatch.DrawString(debugFont, $"Avg. Tick Time: {gameConnection.SimulationTimeAverageMS}ms", new Vector2(5, 5 + debugFont.LineSpacing), Color.Black);
             spriteBatch.End();
         }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

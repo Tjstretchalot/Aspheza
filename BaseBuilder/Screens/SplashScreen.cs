@@ -77,10 +77,10 @@ namespace BaseBuilder.Screens
                     }
                     break;
                 case SplashState.FadingOut:
-                    //var newScreen = new MainMenuScreen(screenManager, content, graphics, graphicsDevice, spriteBatch);
-                    //newScreen.Update(0);
-                    //screenManager.TransitionTo(newScreen, new CrossFadeTransition(content, graphics, graphicsDevice, spriteBatch, this, newScreen), 1000);
-                    SkipToHostGame();
+                    var newScreen = new MainMenuScreen(screenManager, content, graphics, graphicsDevice, spriteBatch);
+                    newScreen.Update(0);
+                    screenManager.TransitionTo(newScreen, new CrossFadeTransition(content, graphics, graphicsDevice, spriteBatch, this, newScreen), 1000);
+                    //SkipToHostGame();
                     break;
             }
         }
@@ -104,6 +104,11 @@ namespace BaseBuilder.Screens
             gameScreen.Update(0);
             screenManager.TransitionTo(gameScreen, new CrossFadeTransition(content, graphics, graphicsDevice, spriteBatch, this, gameScreen), 750);
         }
-        
+
+        public override void Dispose()
+        {
+            Background.Dispose();
+            Background = null;
+        }
     }
 }

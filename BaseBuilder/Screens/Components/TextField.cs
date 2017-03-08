@@ -201,8 +201,17 @@ namespace BaseBuilder.Screens.Components
 
         public void Resize(Point size)
         {
-            BackgroundTexture = null;
-            FocusedBackgroundTexture = null;
+            if (BackgroundTexture != null)
+            {
+                BackgroundTexture.Dispose();
+                BackgroundTexture = null;
+            }
+            if (FocusedBackgroundTexture != null)
+            {
+                FocusedBackgroundTexture.Dispose();
+                FocusedBackgroundTexture = null;
+            }
+
             Location = new Rectangle(
                 Center.X - size.X / 2, 
                 Center.Y - size.Y / 2,
@@ -311,88 +320,9 @@ namespace BaseBuilder.Screens.Components
             }
         }
 
-        protected virtual void HandleKeyboardInput(ContentManager content, int deltaMS)
-        {
-            var keyboardState = Keyboard.GetState();
-
-            var pressedKeys = keyboardState.GetPressedKeys();
-
-            bool shiftDown = keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift);
-
-            foreach (var key in KeysPressedLastUpdate)
-            {
-                var pressedNow = pressedKeys.Any((k) => key == k);
-
-                if(!pressedNow)
-                {
-                    KeysToIgnoreTime.Remove(key);
-                }
-            }
-
-            foreach (var key in pressedKeys)
-            {
-                if (key == Keys.LeftShift || key == Keys.RightShift)
-                    continue;
-
-                var pressedLast = KeysPressedLastUpdate.Any((k) => k == key);
-                bool ignore = pressedLast;
-                if (ignore)
-                {
-                    int ignoreTime = KeysToIgnoreTime[key];
-                    if (ignoreTime > 0)
-                    {
-                        ignoreTime -= deltaMS;
-                    }
-                    ignore = ignoreTime > 0;
-
-                    if (!ignore)
-                    {
-                        KeysToIgnoreTime[key] = KEY_IGNORE_TIME_SECOND;
-                    }else
-                    {
-                        KeysToIgnoreTime[key] = ignoreTime;
-                    }
-                }else
-                {
-                    KeysToIgnoreTime.Add(key, KEY_IGNORE_TIME_FIRST);
-                }
-
-                if(!ignore)
-                {
-                    HandleKeyPress(content, key, shiftDown);
-                }
-            }
-
-            KeysPressedLastUpdate = pressedKeys;
-        }
-
         public void Update(ContentManager content, int deltaMS)
         {
             ErrorSoundCooldown -= deltaMS;
-
-            var mouseState = Mouse.GetState();
-            var mousePos = mouseState.Position;
-            var mouseDown = mouseState.LeftButton == ButtonState.Pressed;
-
-            var newHover = Location.Contains(mousePos);
-            var newFocus = (mouseDown ? newHover : Focused);
-            
-            if(newFocus != Focused)
-            {
-                if(newFocus)
-                {
-                    Focused = true;
-                    CaretVisible = true;
-                    TimeUntilCaretToggleMS = CARET_VISIBLE_TIME_MS + deltaMS;
-                    OnFocusGained?.Invoke(this, EventArgs.Empty);
-                }else
-                {
-                    Focused = false;
-                    CaretVisible = false;
-                    TimeUntilCaretToggleMS = 0;
-                    OnFocusLost?.Invoke(this, EventArgs.Empty);
-                }
-            }
 
             if(Focused)
             {
@@ -411,7 +341,11 @@ namespace BaseBuilder.Screens.Components
                     }
                 }
 
-                HandleKeyboardInput(content, deltaMS);
+                foreach(var kvp in KeysToIgnoreTime)
+                {
+                    if(kvp.Value > 0)
+                        KeysToIgnoreTime[kvp.Key] = kvp.Value - deltaMS;
+                }
             }
         }
 
@@ -540,6 +474,109 @@ namespace BaseBuilder.Screens.Components
 
             Console.WriteLine($"Weird key {key}");
             return null;
+        }
+
+        public bool HandleMouseState(ContentManager content, MouseState last, MouseState current)
+        {
+            var mousePos = current.Position;
+            var mouseDown = current.LeftButton == ButtonState.Pressed;
+
+            var newHover = Location.Contains(mousePos);
+            var newFocus = (mouseDown ? newHover : Focused);
+
+            if (newFocus != Focused)
+            {
+                if (newFocus)
+                {
+                    Focused = true;
+                    CaretVisible = true;
+                    TimeUntilCaretToggleMS = CARET_VISIBLE_TIME_MS;
+                    OnFocusGained?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    Focused = false;
+                    CaretVisible = false;
+                    TimeUntilCaretToggleMS = 0;
+                    OnFocusLost?.Invoke(this, EventArgs.Empty);
+                }
+            }
+
+            return Focused;
+        }
+
+        public bool HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState keyboardState)
+        {
+            if (!Focused)
+                return false;
+
+            var pressedKeys = keyboardState.GetPressedKeys();
+
+            bool shiftDown = keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift);
+
+            foreach (var key in KeysPressedLastUpdate)
+            {
+                var pressedNow = pressedKeys.Any((k) => key == k);
+
+                if (!pressedNow)
+                {
+                    KeysToIgnoreTime.Remove(key);
+                }
+            }
+
+            foreach (var key in pressedKeys)
+            {
+                if (key == Keys.LeftShift || key == Keys.RightShift)
+                    continue;
+
+                var pressedLast = KeysPressedLastUpdate.Any((k) => k == key);
+                bool ignore = pressedLast;
+                if (ignore)
+                {
+                    int ignoreTime = KeysToIgnoreTime[key];
+                    ignore = ignoreTime > 0;
+
+                    if (!ignore)
+                    {
+                        KeysToIgnoreTime[key] = KEY_IGNORE_TIME_SECOND;
+                    }
+                    else
+                    {
+                        KeysToIgnoreTime[key] = ignoreTime;
+                    }
+                }
+                else
+                {
+                    KeysToIgnoreTime.Add(key, KEY_IGNORE_TIME_FIRST);
+                }
+
+                if (!ignore)
+                {
+                    HandleKeyPress(content, key, shiftDown);
+                }
+            }
+
+            KeysPressedLastUpdate = pressedKeys;
+
+            return true;
+        }
+
+        public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)
+        {
+        }
+
+        public void Dispose()
+        {
+            if (BackgroundTexture != null)
+            {
+                BackgroundTexture.Dispose();
+                BackgroundTexture = null;
+            }
+            if (FocusedBackgroundTexture != null)
+            {
+                FocusedBackgroundTexture.Dispose();
+                FocusedBackgroundTexture = null;
+            }
         }
     }
 }

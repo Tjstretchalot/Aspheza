@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace BaseBuilder.Screens.Components
 {
@@ -134,6 +135,29 @@ namespace BaseBuilder.Screens.Components
 
             Texture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, spriteBatch, Location.Width, Location.Height,
                 new Color(238, 238, 238), new Color(153, 153, 153), Color.White, 15, 4, 2);
+        }
+
+        public bool HandleMouseState(ContentManager content, MouseState last, MouseState current)
+        {
+            return false;
+        }
+
+        public bool HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current)
+        {
+            return false;
+        }
+
+        public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)
+        {
+        }
+
+        public void Dispose()
+        {
+            if (Texture != null)
+            {
+                Texture.Dispose();
+                Texture = null;
+            }
         }
     }
 }

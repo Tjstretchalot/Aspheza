@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 
 namespace BaseBuilder.Screens.Components
 {
@@ -15,6 +16,11 @@ namespace BaseBuilder.Screens.Components
     /// </summary>
     public class TextureComponent : IScreenComponent
     {
+        /// <summary>
+        /// If we're expected to dispose this texture
+        /// </summary>
+        protected bool DisposeRequired;
+
         /// <summary>
         /// The texture that represents this component
         /// </summary>
@@ -72,13 +78,14 @@ namespace BaseBuilder.Screens.Components
         /// </summary>
         /// <param name="texture">The texture to use</param>
         /// <param name="location">The location of this component</param>
-        public TextureComponent(Texture2D texture, Rectangle location)
+        public TextureComponent(Texture2D texture, Rectangle location, bool disposeRequired)
         {
             if (texture == null)
                 throw new ArgumentNullException(nameof(texture));
             if (location == null)
                 throw new ArgumentNullException(nameof(location));
 
+            DisposeRequired = disposeRequired;
             Texture = texture;
             Location = location;
         }
@@ -90,6 +97,29 @@ namespace BaseBuilder.Screens.Components
 
         public virtual void Update(ContentManager content, int deltaMS)
         {
+        }
+
+        public bool HandleMouseState(ContentManager content, MouseState last, MouseState current)
+        {
+            return false;
+        }
+
+        public bool HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current)
+        {
+            return false;
+        }
+
+        public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)
+        {
+        }
+
+        public void Dispose()
+        {
+            if(Texture != null && DisposeRequired)
+            {
+                Texture.Dispose();
+                Texture = null;
+            }
         }
     }
 }

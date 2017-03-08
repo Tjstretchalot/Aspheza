@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace BaseBuilder.Screens.Components
 {
@@ -104,6 +105,24 @@ namespace BaseBuilder.Screens.Components
         }
 
         public void Update(ContentManager content, int deltaMS)
+        {
+        }
+
+        public bool HandleMouseState(ContentManager content, MouseState last, MouseState current)
+        {
+            return false;
+        }
+
+        public bool HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current)
+        {
+            return false;
+        }
+
+        public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)
+        {
+        }
+
+        public void Dispose()
         {
         }
     }

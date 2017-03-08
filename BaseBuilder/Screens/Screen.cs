@@ -28,5 +28,6 @@ namespace BaseBuilder.Screens
 
         public abstract void Draw();
         public abstract void Update(int deltaMS);
+        public abstract void Dispose();
     }
 }
