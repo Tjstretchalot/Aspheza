@@ -60,7 +60,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
-                if (Start == null)
+                if (Start == null || Entity == null)
                     return 0;
                 if (EpsilonEqual(Destination.X, Entity.Position.X) && EpsilonEqual(Destination.Y, Entity.Position.Y))
                     return 1;

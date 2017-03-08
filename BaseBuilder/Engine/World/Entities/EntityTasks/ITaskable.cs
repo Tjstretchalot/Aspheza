@@ -53,6 +53,16 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         event EventHandler TasksReplaced;
 
         /// <summary>
+        /// Called prior to a new task being queued
+        /// </summary>
+        event EventHandler TaskQueueing;
+
+        /// <summary>
+        /// Called just after a new task is queued
+        /// </summary>
+        event EventHandler TaskQueued;
+
+        /// <summary>
         /// Gets the current task
         /// </summary>
         IEntityTask CurrentTask { get; }
