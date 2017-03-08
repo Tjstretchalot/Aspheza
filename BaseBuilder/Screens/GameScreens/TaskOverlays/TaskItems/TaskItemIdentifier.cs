@@ -17,6 +17,15 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             EntityTaskTypesToTaskItemType = new Dictionary<Type, Type>();
 
             Register(typeof(EntityFailerTask), typeof(FailerTaskItem));
+            Register(typeof(EntityGiveItemTask), typeof(GiveItemTaskItem));
+            Register(typeof(EntityHarvestTask), typeof(HarvestTaskItem));
+            Register(typeof(EntityMineGoldTask), typeof(MineGoldTaskItem));
+            Register(typeof(EntityMoveTask), typeof(MoveTaskItem));
+            Register(typeof(EntityRepeaterTask), typeof(RepeaterTaskItem));
+            Register(typeof(EntityRepeatUntilFailTask), typeof(RepeatUntilFailTaskItem));
+            Register(typeof(EntitySelectorTask), typeof(SelectorTaskItem));
+            Register(typeof(EntitySequenceTask), typeof(SequenceTaskItem));
+            Register(typeof(EntitySucceederTask), typeof(SucceederTaskItem));
         }
 
         static void Register(Type entityTaskType, Type taskItemType)

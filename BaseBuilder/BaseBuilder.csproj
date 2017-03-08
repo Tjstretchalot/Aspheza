@@ -96,7 +96,7 @@
     <Compile Include="Engine\World\Entities\EntityIdentifier.cs" />
     <Compile Include="Engine\World\Entities\EntityInventory.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityGiveItemTask.cs" />
-    <Compile Include="Engine\World\Entities\EntityTasks\EntityHarvestingTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntityHarvestTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMineGoldTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMoveTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\IFindTarget.cs" />
@@ -217,8 +217,16 @@
     <Compile Include="Screens\GameScreens\TaskOverlays\ScrollableComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\FailerTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\GiveItemTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\HarvestTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ITaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\MineGoldTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\MoveTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\RepeaterTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\RepeatUntilFailTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\SelectorTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\SequenceTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\SimpleTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\SucceederTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\TaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\TaskItemIdentifier.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskMenuOverlay.cs" />
@@ -269,7 +277,9 @@
     <Content Include="Content\Bakery.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\icons.png" />
+    <Content Include="Content\icons.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Library.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

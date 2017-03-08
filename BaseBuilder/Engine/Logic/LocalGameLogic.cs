@@ -10,8 +10,10 @@ using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using BaseBuilder.Screens.GameScreens;
+using BaseBuilder.Screens.GameScreens.TaskOverlays;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -30,7 +32,13 @@ namespace BaseBuilder.Engine.Logic
     /// </summary>
     public class LocalGameLogic
     {
+        protected Dictionary<Entity, TaskMenuOverlay> TaskComponents;
+
         protected ContentManager content;
+        GraphicsDeviceManager graphics;
+        GraphicsDevice graphicsDevice;
+        SpriteBatch spriteBatch;
+        
         protected int minCameraZoom;
         protected double cameraSpeed;
         protected double cameraZoomSpeed;
@@ -43,9 +51,13 @@ namespace BaseBuilder.Engine.Logic
         KeyboardState? keyboardLast;
         List<Keys> keysPressedReusable;
 
-        public LocalGameLogic(ContentManager content)
+        public LocalGameLogic(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
             this.content = content;
+            this.graphics = graphics;
+            this.graphicsDevice = graphicsDevice;
+            this.spriteBatch = spriteBatch;
+
             cameraSpeed = 0.03;
             minCameraZoom = 32;
             cameraZoomSpeed = 0.01;
@@ -54,6 +66,8 @@ namespace BaseBuilder.Engine.Logic
 
             cameraPartialTopLeft = new PointD2D(0, 0);
             keysPressedReusable = new List<Keys>();
+
+            TaskComponents = new Dictionary<Entity, TaskMenuOverlay>();
         }
 
         public void AddComponent(LocalGameState localGameState, IMyGameComponent component)
@@ -490,6 +504,13 @@ namespace BaseBuilder.Engine.Logic
                 if(entityAsMobile != null && entity != localGameState.SelectedEntity)
                 {
                     SFXUtils.PlaySAXJingle(content);
+
+                    if(!TaskComponents.ContainsKey(entityAsMobile))
+                    {
+                        var comp = new TaskMenuOverlay(content, graphics, graphicsDevice, spriteBatch, entityAsMobile);
+                        AddComponent(localGameState, comp);
+                        TaskComponents.Add(entityAsMobile, comp);
+                    }
                 }
 
                 mouseHandled = true;

@@ -1,6 +1,7 @@
 ﻿using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
+using BaseBuilder.Screens.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,6 +90,8 @@ The result of a transfer item task can be selected
 based on items in the giving inventory, items in
 the recieving inventory, and items transfered so
 far.";
+        
+
 
         /// <summary>
         /// Converts the specified task into the task item.
@@ -98,17 +101,22 @@ far.";
         {
             if (task == null)
                 throw new ArgumentNullException(nameof(task));
-            
-            // todo
+
+            Children = new List<ITaskItem>();
+
+            InspectDescription = _InspectDescription;
+            Expandable = false;
+            Expanded = false;
+            TaskName = "Give Item";
         }
 
         /// <summary>
-        /// Creates a failer task item with no child. This will
-        /// mean the failer task item is in a bad state.
+        /// Creates a give item task item with no child. This will
+        /// mean the give item task item is in a bad state.
         /// </summary>
         public GiveItemTaskItem()
         {
-            Children = new List<ITaskItem>(1);
+            Children = new List<ITaskItem>();
 
             InspectDescription = _InspectDescription;
             Expandable = false;
@@ -118,7 +126,6 @@ far.";
 
         protected override void CalculateHeightPostButtonsAndInitButtons(SharedGameState sharedState, LocalGameState localState, NetContext netContext, RenderContext renderContext, ref int height, int width)
         {
-            
             base.CalculateHeightPostButtonsAndInitButtons(sharedState, localState, netContext, renderContext, ref height, width);
         }
 
@@ -129,7 +136,7 @@ far.";
 
         public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            return Children.Count == 1 && Children[0].IsValid(sharedState, localState, netContext);
+            return Children.Count == 0;
         }
     }
 }

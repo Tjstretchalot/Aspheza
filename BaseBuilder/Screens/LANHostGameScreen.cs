@@ -100,7 +100,7 @@ namespace BaseBuilder.Screens
 
             var serverConnection = new ServerGameConnection(localGameState, sharedGameState, sharedGameLogic, port);
             
-            var localGameLogic = new LocalGameLogic(content);
+            var localGameLogic = new LocalGameLogic(content, graphics, graphicsDevice, spriteBatch);
             serverConnection.BeginListening();
 
             var gameScreen = new GameScreen(content, graphics, graphicsDevice, spriteBatch, localGameLogic, sharedGameState, localGameState, serverConnection);
