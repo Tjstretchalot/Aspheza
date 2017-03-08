@@ -54,91 +54,19 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             
             LiveOverlay.TaskSelected += (sender, args) =>
             {
-                InspectOverlay = new InspectTaskOverlayComponent(content, graphics, graphicsDevice, spriteBatch, LiveOverlay.Selected);
-                InspectScrollableOverlay = new ScrollableComponentWrapper(content, graphics, graphicsDevice, spriteBatch, InspectOverlay, new PointI2D(255, 50), new PointI2D(200, 400), 6);
-
-                InspectOverlay.AddPressed += (sender2, args2) =>
-                {
-                    AddOverlay = new AddTaskOverlayComponent(content, graphics, graphicsDevice, spriteBatch);
-                    AddScrollableOverlay = new ScrollableComponentWrapper(content, graphics, graphicsDevice, spriteBatch, AddOverlay, new PointI2D(360, 50), new PointI2D(200, 400), 7);
-                    AddOverlay.TaskSelected += (sender3, args3) =>
-                    {
-                        AddScrollableOverlay.Dispose();
-
-                        AddOverlay = null;
-                        AddScrollableOverlay = null;
-                    };
-
-                    AddOverlay.RedrawRequired += (sender3, args3) =>
-                    {
-                        AddScrollableOverlay?.Invalidate();
-                    };
-                };
-
-                InspectOverlay.RedrawRequired += (sender2, args2) =>
-                {
-                    InspectScrollableOverlay?.Invalidate();
-                };
-
-                InspectOverlay.DeletePressed += (sender2, args2) =>
-                {
-                    var toDelete = LiveOverlay.Selected;
-                    if(toDelete.Parent == null)
-                    {
-                        if(ReferenceEquals(toDelete.Task, Taskable.CurrentTask))
-                        {
-                            var newQueue = new Queue<IEntityTask>();
-                            var replQueue = new List<IEntityTask>();
-
-                            newQueue.Enqueue(Taskable.CurrentTask);
-
-                            while(Taskable.TaskQueue.Count > 0)
-                            {
-                                var tmp = Taskable.TaskQueue.Dequeue();
-
-                                newQueue.Enqueue(tmp);
-                                replQueue.Add(tmp);
-                            }
-
-                            Taskable.TaskQueue = newQueue;
-
-                            var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
-                            order.Entity = Taskable as Entity;
-                            order.NewQueue = replQueue;
-                            localState.Orders.Add(order);
-                        }
-                        else
-                        {
-                            var newQueue = new Queue<IEntityTask>();
-                            var replQueue = new List<IEntityTask>();
-                            
-                            replQueue.Add(Taskable.CurrentTask);
-                            
-                            while(Taskable.TaskQueue.Count > 0)
-                            {
-                                var tmp = Taskable.TaskQueue.Dequeue();
-                                newQueue.Enqueue(tmp);
-
-                                if (!ReferenceEquals(toDelete.Task, tmp))
-                                    replQueue.Add(tmp);
-                            }
-
-                            Taskable.TaskQueue = newQueue;
-                            
-                            var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
-                            order.Entity = Taskable as Entity;
-                            order.NewQueue = replQueue;
-                            localState.Orders.Add(order);
-                        }
-                    }
-
-                    DisposeInspect();
-                };
+                SetupInspect(localState, netContext);
             };
 
             LiveOverlay.TaskUnselected += (sender, args) =>
             {
                 DisposeInspect();
+                LiveOverlay.Selected = null;
+            };
+
+            LiveOverlay.TaskSelectionChanged += (sender, args) =>
+            {
+                DisposeInspect();
+                SetupInspect(localState, netContext);
             };
 
             LiveOverlay.RedrawRequired += (sender, args) =>
@@ -148,9 +76,93 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             
         }
 
+        void SetupInspect(LocalGameState localState, NetContext netContext)
+        {
+            InspectOverlay = new InspectTaskOverlayComponent(Content, Graphics, GraphicsDevice, SpriteBatch, LiveOverlay.Selected);
+            InspectScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, InspectOverlay, new PointI2D(255, 50), new PointI2D(200, 400), 6);
+
+            InspectOverlay.AddPressed += (sender2, args2) =>
+            {
+                AddOverlay = new AddTaskOverlayComponent(Content, Graphics, GraphicsDevice, SpriteBatch);
+                AddScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, AddOverlay, new PointI2D(360, 50), new PointI2D(200, 400), 7);
+                AddOverlay.TaskSelected += (sender3, args3) =>
+                {
+                    AddScrollableOverlay.Dispose();
+
+                    AddOverlay = null;
+                    AddScrollableOverlay = null;
+                };
+
+                AddOverlay.RedrawRequired += (sender3, args3) =>
+                {
+                    AddScrollableOverlay?.Invalidate();
+                };
+            };
+
+            InspectOverlay.RedrawRequired += (sender2, args2) =>
+            {
+                InspectScrollableOverlay?.Invalidate();
+            };
+
+            InspectOverlay.DeletePressed += (sender2, args2) =>
+            {
+                var toDelete = LiveOverlay.Selected;
+                if (toDelete.Parent == null)
+                {
+                    if (ReferenceEquals(toDelete.Task, Taskable.CurrentTask))
+                    {
+                        var newQueue = new Queue<IEntityTask>();
+                        var replQueue = new List<IEntityTask>();
+
+                        newQueue.Enqueue(Taskable.CurrentTask);
+
+                        while (Taskable.TaskQueue.Count > 0)
+                        {
+                            var tmp = Taskable.TaskQueue.Dequeue();
+
+                            newQueue.Enqueue(tmp);
+                            replQueue.Add(tmp);
+                        }
+
+                        Taskable.TaskQueue = newQueue;
+
+                        var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
+                        order.Entity = Taskable as Entity;
+                        order.NewQueue = replQueue;
+                        localState.Orders.Add(order);
+                    }
+                    else
+                    {
+                        var newQueue = new Queue<IEntityTask>();
+                        var replQueue = new List<IEntityTask>();
+
+                        replQueue.Add(Taskable.CurrentTask);
+
+                        while (Taskable.TaskQueue.Count > 0)
+                        {
+                            var tmp = Taskable.TaskQueue.Dequeue();
+                            newQueue.Enqueue(tmp);
+
+                            if (!ReferenceEquals(toDelete.Task, tmp))
+                                replQueue.Add(tmp);
+                        }
+
+                        Taskable.TaskQueue = newQueue;
+
+                        var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
+                        order.Entity = Taskable as Entity;
+                        order.NewQueue = replQueue;
+                        localState.Orders.Add(order);
+                    }
+                }
+
+                DisposeInspect();
+                LiveOverlay.Selected = null;
+            };
+        }
+
         void DisposeInspect()
         {
-            LiveOverlay.Selected = null;
             InspectScrollableOverlay.Dispose();
 
             InspectOverlay = null;

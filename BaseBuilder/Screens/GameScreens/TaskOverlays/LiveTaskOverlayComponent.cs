@@ -297,6 +297,11 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
         protected void CreateTaskItemsFromTaskable()
         {
+            if (Selected != null)
+            {
+                TaskUnselected?.Invoke(null, EventArgs.Empty);
+                Selected = null;
+            }
             var queue = Taskable.TaskQueue.ToArray();
             var taskItems = new LinkedList<ITaskItem>();
             

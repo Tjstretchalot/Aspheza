@@ -123,6 +123,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             if (!Harvested.ReadyToHarvest(gameState))
                 return EntityTaskStatus.Failure;
 
+            if (!Harvester.CollisionMesh.Intersects(Harvested.CollisionMesh, Harvester.Position, Harvested.Position) && !Harvester.CollisionMesh.MinDistanceShorterThan(Harvested.CollisionMesh, 1, Harvester.Position, Harvested.Position))
+                return EntityTaskStatus.Failure;
+
             if(!FixedDirection)
             {
                 FixedDirection = true;
