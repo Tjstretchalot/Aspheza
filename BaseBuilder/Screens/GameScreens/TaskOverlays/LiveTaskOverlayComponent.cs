@@ -300,6 +300,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             Taskable.TasksCancelled += CreateTaskItemsFromTaskableAndRedraw;
             Taskable.TasksReplaced += CreateTaskItemsFromTaskableAndRedraw;
             Taskable.TaskStarted += CreateTaskItemsFromTaskableAndRedraw;
+            Taskable.TaskQueued += CreateTaskItemsFromTaskableAndRedraw;
         }
 
         /// <summary>
