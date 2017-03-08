@@ -54,10 +54,26 @@ namespace BaseBuilder.Screens.Components
         /// </summary>
         protected string FontName;
 
+        protected string _Text;
+
         /// <summary>
         /// The text that is on this combo box item
         /// </summary>
-        protected string Text;
+        public string Text
+        {
+            get
+            {
+                return _Text;
+            }
+
+            set
+            {
+                _Text = value;
+
+                RenderTarget?.Dispose();
+                RenderTarget = null;
+            }
+        }
 
         protected Texture2D BackgroundTexture;
 
