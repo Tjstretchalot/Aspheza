@@ -72,6 +72,8 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public event EventHandler TaskFinished;
         public event EventHandler TaskStarting;
         public event EventHandler TaskStarted;
+        public event EventHandler TaskQueueing;
+        public event EventHandler TaskQueued;
 
         protected Entity(PointD2D position, CollisionMeshD2D collisionMesh, int id)
         {
@@ -237,7 +239,9 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         public void QueueTask(IEntityTask task)
         {
+            TaskQueueing?.Invoke(null, EventArgs.Empty);
             TaskQueue.Enqueue(task);
+            TaskQueued?.Invoke(null, EventArgs.Empty);
         }
 
         public void ClearTasks(SharedGameState gameState)
