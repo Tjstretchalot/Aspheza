@@ -188,6 +188,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             {
                 TaskStarting?.Invoke(null, EventArgs.Empty);
                 CurrentTask = TaskQueue.Dequeue();
+                TaskFinished?.Invoke(null, EventArgs.Empty);
                 NewTask = true;
             }
 
@@ -195,7 +196,6 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
             {
                 if(NewTask)
                 {
-                    TaskStarted?.Invoke(null, EventArgs.Empty);
                     TaskStarted?.Invoke(null, EventArgs.Empty);
                     NewTask = false;
                 }

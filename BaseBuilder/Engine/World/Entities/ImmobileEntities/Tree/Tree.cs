@@ -164,8 +164,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
                     reciever.Inventory.AddMaterial(Material.Wood, 1);
                     Size = TreeSize.Small;
                     Position.Y += 1;
-                    sharedGameState.World.UpdateTileCollisions(this);
                     SizeStyleOrColorChanged();
+                    sharedGameState.World.UpdateTileCollisions(this);
                     break;
                 default:
                     throw new InvalidProgramException();
