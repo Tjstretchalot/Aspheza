@@ -62,6 +62,11 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// </summary>
         public bool Selected;
 
+        /// <summary>
+        /// True if we are not running our tasks right now
+        /// </summary>
+        public bool Paused { get; set; }
+
         public Queue<IEntityTask> TaskQueue { get; set; }
         public IEntityTask CurrentTask { get; set; }
 
@@ -185,6 +190,9 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         public virtual void SimulateTimePassing(SharedGameState sharedState, int timeMS)
         {
+            if (Paused)
+                return;
+
             if (CurrentTask == null && TaskQueue.Count > 0)
             {
                 TaskStarting?.Invoke(null, EventArgs.Empty);

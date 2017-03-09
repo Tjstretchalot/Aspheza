@@ -513,7 +513,7 @@ namespace BaseBuilder.Engine.Logic
 
                     if(!TaskComponents.ContainsKey(entityAsMobile))
                     {
-                        var comp = new TaskMenuOverlay(content, graphics, graphicsDevice, spriteBatch, localGameState, netContext, entityAsMobile);
+                        var comp = new TaskMenuOverlay(content, graphics, graphicsDevice, spriteBatch, sharedGameState, localGameState, netContext, entityAsMobile);
                         AddComponent(localGameState, comp);
                         TaskComponents.Add(entityAsMobile, comp);
                     }

@@ -40,12 +40,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         protected ScrollableComponentWrapper LiveScrollableOverlay;
         protected ScrollableComponentWrapper InspectScrollableOverlay;
         protected ScrollableComponentWrapper AddScrollableOverlay;
-
-        public TaskMenuOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, LocalGameState localState, NetContext netContext, ITaskable taskable) : base(content, graphics, graphicsDevice, spriteBatch)
+        
+        public TaskMenuOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SharedGameState sharedState, LocalGameState localState, NetContext netContext, ITaskable taskable) : base(content, graphics, graphicsDevice, spriteBatch)
         {
             Taskable = taskable;
 
-            LiveOverlay = new LiveTaskOverlayComponent(content, graphics, graphicsDevice, spriteBatch, taskable);
+            LiveOverlay = new LiveTaskOverlayComponent(content, graphics, graphicsDevice, spriteBatch, localState, netContext, taskable);
             InspectOverlay = null;
             AddOverlay = null;
 
@@ -54,7 +54,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             
             LiveOverlay.TaskSelected += (sender, args) =>
             {
-                SetupInspect(localState, netContext);
+                SetupInspect(sharedState, localState, netContext);
             };
 
             LiveOverlay.TaskUnselected += (sender, args) =>
@@ -66,37 +66,41 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             LiveOverlay.TaskSelectionChanged += (sender, args) =>
             {
                 DisposeInspect();
-                SetupInspect(localState, netContext);
+                SetupInspect(sharedState, localState, netContext);
             };
 
             LiveOverlay.RedrawRequired += (sender, args) =>
             {
                 LiveScrollableOverlay.Invalidate();
             };
-            
+
+            LiveOverlay.TaskAddPressed += (sender, args) =>
+            {
+                if (InspectOverlay != null)
+                    DisposeInspect();
+
+                if (AddOverlay != null)
+                    DisposeAdd();
+                
+                SetupAdd(sharedState, localState, netContext, true);
+            };
         }
 
-        void SetupInspect(LocalGameState localState, NetContext netContext)
+        void SetupInspect(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
             InspectOverlay = new InspectTaskOverlayComponent(Content, Graphics, GraphicsDevice, SpriteBatch, LiveOverlay.Selected);
+            var tmpC = new RenderContext();
+            tmpC.Graphics = Graphics;
+            tmpC.GraphicsDevice = GraphicsDevice;
+            tmpC.Content = Content;
+            tmpC.SpriteBatch = SpriteBatch;
+            tmpC.DefaultFont = Content.Load<SpriteFont>("Bitter-Regular");
+            InspectOverlay.PreDraw(tmpC);
             InspectScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, InspectOverlay, new PointI2D(255, 50), new PointI2D(200, 400), 6);
 
             InspectOverlay.AddPressed += (sender2, args2) =>
             {
-                AddOverlay = new AddTaskOverlayComponent(Content, Graphics, GraphicsDevice, SpriteBatch);
-                AddScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, AddOverlay, new PointI2D(360, 50), new PointI2D(200, 400), 7);
-                AddOverlay.TaskSelected += (sender3, args3) =>
-                {
-                    AddScrollableOverlay.Dispose();
-
-                    AddOverlay = null;
-                    AddScrollableOverlay = null;
-                };
-
-                AddOverlay.RedrawRequired += (sender3, args3) =>
-                {
-                    AddScrollableOverlay?.Invalidate();
-                };
+                SetupAdd(sharedState, localState, netContext, false);
             };
 
             InspectOverlay.RedrawRequired += (sender2, args2) =>
@@ -170,11 +174,74 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
             if (AddOverlay != null)
             {
-                AddScrollableOverlay.Dispose();
-
-                AddOverlay = null;
-                AddScrollableOverlay = null;
+                DisposeAdd();
             }
+        }
+
+        void SetupAdd(SharedGameState sharedState, LocalGameState localState, NetContext netContext, bool direct)
+        {
+            
+            AddOverlay = new AddTaskOverlayComponent(Content, Graphics, GraphicsDevice, SpriteBatch);
+            var tmp = new RenderContext();
+            tmp.Graphics = Graphics;
+            tmp.GraphicsDevice = GraphicsDevice;
+            tmp.Content = Content;
+            tmp.SpriteBatch = SpriteBatch;
+            tmp.DefaultFont = Content.Load<SpriteFont>("Bitter-Regular");
+            AddOverlay.PreDraw(tmp);
+            AddScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, AddOverlay, new PointI2D(direct ? 255 : InspectScrollableOverlay.ScreenLocation.X + InspectScrollableOverlay.Size.X, 50), new PointI2D(200, 400), 2);
+            AddOverlay.TaskSelected += (sender, args) =>
+            {
+                var ent = Taskable as Entity;
+                var task = AddOverlay.Selected;
+
+                if (!task.IsValid(sharedState, localState, netContext) && !ent.Paused)
+                {
+                    LiveOverlay.PauseResumeButton.Text = "Resume";
+                    LiveScrollableOverlay.Invalidate();
+                    var ord = netContext.GetPoolFromPacketType(typeof(TogglePausedTasksOrder)).GetGamePacketFromPool() as TogglePausedTasksOrder;
+                    ord.Entity = ent;
+                    localState.Orders.Add(ord);
+                }
+
+
+                if (direct)
+                {
+                    var asEntityTask = task.CreateEntityTask(sharedState, localState, netContext);
+                    var order = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
+                    order.Entity = ent;
+                    order.Task = asEntityTask;
+                    localState.Orders.Add(order);
+                }else
+                {
+                    var newItems = new List<ITaskItem>();
+                    LiveOverlay.Selected.Children.Add(task);
+
+                    var replQueue = new List<IEntityTask>();
+
+                    foreach(var item in LiveOverlay.TaskItems)
+                    {
+                        replQueue.Add(item.CreateEntityTask(sharedState, localState, netContext));
+                    }
+
+                    var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
+                    order.Entity = Taskable as Entity;
+                    order.NewQueue = replQueue;
+                    localState.Orders.Add(order);
+                }
+
+                DisposeAdd();
+            };
+
+            AddOverlay.RedrawRequired += (sender, args) => AddScrollableOverlay?.Invalidate();
+        }
+
+        void DisposeAdd()
+        {
+            AddScrollableOverlay?.Dispose();
+
+            AddOverlay = null;
+            AddScrollableOverlay = null;
         }
 
         public override void PreDraw(RenderContext renderContext)

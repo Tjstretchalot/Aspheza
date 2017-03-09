@@ -95,7 +95,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         {
             if (Expandable)
             {
-                SetChildButton.Center = new Point((width / 2) - (SetChildButton.Size.X / 2), height + (SetChildButton.Size.Y / 2));
+                SetChildButton.Center = new Point(width / 2, height + (SetChildButton.Size.Y / 2));
                 height += SetChildButton.Size.Y + 3;
             }
 

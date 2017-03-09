@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using BaseBuilder.Engine.Utility;
 using BaseBuilder.Screens.Components;
 using Microsoft.Xna.Framework.Input;
+using BaseBuilder.Engine.Logic.Orders;
+using BaseBuilder.Engine.World.WorldObject.Entities;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 {
@@ -41,17 +43,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// Called when a new task should be added
         /// </summary>
         public event EventHandler TaskAddPressed;
-
-        /// <summary>
-        /// Called when the start button is pressed
-        /// </summary>
-        public event EventHandler StartPressed;
-
-        /// <summary>
-        /// Called when the stop button is pressed
-        /// </summary>
-        public event EventHandler StopPressed;
-
+        
         /// <summary>
         /// Called when a task is expanded
         /// </summary>
@@ -87,15 +79,15 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// <summary>
         /// The button for adding a new task 
         /// </summary>
-        protected Button AddButton;
+        public Button AddButton;
         
         /// <summary>
         /// The button for toggling if an entity is completing his tasks
         /// </summary>
-        protected Button PauseResumeButton;
+        public Button PauseResumeButton;
 
         protected ITaskable Taskable;
-        protected ICollection<ITaskItem> TaskItems;
+        public ICollection<ITaskItem> TaskItems;
         protected BiDictionary<Rectangle, ITaskItem> ExpandOrMinimizeIconLocationsToTaskItems;
         
         protected BiDictionary<Rectangle, ITaskItem> SelectLocationsToTaskItems;
@@ -105,7 +97,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         protected Rectangle ExpandSourceRect;
         protected Rectangle MinimizeSourceRect;
 
-        public LiveTaskOverlayComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, ITaskable taskable) : base(content, graphics, graphicsDevice, spriteBatch)
+        public LiveTaskOverlayComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, LocalGameState localState, NetContext netContext, ITaskable taskable) : base(content, graphics, graphicsDevice, spriteBatch)
         {
             Taskable = taskable;
             
@@ -113,9 +105,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
             ExpandOrMinimizeIconLocationsToTaskItems = new BiDictionary<Rectangle, ITaskItem>();
             SelectLocationsToTaskItems = new BiDictionary<Rectangle, ITaskItem>();
-
-            CreateTaskItemsFromTaskable();
-
+            
             ListenForTaskEvents();
 
             BackgroundTexture = new Texture2D(graphicsDevice, 1, 1);
@@ -134,7 +124,26 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             AddButton.OnPressedChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
             PauseResumeButton.OnHoveredChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
             PauseResumeButton.OnPressedChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
-            RecalculateSize();
+
+            PauseResumeButton.OnPressReleased += (sender, args) =>
+            {
+                if (Taskable.Paused)
+                    PauseResumeButton.Text = "Stop";
+                else
+                    PauseResumeButton.Text = "Resume";
+
+                var order = netContext.GetPoolFromPacketType(typeof(TogglePausedTasksOrder)).GetGamePacketFromPool() as TogglePausedTasksOrder;
+                order.Entity = Taskable as Entity;
+                localState.Orders.Add(order);
+                RedrawRequired?.Invoke(null, EventArgs.Empty);
+            };
+
+            AddButton.OnPressReleased += (sender, args) =>
+            {
+                TaskAddPressed?.Invoke(this, args);
+            };
+
+            CreateTaskItemsFromTaskable();
         }
 
         public override void Draw(RenderContext context)
@@ -154,15 +163,18 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 var task = stack.First.Value;
                 stack.RemoveFirst();
 
+
+                var str = task.TaskName;
+                var strSize = context.DefaultFont.MeasureString(str);
                 Rectangle rect;
                 if (ExpandOrMinimizeIconLocationsToTaskItems.TryGetValue(task, out rect))
                 {
                     rect.X = ScreenLocation.X + xPadding;
-                    rect.Y = y;
+                    rect.Y = y + (int)(strSize.Y / 2 - 4);
                 }
                 else
                 {
-                    rect = new Rectangle(ScreenLocation.X + xPadding, y, 8, 8);
+                    rect = new Rectangle(ScreenLocation.X + xPadding, y + (int)(strSize.Y / 2 - 4), 8, 8);
                     ExpandOrMinimizeIconLocationsToTaskItems[task] = rect;
                 }
 
@@ -178,8 +190,6 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                     context.SpriteBatch.Draw(IconsTexture, rect, ExpandSourceRect, Color.White);
                 }
 
-                var str = task.TaskName;
-                var strSize = context.DefaultFont.MeasureString(str);
                 if(SelectLocationsToTaskItems.TryGetValue(task, out rect))
                 {
                     rect.X = ScreenLocation.X + xPadding + 11;
@@ -193,7 +203,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 }
                 context.SpriteBatch.DrawString(context.DefaultFont, task.TaskName, new Vector2(rect.X, rect.Y), Color.White);
 
-                y += (int)(strSize.Y + 2);
+                y += context.DefaultFont.LineSpacing + 2;
             }
 
             AddButton.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
@@ -233,6 +243,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                             TaskExpanded?.Invoke(null, EventArgs.Empty);
                         }
 
+                        RecalculateSize();
                         RedrawRequired?.Invoke(null, EventArgs.Empty);
                     }
 
@@ -270,12 +281,6 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             if(!foundHover && Hovered != null)
             {
                 Hovered = null;
-
-                if(last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
-                {
-                    Selected = null;
-                    TaskUnselected?.Invoke(null, EventArgs.Empty);
-                }
             }else if(foundHover)
             {
                 if (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
@@ -290,6 +295,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                         TaskSelectionChanged?.Invoke(null, EventArgs.Empty);
                     }
                 }
+            }
+
+            if (Selected != null && !foundHover && last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
+            {
+                Selected = null;
+                TaskUnselected?.Invoke(null, EventArgs.Empty);
             }
 
             return true;
@@ -313,6 +324,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             }
 
             TaskItems = taskItems;
+
+            RecalculateSize();
         }
 
         void CreateTaskItemsFromTaskableAndRedraw(object sender, EventArgs args)
@@ -337,6 +350,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// </summary>
         protected void RecalculateSize()
         {
+            ExpandOrMinimizeIconLocationsToTaskItems.Clear();
+            SelectLocationsToTaskItems.Clear();
             var font = Content.Load<SpriteFont>("Bitter-Regular");
 
             int height = 5;
@@ -355,10 +370,18 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 var item = stack.First.Value;
                 stack.RemoveFirst();
 
+                if(item.Expandable && item.Expanded)
+                {
+                    foreach(var child in item.Children)
+                    {
+                        stack.AddFirst(child);
+                    }
+                }
+
                 var strSize = font.MeasureString(item.TaskName);
 
                 widestStringX = (int)Math.Max(widestStringX, strSize.X);
-                height += (int)(strSize.Y + 2);
+                height += (int)(font.LineSpacing + 2);
             }
 
             var widestThing = Math.Max(widestStringX, PauseResumeButton.Size.X);

@@ -54,6 +54,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
+                if (Child == null)
+                    return "Fails the child";
                 return Child.PrettyDescription;
             }
         }
@@ -62,6 +64,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
+                if (Child == null)
+                    return 0;
                 return Child.Progress;
             }
         }
@@ -83,8 +87,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public EntityFailerTask(SharedGameState gameState, NetIncomingMessage message)
         {
-            var taskID = message.ReadInt16();
-            Child = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message);
+            bool child = message.ReadBoolean();
+            if (child)
+            {
+                var taskID = message.ReadInt16();
+                Child = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message);
+            }
             SpecificName = message.ReadString();
 
             TaskRunSinceLastReset = message.ReadBoolean();
@@ -92,8 +100,15 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Write(NetOutgoingMessage message)
         {
-            message.Write(TaskIdentifier.GetIDOfTask(Child.GetType()));
-            Child.Write(message);
+            if (Child != null)
+            {
+                message.Write(true);
+                message.Write(TaskIdentifier.GetIDOfTask(Child.GetType()));
+                Child.Write(message);
+            }else
+            {
+                message.Write(false);
+            }
             message.Write(SpecificName);
 
             message.Write(TaskRunSinceLastReset);
@@ -103,18 +118,21 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             if (TaskRunSinceLastReset)
             {
-                Child.Reset(gameState);
+                Child?.Reset(gameState);
                 TaskRunSinceLastReset = false;
             }
         }
 
         public void Cancel(SharedGameState gameState)
         {
-            Child.Cancel(gameState);
+            Child?.Cancel(gameState);
         }
 
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
+            if (Child == null)
+                return EntityTaskStatus.Failure;
+
             var result = Child.SimulateTimePassing(gameState, timeMS);
             TaskRunSinceLastReset = true;
 
@@ -132,7 +150,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
         {
-            Child.Update(content, sharedGameState, localGameState);
+            Child?.Update(content, sharedGameState, localGameState);
         }
     }
 }

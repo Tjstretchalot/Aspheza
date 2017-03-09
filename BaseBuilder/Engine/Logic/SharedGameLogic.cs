@@ -137,5 +137,11 @@ namespace BaseBuilder.Engine.Logic
 
             order.Entity.ReplaceTasks(queueifed);
         }
+
+        [OrderHandler(typeof(TogglePausedTasksOrder))]
+        public void OnTogglePausedTasksOrder(SharedGameState gameState, Player player, TogglePausedTasksOrder order)
+        {
+            order.Entity.Paused = !order.Entity.Paused;
+        }
     }
 }

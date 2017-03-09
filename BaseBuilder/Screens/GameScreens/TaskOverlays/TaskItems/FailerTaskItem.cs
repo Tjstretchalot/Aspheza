@@ -27,9 +27,12 @@ or success, the failer task will return failure.";
 
             Task = task;
             Children = new List<ITaskItem>(1);
-            var child = TaskItemIdentifier.Init(task.Child);
-            child.Parent = this;
-            Children.Add(child);
+            if (task.Child != null)
+            {
+                var child = TaskItemIdentifier.Init(task.Child);
+                child.Parent = this;
+                Children.Add(child);
+            }
 
             InspectDescription = _InspectDescription;
             Expandable = true;
@@ -71,6 +74,10 @@ or success, the failer task will return failure.";
         
         public override IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
+            if(Children.Count == 0)
+            {
+                return new EntityFailerTask(null, "none");
+            }
             var childTask = Children[0].CreateEntityTask(sharedState, localState, netContext);
 
             return new EntityFailerTask(childTask, childTask.GetType().Name);

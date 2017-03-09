@@ -29,6 +29,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
         public ScrollableComponentWrapper(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, MyGameComponent wrapped, PointI2D screenLoc, PointI2D size, int z) : base(content, graphics, graphicsDevice, spriteBatch)
         {
+            size = new PointI2D(Math.Max(size.X, wrapped.Size.X), Math.Min(size.Y, wrapped.Size.Y));
             Init(screenLoc, size, z);
 
             WrappedComponent = wrapped;
@@ -138,8 +139,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 ScrollOffsetY = desiredNewScrollY;
             }
 
-            var componentMouseLast = new MouseState(last.X - DrawRect.X, last.Y - DrawRect.Y + ScrollOffsetY, last.ScrollWheelValue, last.LeftButton, last.MiddleButton, last.RightButton, last.XButton1, last.XButton2);
-            var componentMouseCurrent = new MouseState(current.X - DrawRect.X, current.Y - DrawRect.Y + ScrollOffsetY, current.ScrollWheelValue, current.LeftButton, current.MiddleButton, current.RightButton, current.XButton1, current.XButton2);
+            var componentMouseLast = new MouseState(last.X - DrawRect.X, last.Y - DrawRect.Y - ScrollOffsetY, last.ScrollWheelValue, last.LeftButton, last.MiddleButton, last.RightButton, last.XButton1, last.XButton2);
+            var componentMouseCurrent = new MouseState(current.X - DrawRect.X, current.Y - DrawRect.Y - ScrollOffsetY, current.ScrollWheelValue, current.LeftButton, current.MiddleButton, current.RightButton, current.XButton1, current.XButton2);
             
             handledMouse = WrappedComponent.HandleMouseState(sharedGameState, localGameState, netContext, componentMouseLast, componentMouseCurrent) || handledMouse;
 
@@ -151,11 +152,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// </summary>
         public void Invalidate()
         {
-            if(CurrentRender != null)
-            {
-                CurrentRender.Dispose();
-                CurrentRender = null;
-            }
+            CurrentRender?.Dispose();
+            CurrentRender = null;
         }
 
         public override void Dispose()

@@ -25,6 +25,7 @@ namespace BaseBuilder.Engine.Context
         public const int BUILD_ORDER_PACKET_ID = 205;
         public const int DECONSTRUCT_ORDER_PACKET_ID = 206;
         public const int REPLACE_TASKS_PACKET_ID = 207;
+        public const int TOGGLE_PAUSED_PACKET_ID = 208;
 
         public List<GamePacketPool> GamePacketPools;
         public Dictionary<Type, int> PacketTypesToIndexInGamePacketPools;
@@ -61,6 +62,7 @@ namespace BaseBuilder.Engine.Context
             RegisterPacketType(BUILD_ORDER_PACKET_ID,          typeof(BuildOrder));
             RegisterPacketType(DECONSTRUCT_ORDER_PACKET_ID,    typeof(DeconstructOrder));
             RegisterPacketType(REPLACE_TASKS_PACKET_ID,        typeof(ReplaceTasksOrder));
+            RegisterPacketType(TOGGLE_PAUSED_PACKET_ID,        typeof(TogglePausedTasksOrder));
         }
 
         public GamePacketPool GetPoolFromPacketType(Type type)

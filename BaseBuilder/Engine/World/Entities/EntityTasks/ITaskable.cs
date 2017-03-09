@@ -73,6 +73,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         Queue<IEntityTask> TaskQueue { get; set; }
 
         /// <summary>
+        /// If this taskable is currently paused then it is not
+        /// running its tasks.
+        /// </summary>
+        bool Paused { get; set; }
+
+        /// <summary>
         /// Queue the specified task to occur once the entity has finished other tasks
         /// </summary>
         /// <param name="task"></param>

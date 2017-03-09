@@ -91,5 +91,11 @@ namespace BaseBuilder.Engine.Utility
                 SecondToFirst[second] = value;
             }
         }
+
+        public void Clear()
+        {
+            FirstToSecond.Clear();
+            SecondToFirst.Clear();
+        }
     }
 }
