@@ -36,16 +36,16 @@ namespace BaseBuilder.Screens.GameScreens
         int Z { get; }
 
         /// <summary>
-        /// Handles the state of the mouse for this component. Returns true if this component
-        /// has acted on the state of the mouse, returns false otherwise. If this component
-        /// returns true, no more components will have HandleMouseState called this frame.
+        /// Handles the state of the mouse for this component. 
         /// </summary>
         /// <param name="sharedGameState">The shared state of the game</param>
         /// <param name="localGameState">The local state of the game</param>
+        /// <param name="netContext">The net context</param>
         /// <param name="last">The mouse state last frame</param>
         /// <param name="current">The mouse state this frame</param>
-        /// <returns>True if this component handled the mouse, false otherwise.</returns>
-        bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current);
+        /// <param name="handled">If the mouse has been handled</param>
+        /// <param name="scrollHandled">If scrolling has specifically been handled</param>
+        void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled);
 
         /// <summary>
         /// Handles the state of the keyboard for this component. Returns true if this component

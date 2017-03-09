@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks.TransferRestrictors
 {
-    public class TargetMinLeft : ITransferRestrictors
+    public class TargetMinLeft : ITransferRestrictor
     {
         protected int MinLeft;
 

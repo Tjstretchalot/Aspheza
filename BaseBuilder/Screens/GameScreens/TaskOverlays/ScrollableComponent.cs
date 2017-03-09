@@ -125,15 +125,22 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             return WrappedComponent.HandleKeyboardState(sharedGameState, localGameState, netContext, last, current, keysReleasedThisFrame);
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            if (DrawRect == null || !DrawRect.Contains(current.Position))
-                return false;
+            if (handled)
+                return;
 
-            var handledMouse = false;
-            if (last.ScrollWheelValue != current.ScrollWheelValue)
+            if (DrawRect == null || !DrawRect.Contains(current.Position))
+                return;
+
+            var componentMouseLast = new MouseState(last.X - DrawRect.X, last.Y - DrawRect.Y - ScrollOffsetY, last.ScrollWheelValue, last.LeftButton, last.MiddleButton, last.RightButton, last.XButton1, last.XButton2);
+            var componentMouseCurrent = new MouseState(current.X - DrawRect.X, current.Y - DrawRect.Y - ScrollOffsetY, current.ScrollWheelValue, current.LeftButton, current.MiddleButton, current.RightButton, current.XButton1, current.XButton2);
+
+            WrappedComponent.HandleMouseState(sharedGameState, localGameState, netContext, componentMouseLast, componentMouseCurrent, ref handled, ref scrollHandled);
+            
+            if (!scrollHandled && last.ScrollWheelValue != current.ScrollWheelValue)
             {
-                handledMouse = true;
+                scrollHandled = true;
                 // Scrolling was requested
 
                 var deltaScroll = (int)Math.Round((current.ScrollWheelValue - last.ScrollWheelValue) * 0.07);
@@ -147,13 +154,6 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
                 ScrollOffsetY = desiredNewScrollY;
             }
-
-            var componentMouseLast = new MouseState(last.X - DrawRect.X, last.Y - DrawRect.Y - ScrollOffsetY, last.ScrollWheelValue, last.LeftButton, last.MiddleButton, last.RightButton, last.XButton1, last.XButton2);
-            var componentMouseCurrent = new MouseState(current.X - DrawRect.X, current.Y - DrawRect.Y - ScrollOffsetY, current.ScrollWheelValue, current.LeftButton, current.MiddleButton, current.RightButton, current.XButton1, current.XButton2);
-            
-            handledMouse = WrappedComponent.HandleMouseState(sharedGameState, localGameState, netContext, componentMouseLast, componentMouseCurrent) || handledMouse;
-
-            return handledMouse;
         }
 
         /// <summary>

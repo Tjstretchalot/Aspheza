@@ -514,7 +514,7 @@ namespace BaseBuilder.Screens.Components
             return null;
         }
 
-        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled)
+        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             var mousePos = current.Position;
             var mouseDown = current.LeftButton == ButtonState.Pressed;

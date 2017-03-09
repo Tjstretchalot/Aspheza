@@ -204,19 +204,17 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             DeleteButton.Update(Content, timeMS);
         }
 
-        public override bool HandleInspectMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleInspectMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            bool handled = false;
-            HandleInspectComponentsMouseState(last, current, ref handled);
+            HandleInspectComponentsMouseState(last, current, ref handled, ref scrollHandled);
             handled = handled || BackgroundRect.Contains(current.Position);
-            return handled;
         }
 
-        protected virtual void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled)
+        protected virtual void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            SaveButton?.HandleMouseState(Content, last, current, ref handled);
-            SetChildButton?.HandleMouseState(Content, last, current, ref handled);
-            DeleteButton.HandleMouseState(Content, last, current, ref handled);
+            SaveButton?.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
+            SetChildButton?.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
+            DeleteButton.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
         }
         public override void DisposeInspect()
         {

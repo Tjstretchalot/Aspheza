@@ -50,7 +50,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             AddOverlay = null;
 
             
-            LiveScrollableOverlay = new ScrollableComponentWrapper(content, graphics, graphicsDevice, spriteBatch, LiveOverlay, new PointI2D(50, 50), new PointI2D(200, 400), 6);
+            LiveScrollableOverlay = new ScrollableComponentWrapper(content, graphics, graphicsDevice, spriteBatch, LiveOverlay, new PointI2D(50, 50), new PointI2D(200, 300), 6);
             
             LiveOverlay.TaskSelected += (sender, args) =>
             {
@@ -97,7 +97,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             tmpC.DefaultFont = Content.Load<SpriteFont>("Bitter-Regular");
             InspectOverlay.ScreenLocation = new PointI2D(0, 0);
             InspectOverlay.PreDraw(tmpC);
-            InspectScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, InspectOverlay, new PointI2D(275, 50), new PointI2D(200, 400), 6);
+            InspectScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, InspectOverlay, new PointI2D(275, 50), new PointI2D(200, 300), 6);
 
             InspectOverlay.AddPressed += (sender2, args2) =>
             {
@@ -112,54 +112,28 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             InspectOverlay.DeletePressed += (sender2, args2) =>
             {
                 var toDelete = LiveOverlay.Selected;
+                if (toDelete == null)
+                    return;
+
                 if (toDelete.Parent == null)
                 {
-                    if (ReferenceEquals(toDelete.Task, Taskable.CurrentTask))
-                    {
-                        var newQueue = new Queue<IEntityTask>();
-                        var replQueue = new List<IEntityTask>();
-
-                        newQueue.Enqueue(Taskable.CurrentTask);
-
-                        while (Taskable.TaskQueue.Count > 0)
-                        {
-                            var tmp = Taskable.TaskQueue.Dequeue();
-
-                            newQueue.Enqueue(tmp);
-                            replQueue.Add(tmp);
-                        }
-
-                        Taskable.TaskQueue = newQueue;
-
-                        var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
-                        order.Entity = Taskable as Entity;
-                        order.NewQueue = replQueue;
-                        localState.Orders.Add(order);
-                    }
-                    else
-                    {
-                        var newQueue = new Queue<IEntityTask>();
-                        var replQueue = new List<IEntityTask>();
-
-                        replQueue.Add(Taskable.CurrentTask);
-
-                        while (Taskable.TaskQueue.Count > 0)
-                        {
-                            var tmp = Taskable.TaskQueue.Dequeue();
-                            newQueue.Enqueue(tmp);
-
-                            if (!ReferenceEquals(toDelete.Task, tmp))
-                                replQueue.Add(tmp);
-                        }
-
-                        Taskable.TaskQueue = newQueue;
-
-                        var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
-                        order.Entity = Taskable as Entity;
-                        order.NewQueue = replQueue;
-                        localState.Orders.Add(order);
-                    }
+                    LiveOverlay.TaskItems.Remove(toDelete);
+                }else
+                {
+                    toDelete.Parent.Children.Remove(toDelete);
                 }
+
+                var replQueue = new List<IEntityTask>();
+
+                foreach (var item in LiveOverlay.TaskItems)
+                {
+                    replQueue.Add(item.CreateEntityTask(Taskable, sharedState, localState, netContext));
+                }
+
+                var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
+                order.Entity = Taskable as Entity;
+                order.NewQueue = replQueue;
+                localState.Orders.Add(order);
 
                 DisposeInspect();
                 LiveOverlay.Selected = null;
@@ -206,7 +180,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             tmp.DefaultFont = Content.Load<SpriteFont>("Bitter-Regular");
             AddOverlay.ScreenLocation = new PointI2D(0, 0);
             AddOverlay.PreDraw(tmp);
-            AddScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, AddOverlay, new PointI2D(direct ? 255 : InspectScrollableOverlay.ScreenLocation.X + InspectScrollableOverlay.Size.X, 50), new PointI2D(200, 400), 2);
+            AddScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, AddOverlay, new PointI2D(direct ? 255 : InspectScrollableOverlay.ScreenLocation.X + InspectScrollableOverlay.Size.X, 50), new PointI2D(200, 300), 2);
             AddOverlay.TaskSelected += (sender, args) =>
             {
                 var ent = Taskable as Entity;
@@ -308,27 +282,14 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             return false;
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            if(AddScrollableOverlay != null)
-            {
-                if (AddScrollableOverlay.HandleMouseState(sharedGameState, localGameState, netContext, last, current))
-                    return true;
-            }
+            if (handled)
+                return;
 
-            if(InspectScrollableOverlay != null)
-            {
-                if (InspectScrollableOverlay.HandleMouseState(sharedGameState, localGameState, netContext, last, current))
-                    return true;
-            }
-
-            if(LiveScrollableOverlay != null)
-            {
-                if (LiveScrollableOverlay.HandleMouseState(sharedGameState, localGameState, netContext, last, current))
-                    return true;
-            }
-
-            return false;
+            AddScrollableOverlay?.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
+            InspectScrollableOverlay?.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
+            LiveScrollableOverlay.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
         }
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)

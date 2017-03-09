@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace BaseBuilder.Screens.Components
 {
-    public class ComboBox : IScreenComponent
+    public class ComboBox <T1> : IScreenComponent
     {
         public Point Center { get; set; }
 
@@ -22,10 +22,25 @@ namespace BaseBuilder.Screens.Components
         public event EventHandler SelectedChanged;
 
         /// <summary>
-        /// The currently selected combo box item, or null if none is 
+        /// Triggered when the hovered item changes.
+        /// </summary>
+        public event EventHandler HoveredChanged;
+
+        /// <summary>
+        /// Triggered when this combo box is expanded or minimized
+        /// </summary>
+        public event EventHandler ExpandedChanged;
+
+        /// <summary>
+        /// Triggered when the scrolling for this combo box changes
+        /// </summary>
+        public event EventHandler ScrollChanged;
+
+        /// <summary>
+        /// The currently selected combo box item, or null if none are
         /// selected.
         /// </summary>
-        public ComboBoxItem Selected
+        public ComboBoxItem<T1> Selected
         {
             get
             {
@@ -35,15 +50,36 @@ namespace BaseBuilder.Screens.Components
                 return Items[SelectedIndex];
             }
         }
+
+        /// <summary>
+        /// The currently hovered combo box item, or null if none are
+        /// hovered.
+        /// </summary>
+        public ComboBoxItem<T1> Hovered
+        {
+            get
+            {
+                if (HoveredIndex == -1)
+                    return null;
+
+                return Items[HoveredIndex];
+            }
+        }
+
         /// <summary>
         /// The combo box items
         /// </summary>
-        protected List<ComboBoxItem> Items;
+        protected List<ComboBoxItem<T1>> Items;
 
         /// <summary>
         /// The currently selected index
         /// </summary>
         protected int SelectedIndex;
+
+        /// <summary>
+        /// The currently hovered index or -1
+        /// </summary>
+        protected int HoveredIndex;
 
         /// <summary>
         /// If the combo box is currently expanded
@@ -76,7 +112,7 @@ namespace BaseBuilder.Screens.Components
         /// </summary>
         /// <param name="items">The items</param>
         /// <param name="suggestedSize">The suggested size of this combo box. May be expanded if necessary</param>
-        public ComboBox(List<ComboBoxItem> items, Point suggestedSize)
+        public ComboBox(List<ComboBoxItem<T1>> items, Point suggestedSize)
         {
             Items = items;
             SelectedIndex = 0;
@@ -204,29 +240,44 @@ namespace BaseBuilder.Screens.Components
         {
         }
 
-        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled)
+        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             var wasHandled = handled;
-            Selected?.HandleMouseState(last, current, ref handled);
-            
+            var foundHovered = false;
             for (int i = 0; i < Items.Count; i++)
             {
-                if (i != SelectedIndex)
+                Items[i].HandleMouseState(last, current, ref handled);
+
+                if(Items[i].Hovered && HoveredIndex != i)
                 {
-                    Items[i].HandleMouseState(last, current, ref handled);
+                    foundHovered = true;
+                    HoveredIndex = i;
+                    HoveredChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
 
-            if(!wasHandled && Expanded && !handled)
+            if(!foundHovered)
+            {
+                HoveredIndex = -1;
+                HoveredChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+            bool containMouse = false;
+            if(Expanded)
             {
                 int sizeYMultiplier = Math.Min(Items.Count, 5);
-                Rectangle visibleRect = new Rectangle(Center.X - Size.X / 2, Center.Y - Size.Y / 2, Size.X, Size.Y * (sizeYMultiplier + 1)); // fix black pixel
+                containMouse = new Rectangle(Center.X - Size.X / 2, Center.Y - Size.Y / 2, Size.X, Size.Y * (sizeYMultiplier + 1)).Contains(current.Position);
+            }else
+            {
+                containMouse = new Rectangle(Center.X - Size.X / 2, Center.Y - Size.Y / 2, Size.X, Size.Y).Contains(current.Position);
+            }
 
-                if (visibleRect.Contains(current.Position))
-                    handled = true;
+            if(!wasHandled && Expanded && !handled && containMouse)
+            {
+                handled = true;
             }
             
-            if(!wasHandled && last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
+            if(!wasHandled && containMouse && last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
             {
                 handled = true;
                 for(int i = 0; i < Items.Count; i++)
@@ -238,6 +289,7 @@ namespace BaseBuilder.Screens.Components
                             SelectedIndex = i;
                             SelectedChanged?.Invoke(null, EventArgs.Empty);
                             Expanded = false;
+                            ExpandedChanged?.Invoke(null, EventArgs.Empty);
                             break;
                         }
                     }else
@@ -245,12 +297,13 @@ namespace BaseBuilder.Screens.Components
                         if(Items[i].Hovered)
                         {
                             Expanded = !Expanded;
+                            ExpandedChanged?.Invoke(null, EventArgs.Empty);
                         }
                     }
                 }
-            }else if(!wasHandled && Expanded && last.ScrollWheelValue != current.ScrollWheelValue)
+            }else if(!wasHandled && Expanded && containMouse && !scrollHandled && last.ScrollWheelValue != current.ScrollWheelValue)
             {
-                handled = true;
+                scrollHandled = true;
                 // Scrolling was requested
 
                 var deltaScroll = (int)Math.Round((current.ScrollWheelValue - last.ScrollWheelValue) * 0.07);
@@ -269,7 +322,11 @@ namespace BaseBuilder.Screens.Components
                 var allowedScrollY = ourVisibleSize - ourScrollableSizeUnscrollable;
                 desiredNewScrollY = Math.Max(desiredNewScrollY, allowedScrollY);
 
-                ScrollYOffset = desiredNewScrollY;
+                if (ScrollYOffset != desiredNewScrollY)
+                {
+                    ScrollYOffset = desiredNewScrollY;
+                    ScrollChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 

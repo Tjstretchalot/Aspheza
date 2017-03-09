@@ -32,7 +32,7 @@ namespace BaseBuilder.Screens.Components
             _Pushed = false;
         }
 
-        public override void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled)
+        public override void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             var newHovered = !handled && DrawRect.Contains(current.Position);
             var justPressed = newHovered && (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released);

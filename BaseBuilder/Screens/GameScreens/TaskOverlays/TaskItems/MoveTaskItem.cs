@@ -172,12 +172,12 @@ the upper-left corner of the screen.";
             DestinationYLabel?.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
         }
 
-        protected override void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled)
+        protected override void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            base.HandleInspectComponentsMouseState(last, current, ref handled);
+            base.HandleInspectComponentsMouseState(last, current, ref handled, ref scrollHandled);
 
-            DestinationXField?.HandleMouseState(Content, last, current, ref handled);
-            DestinationYField?.HandleMouseState(Content, last, current, ref handled);
+            DestinationXField?.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
+            DestinationYField?.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
         }
 
         public override bool HandleInspectKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current)

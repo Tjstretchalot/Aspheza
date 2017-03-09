@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
+using Microsoft.Xna.Framework.Audio;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
@@ -11,10 +12,11 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
     /// </summary>
     public class FailerTaskItem : SimpleTaskItem
     {
-        protected const string _InspectDescription = @"A failer task runs a child task. If the child
-task returns running, the failer task returns
-running. However, if the child returns failure
-or success, the failer task will return failure.";
+        protected const string _InspectDescription = @"A fail task is a decorator that modifies the result 
+of its child task. If the child returns running, the
+failer returns running. If the child returns success,
+the failer returns failure. If the child returns 
+failure, the failer returns failure.";
 
         /// <summary>
         /// Converts the specified task into the task item.
@@ -86,6 +88,17 @@ or success, the failer task will return failure.";
         public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
             return Children.Count == 1 && Children[0].IsValid(sharedState, localState, netContext);
+        }
+
+        protected override void OnInspectAddPressed()
+        {
+            if(Children.Count == 1)
+            {
+                Content.Load<SoundEffect>("UI/TextAreaError").Play();
+                return;
+            }
+
+            base.OnInspectAddPressed();
         }
     }
 }

@@ -53,9 +53,8 @@ namespace BaseBuilder.Screens.GameScreens
             return false;
         }
 
-        public virtual bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public virtual void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool handledScroll)
         {
-            return false;
         }
 
         public virtual void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)

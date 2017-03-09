@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
-    public class ITransferResultDecider
+    public class TransferResultDecider
     {
         protected Dictionary<Material, int> AmountsToTransferBeforeContinuing;
         protected Dictionary<Material, int> AmountsTransfered;
 
-        public ITransferResultDecider(Dictionary<Material, int> amountsToTransferBeforeContinuing = null)
+        public TransferResultDecider(Dictionary<Material, int> amountsToTransferBeforeContinuing = null)
         {
-            AmountsToTransferBeforeContinuing = amountsToTransferBeforeContinuing;
+            AmountsToTransferBeforeContinuing = amountsToTransferBeforeContinuing != null ? amountsToTransferBeforeContinuing : new Dictionary<Material, int>();
             Reset();
         }
 
-        public ITransferResultDecider(NetIncomingMessage message)
+        public TransferResultDecider(NetIncomingMessage message)
         {
             var count = message.ReadInt32();
             for (; count > 0; count--)
@@ -40,6 +40,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Reset()
         {
+            if (AmountsTransfered == null)
+                AmountsTransfered = new Dictionary<Material, int>();
+            else
+                AmountsTransfered.Clear();
+
             foreach (Material mat in AmountsToTransferBeforeContinuing.Keys)
             {
                 AmountsTransfered.Add(mat, 0);

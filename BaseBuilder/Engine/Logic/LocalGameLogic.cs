@@ -97,7 +97,7 @@ namespace BaseBuilder.Engine.Logic
         /// <param name="elapsedMS">The elapsed time</param>
         /// <param name="keyboardHandled"></param>
         /// <param name="mouseHandled"></param>
-        protected void UpdateComponents(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
+        protected void UpdateComponents(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled, ref bool mouseScrollHandled)
         {
             if (!mouseLast.HasValue && !keyboardLast.HasValue)
             {
@@ -114,8 +114,8 @@ namespace BaseBuilder.Engine.Logic
                 for (int i = localGameState.Components.Count - 1; i >= 0; i--)
                 {
                     var comp = localGameState.Components[i];
-                    if (!mouseHandled && comp.HandleMouseState(sharedGameState, localGameState, netContext, mouseLast.Value, mouseCurr))
-                        mouseHandled = true;
+                    comp.HandleMouseState(sharedGameState, localGameState, netContext, mouseLast.Value, mouseCurr, ref mouseHandled, ref mouseScrollHandled);
+
                     if (!keyboardHandled && comp.HandleKeyboardState(sharedGameState, localGameState, netContext, keyboardLast.Value, keyboardCurr, keysPressedReusable))
                         keyboardHandled = true;
 
@@ -683,9 +683,9 @@ namespace BaseBuilder.Engine.Logic
             mouseCurr = Mouse.GetState();
             keyboardCurr = Keyboard.GetState();
 
-            bool keyboardHandled = false, mouseHandled = false;
+            bool keyboardHandled = false, mouseHandled = false, mouseScrollHandled = false;
             
-            UpdateComponents(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
+            UpdateComponents(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled, ref mouseScrollHandled);
             CheckForCollisionDebugUpdate(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForHovering(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForSelect(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);

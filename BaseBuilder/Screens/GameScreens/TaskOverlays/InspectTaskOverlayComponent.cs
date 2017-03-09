@@ -77,9 +77,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             TaskItem.DisposeInspect();
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            return TaskItem.HandleInspectMouseState(sharedGameState, localGameState, netContext, last, current);
+            TaskItem.HandleInspectMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
         }
 
         public override bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame)

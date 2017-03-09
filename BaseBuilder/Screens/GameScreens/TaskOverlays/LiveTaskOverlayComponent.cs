@@ -224,11 +224,13 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             PauseResumeButton.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            bool handled = false;
-            AddButton.HandleMouseState(Content, last, current, ref handled);
-            PauseResumeButton.HandleMouseState(Content, last, current, ref handled);
+            if (handled)
+                return;
+
+            AddButton.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
+            PauseResumeButton.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
             bool foundSideHover = false;
             foreach(var pair in ExpandOrMinimizeIconLocationsToTaskItems.KVPs)
             {
@@ -272,7 +274,10 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             }
 
             if (foundSideHover)
-                return true;
+            {
+                handled = true;
+                return;
+            }
 
             var foundHover = false;
             foreach(var kvp in SelectLocationsToTaskItems.KVPs)
@@ -317,7 +322,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 TaskUnselected?.Invoke(null, EventArgs.Empty);
             }
 
-            return true;
+            handled = true;
         }
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)

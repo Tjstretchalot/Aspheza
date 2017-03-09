@@ -168,14 +168,20 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             return point.X >= (inventoryRect.Left + ScreenLocation.X) && point.X <= (inventoryRect.Right + ScreenLocation.X) && point.Y >= (inventoryRect.Top + ScreenLocation.Y) && point.Y < +(inventoryRect.Bottom + ScreenLocation.Y);
         }
 
-        protected bool HandleHover(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        protected void HandleHover(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
+            if (handled)
+                return;
+
             MousePosition = current.Position;
 
             if (HoveredIndex != -1)
             {
                 if (InventoryAtIndexContainsPoint(MousePosition, HoveredIndex))
-                    return true;
+                {
+                    handled = true;
+                    return;
+                }
             }
 
             for (var i = 0; i < InventoryLocations.Count; i++)
@@ -186,20 +192,24 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 if (InventoryAtIndexContainsPoint(MousePosition, i))
                 {
                     HoveredIndex = i;
-                    return true;
+                    handled = true;
+                    return;
                 }
             }
 
             HoveredIndex = -1;
-            return false;
         }
 
-        protected bool HandleCarry(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        protected void HandleCarry(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
+            if (handled)
+                return;
+
             if(CarryingIndex != -1 && InventoryLocationsToItems[CarryingIndex] == null)
             {
                 CarryingIndex = -1;
-                return true;
+                handled = true;
+                return;
             }
 
             if (CarryingIndex != -1)
@@ -208,24 +218,30 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 if (matTup == null)
                 {
                     CarryingIndex = -1;
-                    return true;
+                    handled = true;
+                    return;
                 }
             }
 
             if (CarryingIndex == -1 && HoveredIndex != -1 && current.LeftButton == ButtonState.Pressed)
             {
                 if (InventoryLocationsToItems[HoveredIndex] == null)
-                    return true;
+                {
+                    handled = true;
+                    return;
+                }
 
                 var mat = BaseInventory.MaterialAt(HoveredIndex);
                 if(mat == null)
                 {
-                    return true;
+                    handled = true;
+                    return;
                 }
 
                 CarryingIndex = HoveredIndex;
                 CarryingOffset = new Point(InventoryLocations[CarryingIndex].Left + ScreenLocation.X - current.Position.X, InventoryLocations[CarryingIndex].Top + ScreenLocation.Y - current.Position.Y);
-                return true;
+                handled = true;
+                return;
             }
             else if (CarryingIndex != -1 && current.LeftButton == ButtonState.Released)
             {
@@ -235,14 +251,16 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 if (mouseWorldX < 0 || mouseWorldY < 0 || mouseWorldX >= sharedGameState.World.TileWidth || mouseWorldY >= sharedGameState.World.TileHeight)
                 {
                     CarryingIndex = -1;
-                    return true;
+                    handled = true;
+                    return;
                 }
 
                 var cont = sharedGameState.World.GetEntityAtLocation(new PointD2D(mouseWorldX, mouseWorldY)) as Container;
 
                 if (cont == null) {
                     CarryingIndex = -1;
-                    return true;
+                    handled = true;
+                    return;
                 }
 
                 var cancelTasksOrder = netContext.GetPoolFromPacketType(typeof(CancelTasksOrder)).GetGamePacketFromPool() as CancelTasksOrder;
@@ -260,7 +278,8 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                         if(dest == null)
                         {
                             CarryingIndex = -1;
-                            return true;
+                            handled = true;
+                            return;
                         }else
                         {
                             var issueMoveOrder = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
@@ -272,7 +291,8 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                     else
                     {
                         CarryingIndex = -1;
-                        return true;
+                        handled = true;
+                        return;
                     }
                 }
                 
@@ -282,7 +302,8 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 if (!cont.Inventory.HaveRoomFor(mat, amt))
                 {
                     CarryingIndex = -1;
-                    return true;
+                    handled = true;
+                    return;
                 }
 
                 var pool = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder));
@@ -294,10 +315,9 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 HideIndex = CarryingIndex;
                 HideIndexTimeRemaining = 100;
                 CarryingIndex = -1;
-                return true;
+                handled = true;
+                return;
             }
-
-            return false;
         }
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext context, int timeMS)
@@ -314,13 +334,10 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             }
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            bool result = false;
-            result = HandleHover(sharedGameState, localGameState, netContext, last, current) || result;
-            result = HandleCarry(sharedGameState, localGameState, netContext, last, current) || result;
-
-            return result;
+            HandleHover(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
+            HandleCarry(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
         }
     }
 }

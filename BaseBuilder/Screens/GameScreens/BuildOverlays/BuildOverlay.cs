@@ -97,17 +97,18 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             return false;
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             if (!MenuVisible)
-                return false;
+                return;
 
-            if (Menu.HandleMouseState(sharedGameState, localGameState, netContext, last, current))
-                return true;
+            Menu.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
+            if (handled)
+                return;
 
             BuildingToPlace = Menu.Current;
             if (BuildingToPlace == null)
-                return false;
+                return;
 
             var desLeft = current.Position.X - ((BuildingToPlace.CollisionMesh.Right - BuildingToPlace.CollisionMesh.Left) * localGameState.Camera.Zoom) / 2.0;
             var desTop = current.Position.Y - ((BuildingToPlace.CollisionMesh.Bottom - BuildingToPlace.CollisionMesh.Top) * localGameState.Camera.Zoom) / 2.0;
@@ -149,8 +150,9 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             {
                 Menu.TryBuildEntity(sharedGameState, localGameState, netContext, CurrentPlaceLocation, BuildingToPlace);
                 Menu.ClearSelection();
-            }else if(last.ScrollWheelValue != current.ScrollWheelValue)
+            }else if(!scrollHandled && last.ScrollWheelValue != current.ScrollWheelValue)
             {
+                scrollHandled = true;
                 var deltaScrollWheel = current.ScrollWheelValue - last.ScrollWheelValue;
 
                 ScrollWheelAmountToNext -= Math.Abs(deltaScrollWheel);
@@ -162,7 +164,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                     BuildingToPlace.TryRotate(Math.Sign(deltaScrollWheel));
                 }
             }
-            return true;
+            handled = true;
         }
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)

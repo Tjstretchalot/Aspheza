@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks.TransferRestrictors
 {
-    public interface ITransferRestrictors
+    public interface ITransferRestrictor
     {
         void Write(NetOutgoingMessage message);
         void Restrict(SharedGameState sharedGameState, Container from, Entity to, Dictionary<Material, int> maxes);

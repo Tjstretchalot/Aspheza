@@ -11,7 +11,7 @@ using Lidgren.Network;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks.TransferRestrictors
 {
-    class PreventTransferOfMaterial : ITransferRestrictors
+    class PreventTransferOfMaterial : ITransferRestrictor
     {
         protected Material ClearMat;
 

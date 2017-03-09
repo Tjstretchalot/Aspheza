@@ -111,15 +111,19 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             }
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
+            if (handled)
+                return;
+
             if(CurrentToolbarEntity != null)
             {
                 if (current.Position.Y >= ScreenLocation.Y)
-                    return true;
+                {
+                    handled = true;
+                    return;
+                }
             }
-
-            return false;
         }
 
         protected virtual void UpdateToolbarEntity(Entity newEntity)

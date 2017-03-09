@@ -17,6 +17,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             EntityTaskTypesToTaskItemType = new Dictionary<Type, Type>();
 
             Register(typeof(EntityFailerTask), typeof(FailerTaskItem));
+            Register(typeof(EntityTransferItemTask), typeof(TransferItemTaskItem));
             Register(typeof(EntityGiveItemTask), typeof(GiveItemTaskItem));
             Register(typeof(EntityHarvestTask), typeof(HarvestTaskItem));
             Register(typeof(EntityMineGoldTask), typeof(MineGoldTaskItem));
@@ -57,7 +58,10 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             if (cstr == null)
                 throw new InvalidProgramException($"Could not find a constructor that accepts {task.GetType().FullName} for {itemType.FullName}");
 
-            return cstr.Invoke(new object[] { task }) as ITaskItem;
+            var res = cstr.Invoke(new object[] { task }) as ITaskItem;
+            if (res.Expandable)
+                res.Expanded = true;
+            return res;
         }
     }
 }

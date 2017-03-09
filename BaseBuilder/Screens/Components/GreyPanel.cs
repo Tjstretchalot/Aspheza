@@ -137,7 +137,7 @@ namespace BaseBuilder.Screens.Components
                 new Color(238, 238, 238), new Color(153, 153, 153), Color.White, 15, 4, 2);
         }
 
-        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled)
+        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
         }
 

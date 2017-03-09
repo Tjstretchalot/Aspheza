@@ -21,7 +21,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             {
                 if(_TaskDescription == null)
                 {
-                    _TaskDescription = $"Run {Task.TaskName} and Failure/Success => Success";
+                    _TaskDescription = $"Run {Child.TaskName} and Failure/Success => Success";
                 }
 
                 return _TaskDescription;
@@ -54,7 +54,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
-                return Task.PrettyDescription;
+                if (Child == null)
+                    return "In a bad state =(";
+                return Child.PrettyDescription;
             }
         }
 
@@ -62,11 +64,13 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
-                return Task.Progress;
+                if (Child == null)
+                    return 0;
+                return Child.Progress;
             }
         }
 
-        protected IEntityTask Task;
+        public IEntityTask Child;
         protected string SpecificName;
         protected bool TaskRunSinceLastReset;
 
@@ -77,22 +81,34 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// <param name="specificName"></param>
         public EntitySucceederTask(IEntityTask task, string specificName)
         {
-            Task = task;
+            Child = task;
             SpecificName = specificName;
         }
 
         public EntitySucceederTask(SharedGameState gameState, NetIncomingMessage message)
         {
-            var taskID = message.ReadInt16();
-            Task = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message);
+            if (message.ReadBoolean())
+            {
+                var taskID = message.ReadInt16();
+                Child = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message);
+            }
+
             SpecificName = message.ReadString();
             TaskRunSinceLastReset = message.ReadBoolean();
         }
 
         public void Write(NetOutgoingMessage message)
         {
-            message.Write(TaskIdentifier.GetIDOfTask(Task.GetType()));
-            Task.Write(message);
+            if (Child != null)
+            {
+                message.Write(true);
+                message.Write(TaskIdentifier.GetIDOfTask(Child.GetType()));
+                Child.Write(message);
+            }
+            else
+            {
+                message.Write(false);
+            }
             message.Write(SpecificName);
             message.Write(TaskRunSinceLastReset);
         }
@@ -101,19 +117,19 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             if (TaskRunSinceLastReset)
             {
-                Task.Reset(gameState);
+                Child?.Reset(gameState);
                 TaskRunSinceLastReset = false;
             }
         }
 
         public void Cancel(SharedGameState gameState)
         {
-            Task.Cancel(gameState);
+            Child?.Cancel(gameState);
         }
 
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
-            var result = Task.SimulateTimePassing(gameState, timeMS);
+            var result = Child.SimulateTimePassing(gameState, timeMS);
             TaskRunSinceLastReset = true;
 
             switch (result)
@@ -130,7 +146,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
         {
-            Task.Update(content, sharedGameState, localGameState);
+            Child?.Update(content, sharedGameState, localGameState);
         }
     }
 }

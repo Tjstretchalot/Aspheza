@@ -11,7 +11,13 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
     public class SequenceTaskItem : SimpleTaskItem
     {
-        const string _InspectDescription = "WIP";
+        const string _InspectDescription = @"A sequence will run each child task in order until 
+it returns success. Until the sequence reaches the 
+end of the list of children or a child returns 
+failure, the sequence will return running. If a 
+child task returns failure, the sequence will 
+immediately return failure. If all children return
+success, the sequence will return success.";
 
         /// <summary>
         /// Converts the specified task into the task item.
@@ -24,9 +30,13 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
             Task = task;
             Children = new List<ITaskItem>();
+            foreach(var child in task.Children)
+            {
+                Children.Add(TaskItemIdentifier.Init(child));
+            }
 
             InspectDescription = _InspectDescription;
-            Expandable = false;
+            Expandable = true;
             Expanded = false;
             TaskName = "Sequence";
         }
@@ -39,19 +49,32 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             Children = new List<ITaskItem>();
 
             InspectDescription = _InspectDescription;
-            Expandable = false;
+            Expandable = true;
             Expanded = false;
             TaskName = "Sequence";
         }
 
         public override IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            throw new NotImplementedException();
+            var childrenTasks = new List<IEntityTask>();
+
+            foreach(var child in Children)
+            {
+                childrenTasks.Add(child.CreateEntityTask(taskable, sharedState, localState, netContext));
+            }
+
+            return new EntitySequenceTask(childrenTasks, "autogen");
         }
 
         public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            return false;
+            foreach(var child in Children)
+            {
+                if (!child.IsValid(sharedState, localState, netContext))
+                    return false;
+            }
+
+            return Children.Count > 0;
         }
     }
 }

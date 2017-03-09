@@ -14,8 +14,11 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
     public class RepeaterTaskItem : SimpleTaskItem
     {
-        const string _InspectDescription = @"A repeater repeats one child. A repeater can either
-repeat forever or repeat a certain number of times.";
+        const string _InspectDescription = @"A repeat task is a decorator that repeats one child.
+A repeater can either repeat forever or repeat a 
+certain number of times. A repeat task will 
+immediately return failure if the child returns
+failure.";
 
         protected CheckBox RepeatForeverCheckbox;
         protected Text RepeatForeverLabel;
@@ -185,12 +188,12 @@ repeat forever or repeat a certain number of times.";
             }
         }
         
-        protected override void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled)
+        protected override void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            base.HandleInspectComponentsMouseState(last, current, ref handled);
-            RepeatForeverCheckbox?.HandleMouseState(Content, last, current, ref handled);
+            base.HandleInspectComponentsMouseState(last, current, ref handled, ref scrollHandled);
+            RepeatForeverCheckbox?.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
             if(!RepeatForever)
-                TimesTextField?.HandleMouseState(Content, last, current, ref handled);
+                TimesTextField?.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
         }
 
         public override bool HandleInspectKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current)
@@ -229,7 +232,7 @@ repeat forever or repeat a certain number of times.";
 
         public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            if (TimesTextField == null || !RepeatForever && TimesTextField.Text.Length == 0)
+            if (TimesTextField != null && !RepeatForever && TimesTextField.Text.Length == 0)
                 return false;
 
             return Children.Count == 1 && Children[0].IsValid(sharedState, localState, netContext);

@@ -25,26 +25,27 @@ namespace BaseBuilder.Engine.State.Resources
 
         static Material()
         {
-            GoldOre = new Material("materials", new Rectangle(0, 0, 32, 32), "Gold Ore\nSmelts into gold", 1);
-            CarrotSeed = new Material("materials", new Rectangle(33, 0, 32, 32), "Carrot Seed\nCan be planted in a farm to grow into carrots", 2);
-            WheatSeed = new Material("materials", new Rectangle(66, 0, 32, 32), "Wheat Seed\nCan be planted in a farm to grow into wheat", 3);
-            Carrot = new Material("materials", new Rectangle(33, 66, 32, 32), "Carrot\nAn average source of food", 4);
-            Wheat = new Material("materials", new Rectangle(66, 33, 32, 32), "Wheat\nCan be made into flour via a mill. Also serves as\na poor source of food", 5);
-            Flour = new Material("materials", new Rectangle(0, 33, 32, 32), "Flour\nCan be made into bread via a bakery.", 6);
-            Bread = new Material("materials", new Rectangle(0, 66, 32, 32), "Bread.", 7);
-            Wood = new Material("materials", new Rectangle(99, 0, 32, 32), "Wood\nUsed to make buildings.", 8);
-            Sapling = new Material("materials", new Rectangle(66, 66, 32, 32), "Sapling\nCan be planted for new trees", 9);
+            GoldOre = new Material("materials", new Rectangle(0, 0, 32, 32), "Gold Ore", "Gold Ore\nSmelts into gold", 1);
+            CarrotSeed = new Material("materials", new Rectangle(33, 0, 32, 32), "Carrot Seed", "Carrot Seed\nCan be planted in a farm to grow into carrots", 2);
+            WheatSeed = new Material("materials", new Rectangle(66, 0, 32, 32), "Wheat Seed", "Wheat Seed\nCan be planted in a farm to grow into wheat", 3);
+            Carrot = new Material("materials", new Rectangle(33, 66, 32, 32), "Carrot", "Carrot\nAn average source of food", 4);
+            Wheat = new Material("materials", new Rectangle(66, 33, 32, 32), "Wheat", "Wheat\nCan be made into flour via a mill. Also serves as\na poor source of food", 5);
+            Flour = new Material("materials", new Rectangle(0, 33, 32, 32), "Flour", "Flour\nCan be made into bread via a bakery.", 6);
+            Bread = new Material("materials", new Rectangle(0, 66, 32, 32), "Bread", "Bread.", 7);
+            Wood = new Material("materials", new Rectangle(99, 0, 32, 32), "Wood", "Wood\nUsed to make buildings.", 8);
+            Sapling = new Material("materials", new Rectangle(66, 66, 32, 32), "Sapling", "Sapling\nCan be planted for new trees", 9);
         }
 
         public int ID { get; }
-
+        public string Name { get; }
         public string HoverText { get; }
 
         private string SpriteName;
         private Rectangle SourceRect;
 
-        private Material(string spriteName, Rectangle sourceRect, string hoverText, int id)
+        private Material(string spriteName, Rectangle sourceRect, string name, string hoverText, int id)
         {
+            Name = name;
             SpriteName = spriteName;
             SourceRect = sourceRect;
             HoverText = hoverText;

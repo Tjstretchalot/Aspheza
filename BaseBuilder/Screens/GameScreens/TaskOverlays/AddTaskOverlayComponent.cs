@@ -36,7 +36,6 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             Options = new List<ITaskItem>
             {
                 new FailerTaskItem(),
-                new GiveItemTaskItem(),
                 new HarvestTaskItem(),
                 new MineGoldTaskItem(),
                 new MoveTaskItem(),
@@ -44,7 +43,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 new RepeatUntilFailTaskItem(),
                 new SelectorTaskItem(),
                 new SequenceTaskItem(),
-                new SucceederTaskItem()
+                new SucceederTaskItem(),
+                new TransferItemTaskItem()
             }.Where((opt) => opt.CanBeAssignedTo(taskable)).ToList();
             
 
@@ -109,7 +109,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             }
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             var found = false;
 
@@ -150,7 +150,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 }
             }
 
-            return found || BackgroundRect.Contains(current.Position);
+            handled = found || BackgroundRect.Contains(current.Position);
         }
         public override void Dispose()
         {

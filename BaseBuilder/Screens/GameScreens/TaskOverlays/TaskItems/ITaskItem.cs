@@ -151,8 +151,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         /// <param name="netContext">Net context</param>
         /// <param name="last">The last mouse state</param>
         /// <param name="current">The current mouse state</param>
-        /// <returns>If the mouse was handled</returns>
-        bool HandleInspectMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current);
+        /// <param name="handled">If the mouse has beenh handled</param>
+        /// <param name="scrollHandled">If scrolling specifically has been handled</param>
+        void HandleInspectMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled);
 
         /// <summary>
         /// Handles the keyboard state in the inspect menu.

@@ -14,56 +14,56 @@ using BaseBuilder.Engine.World.Entities.Utilities;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
-    public class TransferItemTask : IEntityTask
+    public class EntityTransferItemTask : IEntityTask
     {
         Transferer transfer = new Transferer();
         EntityTaskStatus? LastReturn;
-        IFindTarget _From;
+        TargetFinder _From;
         int FromID;
         Container From;
-        IFindTarget _To;
+        TargetFinder _To;
         int ToID;
         Entity To;
-        List<ITransferRestrictors> Restrictors;
-        ITransferResultDecider Decider;
+        List<TransferRestrictors.ITransferRestrictor> Restrictors;
+        TransferResultDecider Decider;
 
-        public TransferItemTask(Container from, PointD2D toLoc, List<ITransferRestrictors> restrictors, ITransferResultDecider decider)
+        public EntityTransferItemTask(Container from, PointD2D toLoc, List<TransferRestrictors.ITransferRestrictor> restrictors, TransferResultDecider decider)
         {
             LastReturn = null;
             FromID = from.ID;
-            _From = new IFindTarget(FromID);
-            _To = new IFindTarget(toLoc);
+            _From = new TargetFinder(FromID);
+            _To = new TargetFinder(toLoc);
             Restrictors = restrictors;
             Decider = decider;
         }
 
-        public TransferItemTask(Container from, int toID, List<ITransferRestrictors> restrictors, ITransferResultDecider decider)
+        public EntityTransferItemTask(Container from, int toID, List<TransferRestrictors.ITransferRestrictor> restrictors, TransferResultDecider decider)
         {
             LastReturn = null;
             FromID = from.ID;
-            _From = new IFindTarget(FromID);
+            _From = new TargetFinder(FromID);
             ToID = toID;
-            _To = new IFindTarget(toID);
+            _To = new TargetFinder(toID);
             Restrictors = restrictors;
             Decider = decider;
         }
 
-        public TransferItemTask(Container from, Entity to, List<ITransferRestrictors> restrictors, ITransferResultDecider decider)
+        public EntityTransferItemTask(Container from, Entity to, List<TransferRestrictors.ITransferRestrictor> restrictors, TransferResultDecider decider)
         {
             LastReturn = null;
             FromID = from.ID;
-            _From = new IFindTarget(FromID);
+            _From = new TargetFinder(FromID);
             ToID = to.ID;
-            _To = new IFindTarget(to.ID);
+            _To = new TargetFinder(to.ID);
             Restrictors = restrictors;
             Decider = decider;
         }
 
-        public TransferItemTask(NetIncomingMessage message)
+        public EntityTransferItemTask(NetIncomingMessage message)
         {
             FromID = message.ReadInt32();
-            _To = new IFindTarget(message);
-            Decider = new ITransferResultDecider(message);
+            _To = new TargetFinder(message);
+            Decider = new TransferResultDecider(message);
             
         }
 

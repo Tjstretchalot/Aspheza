@@ -295,7 +295,7 @@ namespace BaseBuilder.Screens.Components
         {
         }
 
-        public void HandleMouseState(ContentManager content, MouseState last, MouseState mouse, ref bool handled)
+        public void HandleMouseState(ContentManager content, MouseState last, MouseState mouse, ref bool handled, ref bool scrollHandled)
         {
             var newHovered = !handled && ContainsPoint(mouse.Position.X, mouse.Position.Y);
             var newPressed = (newHovered && mouse.LeftButton == ButtonState.Pressed);

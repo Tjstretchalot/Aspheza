@@ -99,7 +99,7 @@ namespace BaseBuilder.Screens.Components
         {
         }
 
-        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled)
+        public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
         }
 

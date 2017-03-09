@@ -17,8 +17,13 @@ namespace BaseBuilder.Screens.Components
     /// <summary>
     /// An item on the combo box
     /// </summary>
-    public class ComboBoxItem
+    public class ComboBoxItem<T1>
     {
+        /// <summary>
+        /// The value that you can reference this item by
+        /// </summary>
+        public T1 Value;
+
         /// <summary>
         /// The minimum size for this combo box
         /// </summary>
@@ -82,10 +87,11 @@ namespace BaseBuilder.Screens.Components
         /// </summary>
         /// <param name="font">Font</param>
         /// <param name="text">Text</param>
-        public ComboBoxItem(SpriteFont font, string text)
+        public ComboBoxItem(SpriteFont font, string text, T1 value)
         {
             Font = font;
             Text = text;
+            Value = value;
             DrawRect = new Rectangle(0, 0, 1, 1);
         }
 
@@ -94,10 +100,11 @@ namespace BaseBuilder.Screens.Components
         /// </summary>
         /// <param name="font">The name of the font</param>
         /// <param name="text">The text</param>
-        public ComboBoxItem(string font, string text)
+        public ComboBoxItem(string font, string text, T1 value)
         {
             FontName = font;
             Text = text;
+            Value = value;
             DrawRect = new Rectangle(0, 0, 1, 1);
         }
         
@@ -108,7 +115,7 @@ namespace BaseBuilder.Screens.Components
         /// <param name="content">The content</param>
         /// <param name="graphics">The graphics</param>
         /// <param name="graphicsDevice">The graphcis device</param>
-        public void Initialize(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)
+        public virtual void Initialize(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)
         {
             if (Font == null && FontName != null)
                 Font = content.Load<SpriteFont>(FontName);
@@ -120,7 +127,7 @@ namespace BaseBuilder.Screens.Components
             BackgroundTexture.SetData(new[] { new Color(Color.Black, 0.8f) });
         }
 
-        public void SkippingDraw()
+        public virtual void SkippingDraw()
         {
             Hovered = false;
             DrawRect = new Rectangle(-1, -1, 1, 1);
@@ -136,7 +143,7 @@ namespace BaseBuilder.Screens.Components
         /// <param name="itemsVisibleRect">The rectangle where visible combo box items are</param>
         /// <param name="myYOffset">The y offset for the top of this combo box relative to the visible items rect</param>
         /// <param name="scrollYOffset">The y offset caused by the scroll bar</param>
-        public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, Rectangle itemsVisibleRect, int myYOffset, int scrollYOffset)
+        public virtual void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, Rectangle itemsVisibleRect, int myYOffset, int scrollYOffset)
         {
             // there are 4 cases that could be happening.
 
@@ -207,7 +214,7 @@ namespace BaseBuilder.Screens.Components
         /// <param name="itemsVisibleRect"></param>
         /// <param name="myYOffset"></param>
         /// <param name="scrollYOffset"></param>
-        public void Draw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, Rectangle itemsVisibleRect, int myYOffset, int scrollYOffset)
+        public virtual void Draw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, Rectangle itemsVisibleRect, int myYOffset, int scrollYOffset)
         {
             if (RenderTarget != null && RenderTarget.IsContentLost)
             {
@@ -279,7 +286,7 @@ namespace BaseBuilder.Screens.Components
         /// <param name="spriteBatch">The sprite batch</param>
         /// <param name="x">X</param>
         /// <param name="y">Y</param>
-        public void DrawImpl(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, int x, int y)
+        public virtual void DrawImpl(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, int x, int y)
         {
             DrawRect.X = x;
             DrawRect.Y = y;
@@ -291,7 +298,7 @@ namespace BaseBuilder.Screens.Components
             spriteBatch.DrawString(Font, Text, new Vector2(x + Size.X / 2 - MinSize.X / 2, y + Size.Y / 2 - MinSize.Y / 2), Hovered ? Color.White : Color.LightGray);
         }
 
-        public void HandleMouseState(MouseState last, MouseState current, ref bool handled)
+        public virtual void HandleMouseState(MouseState last, MouseState current, ref bool handled)
         {
             var newHovered = !handled && DrawRect.Contains(current.Position);
 
@@ -308,18 +315,18 @@ namespace BaseBuilder.Screens.Components
             handled = handled || Hovered;
         }
 
-        public void HandleKeyboardState(KeyboardState last, KeyboardState current, ref bool handled)
+        public virtual void HandleKeyboardState(KeyboardState last, KeyboardState current, ref bool handled)
         {
         }
 
-        public void Update(int elapsedMS)
+        public virtual void Update(int elapsedMS)
         {
 
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            RenderTarget.Dispose();
+            RenderTarget?.Dispose();
             RenderTarget = null;
         }
     }

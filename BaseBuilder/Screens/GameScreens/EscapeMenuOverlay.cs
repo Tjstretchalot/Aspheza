@@ -64,9 +64,10 @@ namespace BaseBuilder.Screens.GameScreens
             return false;
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            return Visible;
+            handled = handled || Visible;
+            scrollHandled = scrollHandled || Visible;
         }
     }
 }

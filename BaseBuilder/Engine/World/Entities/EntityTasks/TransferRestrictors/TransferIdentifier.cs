@@ -45,9 +45,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             return IdsToRestrict[id];
         }
 
-        public static ITransferRestrictors InitTransferRestrict(Type type, NetIncomingMessage message)
+        public static ITransferRestrictor InitTransferRestrict(Type type, NetIncomingMessage message)
         {
-            return type.GetConstructor(RestrictConstructorParamTypes).Invoke(new object[] { message }) as ITransferRestrictors;
+            return type.GetConstructor(RestrictConstructorParamTypes).Invoke(new object[] { message }) as ITransferRestrictor;
         }
     }
 }

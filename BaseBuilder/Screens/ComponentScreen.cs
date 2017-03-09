@@ -80,11 +80,12 @@ namespace BaseBuilder.Screens
             if(MouseLast.HasValue && KeyboardLast.HasValue)
             {
                 bool mouseHandled = false;
+                bool mouseScrollHandled = false;
                 bool keyboardHandled = false;
                 for(int i = Components.Count - 1; i >= 0; i--)
                 {
                     var component = Components[i];
-                    component.HandleMouseState(content, MouseLast.Value, currMouse, ref mouseHandled);
+                    component.HandleMouseState(content, MouseLast.Value, currMouse, ref mouseHandled, ref mouseScrollHandled);
                     component.HandleKeyboardState(content, KeyboardLast.Value, currKeyboard, ref keyboardHandled);
                 }
             }

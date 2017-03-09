@@ -41,8 +41,9 @@ namespace BaseBuilder.Screens.Components
         /// <param name="last">The last mouse state</param>
         /// <param name="current">The current mouse state</param>
         /// <param name="handled">If the mouse has been "handled". This means don't act on clicks, but ok to handle position</param>
+        /// <param name="scrollHandled">If scrolling has been done already</param>
         /// <returns>If the mouse was handled</returns>
-        void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled);
+        void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled);
 
         /// <summary>
         /// Handles the keyboard state, returning if other components should

@@ -170,10 +170,12 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             return false;
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             if (!MyVisualRect.Contains(current.Position))
-                return false;
+                return;
+            if (handled)
+                return;
 
             bool foundHover = false;
             if(HoveredIndex != -1)
@@ -224,8 +226,10 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 }
             }
 
-            if(last.ScrollWheelValue != current.ScrollWheelValue)
+            if(last.ScrollWheelValue != current.ScrollWheelValue && !scrollHandled)
             {
+                scrollHandled = true;
+
                 // Scrolling was requested
                 
                 var deltaScroll = (int)Math.Round((current.ScrollWheelValue - last.ScrollWheelValue) * 0.07);
@@ -240,7 +244,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 ScrollBarYOffset = desiredNewScrollY;
             }
 
-            return true;
+            handled = true;
         }
 
         public bool TryBuildEntity(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, PointD2D currentPlaceLocation, UnbuiltImmobileEntity buildingToPlace)

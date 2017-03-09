@@ -48,15 +48,17 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             InventoryOverlayComp.DrawHoverText(context);
         }
 
-        public override bool HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            var res = base.HandleMouseState(sharedGameState, localGameState, netContext, last, current);
+            base.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
 
-            res = InventoryOverlayComp.HandleMouseState(sharedGameState, localGameState, netContext, last, current) || res;
-            
             if (CurrentToolbarEntity == null)
-                return false;
-            return res;
+            {
+                return;
+            }
+
+            InventoryOverlayComp.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
+
         }
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)

@@ -11,25 +11,25 @@ using System.Threading.Tasks;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
-    public class IFindTarget
+    public class TargetFinder
     {
         protected bool LocOrID;
         protected PointD2D Loc;
         protected int ID;
 
-        public IFindTarget(PointD2D loc)
+        public TargetFinder(PointD2D loc)
         {
             Loc = loc;
             LocOrID = true;
         }
 
-        public IFindTarget(int id)
+        public TargetFinder(int id)
         {
             ID = id;
             LocOrID = false;
         }
 
-        public IFindTarget(NetIncomingMessage message)
+        public TargetFinder(NetIncomingMessage message)
         {
             LocOrID = message.ReadBoolean();
             if (LocOrID)
