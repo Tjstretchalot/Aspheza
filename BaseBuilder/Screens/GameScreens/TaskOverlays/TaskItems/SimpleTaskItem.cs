@@ -41,20 +41,20 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             if (DeleteButton == null)
             {
                 DeleteButton = CreateButton(new Point(0, 0), "Delete", ButtonColor.Yellow, ButtonSize.Medium);
-                DeleteButton.OnHoveredChanged += (sender, args) =>
+                DeleteButton.HoveredChanged += (sender, args) =>
                 {
-                    InspectRedrawRequired?.Invoke(this, EventArgs.Empty);
+                    OnInspectRedrawRequired();
                 };
-                DeleteButton.OnPressedChanged += (sender, args) => InspectRedrawRequired?.Invoke(this, EventArgs.Empty);
-                DeleteButton.OnPressReleased += (sender, args) => InspectDeletePressed?.Invoke(this, args);
+                DeleteButton.PressedChanged += (sender, args) => OnInspectRedrawRequired();
+                DeleteButton.PressReleased += (sender, args) => OnInspectDeletePressed();
             }
 
             if (Expandable && SetChildButton == null)
             {
                 SetChildButton = CreateButton(new Point(0, 0), "Set Child", ButtonColor.Blue, ButtonSize.Medium);
-                SetChildButton.OnHoveredChanged += (sender, args) => InspectRedrawRequired?.Invoke(this, EventArgs.Empty);
-                SetChildButton.OnPressedChanged += (sender, args) => InspectRedrawRequired?.Invoke(this, EventArgs.Empty);
-                SetChildButton.OnPressReleased += (sender, args) => InspectAddPressed?.Invoke(this, args);
+                SetChildButton.HoveredChanged += (sender, args) => OnInspectRedrawRequired();
+                SetChildButton.PressedChanged += (sender, args) => OnInspectRedrawRequired();
+                SetChildButton.PressReleased += (sender, args) => OnInspectAddPressed();
             }
 
             if (BackgroundTexture == null)
@@ -119,6 +119,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             ButtonShiftLast = new PointI2D(0, 0);
         }
 
+        public override void PreDrawInspect(RenderContext context, int x, int y)
+        {
+            DeleteButton?.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
+            SetChildButton?.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
+        }
+
         public override void DrawInspect(RenderContext context, int x, int y)
         {
             if (ButtonShiftLast.X != x || ButtonShiftLast.Y != y)
@@ -180,6 +186,21 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
                 LineTexture.Dispose();
                 LineTexture = null;
             }
+        }
+
+        protected virtual void OnInspectAddPressed()
+        {
+            InspectAddPressed?.Invoke(null, EventArgs.Empty);
+        }
+
+        protected virtual void OnInspectDeletePressed()
+        {
+            InspectDeletePressed?.Invoke(null, EventArgs.Empty);
+        }
+
+        protected virtual void OnInspectRedrawRequired()
+        {
+            InspectRedrawRequired?.Invoke(null, EventArgs.Empty);
         }
     }
 }

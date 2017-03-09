@@ -174,10 +174,11 @@ namespace BaseBuilder.Screens.Components
         protected Dictionary<Keys, int> KeysToIgnoreTime;
         protected Keys[] KeysPressedLastUpdate;
 
-        public event EventHandler OnFocusGained;
-        public event EventHandler OnFocusLost;
-        public event EventHandler OnTextChanged;
-        public event EventHandler OnEnter;
+        public event EventHandler CaretToggled;
+        public event EventHandler FocusGained;
+        public event EventHandler FocusLost;
+        public event EventHandler TextChanged;
+        public event EventHandler EnterPressed;
 
         public TextField(Rectangle location, string text, string font, Color textColor,
             string typeSFXName, string invalidKeySFXName, int maxLength)
@@ -280,14 +281,14 @@ namespace BaseBuilder.Screens.Components
                 {
                     PlayTapSound(content);
                     Text = Text.Substring(0, Text.Length - 1);
-                    OnTextChanged?.Invoke(this, EventArgs.Empty);
+                    TextChanged?.Invoke(this, EventArgs.Empty);
                 }
                 return;
             }
 
             if(key == Keys.Enter)
             {
-                OnEnter?.Invoke(this, EventArgs.Empty);
+                EnterPressed?.Invoke(this, EventArgs.Empty);
                 return;
             }
 
@@ -316,7 +317,7 @@ namespace BaseBuilder.Screens.Components
 
                 PlayTapSound(content);
                 Text = Text + keyChar;
-                OnTextChanged?.Invoke(this, EventArgs.Empty);
+                TextChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -339,6 +340,7 @@ namespace BaseBuilder.Screens.Components
                         CaretVisible = true;
                         TimeUntilCaretToggleMS = CARET_VISIBLE_TIME_MS;
                     }
+                    CaretToggled?.Invoke(this, EventArgs.Empty);
                 }
 
                 var keys = KeysToIgnoreTime.Keys;
@@ -495,14 +497,14 @@ namespace BaseBuilder.Screens.Components
                     Focused = true;
                     CaretVisible = true;
                     TimeUntilCaretToggleMS = CARET_VISIBLE_TIME_MS;
-                    OnFocusGained?.Invoke(this, EventArgs.Empty);
+                    FocusGained?.Invoke(this, EventArgs.Empty);
                 }
                 else
                 {
                     Focused = false;
                     CaretVisible = false;
                     TimeUntilCaretToggleMS = 0;
-                    OnFocusLost?.Invoke(this, EventArgs.Empty);
+                    FocusLost?.Invoke(this, EventArgs.Empty);
                 }
             }
 

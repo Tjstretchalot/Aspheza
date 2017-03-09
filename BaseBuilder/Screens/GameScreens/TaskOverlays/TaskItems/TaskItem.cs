@@ -29,6 +29,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
         public abstract IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext);
 
+        public abstract void PreDrawInspect(RenderContext context, int x, int y);
         public abstract void DrawInspect(RenderContext context, int x, int y);
 
         public abstract bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext);
@@ -44,6 +45,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             return false;
         }
 
+        public virtual bool HandleInspectKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current)
+        {
+            return false;
+        }
+
         public abstract void DisposeInspect();
+
     }
 }

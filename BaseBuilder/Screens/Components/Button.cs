@@ -186,17 +186,17 @@ namespace BaseBuilder.Screens.Components
         /// Called when this button changes from pressed to unpressed while hovered.
         /// This is when you should treat the button as clicked.
         /// </summary>
-        public event EventHandler OnPressReleased;
+        public event EventHandler PressReleased;
 
         /// <summary>
         /// Triggered when hover changes
         /// </summary>
-        public event EventHandler OnHoveredChanged;
+        public event EventHandler HoveredChanged;
 
         /// <summary>
         /// Triggered when pressed changes
         /// </summary>
-        public event EventHandler OnPressedChanged;
+        public event EventHandler PressedChanged;
         
         internal Vector2? _TextDestinationVec;
 
@@ -326,15 +326,15 @@ namespace BaseBuilder.Screens.Components
                 content.Load<SoundEffect>(UnpressedSFXName).Play();
 
                 if (newHovered && Hovered)
-                    OnPressReleased?.Invoke(this, EventArgs.Empty);
+                    PressReleased?.Invoke(this, EventArgs.Empty);
             }
 
             if (pressedChanged)
             {
-                OnPressedChanged?.Invoke(this, EventArgs.Empty);
+                PressedChanged?.Invoke(this, EventArgs.Empty);
             }
             if (hoveredChanged)
-                OnHoveredChanged?.Invoke(this, EventArgs.Empty);
+                HoveredChanged?.Invoke(this, EventArgs.Empty);
 
             Pressed = newPressed;
             Hovered = newHovered;

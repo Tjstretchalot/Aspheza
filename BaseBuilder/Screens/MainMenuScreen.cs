@@ -29,7 +29,7 @@ namespace BaseBuilder.Screens
             var greyPanel = new GreyPanel(new Rectangle(vWidth / 2 - myWidth / 2, vHeight / 2 - myHeight / 2, myWidth, myHeight));
             var multiplayerButton = UIUtils.CreateButton(new Point(greyPanel.Center.X, greyPanel.Center.Y - greyPanel.Size.Y / 6), "Multiplayer", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
 
-            multiplayerButton.OnPressReleased += MultiplayerPressed;
+            multiplayerButton.PressReleased += MultiplayerPressed;
 
             Components.Add(greyPanel);
             Components.Add(multiplayerButton);

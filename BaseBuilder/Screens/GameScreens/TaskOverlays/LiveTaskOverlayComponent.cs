@@ -120,12 +120,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             AddButton = UIUtils.CreateButton(new Point(0, 0), "Add Task", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
             PauseResumeButton = UIUtils.CreateButton(new Point(0, 0), "Stop", UIUtils.ButtonColor.Yellow, UIUtils.ButtonSize.Medium);
 
-            AddButton.OnHoveredChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
-            AddButton.OnPressedChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
-            PauseResumeButton.OnHoveredChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
-            PauseResumeButton.OnPressedChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
+            AddButton.HoveredChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
+            AddButton.PressedChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
+            PauseResumeButton.HoveredChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
+            PauseResumeButton.PressedChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
 
-            PauseResumeButton.OnPressReleased += (sender, args) =>
+            PauseResumeButton.PressReleased += (sender, args) =>
             {
                 if (Taskable.Paused)
                     PauseResumeButton.Text = "Stop";
@@ -138,14 +138,14 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 RedrawRequired?.Invoke(null, EventArgs.Empty);
             };
 
-            AddButton.OnPressReleased += (sender, args) =>
+            AddButton.PressReleased += (sender, args) =>
             {
                 TaskAddPressed?.Invoke(this, args);
             };
 
             CreateTaskItemsFromTaskable();
         }
-
+        
         public override void Draw(RenderContext context)
         {
             context.SpriteBatch.Draw(BackgroundTexture, new Rectangle(ScreenLocation.X, ScreenLocation.Y, Size.X, Size.Y), Color.White);

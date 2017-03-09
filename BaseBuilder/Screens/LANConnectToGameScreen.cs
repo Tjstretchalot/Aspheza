@@ -73,9 +73,9 @@ namespace BaseBuilder.Screens
             backButton.Center = new Point(greyPanel.Center.X + backButton.Size.X / 2 + 5, greyPanel.Center.Y + greyPanel.Size.Y / 6);
 
 
-            backButton.OnPressReleased += BackPressed;
-            PortField.OnTextChanged += NumbersOnlyTextFieldOnTextChanged;
-            startButton.OnPressReleased += StartGame;
+            backButton.PressReleased += BackPressed;
+            PortField.TextChanged += NumbersOnlyTextFieldOnTextChanged;
+            startButton.PressReleased += StartGame;
 
             Components.Add(greyPanel);
             Components.Add(ServerAddressField);

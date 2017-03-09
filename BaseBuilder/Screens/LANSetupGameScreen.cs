@@ -31,9 +31,9 @@ namespace BaseBuilder.Screens
 
             var backButton = UIUtils.CreateButton(new Point(greyPanel.Center.X, greyPanel.Center.Y + greyPanel.Size.Y / 6), "Back", UIUtils.ButtonColor.Grey, UIUtils.ButtonSize.Medium);
 
-            hostButton.OnPressReleased += HostPressed;
-            findButton.OnPressReleased += FindPressed;
-            backButton.OnPressReleased += BackPressed;
+            hostButton.PressReleased += HostPressed;
+            findButton.PressReleased += FindPressed;
+            backButton.PressReleased += BackPressed;
 
             Components.Add(greyPanel);
             Components.Add(hostButton);

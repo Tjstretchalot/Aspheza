@@ -99,6 +99,14 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext);
 
         /// <summary>
+        /// Called prior to draw and prior to the sprite batch begin.
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="x">X</param>
+        /// <param name="y">Y</param>
+        void PreDrawInspect(RenderContext context, int x, int y);
+
+        /// <summary>
         /// Draws this task, with the top left at the specified point.
         /// </summary>
         /// <param name="context">Render context</param>
@@ -131,6 +139,17 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         /// <param name="current">The current mouse state</param>
         /// <returns>If the mouse was handled</returns>
         bool HandleInspectMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current);
+
+        /// <summary>
+        /// Handles the keyboard state in the inspect menu.
+        /// </summary>
+        /// <param name="sharedGameState">Shared state</param>
+        /// <param name="localGameState">Local state</param>
+        /// <param name="netContext">Net context</param>
+        /// <param name="last">The last keyboard state</param>
+        /// <param name="current">The current keyboard state</param>
+        /// <returns>If the keyboard was handled</returns>
+        bool HandleInspectKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current);
 
         /// <summary>
         /// Disposes of anything required for the inspect menu. It should still be

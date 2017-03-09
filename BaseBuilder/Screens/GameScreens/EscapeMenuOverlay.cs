@@ -27,7 +27,7 @@ namespace BaseBuilder.Screens.GameScreens
             Background = new GreyPanel(new Rectangle(ScreenLocation.X, ScreenLocation.Y, Size.X, Size.Y));
             QuitButton = UIUtils.CreateButton(new Point(Background.Center.X, Background.Center.Y), "Quit Game", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
 
-            QuitButton.OnPressReleased += QuitGame;
+            QuitButton.PressReleased += QuitGame;
         }
 
         private void QuitGame(object sender, EventArgs e)

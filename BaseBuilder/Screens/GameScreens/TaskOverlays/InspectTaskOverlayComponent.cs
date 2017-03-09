@@ -45,20 +45,28 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             Size = TaskItem.InspectSize;
         }
 
-
-        public override void Draw(RenderContext context)
+        public override void PreDraw(RenderContext renderContext)
         {
-            if(NeedRefreshTaskItem)
+            if (NeedRefreshTaskItem)
             {
-                TaskItem.LoadedOrChanged(context);
+                TaskItem.LoadedOrChanged(renderContext);
                 NeedRefreshTaskItem = false;
 
                 Size = TaskItem.InspectSize;
             }
 
+            TaskItem.PreDrawInspect(renderContext, ScreenLocation.X, ScreenLocation.Y);
+        }
+
+        public override void Draw(RenderContext context)
+        {
             TaskItem.DrawInspect(context, ScreenLocation.X, ScreenLocation.Y);
         }
 
+        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
+        {
+            TaskItem.UpdateInspect(sharedGameState, localGameState, netContext, timeMS);
+        }
         public override void Dispose()
         {
             base.Dispose();
@@ -71,6 +79,10 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             return TaskItem.HandleInspectMouseState(sharedGameState, localGameState, netContext, last, current);
         }
 
+        public override bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame)
+        {
+            return TaskItem.HandleInspectKeyboardState(sharedGameState, localGameState, netContext, last, current);
+        }
         /// <summary>
         /// Sets the new size of this component.
         /// </summary>

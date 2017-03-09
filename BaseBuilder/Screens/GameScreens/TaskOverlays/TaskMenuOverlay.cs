@@ -95,6 +95,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             tmpC.Content = Content;
             tmpC.SpriteBatch = SpriteBatch;
             tmpC.DefaultFont = Content.Load<SpriteFont>("Bitter-Regular");
+            InspectOverlay.ScreenLocation = new PointI2D(0, 0);
             InspectOverlay.PreDraw(tmpC);
             InspectScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, InspectOverlay, new PointI2D(255, 50), new PointI2D(200, 400), 6);
 
@@ -188,6 +189,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             tmp.Content = Content;
             tmp.SpriteBatch = SpriteBatch;
             tmp.DefaultFont = Content.Load<SpriteFont>("Bitter-Regular");
+            AddOverlay.ScreenLocation = new PointI2D(0, 0);
             AddOverlay.PreDraw(tmp);
             AddScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, AddOverlay, new PointI2D(direct ? 255 : InspectScrollableOverlay.ScreenLocation.X + InspectScrollableOverlay.Size.X, 50), new PointI2D(200, 400), 2);
             AddOverlay.TaskSelected += (sender, args) =>
@@ -323,15 +325,10 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 localGameState.Components.Remove(this);
                 return;
             }
-
-            if (LiveScrollableOverlay != null)
-                LiveScrollableOverlay.Update(sharedGameState, localGameState, netContext, timeMS);
-
-            if (InspectScrollableOverlay != null)
-                InspectScrollableOverlay.Update(sharedGameState, localGameState, netContext, timeMS);
-
-            if (AddScrollableOverlay != null)
-                AddScrollableOverlay.Update(sharedGameState, localGameState, netContext, timeMS);
+            
+            LiveScrollableOverlay?.Update(sharedGameState, localGameState, netContext, timeMS);
+            InspectScrollableOverlay?.Update(sharedGameState, localGameState, netContext, timeMS);
+            AddScrollableOverlay?.Update(sharedGameState, localGameState, netContext, timeMS);
         }
 
         public override void Dispose()

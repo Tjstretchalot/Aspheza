@@ -29,8 +29,8 @@ namespace BaseBuilder.Screens
             var lanButton = UIUtils.CreateButton(new Point(greyPanel.Center.X, greyPanel.Center.Y - greyPanel.Size.Y / 6), "Play on LAN", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
             var backButton = UIUtils.CreateButton(new Point(greyPanel.Center.X, greyPanel.Center.Y + greyPanel.Size.Y / 6), "Back", UIUtils.ButtonColor.Grey, UIUtils.ButtonSize.Medium);
 
-            lanButton.OnPressReleased += LANPressed;
-            backButton.OnPressReleased += BackPressed;
+            lanButton.PressReleased += LANPressed;
+            backButton.PressReleased += BackPressed;
 
 
             Components.Add(greyPanel);

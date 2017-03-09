@@ -22,7 +22,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             {
                 if(_TaskDescription == null)
                 {
-                    _TaskDescription = $"Repeat {Task.TaskName}";
+                    _TaskDescription = $"Repeat {Child.TaskName}";
                 }
 
                 return _TaskDescription;
@@ -55,7 +55,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
-                return Task.PrettyDescription;
+                if (Child == null)
+                    return "In a bad state =(";
+
+                return Child.PrettyDescription;
             }
         }
 
@@ -63,11 +66,13 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
-                return Task.Progress;
+                if (Child == null)
+                    return 0;
+                return Child.Progress;
             }
         }
 
-        protected IEntityTask Task;
+        public IEntityTask Child;
         protected string SpecificName;
         protected bool TaskRunSinceLastReset;
         protected int Times;
@@ -82,14 +87,18 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// <param name="times">If not 0, the number of times the task is run before returning success</param>
         public EntityRepeaterTask(IEntityTask task, string specificName, int times=0)
         {
-            Task = task;
+            Child = task;
             SpecificName = specificName;
         }
 
         public EntityRepeaterTask(SharedGameState gameState, NetIncomingMessage message)
         {
-            var taskID = message.ReadInt16();
-            Task = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message);
+            var haveChild = message.ReadBoolean();
+            if (haveChild)
+            {
+                var taskID = message.ReadInt16();
+                Child = TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message);
+            }
             SpecificName = message.ReadString();
             TaskRunSinceLastReset = message.ReadBoolean();
             Times = message.ReadInt32();
@@ -98,10 +107,17 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Write(NetOutgoingMessage message)
         {
-            var taskID = TaskIdentifier.GetIDOfTask(Task.GetType());
+            if (Child != null)
+            {
+                message.Write(true);
+                var taskID = TaskIdentifier.GetIDOfTask(Child.GetType());
+                message.Write(taskID);
+                Child.Write(message);
+            }else
+            {
+                message.Write(false);
+            }
 
-            message.Write(taskID);
-            Task.Write(message);
             message.Write(SpecificName);
             message.Write(TaskRunSinceLastReset);
             message.Write(Times);
@@ -112,7 +128,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             if (TaskRunSinceLastReset)
             {
-                Task.Reset(gameState);
+                Child?.Reset(gameState);
                 TaskRunSinceLastReset = false;
             }
 
@@ -121,18 +137,21 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Cancel(SharedGameState gameState)
         {
-             Task.Cancel(gameState);
+             Child?.Cancel(gameState);
         }
 
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
-            var result = Task.SimulateTimePassing(gameState, timeMS);
+            if (Child == null)
+                return EntityTaskStatus.Failure;
+
+            var result = Child.SimulateTimePassing(gameState, timeMS);
             TaskRunSinceLastReset = true;
 
             switch (result)
             {
                 case EntityTaskStatus.Success:
-                    Task.Reset(gameState);
+                    Child.Reset(gameState);
                     TaskRunSinceLastReset = false;
                     if (Times != 0)
                     {
@@ -154,7 +173,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
         {
-            Task.Update(content, sharedGameState, localGameState);
+            Child?.Update(content, sharedGameState, localGameState);
         }
     }
 }
