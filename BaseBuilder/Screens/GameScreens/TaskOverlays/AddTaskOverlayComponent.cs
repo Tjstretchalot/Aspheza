@@ -26,6 +26,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         protected List<ITaskItem> Options;
         protected BiDictionary<ITaskItem, Rectangle> OptionsAndTheirLocations;
 
+        protected Rectangle BackgroundRect;
         protected Texture2D BackgroundTexture;
 
         public AddTaskOverlayComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
@@ -48,6 +49,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
             BackgroundTexture = new Texture2D(graphicsDevice, 1, 1);
             BackgroundTexture.SetData(new[] { Color.Gray });
+
+            BackgroundRect = new Rectangle(-1, -1, 1, 1);
         }
 
         public void CalculateSize(RenderContext context)
@@ -88,7 +91,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         }
         public override void Draw(RenderContext context)
         {
-            context.SpriteBatch.Draw(BackgroundTexture, new Rectangle(0, 0, Size.X, Size.Y), Color.White);
+            BackgroundRect.X = ScreenLocation.X;
+            BackgroundRect.Y = ScreenLocation.Y;
+            BackgroundRect.Width = Size.X;
+            BackgroundRect.Height = Size.Y;
+
+            context.SpriteBatch.Draw(BackgroundTexture, BackgroundRect, Color.White);
 
             foreach (var item in OptionsAndTheirLocations.GetFirstKeys())
             {
@@ -139,7 +147,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 }
             }
 
-            return found;
+            return found || BackgroundRect.Contains(current.Position);
         }
         public override void Dispose()
         {

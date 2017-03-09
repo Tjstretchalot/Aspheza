@@ -101,6 +101,23 @@ namespace BaseBuilder.Screens.Components
             get { return UIUtils.MaxPoint; }
         }
 
+        protected bool _Disabled;
+
+        /// <summary>
+        /// Gets or sets if this text field is disabled at the moment.
+        /// </summary>
+        public bool Disabled
+        {
+            get
+            {
+                return _Disabled;
+            }
+
+            set
+            {
+                _Disabled = value;
+            }
+        }
         /// <summary>
         /// Where the top-left of the text is positioned. Must be nulled whenever
         /// something changes that would effect this.
@@ -167,6 +184,11 @@ namespace BaseBuilder.Screens.Components
         protected Texture2D BackgroundTexture;
 
         /// <summary>
+        /// The backgruond texture for the text field while disabled
+        /// </summary>
+        protected Texture2D DisabledBackgroundTexture;
+
+        /// <summary>
         /// The background texture while focused
         /// </summary>
         protected Texture2D FocusedBackgroundTexture;
@@ -181,7 +203,7 @@ namespace BaseBuilder.Screens.Components
         public event EventHandler EnterPressed;
 
         public TextField(Rectangle location, string text, string font, Color textColor,
-            string typeSFXName, string invalidKeySFXName, int maxLength)
+            string typeSFXName, string invalidKeySFXName, int maxLength, bool disabled = false)
         {
             _Location = location;
             Text = text;
@@ -190,6 +212,7 @@ namespace BaseBuilder.Screens.Components
             TypeSFXName = typeSFXName;
             InvalidKeySFXName = invalidKeySFXName;
             MaxLength = maxLength;
+            Disabled = disabled;
 
             Focused = false;
             CaretVisible = false;
@@ -202,16 +225,12 @@ namespace BaseBuilder.Screens.Components
 
         public void Resize(Point size)
         {
-            if (BackgroundTexture != null)
-            {
-                BackgroundTexture.Dispose();
-                BackgroundTexture = null;
-            }
-            if (FocusedBackgroundTexture != null)
-            {
-                FocusedBackgroundTexture.Dispose();
-                FocusedBackgroundTexture = null;
-            }
+            BackgroundTexture?.Dispose();
+            BackgroundTexture = null;
+            FocusedBackgroundTexture?.Dispose();
+            FocusedBackgroundTexture = null;
+            DisabledBackgroundTexture?.Dispose();
+            DisabledBackgroundTexture = null;
 
             Location = new Rectangle(
                 Center.X - size.X / 2, 
@@ -222,12 +241,16 @@ namespace BaseBuilder.Screens.Components
         }
         public void Draw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
-            if (BackgroundTexture == null)
+            if (!Disabled && !Focused && BackgroundTexture == null)
                 InitBackgroundTexture(content, graphics, graphicsDevice, spriteBatch);
-            if (FocusedBackgroundTexture == null)
+            if (!Disabled && Focused && FocusedBackgroundTexture == null)
                 InitFocusedBackgroundTexture(content, graphics, graphicsDevice, spriteBatch);
+            if (Disabled && DisabledBackgroundTexture == null)
+                InitDisabledBackgroundTexture(content, graphics, graphicsDevice, spriteBatch);
 
-            if(Focused)
+            if (Disabled)
+                spriteBatch.Draw(DisabledBackgroundTexture, destinationRectangle: Location);
+            else if (Focused)
                 spriteBatch.Draw(FocusedBackgroundTexture, destinationRectangle: Location);
             else
                 spriteBatch.Draw(BackgroundTexture, destinationRectangle: Location);
@@ -255,6 +278,11 @@ namespace BaseBuilder.Screens.Components
         protected virtual void InitFocusedBackgroundTexture(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
             FocusedBackgroundTexture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, spriteBatch, Size.X, Size.Y, Color.White, new Color(198, 198, 198), new Color(155, 155, 255), 5, 2, 1);
+        }
+
+        protected virtual void InitDisabledBackgroundTexture(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
+        {
+            DisabledBackgroundTexture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, spriteBatch, Size.X, Size.Y, new Color(105, 105, 105), new Color(169, 169, 169), new Color(55, 55, 55), 5, 2, 1);
         }
 
         protected virtual void PlayErrorSound(ContentManager content)
@@ -323,6 +351,8 @@ namespace BaseBuilder.Screens.Components
 
         public void Update(ContentManager content, int deltaMS)
         {
+            if (Disabled)
+                Focused = false;
             ErrorSoundCooldown -= deltaMS;
 
             if(Focused)
@@ -436,6 +466,8 @@ namespace BaseBuilder.Screens.Components
                     return shiftDown ? '{' : '[';
                 case Keys.OemCloseBrackets:
                     return shiftDown ? '}' : ']';
+                case Keys.OemPlus:
+                    return shiftDown ? '+' : '=';
                 case Keys.D1:
                     return shiftDown ? '!' : '1';
                 case Keys.D2:
@@ -488,7 +520,7 @@ namespace BaseBuilder.Screens.Components
             var mouseDown = current.LeftButton == ButtonState.Pressed;
 
             var newHover = !handled && Location.Contains(mousePos);
-            var newFocus = (mouseDown ? newHover : Focused);
+            var newFocus = !Disabled && (mouseDown ? newHover : Focused);
 
             if (newFocus != Focused)
             {
@@ -573,16 +605,12 @@ namespace BaseBuilder.Screens.Components
 
         public void Dispose()
         {
-            if (BackgroundTexture != null)
-            {
-                BackgroundTexture.Dispose();
-                BackgroundTexture = null;
-            }
-            if (FocusedBackgroundTexture != null)
-            {
-                FocusedBackgroundTexture.Dispose();
-                FocusedBackgroundTexture = null;
-            }
+            BackgroundTexture?.Dispose();
+            BackgroundTexture = null;
+            FocusedBackgroundTexture?.Dispose();
+            FocusedBackgroundTexture = null;
+            DisabledBackgroundTexture?.Dispose();
+            DisabledBackgroundTexture = null;
         }
     }
 }

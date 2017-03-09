@@ -36,6 +36,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         event EventHandler InspectDeletePressed;
 
         /// <summary>
+        /// Triggered when the task item wants to save
+        /// its changes to the shared state.
+        /// </summary>
+        event EventHandler InspectSaveRequired;
+
+        /// <summary>
         /// Gets or sets the parent of this task item.
         /// </summary>
         ITaskItem Parent { get; set;  }

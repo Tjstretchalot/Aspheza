@@ -45,7 +45,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         {
             Taskable = taskable;
 
-            LiveOverlay = new LiveTaskOverlayComponent(content, graphics, graphicsDevice, spriteBatch, localState, netContext, taskable);
+            LiveOverlay = new LiveTaskOverlayComponent(content, graphics, graphicsDevice, spriteBatch, sharedState, localState, netContext, taskable);
             InspectOverlay = null;
             AddOverlay = null;
 
@@ -97,7 +97,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             tmpC.DefaultFont = Content.Load<SpriteFont>("Bitter-Regular");
             InspectOverlay.ScreenLocation = new PointI2D(0, 0);
             InspectOverlay.PreDraw(tmpC);
-            InspectScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, InspectOverlay, new PointI2D(255, 50), new PointI2D(200, 400), 6);
+            InspectScrollableOverlay = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, InspectOverlay, new PointI2D(275, 50), new PointI2D(200, 400), 6);
 
             InspectOverlay.AddPressed += (sender2, args2) =>
             {

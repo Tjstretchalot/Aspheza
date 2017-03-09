@@ -23,6 +23,14 @@ repeat forever or repeat a certain number of times.";
         protected TextField TimesTextField;
         protected Text TimesLabel;
 
+        protected bool RepeatForever
+        {
+            get
+            {
+                return (RepeatForeverCheckbox?.Pushed).GetValueOrDefault(false);
+            }
+        }
+
         /// <summary>
         /// Converts the specified task into the task item.
         /// </summary>
@@ -42,6 +50,7 @@ repeat forever or repeat a certain number of times.";
             }
 
             InspectDescription = _InspectDescription;
+            Savable = true;
             Expandable = true;
             Expanded = false;
             TaskName = "Repeat";
@@ -55,6 +64,7 @@ repeat forever or repeat a certain number of times.";
             Children = new List<ITaskItem>(1);
 
             InspectDescription = _InspectDescription;
+            Savable = true;
             Expandable = true;
             Expanded = false;
             TaskName = "Repeat";
@@ -68,19 +78,37 @@ repeat forever or repeat a certain number of times.";
             {
                 RepeatForeverCheckbox = new CheckBox(new Point(0, 0));
 
-                RepeatForeverCheckbox.PushedChanged += (sender, args) => OnInspectRedrawRequired();
+                RepeatForeverCheckbox.PushedChanged += (sender, args) =>
+                {
+                    Reload = true;
+                    OnInspectRedrawRequired();
+                };
             }
 
             if(RepeatForeverLabel == null)
             {
-                RepeatForeverLabel = new Text(new Point(0, 0), "Repeat Forever?", renderContext.DefaultFont, Color.Black);
+                RepeatForeverLabel = new Text(new Point(0, 0), "Repeat Forever", renderContext.DefaultFont, Color.Black);
             }
 
             if(TimesTextField == null)
             {
-                TimesTextField = UIUtils.CreateTextField(new Point(0, 0), new Point(100, 30));
+                TimesTextField = UIUtils.CreateTextField(new Point(0, 0), new Point(RepeatForeverCheckbox.Size.X + RepeatForeverLabel.Size.X + 3, 30));
 
-                TimesTextField.TextChanged += (sender, args) => OnInspectRedrawRequired();
+                TimesTextField.TextChanged += (sender, args) =>
+                {
+                    var newStr = new StringBuilder();
+                    foreach(var ch in TimesTextField.Text)
+                    {
+                        if(char.IsDigit(ch))
+                        {
+                            newStr.Append(ch);
+                        }
+                    }
+                    TimesTextField.Text = newStr.ToString();
+
+                    OnInspectRedrawRequired();
+                };
+
                 TimesTextField.CaretToggled += (sender, args) => OnInspectRedrawRequired();
                 TimesTextField.FocusGained += (sender, args) => OnInspectRedrawRequired();
                 TimesTextField.FocusLost += (sender, args) => OnInspectRedrawRequired();
@@ -102,12 +130,17 @@ repeat forever or repeat a certain number of times.";
             height += RepeatForeverCheckbox.Size.Y + 3;
 
             RepeatForeverLabel.Center = new Point(RepeatForeverCheckbox.Center.X + RepeatForeverCheckbox.Size.X / 2 + 3 + RepeatForeverLabel.Size.X / 2, RepeatForeverCheckbox.Center.Y);
-            
-            height += TimesLabel.Size.Y + 2;
-            TimesTextField.Center = new Point(width / 2, height + TimesTextField.Size.Y / 2);
-            height += TimesTextField.Size.Y + 3;
 
-            TimesLabel.Center = new Point(TimesTextField.Center.X - TimesTextField.Size.X/2 + TimesLabel.Size.X / 2, TimesTextField.Center.Y - TimesTextField.Size.Y / 2 - TimesLabel.Size.Y / 2 - 2);
+            if (!RepeatForever)
+            {
+                height += TimesLabel.Size.Y + 2;
+                TimesTextField.Center = new Point(width / 2, height + TimesTextField.Size.Y / 2);
+                height += TimesTextField.Size.Y + 3;
+
+                TimesLabel.Center = new Point(TimesTextField.Center.X - TimesTextField.Size.X / 2 + TimesLabel.Size.X / 2, TimesTextField.Center.Y - TimesTextField.Size.Y / 2 - TimesLabel.Size.Y / 2 - 2);
+            }
+
+            height += 8;
 
             base.CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
         }
@@ -118,8 +151,11 @@ repeat forever or repeat a certain number of times.";
 
             RepeatForeverLabel.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
             RepeatForeverCheckbox.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
-            TimesLabel.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
-            TimesTextField.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
+            if (!RepeatForever)
+            {
+                TimesLabel.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
+                TimesTextField.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
+            }
         }
 
         public override void DrawInspect(RenderContext context, int x, int y)
@@ -131,37 +167,40 @@ repeat forever or repeat a certain number of times.";
             }
 
             base.DrawInspect(context, x, y);
-
+   
             RepeatForeverLabel.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
             RepeatForeverCheckbox.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
-            TimesLabel.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
-            TimesTextField.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
+            if (!RepeatForever)
+            {
+                TimesLabel.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
+                TimesTextField.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
+            }
         }
-
-        public override bool HandleInspectMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current)
+        
+        protected override void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled)
         {
-            bool handled = base.HandleInspectMouseState(sharedGameState, localGameState, netContext, last, current);
-
+            base.HandleInspectComponentsMouseState(last, current, ref handled);
             RepeatForeverCheckbox.HandleMouseState(Content, last, current, ref handled);
-            TimesTextField.HandleMouseState(Content, last, current, ref handled);
-
-            return handled;
+            if(!RepeatForever)
+                TimesTextField.HandleMouseState(Content, last, current, ref handled);
         }
 
         public override bool HandleInspectKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current)
         {
             bool handled = base.HandleInspectKeyboardState(sharedGameState, localGameState, netContext, last, current);
 
-            TimesTextField.HandleKeyboardState(Content, last, current, ref handled);
+            if(!RepeatForever)
+                TimesTextField.HandleKeyboardState(Content, last, current, ref handled);
 
             return handled;
         }
         public override void UpdateInspect(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {
             base.UpdateInspect(sharedGameState, localGameState, netContext, timeMS);
-
+            
             RepeatForeverCheckbox.Update(Content, timeMS);
-            TimesTextField.Update(Content, timeMS);
+            if(!RepeatForever)
+                TimesTextField.Update(Content, timeMS);
         }
 
         public override IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
@@ -177,6 +216,21 @@ repeat forever or repeat a certain number of times.";
         public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
             return Children.Count == 1 && Children[0].IsValid(sharedState, localState, netContext);
+        }
+
+        public override void DisposeInspect()
+        {
+            base.DisposeInspect();
+
+            RepeatForeverLabel?.Dispose();
+            RepeatForeverCheckbox?.Dispose();
+            TimesLabel?.Dispose();
+            TimesTextField?.Dispose();
+
+            RepeatForeverLabel = null;
+            RepeatForeverCheckbox = null;
+            TimesLabel = null;
+            TimesTextField = null;
         }
     }
 }

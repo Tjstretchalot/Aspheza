@@ -21,6 +21,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
     {
         public event EventHandler AddPressed;
         public event EventHandler DeletePressed;
+        public event EventHandler SaveRequired;
         public event EventHandler RedrawRequired;
 
         private ITaskItem TaskItem;
@@ -33,7 +34,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             TaskItem.InspectAddPressed += (sender, args) => AddPressed?.Invoke(this, args);
             TaskItem.InspectDeletePressed += (sender, args) => DeletePressed?.Invoke(this, args);
             TaskItem.InspectRedrawRequired += (sender, args) => RedrawRequired?.Invoke(this, args);
-            
+            TaskItem.InspectSaveRequired += (sender, args) => SaveRequired?.Invoke(this, args);
+
             RenderContext tmp = new RenderContext();
             tmp.Content = content;
             tmp.Graphics = graphics;
@@ -56,6 +58,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             }
 
             TaskItem.PreDrawInspect(renderContext, ScreenLocation.X, ScreenLocation.Y);
+            Size = TaskItem.InspectSize;
         }
 
         public override void Draw(RenderContext context)

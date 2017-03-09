@@ -433,3 +433,9 @@
 /processorParam:Quality=Best
 /build:UI/switch8.ogg
 
+#begin UI/switch13.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:UI/switch13.ogg
+

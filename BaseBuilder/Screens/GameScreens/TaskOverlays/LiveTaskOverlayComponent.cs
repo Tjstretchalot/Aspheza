@@ -13,6 +13,7 @@ using BaseBuilder.Screens.Components;
 using Microsoft.Xna.Framework.Input;
 using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.World.WorldObject.Entities;
+using Microsoft.Xna.Framework.Audio;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 {
@@ -86,6 +87,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// </summary>
         public Button PauseResumeButton;
 
+        protected bool Valid;
+
         protected ITaskable Taskable;
         public ICollection<ITaskItem> TaskItems;
         protected BiDictionary<Rectangle, ITaskItem> ExpandOrMinimizeIconLocationsToTaskItems;
@@ -97,7 +100,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         protected Rectangle ExpandSourceRect;
         protected Rectangle MinimizeSourceRect;
 
-        public LiveTaskOverlayComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, LocalGameState localState, NetContext netContext, ITaskable taskable) : base(content, graphics, graphicsDevice, spriteBatch)
+        public LiveTaskOverlayComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SharedGameState sharedState, LocalGameState localState, NetContext netContext, ITaskable taskable) : base(content, graphics, graphicsDevice, spriteBatch)
         {
             Taskable = taskable;
             
@@ -118,7 +121,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             RedrawRequired += (sender, args) => { RecalculateSize(); };
 
             AddButton = UIUtils.CreateButton(new Point(0, 0), "Add Task", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
-            PauseResumeButton = UIUtils.CreateButton(new Point(0, 0), "Stop", UIUtils.ButtonColor.Yellow, UIUtils.ButtonSize.Medium);
+            PauseResumeButton = UIUtils.CreateButton(new Point(0, 0), Taskable.Paused ? "Resume" : "Stop", UIUtils.ButtonColor.Yellow, UIUtils.ButtonSize.Medium);
 
             AddButton.HoveredChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
             AddButton.PressedChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
@@ -127,6 +130,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
             PauseResumeButton.PressReleased += (sender, args) =>
             {
+                if(Taskable.Paused && !Valid)
+                {
+                    Content.Load<SoundEffect>("UI/TextAreaError").Play();
+                    return;
+                }
+
                 if (Taskable.Paused)
                     PauseResumeButton.Text = "Stop";
                 else
@@ -149,6 +158,11 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         public override void Draw(RenderContext context)
         {
             context.SpriteBatch.Draw(BackgroundTexture, new Rectangle(ScreenLocation.X, ScreenLocation.Y, Size.X, Size.Y), Color.White);
+
+            if(!Valid)
+            {
+                context.SpriteBatch.Draw(IconsTexture, new Rectangle(ScreenLocation.X + Size.X - 15, ScreenLocation.Y + 6, 9, 15), new Rectangle(18, 0, 9, 15), Color.White);
+            }
 
             int y = ScreenLocation.Y + 5;
             const int xPadding = 5;
@@ -242,7 +256,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                             item.Expanded = true;
                             TaskExpanded?.Invoke(null, EventArgs.Empty);
                         }
-
+                        Content.Load<SoundEffect>("UI/switch13").Play();
                         RecalculateSize();
                         RedrawRequired?.Invoke(null, EventArgs.Empty);
                     }
@@ -304,6 +318,23 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             }
 
             return true;
+        }
+
+        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
+        {
+            var wasValid = Valid;
+            Valid = true;
+            foreach(var item in TaskItems)
+            {
+                if(!item.IsValid(sharedGameState, localGameState, netContext))
+                {
+                    Valid = false;
+                    break;
+                }
+            }
+
+            if (Valid != wasValid)
+                RedrawRequired?.Invoke(null, EventArgs.Empty);
         }
 
         protected void CreateTaskItemsFromTaskable()

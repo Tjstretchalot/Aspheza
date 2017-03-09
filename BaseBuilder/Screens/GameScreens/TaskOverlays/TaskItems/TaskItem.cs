@@ -13,6 +13,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         public abstract event EventHandler InspectAddPressed;
         public abstract event EventHandler InspectDeletePressed;
         public abstract event EventHandler InspectRedrawRequired;
+        public abstract event EventHandler InspectSaveRequired;
 
         public virtual List<ITaskItem> Children { get; protected set; }
         public virtual bool Expandable { get; protected set; }

@@ -22,6 +22,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
     {
         public int ScrollOffsetY { get; set; }
 
+        protected int MaxHeightBeforeScrolling;
+
         protected MyGameComponent WrappedComponent;
         protected RenderTarget2D CurrentRender;
         protected Rectangle SourceRect;
@@ -29,6 +31,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
         public ScrollableComponentWrapper(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, MyGameComponent wrapped, PointI2D screenLoc, PointI2D size, int z) : base(content, graphics, graphicsDevice, spriteBatch)
         {
+            MaxHeightBeforeScrolling = size.Y;
             size = new PointI2D(Math.Max(size.X, wrapped.Size.X), Math.Min(size.Y, wrapped.Size.Y));
             Init(screenLoc, size, z);
 
@@ -52,6 +55,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             }
 
             WrappedComponent.PreDraw(context);
+            if(Math.Min(Size.Y, WrappedComponent.Size.Y) < MaxHeightBeforeScrolling && Size.Y != WrappedComponent.Size.Y)
+            {
+                Size.Y = Math.Min(MaxHeightBeforeScrolling, WrappedComponent.Size.Y);
+                ScrollOffsetY = 0;
+            }
+
 
             CurrentRender = new RenderTarget2D(context.GraphicsDevice, WrappedComponent.Size.X, WrappedComponent.Size.Y, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
