@@ -31,6 +31,8 @@ repeat forever or repeat a certain number of times.";
             }
         }
 
+        protected int InitialTimes;
+
         /// <summary>
         /// Converts the specified task into the task item.
         /// </summary>
@@ -54,6 +56,7 @@ repeat forever or repeat a certain number of times.";
             Expandable = true;
             Expanded = false;
             TaskName = "Repeat";
+            InitialTimes = task.Times;
         }
 
         /// <summary>
@@ -68,6 +71,7 @@ repeat forever or repeat a certain number of times.";
             Expandable = true;
             Expanded = false;
             TaskName = "Repeat";
+            InitialTimes = 0;
         }
 
         protected override void InitializeThings(RenderContext renderContext)
@@ -77,6 +81,9 @@ repeat forever or repeat a certain number of times.";
             if(RepeatForeverCheckbox == null)
             {
                 RepeatForeverCheckbox = new CheckBox(new Point(0, 0));
+
+                if (InitialTimes == 0)
+                    RepeatForeverCheckbox.Pushed = true;
 
                 RepeatForeverCheckbox.PushedChanged += (sender, args) =>
                 {
@@ -93,6 +100,7 @@ repeat forever or repeat a certain number of times.";
             if(TimesTextField == null)
             {
                 TimesTextField = UIUtils.CreateTextField(new Point(0, 0), new Point(RepeatForeverCheckbox.Size.X + RepeatForeverLabel.Size.X + 3, 30));
+                TimesTextField.Text = InitialTimes.ToString();
 
                 TimesTextField.TextChanged += (sender, args) =>
                 {
@@ -180,9 +188,9 @@ repeat forever or repeat a certain number of times.";
         protected override void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled)
         {
             base.HandleInspectComponentsMouseState(last, current, ref handled);
-            RepeatForeverCheckbox.HandleMouseState(Content, last, current, ref handled);
+            RepeatForeverCheckbox?.HandleMouseState(Content, last, current, ref handled);
             if(!RepeatForever)
-                TimesTextField.HandleMouseState(Content, last, current, ref handled);
+                TimesTextField?.HandleMouseState(Content, last, current, ref handled);
         }
 
         public override bool HandleInspectKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current)
@@ -190,7 +198,7 @@ repeat forever or repeat a certain number of times.";
             bool handled = base.HandleInspectKeyboardState(sharedGameState, localGameState, netContext, last, current);
 
             if(!RepeatForever)
-                TimesTextField.HandleKeyboardState(Content, last, current, ref handled);
+                TimesTextField?.HandleKeyboardState(Content, last, current, ref handled);
 
             return handled;
         }
@@ -198,23 +206,32 @@ repeat forever or repeat a certain number of times.";
         {
             base.UpdateInspect(sharedGameState, localGameState, netContext, timeMS);
             
-            RepeatForeverCheckbox.Update(Content, timeMS);
+            RepeatForeverCheckbox?.Update(Content, timeMS);
             if(!RepeatForever)
-                TimesTextField.Update(Content, timeMS);
+                TimesTextField?.Update(Content, timeMS);
         }
 
-        public override IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
+            int times;
+            if (RepeatForever)
+                times = 0;
+            else
+                times = (TimesTextField == null || TimesTextField.Text.Length == 0) ? 0 : int.Parse(TimesTextField.Text);
+
             if (Children.Count == 0)
-                return new EntityRepeaterTask(null, "none");
+                return new EntityRepeaterTask(null, "none", times);
 
-            var childTask = Children[0].CreateEntityTask(sharedState, localState, netContext);
+            var childTask = Children[0].CreateEntityTask(taskable, sharedState, localState, netContext);
 
-            return new EntityRepeaterTask(childTask, childTask.GetType().Name);
+            return new EntityRepeaterTask(childTask, childTask.GetType().Name, times);
         }
 
         public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
+            if (TimesTextField == null || !RepeatForever && TimesTextField.Text.Length == 0)
+                return false;
+
             return Children.Count == 1 && Children[0].IsValid(sharedState, localState, netContext);
         }
 

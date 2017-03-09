@@ -510,13 +510,27 @@ namespace BaseBuilder.Engine.Logic
                 if(entityAsMobile != null && entity != localGameState.SelectedEntity)
                 {
                     SFXUtils.PlaySAXJingle(content);
-
-                    if(!TaskComponents.ContainsKey(entityAsMobile))
+                    TaskMenuOverlay comp = null;
+                    foreach (var kvp in TaskComponents)
                     {
-                        var comp = new TaskMenuOverlay(content, graphics, graphicsDevice, spriteBatch, sharedGameState, localGameState, netContext, entityAsMobile);
-                        AddComponent(localGameState, comp);
-                        TaskComponents.Add(entityAsMobile, comp);
+                        if (kvp.Key == entityAsMobile)
+                        {
+                            comp = kvp.Value;
+                        }
+                        else
+                        {
+                            RemoveComponent(localGameState, kvp.Value);
+                        }
                     }
+                    TaskComponents.Clear();
+
+                    if (comp == null)
+                    {
+                        comp = new TaskMenuOverlay(content, graphics, graphicsDevice, spriteBatch, sharedGameState, localGameState, netContext, entityAsMobile);
+                        AddComponent(localGameState, comp);
+                    }
+
+                    TaskComponents.Add(entityAsMobile, comp);
                 }
 
                 mouseHandled = true;

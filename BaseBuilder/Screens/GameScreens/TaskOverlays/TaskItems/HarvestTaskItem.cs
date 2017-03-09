@@ -43,7 +43,7 @@ production building.";
             TaskName = "Harvest";
         }
 
-        public override IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
             throw new NotImplementedException();
         }

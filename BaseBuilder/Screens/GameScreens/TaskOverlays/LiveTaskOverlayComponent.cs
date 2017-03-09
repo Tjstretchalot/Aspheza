@@ -349,7 +349,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             
             if (Taskable.CurrentTask != null)
                 taskItems.AddLast(TaskItemIdentifier.Init(Taskable.CurrentTask));
-            for (int i = 0; i < queue.Length; i++)
+            for (int i = 0; i < Taskable.TaskQueue.Count; i++)
             {
                 taskItems.AddLast(TaskItemIdentifier.Init(queue[i]));
             }

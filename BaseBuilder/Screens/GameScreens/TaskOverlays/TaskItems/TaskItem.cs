@@ -28,7 +28,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
         public IEntityTask Task { get; set; }
 
-        public abstract IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext);
+        public abstract IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext);
 
         public abstract void PreDrawInspect(RenderContext context, int x, int y);
         public abstract void DrawInspect(RenderContext context, int x, int y);
@@ -53,5 +53,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
         public abstract void DisposeInspect();
 
+        public virtual bool CanBeAssignedTo(ITaskable taskable)
+        {
+            return true;
+        }
     }
 }

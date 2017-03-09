@@ -75,7 +75,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public IEntityTask Child;
         protected string SpecificName;
         protected bool TaskRunSinceLastReset;
-        protected int Times;
+        public int Times;
         protected int TimesRemaining;
 
         /// <summary>
@@ -89,6 +89,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             Child = task;
             SpecificName = specificName;
+            TaskRunSinceLastReset = false;
+            Times = times;
+            TimesRemaining = Times;
         }
 
         public EntityRepeaterTask(SharedGameState gameState, NetIncomingMessage message)

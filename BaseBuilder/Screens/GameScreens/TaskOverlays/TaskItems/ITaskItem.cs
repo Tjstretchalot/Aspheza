@@ -80,6 +80,14 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         string TaskName { get; }
 
         /// <summary>
+        /// Determines if this type of task is ever valid for the specified
+        /// taskable.
+        /// </summary>
+        /// <param name="taskable">The taskable</param>
+        /// <returns>If this order is valid for the taskable</returns>
+        bool CanBeAssignedTo(ITaskable taskable);
+
+        /// <summary>
         /// Determines if this task item is currently in a valid state (i.e. able to create a task)
         /// </summary>
         /// <param name="sharedState">the shared state</param>
@@ -101,8 +109,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         /// <param name="sharedState">The shared state</param>
         /// <param name="localState">The local state</param>
         /// <param name="netContext">The net context</param>
-        /// <returns></returns>
-        IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext);
+        /// <returns>The entity task</returns>
+        IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext);
 
         /// <summary>
         /// Called prior to draw and prior to the sprite batch begin.

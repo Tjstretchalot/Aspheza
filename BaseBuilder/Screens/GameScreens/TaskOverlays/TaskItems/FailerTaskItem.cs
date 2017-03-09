@@ -72,13 +72,13 @@ or success, the failer task will return failure.";
             TaskName = "Fail";
         }
         
-        public override IEntityTask CreateEntityTask(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
             if(Children.Count == 0)
             {
                 return new EntityFailerTask(null, "none");
             }
-            var childTask = Children[0].CreateEntityTask(sharedState, localState, netContext);
+            var childTask = Children[0].CreateEntityTask(taskable, sharedState, localState, netContext);
 
             return new EntityFailerTask(childTask, childTask.GetType().Name);
         }

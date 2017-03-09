@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems;
 using Microsoft.Xna.Framework;
@@ -9,6 +10,7 @@ using BaseBuilder.Engine.Utility;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Input;
+using BaseBuilder.Engine.World.Entities.EntityTasks;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 {
@@ -29,7 +31,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         protected Rectangle BackgroundRect;
         protected Texture2D BackgroundTexture;
 
-        public AddTaskOverlayComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
+        public AddTaskOverlayComponent(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, ITaskable taskable) : base(content, graphics, graphicsDevice, spriteBatch)
         {
             Options = new List<ITaskItem>
             {
@@ -43,7 +45,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 new SelectorTaskItem(),
                 new SequenceTaskItem(),
                 new SucceederTaskItem()
-            };
+            }.Where((opt) => opt.CanBeAssignedTo(taskable)).ToList();
+            
 
             OptionsAndTheirLocations = new BiDictionary<ITaskItem, Rectangle>();
 

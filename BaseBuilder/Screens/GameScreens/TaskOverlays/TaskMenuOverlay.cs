@@ -164,6 +164,21 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 DisposeInspect();
                 LiveOverlay.Selected = null;
             };
+
+            InspectOverlay.SaveRequired += (sender, args) =>
+            {
+                var replQueue = new List<IEntityTask>();
+
+                foreach(var item in LiveOverlay.TaskItems)
+                {
+                    replQueue.Add(item.CreateEntityTask(Taskable, sharedState, localState, netContext));
+                }
+
+                var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
+                order.Entity = Taskable as Entity;
+                order.NewQueue = replQueue;
+                localState.Orders.Add(order);
+            };
         }
 
         void DisposeInspect()
@@ -182,7 +197,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         void SetupAdd(SharedGameState sharedState, LocalGameState localState, NetContext netContext, bool direct)
         {
             
-            AddOverlay = new AddTaskOverlayComponent(Content, Graphics, GraphicsDevice, SpriteBatch);
+            AddOverlay = new AddTaskOverlayComponent(Content, Graphics, GraphicsDevice, SpriteBatch, Taskable);
             var tmp = new RenderContext();
             tmp.Graphics = Graphics;
             tmp.GraphicsDevice = GraphicsDevice;
@@ -209,7 +224,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
                 if (direct)
                 {
-                    var asEntityTask = task.CreateEntityTask(sharedState, localState, netContext);
+                    var asEntityTask = task.CreateEntityTask(Taskable, sharedState, localState, netContext);
                     var order = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
                     order.Entity = ent;
                     order.Task = asEntityTask;
@@ -223,7 +238,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
                     foreach(var item in LiveOverlay.TaskItems)
                     {
-                        replQueue.Add(item.CreateEntityTask(sharedState, localState, netContext));
+                        replQueue.Add(item.CreateEntityTask(Taskable, sharedState, localState, netContext));
                     }
 
                     var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;

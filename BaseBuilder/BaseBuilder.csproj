@@ -217,6 +217,7 @@
     <Compile Include="Screens\GameScreens\TaskOverlays\InspectTaskOverlayComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\LiveTaskOverlayComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\ScrollableComponent.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\Taskable.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\FailerTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\GiveItemTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\HarvestTaskItem.cs" />

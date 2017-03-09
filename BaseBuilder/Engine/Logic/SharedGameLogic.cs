@@ -130,7 +130,7 @@ namespace BaseBuilder.Engine.Logic
         public void OnReplaceTasksOrder(SharedGameState gameState, Player player, ReplaceTasksOrder order)
         {
             var queueifed = new Queue<IEntityTask>();
-            for(int i = order.NewQueue.Count - 1; i >= 0; i--)
+            for(int i = 0; i < order.NewQueue.Count; i++)
             {
                 queueifed.Enqueue(order.NewQueue[i]);
             }
