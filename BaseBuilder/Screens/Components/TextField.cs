@@ -303,7 +303,7 @@ namespace BaseBuilder.Screens.Components
         {
             content.Load<SoundEffect>(TypeSFXName).Play();
         }
-
+        
         protected virtual void HandleKeyPress(ContentManager content, Keys key, bool shiftDown)
         {
             if(key == Keys.Delete || key == Keys.Back)
@@ -520,6 +520,15 @@ namespace BaseBuilder.Screens.Components
             return null;
         }
 
+        /// <summary>
+        /// If not handled and mouse was clicked somewere than update field's focus state.
+        /// If field was clicked hovered over than set handled to true.
+        /// </summary>
+        /// <param name="content">The content manager.</param>
+        /// <param name="last">The previous mouse state.</param>
+        /// <param name="mouse">The current mouse state.</param>
+        /// <param name="handled">If the mouse has been handled.</param>
+        /// <param name="scrollHandled">If the scroll wheel has been handled.</param>
         public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             var mousePos = current.Position;
@@ -549,6 +558,13 @@ namespace BaseBuilder.Screens.Components
             handled = handled || newHover;
         }
 
+        /// <summary>
+        /// If keyboard was not handled and this field is focused than handle all key presses and set handled to true.
+        /// </summary>
+        /// <param name="content">The content manager.</param>
+        /// <param name="last">The previous keyboard state.</param>
+        /// <param name="keyboardState">The current keyboard state.</param>
+        /// <param name="handled">If the keyboard has been handled.</param>
         public void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState keyboardState, ref bool handled)
         {
             if (!Focused || handled)

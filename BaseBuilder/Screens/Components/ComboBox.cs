@@ -255,17 +255,35 @@ namespace BaseBuilder.Screens.Components
             }
         }
 
+        /// <summary>
+        /// No-op
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="last"></param>
+        /// <param name="current"></param>
+        /// <param name="handled"></param>
         public void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current, ref bool handled)
         {
         }
 
+        /// <summary>
+        /// If the mouse was not handled than if this was clicked on change the dropdown expansion state and set handled to true,
+        /// if dropdown menu option was clicked then colapes the nmenu and update current select option and set handled to true.
+        /// If the dropdown menu was expanded, both mouse and mouse scroll wheel were not handled, 
+        /// and the scroll whell was used than update dropmenu scroll, and set both handled and scrollHandled to true.
+        /// </summary>
+        /// <param name="content">The content manager.</param>
+        /// <param name="last">The previous mouse state.</param>
+        /// <param name="mouse">The current mouse state.</param>
+        /// <param name="handled">If the mouse has been handled.</param>
+        /// <param name="scrollHandled">If the scroll wheel has been handled.</param>
         public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             var wasHandled = handled;
             var foundHovered = false;
             for (int i = 0; i < Items.Count; i++)
             {
-                Items[i].HandleMouseState(last, current, ref handled);
+                Items[i].HandleMouseState(last, current, ref handled, ref scrollHandled);
 
                 if(Items[i].Hovered && HoveredIndex != i)
                 {

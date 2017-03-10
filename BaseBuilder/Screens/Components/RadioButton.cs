@@ -240,6 +240,14 @@ namespace BaseBuilder.Screens.Components
                 UnpushSoundEffect = content.Load<SoundEffect>(UnpushSoundEffectName);
         }
 
+        /// <summary>
+        /// If mouse not handled and radiobutton click set pushed and handled to true.
+        /// </summary>
+        /// <param name="content">The content manager.</param>
+        /// <param name="last">The previous mouse state.</param>
+        /// <param name="mouse">The current mouse state.</param>
+        /// <param name="handled">If the mouse has been handled.</param>
+        /// <param name="scrollHandled">If the scroll wheel has been handled.</param>
         public virtual void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             var newHovered = !handled && DrawRect.Contains(current.Position);
@@ -250,6 +258,13 @@ namespace BaseBuilder.Screens.Components
             handled = handled || newHovered;
         }
 
+        /// <summary>
+        /// No-op
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="last"></param>
+        /// <param name="current"></param>
+        /// <param name="handled"></param>
         public void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current, ref bool handled)
         {
         }

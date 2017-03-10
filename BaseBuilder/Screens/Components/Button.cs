@@ -300,6 +300,15 @@ namespace BaseBuilder.Screens.Components
         {
         }
 
+        /// <summary>
+        /// Plays any sound effects for this button, if the mouse has not been handled and the button was used casses the appropriate effect. 
+        /// If the button was hovered over and mouse was unhandled then sets handled to true.
+        /// </summary>
+        /// <param name="content">The content manager.</param>
+        /// <param name="last">The previous mouse state.</param>
+        /// <param name="mouse">The current mouse state.</param>
+        /// <param name="handled">If the mouse has been handled.</param>
+        /// <param name="scrollHandled">If the scroll wheel has been handled.</param>
         public void HandleMouseState(ContentManager content, MouseState last, MouseState mouse, ref bool handled, ref bool scrollHandled)
         {
             var newHovered = !handled && ContainsPoint(mouse.Position.X, mouse.Position.Y);
@@ -350,6 +359,13 @@ namespace BaseBuilder.Screens.Components
             handled = handled || Hovered;
         }
 
+        /// <summary>
+        /// No-op
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="last"></param>
+        /// <param name="current"></param>
+        /// <param name="handled"></param>
         public void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current, ref bool handled)
         {
         }

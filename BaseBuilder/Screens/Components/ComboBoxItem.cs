@@ -298,23 +298,34 @@ namespace BaseBuilder.Screens.Components
             spriteBatch.DrawString(Font, Text, new Vector2(x + Size.X / 2 - MinSize.X / 2, y + Size.Y / 2 - MinSize.Y / 2), Hovered ? Color.White : Color.LightGray);
         }
 
-        public virtual void HandleMouseState(MouseState last, MouseState current, ref bool handled)
+        /// <summary>
+        /// If hovered over and mouse was not handled than set handled to true.
+        /// </summary>
+        /// <param name="content">The content manager.</param>
+        /// <param name="last">The previous mouse state.</param>
+        /// <param name="mouse">The current mouse state.</param>
+        /// <param name="handled">If the mouse has been handled.</param>
+        /// <param name="scrollHandled">If the scroll wheel has been handled.</param>
+        public virtual void HandleMouseState(MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             var newHovered = !handled && DrawRect.Contains(current.Position);
 
-            if(newHovered != Hovered)
+            if (newHovered != Hovered)
             {
-                if(RenderTarget != null)
-                {
-                    RenderTarget.Dispose();
-                    RenderTarget = null;
-                }
+                RenderTarget?.Dispose();
+                RenderTarget = null;
             }
 
             Hovered = newHovered;
             handled = handled || Hovered;
         }
 
+        /// <summary>
+        /// No-op
+        /// </summary>
+        /// <param name="last"></param>
+        /// <param name="current"></param>
+        /// <param name="handled"></param>
         public virtual void HandleKeyboardState(KeyboardState last, KeyboardState current, ref bool handled)
         {
         }

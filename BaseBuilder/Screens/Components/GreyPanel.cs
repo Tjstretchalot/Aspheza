@@ -142,10 +142,25 @@ namespace BaseBuilder.Screens.Components
                 new Color(238, 238, 238), new Color(153, 153, 153), Color.White, 15, 4, 2);
         }
 
+        /// <summary>
+        /// No-op
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="last"></param>
+        /// <param name="current"></param>
+        /// <param name="handled"></param>
+        /// <param name="scrollHandled"></param>
         public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
         }
 
+        /// <summary>
+        /// No-op
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="last"></param>
+        /// <param name="current"></param>
+        /// <param name="handled"></param>
         public void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current, ref bool handled)
         {
         }

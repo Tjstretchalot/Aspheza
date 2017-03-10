@@ -32,6 +32,14 @@ namespace BaseBuilder.Screens.Components
             _Pushed = false;
         }
 
+        /// <summary>
+        /// Of mouse not handled checkbox was click change checkbox state and set handled to true.
+        /// </summary>
+        /// <param name="content">The content manager.</param>
+        /// <param name="last">The previous mouse state.</param>
+        /// <param name="mouse">The current mouse state.</param>
+        /// <param name="handled">If the mouse has been handled.</param>
+        /// <param name="scrollHandled">If the scroll wheel has been handled.</param>
         public override void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
             var newHovered = !handled && DrawRect.Contains(current.Position);

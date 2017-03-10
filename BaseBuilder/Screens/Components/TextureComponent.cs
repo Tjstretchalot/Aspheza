@@ -104,10 +104,25 @@ namespace BaseBuilder.Screens.Components
         {
         }
 
+        /// <summary>
+        /// No-op
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="last"></param>
+        /// <param name="current"></param>
+        /// <param name="handled"></param>
+        /// <param name="scrollHandled"></param>
         public void HandleMouseState(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
         }
 
+        /// <summary>
+        /// No-op
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="last"></param>
+        /// <param name="current"></param>
+        /// <param name="handled"></param>
         public void HandleKeyboardState(ContentManager content, KeyboardState last, KeyboardState current, ref bool handled)
         {
         }
