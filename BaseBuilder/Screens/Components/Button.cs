@@ -186,7 +186,12 @@ namespace BaseBuilder.Screens.Components
         /// from pressed to unpressed
         /// </summary>
         public string UnpressedSFXName;
-        
+
+        /// <summary>
+        /// Called when this button is disposing itself.
+        /// </summary>
+        public event EventHandler Disposing;
+
         /// <summary>
         /// Called when this button changes from pressed to unpressed while hovered.
         /// This is when you should treat the button as clicked.
@@ -407,6 +412,7 @@ namespace BaseBuilder.Screens.Components
 
         public void Dispose()
         {
+            Disposing?.Invoke(this, EventArgs.Empty);
         }
     }
 }

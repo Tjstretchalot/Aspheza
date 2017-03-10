@@ -146,5 +146,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             Task.Update(content, sharedGameState, localGameState);
         }
+
+        public bool IsValid()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

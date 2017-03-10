@@ -159,5 +159,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
         {
         }
+
+        public bool IsValid()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

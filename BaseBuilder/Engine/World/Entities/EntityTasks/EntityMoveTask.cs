@@ -201,10 +201,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             {
                 Entity = gameState.World.MobileEntities.Find((me) => me.ID == EntityID);
             }
-
-            if (Entity.CollisionMesh.Contains(Destination, Entity.Position))
-                return EntityTaskStatus.Success;
-
+            
             if(Start == null)
             {
                 Start = new PointD2D(Entity.Position.X, Entity.Position.Y);
@@ -337,6 +334,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 inst.Play();
                 PlaySFX = false;
             }
+        }
+
+        public bool IsValid()
+        {
+            throw new NotImplementedException();
         }
     }
 }

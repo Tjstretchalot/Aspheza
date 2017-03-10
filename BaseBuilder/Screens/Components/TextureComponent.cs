@@ -79,6 +79,11 @@ namespace BaseBuilder.Screens.Components
         }
 
         /// <summary>
+        /// Triggered when disposing itself
+        /// </summary>
+        public event EventHandler Disposing;
+
+        /// <summary>
         /// Initialize a new texture component
         /// </summary>
         /// <param name="texture">The texture to use</param>
@@ -133,6 +138,8 @@ namespace BaseBuilder.Screens.Components
 
         public void Dispose()
         {
+            Disposing?.Invoke(this, EventArgs.Empty);
+
             if(Texture != null && DisposeRequired)
             {
                 Texture.Dispose();

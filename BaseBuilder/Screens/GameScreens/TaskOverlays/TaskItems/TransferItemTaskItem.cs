@@ -75,7 +75,25 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
      *           button Delete
      *     button Add Restrictor
      *     
-     *     
+     *   4. Choosing the result decider
+     *     Dropdown
+     *       Our Items
+     *         Succeed when we have a certain number of items
+     *         Checkbox for type check
+     *           Dropdown for material
+     *         if pickup, the label for this textbox is At least. If dropoff, the label for this textbox is At most
+     *         Textbox
+     *       Their Items
+     *         Succeed when the target has a certain number of items
+     *         Checkbox for type check
+     *           Dropdown for material
+     *         If pickup, the label for this textbox is At most. If dropoff, the label for this textbox is At least
+     *         Textbox
+     *       Items Transferred
+     *         Succeed after a certain number of items have been transferred
+     *         Checkbox for type check
+     *           Dropdown for material
+     *         Items transferred textbox
      *     
      */
 
@@ -124,13 +142,13 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             public Text ByTotalQuantity_MaxLabel;
             public TextField ByTotalQuantity_MaxField;
 
-            public Text ByRecievingInventory_Description;
-            public Text ByRecievingInventory_TypeCheckLabel;
-            public CheckBox ByRecievingInventory_TypeCheck;
-            public Text ByRecievingInventory_TypeBoxLabel;
-            public ComboBox<Material> ByRecievingInventory_TypeBox;
-            public Text ByRecievingInventory_FieldLabel;
-            public TextField ByRecievingInventory_Field;
+            public Text ByReceivingInventory_Description;
+            public Text ByReceivingInventory_TypeCheckLabel;
+            public CheckBox ByReceivingInventory_TypeCheck;
+            public Text ByReceivingInventory_TypeBoxLabel;
+            public ComboBox<Material> ByReceivingInventory_TypeBox;
+            public Text ByReceivingInventory_FieldLabel;
+            public TextField ByReceivingInventory_Field;
 
             public Text ByOurInventory_Description;
             public Text ByOurInventory_TypeCheckLabel;
@@ -139,6 +157,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             public ComboBox<Material> ByOurInventory_TypeBox;
             public Text ByOurInventory_FieldLabel;
             public TextField ByOurInventory_Field;
+
+            public Button DeleteButton;
 
             public List<IScreenComponent> Components;
 
@@ -191,19 +211,32 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
                                     Components.Remove(ByTotalQuantity_MaxField);
                                     break;
                                 case TransferRestrictorType.ByRecievingInventory:
-                                    Components.Remove(ByRecievingInventory_Description);
-                                    Components.Remove(ByRecievingInventory_TypeCheck);
-                                    Components.Remove(ByRecievingInventory_TypeCheckLabel);
+                                    Components.Remove(ByReceivingInventory_Description);
+                                    Components.Remove(ByReceivingInventory_TypeCheck);
+                                    Components.Remove(ByReceivingInventory_TypeCheckLabel);
 
-                                    if(ByRecievingInventory_TypeCheck.Pushed)
+                                    if(ByReceivingInventory_TypeCheck.Pushed)
                                     {
-                                        Components.Remove(ByRecievingInventory_TypeBoxLabel);
-                                        Components.Remove(ByRecievingInventory_TypeBox);
+                                        Components.Remove(ByReceivingInventory_TypeBoxLabel);
+                                        Components.Remove(ByReceivingInventory_TypeBox);
                                     }
 
+                                    Components.Remove(ByReceivingInventory_FieldLabel);
+                                    Components.Remove(ByReceivingInventory_Field);
                                     break;
                                 case TransferRestrictorType.ByOurInventory:
                                     Components.Remove(ByOurInventory_Description);
+                                    Components.Remove(ByOurInventory_TypeCheck);
+                                    Components.Remove(ByOurInventory_TypeCheckLabel);
+
+                                    if(ByOurInventory_TypeCheck.Pushed)
+                                    {
+                                        Components.Remove(ByOurInventory_TypeBoxLabel);
+                                        Components.Remove(ByOurInventory_TypeBox);
+                                    }
+
+                                    Components.Remove(ByOurInventory_FieldLabel);
+                                    Components.Remove(ByOurInventory_Field);
                                     break;
                             }
                         }
@@ -225,19 +258,32 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
                                 Components.Add(ByTotalQuantity_MaxField);
                                 break;
                             case TransferRestrictorType.ByRecievingInventory:
-                                Components.Add(ByRecievingInventory_Description);
-                                Components.Add(ByRecievingInventory_TypeCheck);
-                                Components.Add(ByRecievingInventory_TypeCheckLabel);
+                                Components.Add(ByReceivingInventory_Description);
+                                Components.Add(ByReceivingInventory_TypeCheck);
+                                Components.Add(ByReceivingInventory_TypeCheckLabel);
 
-                                if(ByRecievingInventory_TypeCheck.Pushed)
+                                if(ByReceivingInventory_TypeCheck.Pushed)
                                 {
-                                    Components.Add(ByRecievingInventory_TypeBoxLabel);
-                                    Components.Add(ByRecievingInventory_TypeBox);
+                                    Components.Add(ByReceivingInventory_TypeBoxLabel);
+                                    Components.Add(ByReceivingInventory_TypeBox);
                                 }
 
+                                Components.Add(ByReceivingInventory_FieldLabel);
+                                Components.Add(ByReceivingInventory_Field);
                                 break;
                             case TransferRestrictorType.ByOurInventory:
                                 Components.Add(ByOurInventory_Description);
+                                Components.Add(ByOurInventory_TypeCheck);
+                                Components.Add(ByOurInventory_TypeCheckLabel);
+
+                                if(ByOurInventory_TypeCheck.Pushed)
+                                {
+                                    Components.Add(ByOurInventory_TypeBoxLabel);
+                                    Components.Add(ByOurInventory_TypeBox);
+                                }
+
+                                Components.Add(ByOurInventory_FieldLabel);
+                                Components.Add(ByOurInventory_Field);
                                 break;
                         }
                         Outer.Reload = true;
@@ -329,9 +375,9 @@ an even split.", renderContext.DefaultFont, Color.White);
                     ByTotalQuantity_MaxField = Outer.CreateTextField(75, 30);
                 }
 
-                if(ByRecievingInventory_Description == null)
+                if(ByReceivingInventory_Description == null)
                 {
-                    ByRecievingInventory_Description = new Text(new Point(0, 0), @"Restrict the transfer based on what 
+                    ByReceivingInventory_Description = new Text(new Point(0, 0), @"Restrict the transfer based on what 
 would be in the other inventory 
 after the transfer. Optionally
 only look at a specific material.
@@ -343,26 +389,26 @@ but you still want to maintain a
 stockpile of the original item.", renderContext.DefaultFont, Color.White);
                 }
 
-                if(ByRecievingInventory_TypeCheckLabel == null)
+                if(ByReceivingInventory_TypeCheckLabel == null)
                 {
-                    ByRecievingInventory_TypeCheckLabel = new Text(new Point(0, 0), "Search by type", renderContext.DefaultFont, Color.Black);
+                    ByReceivingInventory_TypeCheckLabel = new Text(new Point(0, 0), "Search by type", renderContext.DefaultFont, Color.Black);
                 }
 
-                if(ByRecievingInventory_TypeCheck == null)
+                if(ByReceivingInventory_TypeCheck == null)
                 {
-                    ByRecievingInventory_TypeCheck = new CheckBox(new Point(0, 0));
+                    ByReceivingInventory_TypeCheck = new CheckBox(new Point(0, 0));
 
-                    ByRecievingInventory_TypeCheck.PushedChanged += (sender, args) =>
+                    ByReceivingInventory_TypeCheck.PushedChanged += (sender, args) =>
                     {
-                        if (ByRecievingInventory_TypeCheck.Pushed)
+                        if (ByReceivingInventory_TypeCheck.Pushed)
                         {
-                            Components.Add(ByRecievingInventory_TypeBoxLabel);
-                            Components.Add(ByRecievingInventory_TypeBox);
+                            Components.Add(ByReceivingInventory_TypeBoxLabel);
+                            Components.Add(ByReceivingInventory_TypeBox);
                         }
                         else
                         {
-                            Components.Remove(ByRecievingInventory_TypeBoxLabel);
-                            Components.Remove(ByRecievingInventory_TypeBox);
+                            Components.Remove(ByReceivingInventory_TypeBoxLabel);
+                            Components.Remove(ByReceivingInventory_TypeBox);
                         }
 
                         Outer.Reload = true;
@@ -370,18 +416,47 @@ stockpile of the original item.", renderContext.DefaultFont, Color.White);
                     };
                 }
 
-                if(ByRecievingInventory_TypeBoxLabel == null)
+                if(ByReceivingInventory_TypeBoxLabel == null)
                 {
-                    ByRecievingInventory_TypeBoxLabel = new Text(new Point(0, 0), "Material", renderContext.DefaultFont, Color.Black);
+                    ByReceivingInventory_TypeBoxLabel = new Text(new Point(0, 0), "Material", renderContext.DefaultFont, Color.Black);
                 }
 
-                if(ByRecievingInventory_TypeBox == null)
+                if(ByReceivingInventory_TypeBox == null)
                 {
-                    ByRecievingInventory_TypeBox = new ComboBox<Material>(MaterialComboBoxItem.AllMaterialsWithFont(renderContext.DefaultFont), new Point(250, 34));
+                    ByReceivingInventory_TypeBox = new ComboBox<Material>(MaterialComboBoxItem.AllMaterialsWithFont(renderContext.DefaultFont), new Point(250, 34));
 
-                    ByRecievingInventory_TypeBox.ExpandedChanged += (sender, args) => Outer.OnInspectRedrawRequired();
-                    ByRecievingInventory_TypeBox.HoveredChanged += (sender, args) => Outer.OnInspectRedrawRequired();
-                    ByRecievingInventory_TypeBox.SelectedChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                    ByReceivingInventory_TypeBox.ExpandedChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                    ByReceivingInventory_TypeBox.HoveredChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                    ByReceivingInventory_TypeBox.SelectedChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                }
+
+                if(ByReceivingInventory_FieldLabel == null)
+                {
+                    ByReceivingInventory_FieldLabel = new Text(new Point(0, 0), Outer.PickupRadio.Pushed ? "Minimum" : "Maximum", renderContext.DefaultFont, Color.Black);
+
+                    EventHandler tmp = (sender, args) =>
+                    {
+                        ByReceivingInventory_FieldLabel.Content = Outer.PickupRadio.Pushed ? "Minimum" : "Maximum";
+
+                        Outer.Reload = true;
+                        Outer.OnInspectRedrawRequired();
+                    };
+
+                    Outer.PickupRadio.PushedChanged += tmp;
+                    Outer.DropoffRadio.PushedChanged += tmp;
+
+                    ByReceivingInventory_FieldLabel.Disposing += (sender, args) =>
+                    {
+                        if (Outer.PickupRadio != null)
+                            Outer.PickupRadio.PushedChanged -= tmp;
+                        if (Outer.DropoffRadio != null)
+                            Outer.DropoffRadio.PushedChanged -= tmp;
+                    };
+                }
+
+                if(ByReceivingInventory_Field == null)
+                {
+                    ByReceivingInventory_Field = Outer.CreateTextField(150, 30);
                 }
 
                 if(ByOurInventory_Description == null)
@@ -397,8 +472,93 @@ items in your inventory and your
 inventory does not always empty out
 every cycle, such as for a courier.", renderContext.DefaultFont, Color.White);
                 }
+
+                if(ByOurInventory_TypeCheck == null)
+                {
+                    ByOurInventory_TypeCheck = new CheckBox(new Point(0, 0));
+
+                    ByOurInventory_TypeCheck.PushedChanged += (sender, args) =>
+                    {
+                        if(ByOurInventory_TypeCheck.Pushed)
+                        {
+                            Components.Add(ByOurInventory_TypeBoxLabel);
+                            Components.Add(ByOurInventory_TypeBox);
+                        }else
+                        {
+                            Components.Remove(ByOurInventory_TypeBoxLabel);
+                            Components.Remove(ByOurInventory_TypeBox);
+                        }
+
+                        Outer.Reload = true;
+                        Outer.OnInspectRedrawRequired();
+                    };
+                }
+
+                if(ByOurInventory_TypeCheckLabel == null)
+                {
+                    ByOurInventory_TypeCheckLabel = new Text(new Point(0, 0), "Search by type", renderContext.DefaultFont, Color.Black);
+                }
+
+                if (ByOurInventory_TypeBoxLabel == null)
+                {
+                    ByOurInventory_TypeBoxLabel = new Text(new Point(0, 0), "Material", renderContext.DefaultFont, Color.Black);
+                }
+
+                if (ByOurInventory_TypeBox == null)
+                {
+                    ByOurInventory_TypeBox = new ComboBox<Material>(MaterialComboBoxItem.AllMaterialsWithFont(renderContext.DefaultFont), new Point(250, 34));
+
+                    ByOurInventory_TypeBox.ExpandedChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                    ByOurInventory_TypeBox.HoveredChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                    ByOurInventory_TypeBox.SelectedChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                }
+
+                if (ByOurInventory_FieldLabel == null)
+                {
+                    ByOurInventory_FieldLabel = new Text(new Point(0, 0), Outer.PickupRadio.Pushed ? "Maximum" : "Minimum", renderContext.DefaultFont, Color.Black);
+
+                    EventHandler tmp = (sender, args) =>
+                    {
+                        ByOurInventory_FieldLabel.Content = Outer.PickupRadio.Pushed ? "Maximum" : "Minimum";
+
+                        Outer.Reload = true;
+                        Outer.OnInspectRedrawRequired();
+                    };
+
+                    Outer.PickupRadio.PushedChanged += tmp;
+                    Outer.DropoffRadio.PushedChanged += tmp;
+
+                    ByOurInventory_FieldLabel.Disposing += (sender, args) =>
+                    {
+                        if (Outer.PickupRadio != null)
+                            Outer.PickupRadio.PushedChanged -= tmp;
+                        if (Outer.DropoffRadio != null)
+                            Outer.DropoffRadio.PushedChanged -= tmp;
+                    };
+                }
+
+                if (ByOurInventory_Field == null)
+                {
+                    ByOurInventory_Field = Outer.CreateTextField(150, 30);
+                }
+
+                if(DeleteButton == null)
+                {
+                    DeleteButton = UIUtils.CreateButton(new Point(0, 0), "Delete Restrictor", UIUtils.ButtonColor.Yellow, UIUtils.ButtonSize.Medium);
+
+                    DeleteButton.HoveredChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                    DeleteButton.PressedChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                    DeleteButton.PressReleased += (sender, args) =>
+                    {
+                        Outer.RestrictorsToDelete.Add(this);
+                        Outer.Reload = true;
+                        Outer.OnInspectRedrawRequired();
+                    };
+
+                    Components.Add(DeleteButton);
+                }
             }
-            
+
             public void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
             {
                 height += TypeBoxLabel.Size.Y + 3;
@@ -406,84 +566,117 @@ every cycle, such as for a courier.", renderContext.DefaultFont, Color.White);
                 TypeBoxLabel.Center = Outer.GetCenterForTopLeftLabel(TypeBoxLabel, TypeBox);
                 height += TypeBox.Size.Y + 5;
 
-                if (TypeBox.Selected == null)
-                    return;
-
-                int requiredWidth, requiredHeight;
-                int x, y;
-                switch (TypeBox.Selected.Value)
+                if (TypeBox.Selected != null)
                 {
-                    case TransferRestrictorType.ByItemType:
-                        ByItemType_Description.Center = new Point(width / 2, height + ByItemType_Description.Size.Y / 2);
-                        height += ByItemType_Description.Size.Y + 5;
 
-                        requiredWidth = ByItemType_AllowRadio.Size.X + 3 + ByItemType_AllowLabel.Size.X + 7 + ByItemType_DenyRadio.Size.X + 3 + ByItemType_DenyLabel.Size.X;
-                        requiredHeight = Math.Max(Math.Max(ByItemType_AllowRadio.Size.Y, ByItemType_DenyRadio.Size.Y), Math.Max(ByItemType_AllowLabel.Size.Y, ByItemType_DenyLabel.Size.Y));
+                    int requiredWidth, requiredHeight;
+                    int x, y;
+                    switch (TypeBox.Selected.Value)
+                    {
+                        case TransferRestrictorType.ByItemType:
+                            ByItemType_Description.Center = new Point(width / 2, height + ByItemType_Description.Size.Y / 2);
+                            height += ByItemType_Description.Size.Y + 5;
 
-                        x = (width - requiredWidth) / 2;
-                        y = height + requiredHeight / 2;
+                            requiredWidth = ByItemType_AllowRadio.Size.X + 3 + ByItemType_AllowLabel.Size.X + 7 + ByItemType_DenyRadio.Size.X + 3 + ByItemType_DenyLabel.Size.X;
+                            requiredHeight = Math.Max(Math.Max(ByItemType_AllowRadio.Size.Y, ByItemType_DenyRadio.Size.Y), Math.Max(ByItemType_AllowLabel.Size.Y, ByItemType_DenyLabel.Size.Y));
 
-                        ByItemType_AllowRadio.Center = new Point(x + ByItemType_AllowRadio.Size.X / 2, y);
-                        x += ByItemType_AllowRadio.Size.X + 3;
-                        ByItemType_AllowLabel.Center = new Point(x + ByItemType_AllowLabel.Size.X / 2, y);
-                        x += ByItemType_AllowLabel.Size.X + 7;
-                        ByItemType_DenyRadio.Center = new Point(x + ByItemType_DenyRadio.Size.X / 2, y);
-                        x += ByItemType_DenyRadio.Size.X + 3;
-                        ByItemType_DenyLabel.Center = new Point(x + ByItemType_DenyLabel.Size.X / 2, y);
+                            x = (width - requiredWidth) / 2;
+                            y = height + requiredHeight / 2;
 
-                        height += requiredHeight + 5;
+                            ByItemType_AllowRadio.Center = new Point(x + ByItemType_AllowRadio.Size.X / 2, y);
+                            x += ByItemType_AllowRadio.Size.X + 3;
+                            ByItemType_AllowLabel.Center = new Point(x + ByItemType_AllowLabel.Size.X / 2, y);
+                            x += ByItemType_AllowLabel.Size.X + 7;
+                            ByItemType_DenyRadio.Center = new Point(x + ByItemType_DenyRadio.Size.X / 2, y);
+                            x += ByItemType_DenyRadio.Size.X + 3;
+                            ByItemType_DenyLabel.Center = new Point(x + ByItemType_DenyLabel.Size.X / 2, y);
 
-                        height += ByItemType_MaterialLabel.Size.Y + 3;
-                        ByItemType_MaterialBox.Center = new Point(width / 2, height + ByItemType_MaterialBox.Size.Y / 2);
-                        ByItemType_MaterialLabel.Center = Outer.GetCenterForTopLeftLabel(ByItemType_MaterialLabel, ByItemType_MaterialBox);
-                        height += ByItemType_MaterialBox.Size.Y + 3;
-                        break;
-                    case TransferRestrictorType.ByTotalQuantity:
-                        ByTotalQuantity_Description.Center = new Point(width / 2, height + ByTotalQuantity_Description.Size.Y / 2);
-                        height += ByTotalQuantity_Description.Size.Y + 5;
-                        
-                        requiredHeight = Math.Max(ByTotalQuantity_MaxLabel.Size.Y, ByTotalQuantity_MaxField.Size.Y);
-                        requiredWidth = ByTotalQuantity_MaxLabel.Size.X + 3 + ByTotalQuantity_MaxField.Size.X;
+                            height += requiredHeight + 5;
 
-                        x = (width - requiredWidth) / 2;
-                        y = height + requiredHeight / 2;
+                            height += ByItemType_MaterialLabel.Size.Y + 3;
+                            ByItemType_MaterialBox.Center = new Point(width / 2, height + ByItemType_MaterialBox.Size.Y / 2);
+                            ByItemType_MaterialLabel.Center = Outer.GetCenterForTopLeftLabel(ByItemType_MaterialLabel, ByItemType_MaterialBox);
+                            height += ByItemType_MaterialBox.Size.Y + 3;
+                            break;
+                        case TransferRestrictorType.ByTotalQuantity:
+                            ByTotalQuantity_Description.Center = new Point(width / 2, height + ByTotalQuantity_Description.Size.Y / 2);
+                            height += ByTotalQuantity_Description.Size.Y + 5;
 
-                        ByTotalQuantity_MaxLabel.Center = new Point(x + ByTotalQuantity_MaxLabel.Size.X / 2, y);
-                        x += ByTotalQuantity_MaxLabel.Size.X + 3;
-                        ByTotalQuantity_MaxField.Center = new Point(x + ByTotalQuantity_MaxField.Size.X / 2, y);
+                            requiredHeight = Math.Max(ByTotalQuantity_MaxLabel.Size.Y, ByTotalQuantity_MaxField.Size.Y);
+                            requiredWidth = ByTotalQuantity_MaxLabel.Size.X + 3 + ByTotalQuantity_MaxField.Size.X;
 
-                        height += requiredHeight + 3;
-                        break;
-                    case TransferRestrictorType.ByRecievingInventory:
-                        ByRecievingInventory_Description.Center = new Point(width / 2, height + ByRecievingInventory_Description.Size.Y / 2);
-                        height += ByRecievingInventory_Description.Size.Y + 5;
+                            x = (width - requiredWidth) / 2;
+                            y = height + requiredHeight / 2;
 
-                        requiredHeight = Math.Max(ByRecievingInventory_TypeCheckLabel.Size.Y, ByRecievingInventory_TypeCheck.Size.Y);
-                        requiredWidth = ByRecievingInventory_TypeCheck.Size.X + 3 + ByRecievingInventory_TypeCheckLabel.Size.X;
+                            ByTotalQuantity_MaxLabel.Center = new Point(x + ByTotalQuantity_MaxLabel.Size.X / 2, y);
+                            x += ByTotalQuantity_MaxLabel.Size.X + 3;
+                            ByTotalQuantity_MaxField.Center = new Point(x + ByTotalQuantity_MaxField.Size.X / 2, y);
 
-                        x = (width - requiredWidth) / 2;
-                        y = height + requiredHeight / 2;
+                            height += requiredHeight + 3;
+                            break;
+                        case TransferRestrictorType.ByRecievingInventory:
+                            ByReceivingInventory_Description.Center = new Point(width / 2, height + ByReceivingInventory_Description.Size.Y / 2);
+                            height += ByReceivingInventory_Description.Size.Y + 5;
 
-                        ByRecievingInventory_TypeCheck.Center = new Point(x + ByRecievingInventory_TypeCheck.Size.X / 2, y);
-                        x += ByRecievingInventory_TypeCheck.Size.X + 3;
-                        ByRecievingInventory_TypeCheckLabel.Center = new Point(x + ByRecievingInventory_TypeCheckLabel.Size.X / 2, y);
+                            requiredHeight = Math.Max(ByReceivingInventory_TypeCheckLabel.Size.Y, ByReceivingInventory_TypeCheck.Size.Y);
+                            requiredWidth = ByReceivingInventory_TypeCheck.Size.X + 3 + ByReceivingInventory_TypeCheckLabel.Size.X;
 
-                        height += requiredHeight + 3;
+                            x = (width - requiredWidth) / 2;
+                            y = height + requiredHeight / 2;
 
-                        if(ByRecievingInventory_TypeCheck.Pushed)
-                        {
-                            height += ByRecievingInventory_TypeBoxLabel.Size.Y + 3;
-                            ByRecievingInventory_TypeBox.Center = new Point(width / 2, height + ByRecievingInventory_TypeBox.Size.Y / 2);
-                            ByRecievingInventory_TypeBoxLabel.Center = Outer.GetCenterForTopLeftLabel(ByRecievingInventory_TypeBoxLabel, ByRecievingInventory_TypeBox);
-                            height += ByRecievingInventory_TypeBox.Size.Y + 3;
-                        }
-                        break;
-                    case TransferRestrictorType.ByOurInventory:
-                        ByOurInventory_Description.Center = new Point(width / 2, height + ByOurInventory_Description.Size.Y / 2);
-                        height += ByOurInventory_Description.Size.Y + 5;
-                        break;
+                            ByReceivingInventory_TypeCheck.Center = new Point(x + ByReceivingInventory_TypeCheck.Size.X / 2, y);
+                            x += ByReceivingInventory_TypeCheck.Size.X + 3;
+                            ByReceivingInventory_TypeCheckLabel.Center = new Point(x + ByReceivingInventory_TypeCheckLabel.Size.X / 2, y);
+
+                            height += requiredHeight + 3;
+
+                            if (ByReceivingInventory_TypeCheck.Pushed)
+                            {
+                                height += ByReceivingInventory_TypeBoxLabel.Size.Y + 3;
+                                ByReceivingInventory_TypeBox.Center = new Point(width / 2, height + ByReceivingInventory_TypeBox.Size.Y / 2);
+                                ByReceivingInventory_TypeBoxLabel.Center = Outer.GetCenterForTopLeftLabel(ByReceivingInventory_TypeBoxLabel, ByReceivingInventory_TypeBox);
+                                height += ByReceivingInventory_TypeBox.Size.Y + 3;
+                            }
+
+                            height += ByReceivingInventory_FieldLabel.Size.Y + 3;
+                            ByReceivingInventory_Field.Center = new Point(width / 2, height + ByReceivingInventory_Field.Size.Y / 2);
+                            ByReceivingInventory_FieldLabel.Center = Outer.GetCenterForTopLeftLabel(ByReceivingInventory_FieldLabel, ByReceivingInventory_Field);
+                            height += ByReceivingInventory_Field.Size.Y + 3;
+                            break;
+                        case TransferRestrictorType.ByOurInventory:
+                            ByOurInventory_Description.Center = new Point(width / 2, height + ByOurInventory_Description.Size.Y / 2);
+                            height += ByOurInventory_Description.Size.Y + 5;
+
+                            requiredHeight = Math.Max(ByOurInventory_TypeCheckLabel.Size.Y, ByOurInventory_TypeCheck.Size.Y);
+                            requiredWidth = ByOurInventory_TypeCheck.Size.X + 3 + ByOurInventory_TypeCheckLabel.Size.X;
+
+                            x = (width - requiredWidth) / 2;
+                            y = height + requiredHeight / 2;
+
+                            ByOurInventory_TypeCheck.Center = new Point(x + ByOurInventory_TypeCheck.Size.X / 2, y);
+                            x += ByOurInventory_TypeCheck.Size.X + 3;
+                            ByOurInventory_TypeCheckLabel.Center = new Point(x + ByOurInventory_TypeCheckLabel.Size.X / 2, y);
+
+                            height += requiredHeight + 3;
+
+                            if (ByOurInventory_TypeCheck.Pushed)
+                            {
+                                height += ByOurInventory_TypeBoxLabel.Size.Y + 3;
+                                ByOurInventory_TypeBox.Center = new Point(width / 2, height + ByOurInventory_TypeBox.Size.Y / 2);
+                                ByOurInventory_TypeBoxLabel.Center = Outer.GetCenterForTopLeftLabel(ByOurInventory_TypeBoxLabel, ByOurInventory_TypeBox);
+                                height += ByOurInventory_TypeBox.Size.Y + 3;
+                            }
+
+                            height += ByOurInventory_FieldLabel.Size.Y + 3;
+                            ByOurInventory_Field.Center = new Point(width / 2, height + ByOurInventory_Field.Size.Y / 2);
+                            ByOurInventory_FieldLabel.Center = Outer.GetCenterForTopLeftLabel(ByOurInventory_FieldLabel, ByOurInventory_Field);
+                            height += ByOurInventory_Field.Size.Y + 3;
+                            break;
+                    }
                 }
 
+                DeleteButton.Center = new Point(width / 2, height + DeleteButton.Size.Y / 2);
+                height += DeleteButton.Size.Y + 3;
 
                 height += 5;
             }
@@ -526,26 +719,26 @@ every cycle, such as for a courier.", renderContext.DefaultFont, Color.White);
                 ByTotalQuantity_MaxField?.Dispose();
                 ByTotalQuantity_MaxField = null;
 
-                ByRecievingInventory_Description?.Dispose();
-                ByRecievingInventory_Description = null;
+                ByReceivingInventory_Description?.Dispose();
+                ByReceivingInventory_Description = null;
 
-                ByRecievingInventory_TypeCheckLabel?.Dispose();
-                ByRecievingInventory_TypeCheckLabel = null;
+                ByReceivingInventory_TypeCheckLabel?.Dispose();
+                ByReceivingInventory_TypeCheckLabel = null;
 
-                ByRecievingInventory_TypeCheck?.Dispose();
-                ByRecievingInventory_TypeCheck = null;
+                ByReceivingInventory_TypeCheck?.Dispose();
+                ByReceivingInventory_TypeCheck = null;
 
-                ByRecievingInventory_TypeBoxLabel?.Dispose();
-                ByRecievingInventory_TypeBoxLabel = null;
+                ByReceivingInventory_TypeBoxLabel?.Dispose();
+                ByReceivingInventory_TypeBoxLabel = null;
 
-                ByRecievingInventory_TypeBox?.Dispose();
-                ByRecievingInventory_TypeBox = null;
+                ByReceivingInventory_TypeBox?.Dispose();
+                ByReceivingInventory_TypeBox = null;
 
-                ByRecievingInventory_FieldLabel?.Dispose();
-                ByRecievingInventory_FieldLabel = null;
+                ByReceivingInventory_FieldLabel?.Dispose();
+                ByReceivingInventory_FieldLabel = null;
 
-                ByRecievingInventory_Field?.Dispose();
-                ByRecievingInventory_Field = null;
+                ByReceivingInventory_Field?.Dispose();
+                ByReceivingInventory_Field = null;
 
                 ByOurInventory_Description?.Dispose();
                 ByOurInventory_Description = null;
@@ -577,14 +770,14 @@ entity to/from an entity by ID, position, or relative
 position. 
 
 Restrictions may be placed on how many items are 
-transfered based on how many items would remain in
+transferred based on how many items would remain in
 the giving inventory, how many items would be 
 contained in the recieving inventory, and how many 
-items have been transfered so far.
+items have been transferred so far.
 
 The result of a transfer item task can be selected
 based on items in the giving inventory, items in
-the recieving inventory, and items transfered so
+the recieving inventory, and items transferred so
 far.";
 
 
@@ -618,6 +811,7 @@ far.";
         protected TextField TargetDeciderByRelPosition_DYField;
 
         protected List<TransferRestrictorComp> Restrictors;
+        protected List<TransferRestrictorComp> RestrictorsToDelete;
         protected Button AddRestrictorButton;
 
         /// <summary>
@@ -718,6 +912,7 @@ far.";
         {
             Children = new List<ITaskItem>();
             Restrictors = new List<TransferRestrictorComp>();
+            RestrictorsToDelete = new List<TransferRestrictorComp>();
 
             InspectDescription = _InspectDescription;
             Expandable = false;
@@ -1007,7 +1202,7 @@ behavior trees.", renderContext.DefaultFont, Color.White);
                     OnInspectRedrawRequired();
                 };
 
-                Components.Insert(0, AddRestrictorButton); // never draw on top of stuff
+                Components.Add(AddRestrictorButton);
             }
 
             foreach(var restrictor in Restrictors)
@@ -1145,7 +1340,30 @@ behavior trees.", renderContext.DefaultFont, Color.White);
 
         public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            return Children.Count == 0;
+            if (Children.Count != 0)
+                return false;
+
+            if (PickupRadio == null)
+                return Task.IsValid();
+
+            if(PickupRadio.Pushed)
+            {
+                if (PickupTypeCombo.Selected == null)
+                    return false;
+            }else if(DropoffRadio.Pushed)
+            {
+                if (DropoffTypeCombo.Selected == null)
+                    return false;
+            }else
+            {
+                return false;
+            }
+
+            if (TargetDeciderCombo.Selected == null)
+                return false;
+
+
+            return true;
         }
 
         public override void PreDrawInspect(RenderContext context, int x, int y)
@@ -1181,6 +1399,13 @@ behavior trees.", renderContext.DefaultFont, Color.White);
         {
             base.UpdateInspect(sharedGameState, localGameState, netContext, timeMS);
             
+            foreach(var restr in RestrictorsToDelete)
+            {
+                Restrictors.Remove(restr);
+                restr.Dispose();
+            }
+            RestrictorsToDelete.Clear();
+
             foreach (var comp in ComponentsInUpdateOrder)
             {
                 comp.Update(Content, timeMS);

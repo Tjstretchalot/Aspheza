@@ -77,6 +77,11 @@ namespace BaseBuilder.Screens.Components
         }
 
         /// <summary>
+        /// Triggered when disposing
+        /// </summary>
+        public event EventHandler Disposing;
+
+        /// <summary>
         /// Triggered whenver Pushed changed
         /// </summary>
         public event EventHandler PushedChanged;
@@ -292,6 +297,7 @@ namespace BaseBuilder.Screens.Components
 
         public void Dispose()
         {
+            Disposing?.Invoke(this, EventArgs.Empty);
         }
     }
 }

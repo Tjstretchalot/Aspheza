@@ -97,6 +97,11 @@ namespace BaseBuilder.Screens.Components
         protected Texture2D Texture;
 
         /// <summary>
+        /// Triggered when this panel is disposing itself
+        /// </summary>
+        public event EventHandler Disposing;
+
+        /// <summary>
         /// Sets up a grey panel at the specified location
         /// </summary>
         /// <param name="location">The location of the grey panel</param>
@@ -171,6 +176,8 @@ namespace BaseBuilder.Screens.Components
 
         public void Dispose()
         {
+            Disposing?.Invoke(this, EventArgs.Empty);
+
             if (Texture != null)
             {
                 Texture.Dispose();

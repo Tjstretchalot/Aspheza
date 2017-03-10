@@ -33,6 +33,12 @@ namespace BaseBuilder.Screens.Components
         bool HighPriorityZ { get; }
 
         /// <summary>
+        /// This event must be triggered whenever this screen component is 
+        /// disposing itself.
+        /// </summary>
+        event EventHandler Disposing;
+
+        /// <summary>
         /// Updates the component. 
         /// </summary>
         /// <param name="content">Content manager</param>

@@ -202,6 +202,7 @@ namespace BaseBuilder.Screens.Components
         protected Dictionary<Keys, int> KeysToIgnoreTime;
         protected Keys[] KeysPressedLastUpdate;
 
+        public event EventHandler Disposing;
         public event EventHandler CaretToggled;
         public event EventHandler FocusGained;
         public event EventHandler FocusLost;
@@ -627,6 +628,8 @@ namespace BaseBuilder.Screens.Components
 
         public void Dispose()
         {
+            Disposing?.Invoke(this, EventArgs.Empty);
+
             BackgroundTexture?.Dispose();
             BackgroundTexture = null;
             FocusedBackgroundTexture?.Dispose();

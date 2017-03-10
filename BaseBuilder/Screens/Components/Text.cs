@@ -96,6 +96,11 @@ namespace BaseBuilder.Screens.Components
 
         public Color TextColor;
 
+        /// <summary>
+        /// Triggered when disposing
+        /// </summary>
+        public event EventHandler Disposing;
+
         public Text(Point center, string text, SpriteFont font, Color textColor)
         {
             _Center = center;
@@ -142,6 +147,7 @@ namespace BaseBuilder.Screens.Components
 
         public void Dispose()
         {
+            Disposing?.Invoke(this, EventArgs.Empty);
         }
     }
 }

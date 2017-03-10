@@ -128,5 +128,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
         }
 
+        public bool IsValid()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

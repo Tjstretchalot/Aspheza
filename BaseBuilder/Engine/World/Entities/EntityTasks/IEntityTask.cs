@@ -55,6 +55,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS);
 
         /// <summary>
+        /// Checks if this task is in a reasonable state
+        /// </summary>
+        /// <returns>if this task is is a reasonable state</returns>
+        bool IsValid();
+
+        /// <summary>
         /// Do stuff like play sounds here. Called once per frame.
         /// </summary>
         /// <param name="content">The content</param>

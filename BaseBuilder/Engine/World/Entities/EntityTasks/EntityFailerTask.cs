@@ -152,5 +152,13 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             Child?.Update(content, sharedGameState, localGameState);
         }
+
+        public bool IsValid()
+        {
+            if (Child == null)
+                return false;
+
+            return Child.IsValid();
+        }
     }
 }

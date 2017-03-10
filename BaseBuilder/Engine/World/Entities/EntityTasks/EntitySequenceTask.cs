@@ -173,6 +173,20 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             throw new InvalidProgramException("Can't get here");
         }
 
+        public bool IsValid()
+        {
+            if (Children.Count == 0)
+                return false;
+
+            foreach(var child in Children)
+            {
+                if (!child.IsValid())
+                    return false;
+            }
+
+            return true;
+        }
+
         public void Reset(SharedGameState gameState)
         { 
             if(Children.Count == 0)

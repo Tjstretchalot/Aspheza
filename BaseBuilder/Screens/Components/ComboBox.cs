@@ -29,6 +29,11 @@ namespace BaseBuilder.Screens.Components
         public event ComboBoxSelectedChangedEventHandler<T1> SelectedChanged;
 
         /// <summary>
+        /// Triggered when disposing.
+        /// </summary>
+        public event EventHandler Disposing;
+
+        /// <summary>
         /// Triggered when the hovered item changes.
         /// </summary>
         public event EventHandler HoveredChanged;
@@ -389,6 +394,8 @@ namespace BaseBuilder.Screens.Components
         
         public void Dispose()
         {
+            Disposing?.Invoke(this, EventArgs.Empty);
+
             foreach(var item in Items)
             {
                 item.Dispose();
