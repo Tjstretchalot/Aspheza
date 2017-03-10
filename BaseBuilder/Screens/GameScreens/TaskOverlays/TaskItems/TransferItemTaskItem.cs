@@ -107,26 +107,138 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         }
         protected class TransferRestrictorComp
         {
+            protected TransferItemTaskItem Outer;
+
+            public Text TypeBoxLabel;
             public ComboBox<TransferRestrictorType> TypeBox;
 
+            public Text ByItemType_Description;
+            public Text ByItemType_AllowLabel;
             public RadioButton ByItemType_AllowRadio;
+            public Text ByItemType_DenyLabel;
             public RadioButton ByItemType_DenyRadio;
+            public Text ByItemType_MaterialLabel;
+            public ComboBox<Material> ByItemType_MaterialBox;
 
-            public ComboBox<Material> MaterialBox;
-
+            public Text ByTotalQuantity_Description;
+            public Text ByTotalQuantity_MaxLabel;
             public TextField ByTotalQuantity_MaxField;
 
+            public Text ByRecievingInventory_Description;
+            public Text ByRecievingInventory_TypeCheckLabel;
             public CheckBox ByRecievingInventory_TypeCheck;
+            public Text ByRecievingInventory_TypeBoxLabel;
             public ComboBox<Material> ByRecievingInventory_TypeBox;
             public Text ByRecievingInventory_FieldLabel;
             public TextField ByRecievingInventory_Field;
 
+            public Text ByOurInventory_Description;
+            public Text ByOurInventory_TypeCheckLabel;
             public CheckBox ByOurInventory_TypeCheck;
+            public Text ByOurInventory_TypeBoxLabel;
             public ComboBox<Material> ByOurInventory_TypeBox;
             public Text ByOurInventory_FieldLabel;
             public TextField ByOurInventory_Field;
 
-            public List<IMyGameComponent> Components;
+            public List<IScreenComponent> Components;
+
+            public TransferRestrictorComp(TransferItemTaskItem outer)
+            {
+                Outer = outer;
+                Components = new List<IScreenComponent>();
+            }
+
+            public void InitializeThings(RenderContext renderContext)
+            {
+                
+            }
+            
+            public void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
+            {
+
+            }
+
+            public void Dispose()
+            {
+                TypeBoxLabel?.Dispose();
+                TypeBoxLabel = null;
+
+                TypeBox?.Dispose();
+                TypeBox = null;
+
+                ByItemType_Description?.Dispose();
+                ByItemType_Description = null;
+
+                ByItemType_AllowLabel?.Dispose();
+                ByItemType_AllowLabel = null;
+
+                ByItemType_AllowRadio?.Dispose();
+                ByItemType_AllowRadio = null;
+
+                ByItemType_DenyLabel?.Dispose();
+                ByItemType_DenyLabel = null;
+
+                ByItemType_DenyRadio?.Dispose();
+                ByItemType_DenyRadio = null;
+
+                ByItemType_MaterialLabel?.Dispose();
+                ByItemType_MaterialLabel = null;
+
+                ByItemType_MaterialBox?.Dispose();
+                ByItemType_MaterialBox = null;
+
+                ByTotalQuantity_Description?.Dispose();
+                ByTotalQuantity_Description = null;
+
+                ByTotalQuantity_MaxLabel?.Dispose();
+                ByTotalQuantity_MaxLabel = null;
+
+                ByTotalQuantity_MaxField?.Dispose();
+                ByTotalQuantity_MaxField = null;
+
+                ByRecievingInventory_Description?.Dispose();
+                ByRecievingInventory_Description = null;
+
+                ByRecievingInventory_TypeCheckLabel?.Dispose();
+                ByRecievingInventory_TypeCheckLabel = null;
+
+                ByRecievingInventory_TypeCheck?.Dispose();
+                ByRecievingInventory_TypeCheck = null;
+
+                ByRecievingInventory_TypeBoxLabel?.Dispose();
+                ByRecievingInventory_TypeBoxLabel = null;
+
+                ByRecievingInventory_TypeBox?.Dispose();
+                ByRecievingInventory_TypeBox = null;
+
+                ByRecievingInventory_FieldLabel?.Dispose();
+                ByRecievingInventory_FieldLabel = null;
+
+                ByRecievingInventory_Field?.Dispose();
+                ByRecievingInventory_Field = null;
+
+                ByOurInventory_Description?.Dispose();
+                ByOurInventory_Description = null;
+
+                ByOurInventory_TypeCheckLabel?.Dispose();
+                ByOurInventory_TypeCheckLabel = null;
+
+                ByOurInventory_TypeCheck?.Dispose();
+                ByOurInventory_TypeCheck = null;
+
+                ByOurInventory_TypeBoxLabel?.Dispose();
+                ByOurInventory_TypeBoxLabel = null;
+
+                ByOurInventory_TypeBox?.Dispose();
+                ByOurInventory_TypeBox = null;
+
+                ByOurInventory_FieldLabel?.Dispose();
+                ByOurInventory_FieldLabel = null;
+
+                ByOurInventory_Field?.Dispose();
+                ByOurInventory_Field = null;
+                Components.Clear();
+            }
         }
 
         protected const string _InspectDescription = @"A transfer item task is a leaf task that transfers an 
@@ -203,6 +315,7 @@ far.";
         public TransferItemTaskItem()
         {
             Children = new List<ITaskItem>();
+            Restrictors = new List<TransferRestrictorComp>();
 
             InspectDescription = _InspectDescription;
             Expandable = false;
@@ -478,6 +591,29 @@ behavior trees.", renderContext.DefaultFont, Color.White);
             {
                 TargetDeciderByRelPosition_DYLabel = new Text(new Point(0, 0), "DeltaY", renderContext.DefaultFont, Color.Black);
             }
+
+            if(AddRestrictorButton == null)
+            {
+                AddRestrictorButton = UIUtils.CreateButton(new Point(0, 0), "Add Restriction", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
+                AddRestrictorButton.HoveredChanged += (sender, args) => OnInspectRedrawRequired();
+                AddRestrictorButton.PressedChanged += (sender, args) => OnInspectRedrawRequired();
+                AddRestrictorButton.PressReleased += (sender, args) =>
+                {
+                    var restrictor = new TransferRestrictorComp(this);
+                    restrictor.InitializeThings(renderContext);
+                    Restrictors.Add(restrictor);
+
+                    Reload = true;
+                    OnInspectRedrawRequired();
+                };
+
+                Components.Insert(0, AddRestrictorButton); // never draw on top of stuff
+            }
+
+            foreach(var restrictor in Restrictors)
+            {
+                restrictor.InitializeThings(renderContext);
+            }
         }
 
         /// <summary>
@@ -586,6 +722,15 @@ behavior trees.", renderContext.DefaultFont, Color.White);
                 }
             }
 
+            foreach(var restrictor in Restrictors)
+            {
+                restrictor.CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
+            }
+
+            AddRestrictorButton.Center = new Point(width / 2, height + AddRestrictorButton.Size.Y / 2);
+
+            height += AddRestrictorButton.Size.Y + 3;
+
             height += 8;
             base.CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
             height += 150;
@@ -615,6 +760,14 @@ behavior trees.", renderContext.DefaultFont, Color.White);
         {
             if (ButtonShiftLast.X != x || ButtonShiftLast.Y != y)
             {
+                foreach (var restric in Restrictors)
+                {
+                    foreach (var comp in restric.Components)
+                    {
+                        comp.Center = new Point(comp.Center.X - ButtonShiftLast.X + x, comp.Center.Y - ButtonShiftLast.Y + y);
+                    }
+                }
+
                 foreach (var comp in Components)
                 {
                     comp.Center = new Point(comp.Center.X - ButtonShiftLast.X + x, comp.Center.Y - ButtonShiftLast.Y + y);
@@ -623,15 +776,32 @@ behavior trees.", renderContext.DefaultFont, Color.White);
 
             base.DrawInspect(context, x, y);
 
+            foreach (var restric in Restrictors)
+            {
+                foreach (var comp in restric.Components)
+                {
+                    comp.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
+                }
+            }
+
             foreach (var comp in Components)
             {
                 comp.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
             }
+
         }
 
         public override void UpdateInspect(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {
             base.UpdateInspect(sharedGameState, localGameState, netContext, timeMS);
+
+            foreach(var restr in Restrictors)
+            {
+                foreach(var comp in restr.Components)
+                {
+                    comp.Update(Content, timeMS);
+                }
+            }
 
             foreach (var comp in Components)
             {
@@ -646,12 +816,28 @@ behavior trees.", renderContext.DefaultFont, Color.White);
                 Components[i].HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
             }
 
+            for (int i = Restrictors.Count - 1; i >= 0; i--)
+            {
+                for (int j = Restrictors[i].Components.Count - 1; j >= 0; j--)
+                {
+                    Restrictors[i].Components[j].HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
+                }
+            }
+            
             base.HandleInspectComponentsMouseState(last, current, ref handled, ref scrollHandled);
         }
 
         public override bool HandleInspectKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current)
         {
             var handled = false;
+
+            foreach(var restr in Restrictors)
+            {
+                foreach(var comp in restr.Components)
+                {
+                    comp.HandleKeyboardState(Content, last, current, ref handled);
+                }
+            }
 
             foreach (var comp in Components)
             {
@@ -728,6 +914,15 @@ behavior trees.", renderContext.DefaultFont, Color.White);
             TargetDeciderByRelPosition_DYLabel?.Dispose();
             TargetDeciderByRelPosition_DYLabel = null;
 
+            foreach(var restrictor in Restrictors)
+            {
+                restrictor.Dispose();
+            }
+
+            AddRestrictorButton?.Dispose();
+            AddRestrictorButton = null;
+
+            Restrictors.Clear();
             Components.Clear();
         }
     }
