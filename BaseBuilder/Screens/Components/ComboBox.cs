@@ -19,6 +19,11 @@ namespace BaseBuilder.Screens.Components
         public Point Size { get; protected set; }
 
         /// <summary>
+        /// If this requires high priority z right now
+        /// </summary>
+        public bool HighPriorityZ { get { return Expanded; } }
+
+        /// <summary>
         /// Triggered after the selected combo box item changes
         /// </summary>
         public event ComboBoxSelectedChangedEventHandler<T1> SelectedChanged;

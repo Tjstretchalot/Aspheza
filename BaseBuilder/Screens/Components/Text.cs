@@ -15,6 +15,11 @@ namespace BaseBuilder.Screens.Components
     /// </summary>
     public class Text : IScreenComponent
     {
+        /// <summary>
+        /// If this requires high priority z right now
+        /// </summary>
+        public bool HighPriorityZ { get { return false; } }
+    
         protected Point _Center;
         public Point Center
         {

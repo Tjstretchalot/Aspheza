@@ -17,6 +17,11 @@ namespace BaseBuilder.Screens.Components
     public class TextureComponent : IScreenComponent
     {
         /// <summary>
+        /// If this requires high priority z right now
+        /// </summary>
+        public bool HighPriorityZ { get { return false; } }
+
+        /// <summary>
         /// If we're expected to dispose this texture
         /// </summary>
         protected bool DisposeRequired;

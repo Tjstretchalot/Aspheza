@@ -110,6 +110,11 @@ namespace BaseBuilder.Screens.Components
         }
 
         /// <summary>
+        /// If this requires high priority z right now
+        /// </summary>
+        public bool HighPriorityZ { get { return false; } }
+
+        /// <summary>
         /// If this button is pressed or not.
         /// </summary>
         public bool Pressed;

@@ -23,6 +23,11 @@ namespace BaseBuilder.Screens.Components
         private const int OUTER_BORDER = 2 * SAMPLES_SQRT;
 
         /// <summary>
+        /// If this requires high priority z right now
+        /// </summary>
+        public bool HighPriorityZ { get { return false; } }
+
+        /// <summary>
         /// The actual location
         /// </summary>
         protected Rectangle _Location;

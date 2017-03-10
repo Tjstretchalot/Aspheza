@@ -17,6 +17,11 @@ namespace BaseBuilder.Screens.Components
     /// </summary>
     public class RadioButton : IScreenComponent
     {
+        /// <summary>
+        /// If this requires high priority z right now
+        /// </summary>
+        public bool HighPriorityZ { get { return false; } }
+
         protected bool _Pushed;
 
         /// <summary>

@@ -153,6 +153,11 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 order.NewQueue = replQueue;
                 localState.Orders.Add(order);
             };
+
+            if(AddOverlay != null)
+            {
+                DisposeAdd();
+            }
         }
 
         void DisposeInspect()

@@ -27,6 +27,12 @@ namespace BaseBuilder.Screens.Components
         Point Size { get; }
 
         /// <summary>
+        /// If this component works better when it's on top of other components.
+        /// Typically this means it does not respect its size.
+        /// </summary>
+        bool HighPriorityZ { get; }
+
+        /// <summary>
         /// Updates the component. 
         /// </summary>
         /// <param name="content">Content manager</param>

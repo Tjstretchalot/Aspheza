@@ -150,12 +150,147 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
             public void InitializeThings(RenderContext renderContext)
             {
-                
+                if(TypeBoxLabel == null)
+                {
+                    TypeBoxLabel = new Text(new Point(0, 0), "Restrict", renderContext.DefaultFont, Color.Black);
+                    Components.Add(TypeBoxLabel);
+                }
+
+                if(TypeBox == null)
+                {
+                    TypeBox = new ComboBox<TransferRestrictorType>(new List<ComboBoxItem<TransferRestrictorType>>
+                    {
+                        new ComboBoxItem<TransferRestrictorType>(renderContext.DefaultFont, "By Item Type", TransferRestrictorType.ByItemType),
+                        new ComboBoxItem<TransferRestrictorType>(renderContext.DefaultFont, "By Total Quantity", TransferRestrictorType.ByTotalQuantity),
+                        new ComboBoxItem<TransferRestrictorType>(renderContext.DefaultFont, "By Target Inventory", TransferRestrictorType.ByRecievingInventory),
+                        new ComboBoxItem<TransferRestrictorType>(renderContext.DefaultFont, "By Our Inventory", TransferRestrictorType.ByOurInventory)
+                    }, new Point(200, 30));
+
+                    TypeBox.Selected = null;
+
+                    TypeBox.HoveredChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                    TypeBox.ExpandedChanged += (sender, args) => Outer.OnInspectRedrawRequired();
+                    TypeBox.SelectedChanged += (sender, oldSelected) =>
+                    {
+                        if(oldSelected != null)
+                        {
+                            switch(oldSelected.Value)
+                            {
+                                case TransferRestrictorType.ByItemType:
+                                    Components.Remove(ByItemType_Description);
+                                    break;
+                                case TransferRestrictorType.ByTotalQuantity:
+                                    Components.Remove(ByTotalQuantity_Description);
+                                    break;
+                                case TransferRestrictorType.ByRecievingInventory:
+                                    Components.Remove(ByRecievingInventory_Description);
+                                    break;
+                                case TransferRestrictorType.ByOurInventory:
+                                    Components.Remove(ByOurInventory_Description);
+                                    break;
+                            }
+                        }
+
+                        switch(TypeBox.Selected.Value)
+                        {
+                            case TransferRestrictorType.ByItemType:
+                                Components.Add(ByItemType_Description);
+                                break;
+                            case TransferRestrictorType.ByTotalQuantity:
+                                Components.Add(ByTotalQuantity_Description);
+                                break;
+                            case TransferRestrictorType.ByRecievingInventory:
+                                Components.Add(ByRecievingInventory_Description);
+                                break;
+                            case TransferRestrictorType.ByOurInventory:
+                                Components.Add(ByOurInventory_Description);
+                                break;
+                        }
+                        Outer.Reload = true;
+                        Outer.OnInspectRedrawRequired();
+                    };
+
+                    Components.Add(TypeBox);
+                }
+
+                if(ByItemType_Description == null)
+                {
+                    ByItemType_Description = new Text(new Point(0, 0), @"Restrict the transfer by either allowing or
+denying a specific material in the transfer.
+
+This is the most common restriction and is
+useful whenever you have multiple item types
+in your inventory or the targets inventory.", renderContext.DefaultFont, Color.White);
+                }
+
+                if(ByTotalQuantity_Description == null)
+                {
+                    ByTotalQuantity_Description = new Text(new Point(0, 0), @"Restrict the transfer by not transferring 
+more than a specific amount. 
+
+This is useful if you either know exactly 
+what items should be in your inventory at 
+this point and want to utilize the order 
+that items are given out, or you want to 
+throttle a portion of your inputs to get 
+an even split.", renderContext.DefaultFont, Color.White);
+                }
+
+                if(ByRecievingInventory_Description == null)
+                {
+                    ByRecievingInventory_Description = new Text(new Point(0, 0), @"Restrict the transfer based on what 
+would be in the other inventory 
+after the transfer.
+
+This is useful if you have a task
+that does a one-way conversion of 
+items (ie. logs to chopped wood), 
+but you still want to maintain a 
+stockpile of the original item.", renderContext.DefaultFont, Color.White);
+                }
+
+                if(ByOurInventory_Description == null)
+                {
+                    ByOurInventory_Description = new Text(new Point(0, 0), @"Restrict the transfer based on what would
+be in our inventory after the transfer.
+
+This is most useful when you are trying
+to maintain a certain distribution of 
+items in your inventory and your 
+inventory does not always empty out
+every cycle, such as for a courier.", renderContext.DefaultFont, Color.White);
+                }
             }
             
             public void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
             {
+                height += TypeBoxLabel.Size.Y + 3;
+                TypeBox.Center = new Point(width / 2, height + TypeBox.Size.Y / 2);
+                TypeBoxLabel.Center = Outer.GetCenterForTopLeftLabel(TypeBoxLabel, TypeBox);
+                height += TypeBox.Size.Y + 5;
 
+                if (TypeBox.Selected == null)
+                    return;
+
+                switch(TypeBox.Selected.Value)
+                {
+                    case TransferRestrictorType.ByItemType:
+                        ByItemType_Description.Center = new Point(width / 2, height + ByItemType_Description.Size.Y / 2);
+                        height += ByItemType_Description.Size.Y + 3;
+                        break;
+                    case TransferRestrictorType.ByTotalQuantity:
+                        ByTotalQuantity_Description.Center = new Point(width / 2, height + ByTotalQuantity_Description.Size.Y / 2);
+                        height += ByTotalQuantity_Description.Size.Y + 3;
+                        break;
+                    case TransferRestrictorType.ByRecievingInventory:
+                        ByRecievingInventory_Description.Center = new Point(width / 2, height + ByRecievingInventory_Description.Size.Y / 2);
+                        height += ByRecievingInventory_Description.Size.Y + 3;
+                        break;
+                    case TransferRestrictorType.ByOurInventory:
+                        ByOurInventory_Description.Center = new Point(width / 2, height + ByOurInventory_Description.Size.Y / 2);
+                        height += ByOurInventory_Description.Size.Y + 3;
+                        break;
+                }
             }
 
             public void Dispose()
@@ -295,6 +430,78 @@ far.";
         /// for going through each thing above one by one)
         /// </summary>
         protected List<IScreenComponent> Components;
+        
+        protected IEnumerable<IScreenComponent> ComponentsInRenderOrder
+        {
+            get
+            {
+                foreach(var comp in Components)
+                {
+                    if (!comp.HighPriorityZ)
+                        yield return comp;
+                }
+
+                foreach(var restr in Restrictors)
+                {
+                    foreach(var comp in restr.Components)
+                    {
+                        if (!comp.HighPriorityZ)
+                            yield return comp;
+                    }
+                }
+
+                foreach(var comp in Components)
+                {
+                    if (comp.HighPriorityZ)
+                        yield return comp;
+                }
+
+                foreach(var restr in Restrictors)
+                {
+                    foreach(var comp in restr.Components)
+                    {
+                        if (comp.HighPriorityZ)
+                            yield return comp;
+                    }
+                }
+            }
+        }
+
+        protected IEnumerable<IScreenComponent> ComponentsInUpdateOrder
+        {
+            get
+            {
+                for (int i = Restrictors.Count - 1; i >= 0; i--)
+                {
+                    for (int j = Restrictors[i].Components.Count - 1; j >= 0; j--)
+                    {
+                        if (Restrictors[i].Components[j].HighPriorityZ)
+                            yield return Restrictors[i].Components[j];
+                    }
+                }
+
+                for(int i = Components.Count - 1; i >= 0; i--)
+                {
+                    if (Components[i].HighPriorityZ)
+                        yield return Components[i];
+                }
+
+                for (int i = Restrictors.Count - 1; i >= 0; i--)
+                {
+                    for (int j = Restrictors[i].Components.Count - 1; j >= 0; j--)
+                    {
+                        if (!Restrictors[i].Components[j].HighPriorityZ)
+                            yield return Restrictors[i].Components[j];
+                    }
+                }
+
+                for (int i = Components.Count - 1; i >= 0; i--)
+                {
+                    if (!Components[i].HighPriorityZ)
+                        yield return Components[i];
+                }
+            }
+        }
 
         /// <summary>
         /// Converts the specified task into the task item.
@@ -475,18 +682,16 @@ far.";
                         Components.Remove(TargetDeciderByRelPosition_DYField);
                         Components.Remove(TargetDeciderByRelPosition_DYLabel);
                     }
-
-                    var insertIndex = Components.FindIndex((c) => ReferenceEquals(c, TargetDeciderCombo));
-
+                    
                     if (TargetDeciderCombo.Selected.Value == TargetDeciderType.ByID)
                     {
-                        Components.Insert(insertIndex, TargetDeciderByID_DescriptionText);
+                        Components.Add(TargetDeciderByID_DescriptionText);
                         Components.Add(TargetDeciderByID_IDLabel);
                         Components.Add(TargetDeciderByID_IDTextField);
                     }
                     else if (TargetDeciderCombo.Selected.Value == TargetDeciderType.ByPosition)
                     {
-                        Components.Insert(insertIndex, TargetDeciderByPosition_DescriptionText);
+                        Components.Add(TargetDeciderByPosition_DescriptionText);
                         Components.Add(TargetDeciderByPosition_XField);
                         Components.Add(TargetDeciderByPosition_XLabel);
                         Components.Add(TargetDeciderByPosition_YField);
@@ -494,7 +699,7 @@ far.";
                     }
                     else if (TargetDeciderCombo.Selected.Value == TargetDeciderType.ByRelativePosition)
                     {
-                        Components.Insert(insertIndex, TargetDeciderByRelPosition_DescriptionText);
+                        Components.Add(TargetDeciderByRelPosition_DescriptionText);
                         Components.Add(TargetDeciderByRelPosition_DXField);
                         Components.Add(TargetDeciderByRelPosition_DYField);
                         Components.Add(TargetDeciderByRelPosition_DXLabel);
@@ -721,6 +926,7 @@ behavior trees.", renderContext.DefaultFont, Color.White);
                         break;
                 }
             }
+            height += 5;
 
             foreach(var restrictor in Restrictors)
             {
@@ -750,7 +956,7 @@ behavior trees.", renderContext.DefaultFont, Color.White);
         {
             base.PreDrawInspect(context, x, y);
 
-            foreach (var comp in Components)
+            foreach (var comp in ComponentsInRenderOrder)
             {
                 comp.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
             }
@@ -760,15 +966,7 @@ behavior trees.", renderContext.DefaultFont, Color.White);
         {
             if (ButtonShiftLast.X != x || ButtonShiftLast.Y != y)
             {
-                foreach (var restric in Restrictors)
-                {
-                    foreach (var comp in restric.Components)
-                    {
-                        comp.Center = new Point(comp.Center.X - ButtonShiftLast.X + x, comp.Center.Y - ButtonShiftLast.Y + y);
-                    }
-                }
-
-                foreach (var comp in Components)
+                foreach (var comp in ComponentsInRenderOrder)
                 {
                     comp.Center = new Point(comp.Center.X - ButtonShiftLast.X + x, comp.Center.Y - ButtonShiftLast.Y + y);
                 }
@@ -776,15 +974,7 @@ behavior trees.", renderContext.DefaultFont, Color.White);
 
             base.DrawInspect(context, x, y);
 
-            foreach (var restric in Restrictors)
-            {
-                foreach (var comp in restric.Components)
-                {
-                    comp.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
-                }
-            }
-
-            foreach (var comp in Components)
+            foreach (var comp in ComponentsInRenderOrder)
             {
                 comp.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
             }
@@ -794,16 +984,8 @@ behavior trees.", renderContext.DefaultFont, Color.White);
         public override void UpdateInspect(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {
             base.UpdateInspect(sharedGameState, localGameState, netContext, timeMS);
-
-            foreach(var restr in Restrictors)
-            {
-                foreach(var comp in restr.Components)
-                {
-                    comp.Update(Content, timeMS);
-                }
-            }
-
-            foreach (var comp in Components)
+            
+            foreach (var comp in ComponentsInUpdateOrder)
             {
                 comp.Update(Content, timeMS);
             }
@@ -811,17 +993,9 @@ behavior trees.", renderContext.DefaultFont, Color.White);
 
         protected override void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            for (int i = Components.Count - 1; i >= 0; i--)
+            foreach(var comp in ComponentsInUpdateOrder)
             {
-                Components[i].HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
-            }
-
-            for (int i = Restrictors.Count - 1; i >= 0; i--)
-            {
-                for (int j = Restrictors[i].Components.Count - 1; j >= 0; j--)
-                {
-                    Restrictors[i].Components[j].HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
-                }
+                comp.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
             }
             
             base.HandleInspectComponentsMouseState(last, current, ref handled, ref scrollHandled);
@@ -831,15 +1005,7 @@ behavior trees.", renderContext.DefaultFont, Color.White);
         {
             var handled = false;
 
-            foreach(var restr in Restrictors)
-            {
-                foreach(var comp in restr.Components)
-                {
-                    comp.HandleKeyboardState(Content, last, current, ref handled);
-                }
-            }
-
-            foreach (var comp in Components)
+            foreach (var comp in ComponentsInUpdateOrder)
             {
                 comp.HandleKeyboardState(Content, last, current, ref handled);
             }

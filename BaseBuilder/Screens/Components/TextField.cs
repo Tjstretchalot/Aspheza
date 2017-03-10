@@ -17,6 +17,11 @@ namespace BaseBuilder.Screens.Components
     public class TextField : IResizableComponent
     {
         /// <summary>
+        /// If this requires high priority z right now
+        /// </summary>
+        public bool HighPriorityZ { get { return false; } }
+
+        /// <summary>
         /// How long the caret is visible for during a blink cycle.
         /// </summary>
         private const int CARET_VISIBLE_TIME_MS = 500;
