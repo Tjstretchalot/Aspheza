@@ -184,5 +184,28 @@ namespace BaseBuilder.Screens.Components
             
             return new TextField(locationRect, "", "Arial", ReallyDarkGray, "UI/TextAreaTap", "UI/TextAreaError", int.MaxValue);
         }
+
+        public static void TextFieldNumbersOnly(object sender, EventArgs args)
+        {
+            var textfield = sender as TextField;
+            var newStr = new StringBuilder();
+
+            bool foundNum = false;
+            for (int i = 0; i < textfield.Text.Length; i++)
+            {
+                var ch = textfield.Text[i];
+
+
+                if (!foundNum && ch == '0' && i < textfield.Text.Length - 1)
+                    continue;
+                else
+                    foundNum = true;
+
+                if (char.IsDigit(ch))
+                    newStr.Append(ch);
+            }
+
+            textfield.Text = newStr.ToString();
+        }
     }
 }

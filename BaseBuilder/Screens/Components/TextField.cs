@@ -88,6 +88,7 @@ namespace BaseBuilder.Screens.Components
             {
                 _Location.X = value.X - Size.X / 2;
                 _Location.Y = value.Y - Size.Y / 2;
+                _TextPositionVec = null;
             }
         }
         

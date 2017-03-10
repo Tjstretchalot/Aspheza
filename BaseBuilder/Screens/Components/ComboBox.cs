@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace BaseBuilder.Screens.Components
 {
+    public delegate void ComboBoxSelectedChangedEventHandler<T1>(object sender, ComboBoxItem<T1> OldSelected);
+
     public class ComboBox <T1> : IScreenComponent
     {
         public Point Center { get; set; }
@@ -19,7 +21,7 @@ namespace BaseBuilder.Screens.Components
         /// <summary>
         /// Triggered after the selected combo box item changes
         /// </summary>
-        public event EventHandler SelectedChanged;
+        public event ComboBoxSelectedChangedEventHandler<T1> SelectedChanged;
 
         /// <summary>
         /// Triggered when the hovered item changes.
@@ -48,6 +50,18 @@ namespace BaseBuilder.Screens.Components
                     return null;
 
                 return Items[SelectedIndex];
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    SelectedIndex = -1;
+                }
+                else
+                {
+                    SelectedIndex = Items.FindIndex((c) => ReferenceEquals(c, value));
+                }
             }
         }
 
@@ -153,7 +167,7 @@ namespace BaseBuilder.Screens.Components
             if(UnselectedTexture == null)
             {
                 UnselectedTexture = new Texture2D(graphicsDevice, 1, 1);
-                UnselectedTexture.SetData(new[] { Color.DarkBlue });
+                UnselectedTexture.SetData(new[] { new Color(Color.Black, 0.6f) });
             }
 
             var rect = new Rectangle(Center.X - Size.X / 2, Center.Y - Size.Y / 2, Size.X, Size.Y);
@@ -262,6 +276,7 @@ namespace BaseBuilder.Screens.Components
                 HoveredChanged?.Invoke(this, EventArgs.Empty);
             }
 
+            bool containMouseSimple = new Rectangle(Center.X - Size.X / 2, Center.Y - Size.Y / 2, Size.X, Size.Y).Contains(current.Position);
             bool containMouse = false;
             if(Expanded)
             {
@@ -269,7 +284,7 @@ namespace BaseBuilder.Screens.Components
                 containMouse = new Rectangle(Center.X - Size.X / 2, Center.Y - Size.Y / 2, Size.X, Size.Y * (sizeYMultiplier + 1)).Contains(current.Position);
             }else
             {
-                containMouse = new Rectangle(Center.X - Size.X / 2, Center.Y - Size.Y / 2, Size.X, Size.Y).Contains(current.Position);
+                containMouse = containMouseSimple;
             }
 
             if(!wasHandled && Expanded && !handled && containMouse)
@@ -280,24 +295,34 @@ namespace BaseBuilder.Screens.Components
             if(!wasHandled && containMouse && last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
             {
                 handled = true;
-                for(int i = 0; i < Items.Count; i++)
+                if (containMouseSimple)
                 {
-                    if(i != SelectedIndex)
+                    Expanded = !Expanded;
+                    ExpandedChanged?.Invoke(null, EventArgs.Empty);
+                }
+                else
+                {
+                    for (int i = 0; i < Items.Count; i++)
                     {
-                        if(Items[i].Hovered)
+                        if (i != SelectedIndex)
                         {
-                            SelectedIndex = i;
-                            SelectedChanged?.Invoke(null, EventArgs.Empty);
-                            Expanded = false;
-                            ExpandedChanged?.Invoke(null, EventArgs.Empty);
-                            break;
+                            if (Items[i].Hovered)
+                            {
+                                var oldSelected = Selected;
+                                SelectedIndex = i;
+                                SelectedChanged?.Invoke(null, oldSelected);
+                                Expanded = false;
+                                ExpandedChanged?.Invoke(null, EventArgs.Empty);
+                                break;
+                            }
                         }
-                    }else
-                    {
-                        if(Items[i].Hovered)
+                        else
                         {
-                            Expanded = !Expanded;
-                            ExpandedChanged?.Invoke(null, EventArgs.Empty);
+                            if (Items[i].Hovered)
+                            {
+                                Expanded = !Expanded;
+                                ExpandedChanged?.Invoke(null, EventArgs.Empty);
+                            }
                         }
                     }
                 }

@@ -93,7 +93,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
         protected enum TargetDeciderType
         {
-            ByItemType,
+            ByID,
             ByPosition,
             ByRelativePosition
         }
@@ -159,17 +159,25 @@ far.";
         protected Text TargetDeciderLabel;
         protected ComboBox<TargetDeciderType> TargetDeciderCombo;
 
+        protected Text TargetDeciderByID_DescriptionText;
+        protected Text TargetDeciderByID_IDLabel;
         protected TextField TargetDeciderByID_IDTextField;
 
+        protected Text TargetDeciderByPosition_DescriptionText;
+        protected Text TargetDeciderByPosition_XLabel;
         protected TextField TargetDeciderByPosition_XField;
+        protected Text TargetDeciderByPosition_YLabel;
         protected TextField TargetDeciderByPosition_YField;
 
-        protected TextField TargetDeciderByRelPosition_XField;
-        protected TextField TargetDeciderbyRelPosition_YField;
+        protected Text TargetDeciderByRelPosition_DescriptionText;
+        protected Text TargetDeciderByRelPosition_DXLabel;
+        protected TextField TargetDeciderByRelPosition_DXField;
+        protected Text TargetDeciderByRelPosition_DYLabel;
+        protected TextField TargetDeciderByRelPosition_DYField;
 
         protected List<TransferRestrictorComp> Restrictors;
         protected Button AddRestrictorButton;
-        
+
         /// <summary>
         /// Contains all of the components  of this task item (an alternative
         /// for going through each thing above one by one)
@@ -207,16 +215,16 @@ far.";
         protected override void InitializeThings(RenderContext renderContext)
         {
             base.InitializeThings(renderContext);
-            
+
             if (PickupRadio == null || DropoffRadio == null)
             {
-                if(PickupRadio != null)
+                if (PickupRadio != null)
                 {
                     Components.Remove(PickupRadio);
                     PickupRadio.Dispose();
                     PickupRadio = null;
                 }
-                if(DropoffRadio != null)
+                if (DropoffRadio != null)
                 {
                     Components.Remove(DropoffRadio);
                     DropoffRadio.Dispose();
@@ -231,7 +239,8 @@ far.";
                     {
                         Components.Add(PickupTypeLabel);
                         Components.Add(PickupTypeCombo);
-                    } else
+                    }
+                    else
                     {
                         Components.Remove(PickupTypeLabel);
                         Components.Remove(PickupTypeCombo);
@@ -265,21 +274,21 @@ far.";
                 Components.Add(DropoffRadio);
             }
 
-            if(PickupRadioLabel == null)
+            if (PickupRadioLabel == null)
             {
                 PickupRadioLabel = new Text(new Point(0, 0), "Pickup", renderContext.DefaultFont, Color.Black);
 
                 Components.Add(PickupRadioLabel);
             }
 
-            if(DropoffRadioLabel == null)
+            if (DropoffRadioLabel == null)
             {
                 DropoffRadioLabel = new Text(new Point(0, 0), "Dropoff", renderContext.DefaultFont, Color.Black);
 
                 Components.Add(DropoffRadioLabel);
             }
 
-            if(PickupTypeCombo == null)
+            if (PickupTypeCombo == null)
             {
                 PickupTypeCombo = new ComboBox<PickupType>(new List<ComboBoxItem<PickupType>>
                 {
@@ -291,12 +300,12 @@ far.";
                 PickupTypeCombo.HoveredChanged += (sender, args) => OnInspectRedrawRequired();
             }
 
-            if(PickupTypeLabel == null)
+            if (PickupTypeLabel == null)
             {
                 PickupTypeLabel = new Text(new Point(0, 0), "Pickup Type", renderContext.DefaultFont, Color.Black);
             }
 
-            if(DropoffTypeCombo == null)
+            if (DropoffTypeCombo == null)
             {
                 DropoffTypeCombo = new ComboBox<DropoffType>(new List<ComboBoxItem<DropoffType>>
                 {
@@ -308,10 +317,188 @@ far.";
                 DropoffTypeCombo.HoveredChanged += (sender, args) => OnInspectRedrawRequired();
             }
 
-            if(DropoffTypeLabel == null)
+            if (DropoffTypeLabel == null)
             {
                 DropoffTypeLabel = new Text(new Point(0, 0), "Dropoff Type", renderContext.DefaultFont, Color.Black);
             }
+
+            if (TargetDeciderCombo == null)
+            {
+                TargetDeciderCombo = new ComboBox<TargetDeciderType>(new List<ComboBoxItem<TargetDeciderType>>
+                {
+                    new ComboBoxItem<TargetDeciderType>(renderContext.DefaultFont, "By Entity ID", TargetDeciderType.ByID),
+                    new ComboBoxItem<TargetDeciderType>(renderContext.DefaultFont, "By Position", TargetDeciderType.ByPosition),
+                    new ComboBoxItem<TargetDeciderType>(renderContext.DefaultFont, "By Relative Position", TargetDeciderType.ByRelativePosition),
+                }, new Point(200, 34));
+
+                TargetDeciderCombo.ExpandedChanged += (sender, args) => OnInspectRedrawRequired();
+                TargetDeciderCombo.ScrollChanged += (sender, args) => OnInspectRedrawRequired();
+                TargetDeciderCombo.HoveredChanged += (sender, args) => OnInspectRedrawRequired();
+
+                TargetDeciderCombo.SelectedChanged += (sender, oldSelected) =>
+                {
+                    if (TargetDeciderCombo.Selected == null || oldSelected?.Value == TargetDeciderCombo.Selected.Value)
+                        return;
+                    
+                    if (oldSelected?.Value == TargetDeciderType.ByID)
+                    {
+                        Components.Remove(TargetDeciderByID_DescriptionText);
+                        Components.Remove(TargetDeciderByID_IDLabel);
+                        Components.Remove(TargetDeciderByID_IDTextField);
+                    }
+                    else if (oldSelected?.Value == TargetDeciderType.ByPosition)
+                    {
+                        Components.Remove(TargetDeciderByPosition_DescriptionText);
+                        Components.Remove(TargetDeciderByPosition_XField);
+                        Components.Remove(TargetDeciderByPosition_XLabel);
+                        Components.Remove(TargetDeciderByPosition_YField);
+                        Components.Remove(TargetDeciderByPosition_YLabel);
+                    }
+                    else if (oldSelected?.Value == TargetDeciderType.ByRelativePosition)
+                    {
+                        Components.Remove(TargetDeciderByRelPosition_DescriptionText);
+                        Components.Remove(TargetDeciderByRelPosition_DXField);
+                        Components.Remove(TargetDeciderByRelPosition_DXLabel);
+                        Components.Remove(TargetDeciderByRelPosition_DYField);
+                        Components.Remove(TargetDeciderByRelPosition_DYLabel);
+                    }
+
+                    var insertIndex = Components.FindIndex((c) => ReferenceEquals(c, TargetDeciderCombo));
+
+                    if (TargetDeciderCombo.Selected.Value == TargetDeciderType.ByID)
+                    {
+                        Components.Insert(insertIndex, TargetDeciderByID_DescriptionText);
+                        Components.Add(TargetDeciderByID_IDLabel);
+                        Components.Add(TargetDeciderByID_IDTextField);
+                    }
+                    else if (TargetDeciderCombo.Selected.Value == TargetDeciderType.ByPosition)
+                    {
+                        Components.Insert(insertIndex, TargetDeciderByPosition_DescriptionText);
+                        Components.Add(TargetDeciderByPosition_XField);
+                        Components.Add(TargetDeciderByPosition_XLabel);
+                        Components.Add(TargetDeciderByPosition_YField);
+                        Components.Add(TargetDeciderByPosition_YLabel);
+                    }
+                    else if (TargetDeciderCombo.Selected.Value == TargetDeciderType.ByRelativePosition)
+                    {
+                        Components.Insert(insertIndex, TargetDeciderByRelPosition_DescriptionText);
+                        Components.Add(TargetDeciderByRelPosition_DXField);
+                        Components.Add(TargetDeciderByRelPosition_DYField);
+                        Components.Add(TargetDeciderByRelPosition_DXLabel);
+                        Components.Add(TargetDeciderByRelPosition_DYLabel);
+                    }
+
+                    OnInspectRedrawRequired();
+                    Reload = true;
+                };
+
+                TargetDeciderCombo.Selected = null;
+
+                Components.Add(TargetDeciderCombo);
+            }
+
+            if (TargetDeciderLabel == null)
+            {
+                TargetDeciderLabel = new Text(new Point(0, 0), "Targetting Method", renderContext.DefaultFont, Color.Black);
+                Components.Add(TargetDeciderLabel);
+            }
+
+            if (TargetDeciderByID_DescriptionText == null)
+            {
+                TargetDeciderByID_DescriptionText = new Text(new Point(0, 0), @"
+Select the target by searching for the entity 
+with the specified ID. This is a good choice 
+if you always want to transfer items with 
+the same entity", renderContext.DefaultFont, Color.White);
+            }
+
+            if (TargetDeciderByID_IDTextField == null)
+            {
+                TargetDeciderByID_IDTextField = CreateTextField(150, 30);
+            }
+
+            if (TargetDeciderByID_IDLabel == null)
+            {
+                TargetDeciderByID_IDLabel = new Text(new Point(0, 0), "Target ID", renderContext.DefaultFont, Color.Black);
+            }
+            
+            if(TargetDeciderByPosition_DescriptionText == null)
+            {
+                TargetDeciderByPosition_DescriptionText = new Text(new Point(0, 0), @"Select the target by searching for the entity 
+at the specified position. This is helpful if
+you want to be able to swap out the target 
+without modifying this entity.", renderContext.DefaultFont, Color.White);
+            }
+
+            if(TargetDeciderByPosition_XField == null)
+            {
+                TargetDeciderByPosition_XField = CreateTextField(70, 30);
+            }
+
+            if(TargetDeciderByPosition_XLabel == null)
+            {
+                TargetDeciderByPosition_XLabel = new Text(new Point(0, 0), "X", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(TargetDeciderByPosition_YField == null)
+            {
+                TargetDeciderByPosition_YField = CreateTextField(70, 30);
+            }
+
+            if(TargetDeciderByPosition_YLabel == null)
+            {
+                TargetDeciderByPosition_YLabel = new Text(new Point(0, 0), "Y", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(TargetDeciderByRelPosition_DescriptionText == null)
+            {
+                TargetDeciderByRelPosition_DescriptionText = new Text(new Point(0, 0), @"Select the target by searching for an entity 
+at a position relative to this entity at the 
+time that this task is evaluated. This is 
+often helpful for complicated and/or flexible 
+behavior trees.", renderContext.DefaultFont, Color.White);
+            }
+
+            if (TargetDeciderByRelPosition_DXField == null)
+            {
+                TargetDeciderByRelPosition_DXField = CreateTextField(70, 30);
+            }
+
+            if (TargetDeciderByRelPosition_DXLabel == null)
+            {
+                TargetDeciderByRelPosition_DXLabel = new Text(new Point(0, 0), "DeltaX", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(TargetDeciderByRelPosition_DYField == null)
+            {
+                TargetDeciderByRelPosition_DYField = CreateTextField(70, 30);
+            }
+
+            if(TargetDeciderByRelPosition_DYLabel == null)
+            {
+                TargetDeciderByRelPosition_DYLabel = new Text(new Point(0, 0), "DeltaY", renderContext.DefaultFont, Color.Black);
+            }
+        }
+
+        /// <summary>
+        /// Creates a text field with the specified width and height with all the necessary
+        /// redrawing hooks created. Does not add to components.
+        /// </summary>
+        /// <param name="width">Width</param>
+        /// <param name="height">Height</param>
+        /// <returns>The text field</returns>
+        TextField CreateTextField(int width, int height)
+        {
+            var result = UIUtils.CreateTextField(new Point(0, 0), new Point(width, height));
+
+            result.FocusGained += (sender, args) => OnInspectRedrawRequired();
+            result.FocusLost += (sender, args) => OnInspectRedrawRequired();
+            result.TextChanged += (sender, args) =>
+            {
+                UIUtils.TextFieldNumbersOnly(sender, args);
+                OnInspectRedrawRequired();
+            };
+            return result;
         }
 
         Point GetCenterForTopLeftLabel(Text label, IScreenComponent comp)
@@ -321,7 +508,7 @@ far.";
 
         protected override void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
         {
-            
+
             var neededHeight = Math.Max(Math.Max(DropoffRadio.Size.Y, PickupRadio.Size.Y), Math.Max(DropoffRadioLabel.Size.Y, PickupRadioLabel.Size.Y));
             var neededWidth = PickupRadio.Size.X + 3 + PickupRadioLabel.Size.X + 7 + DropoffRadio.Size.X + 3 + DropoffRadioLabel.Size.X;
             var paddingLeft = (width - neededWidth) / 2;
@@ -339,12 +526,64 @@ far.";
                 PickupTypeLabel.Center = GetCenterForTopLeftLabel(PickupTypeLabel, PickupTypeCombo);
                 height += PickupTypeCombo.Size.Y + 3;
             }
-            if(DropoffRadio.Pushed)
+            if (DropoffRadio.Pushed)
             {
                 height += DropoffTypeLabel.Size.Y + 3;
                 DropoffTypeCombo.Center = new Point(width / 2, height + DropoffTypeCombo.Size.Y / 2);
                 DropoffTypeLabel.Center = GetCenterForTopLeftLabel(DropoffTypeLabel, DropoffTypeCombo);
                 height += DropoffTypeCombo.Size.Y + 3;
+            }
+
+            height += 8;
+
+            height += TargetDeciderLabel.Size.Y + 3;
+            TargetDeciderCombo.Center = new Point(width / 2, height + TargetDeciderCombo.Size.Y / 2);
+            TargetDeciderLabel.Center = GetCenterForTopLeftLabel(TargetDeciderLabel, TargetDeciderCombo);
+            height += TargetDeciderCombo.Size.Y + 5;
+
+            if (TargetDeciderCombo.Selected != null)
+            {
+                int reqWidth, padLeft;
+                switch (TargetDeciderCombo.Selected.Value)
+                {
+                    case TargetDeciderType.ByID:
+                        TargetDeciderByID_DescriptionText.Center = new Point(width / 2, height + TargetDeciderByID_DescriptionText.Size.Y / 2);
+                        height += TargetDeciderByID_DescriptionText.Size.Y + 3;
+
+                        height += TargetDeciderByID_IDLabel.Size.Y + 3;
+                        TargetDeciderByID_IDTextField.Center = new Point(width / 2, height + TargetDeciderByID_IDTextField.Size.Y / 2);
+                        TargetDeciderByID_IDLabel.Center = GetCenterForTopLeftLabel(TargetDeciderByID_IDLabel, TargetDeciderByID_IDTextField);
+                        height += TargetDeciderByID_IDTextField.Size.Y + 3;
+                        break;
+                    case TargetDeciderType.ByPosition:
+                        TargetDeciderByPosition_DescriptionText.Center = new Point(width / 2, height + TargetDeciderByPosition_DescriptionText.Size.Y / 2);
+                        height += TargetDeciderByPosition_DescriptionText.Size.Y + 3;
+
+                        reqWidth = TargetDeciderByPosition_XField.Size.X + 5 + TargetDeciderByPosition_YField.Size.X;
+                        padLeft = (width - reqWidth) / 2;
+
+                        height += Math.Max(TargetDeciderByPosition_XLabel.Size.Y, TargetDeciderByPosition_YLabel.Size.Y) + 3;
+                        TargetDeciderByPosition_XField.Center = new Point(padLeft + TargetDeciderByPosition_XField.Size.X / 2, height + TargetDeciderByPosition_XField.Size.Y / 2);
+                        TargetDeciderByPosition_YField.Center = new Point(padLeft + TargetDeciderByPosition_XField.Size.X + 5 + TargetDeciderByPosition_YField.Size.X / 2, height + TargetDeciderByPosition_YField.Size.Y / 2);
+                        TargetDeciderByPosition_XLabel.Center = GetCenterForTopLeftLabel(TargetDeciderByPosition_XLabel, TargetDeciderByPosition_XField);
+                        TargetDeciderByPosition_YLabel.Center = GetCenterForTopLeftLabel(TargetDeciderByPosition_YLabel, TargetDeciderByPosition_YField);
+                        height += Math.Max(TargetDeciderByPosition_XField.Size.Y, TargetDeciderByPosition_YField.Size.Y) + 3;
+                        break;
+                    case TargetDeciderType.ByRelativePosition:
+                        TargetDeciderByRelPosition_DescriptionText.Center = new Point(width / 2, height + TargetDeciderByRelPosition_DescriptionText.Size.Y / 2);
+                        height += TargetDeciderByRelPosition_DescriptionText.Size.Y + 3;
+
+                        reqWidth = TargetDeciderByRelPosition_DXField.Size.X + 5 + TargetDeciderByRelPosition_DYField.Size.X;
+                        padLeft = (width - reqWidth) / 2;
+
+                        height += Math.Max(TargetDeciderByRelPosition_DXLabel.Size.Y, TargetDeciderByRelPosition_DYLabel.Size.Y) + 3;
+                        TargetDeciderByRelPosition_DXField.Center = new Point(padLeft + TargetDeciderByRelPosition_DXField.Size.X / 2, height + TargetDeciderByRelPosition_DXField.Size.Y / 2);
+                        TargetDeciderByRelPosition_DYField.Center = new Point(padLeft + TargetDeciderByRelPosition_DXField.Size.X + 5 + TargetDeciderByRelPosition_DYField.Size.X / 2, height + TargetDeciderByRelPosition_DYField.Size.Y / 2);
+                        TargetDeciderByRelPosition_DXLabel.Center = GetCenterForTopLeftLabel(TargetDeciderByRelPosition_DXLabel, TargetDeciderByRelPosition_DXField);
+                        TargetDeciderByRelPosition_DYLabel.Center = GetCenterForTopLeftLabel(TargetDeciderByRelPosition_DYLabel, TargetDeciderByRelPosition_DYField);
+                        height += Math.Max(TargetDeciderByRelPosition_DXField.Size.Y, TargetDeciderByRelPosition_DYField.Size.Y) + 3;
+                        break;
+                }
             }
 
             height += 8;
@@ -366,7 +605,7 @@ far.";
         {
             base.PreDrawInspect(context, x, y);
 
-            foreach(var comp in Components)
+            foreach (var comp in Components)
             {
                 comp.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
             }
@@ -374,9 +613,9 @@ far.";
 
         public override void DrawInspect(RenderContext context, int x, int y)
         {
-            if(ButtonShiftLast.X != x || ButtonShiftLast.Y != y)
+            if (ButtonShiftLast.X != x || ButtonShiftLast.Y != y)
             {
-                foreach(var comp in Components)
+                foreach (var comp in Components)
                 {
                     comp.Center = new Point(comp.Center.X - ButtonShiftLast.X + x, comp.Center.Y - ButtonShiftLast.Y + y);
                 }
@@ -384,7 +623,7 @@ far.";
 
             base.DrawInspect(context, x, y);
 
-            foreach(var comp in Components)
+            foreach (var comp in Components)
             {
                 comp.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
             }
@@ -394,7 +633,7 @@ far.";
         {
             base.UpdateInspect(sharedGameState, localGameState, netContext, timeMS);
 
-            foreach(var comp in Components)
+            foreach (var comp in Components)
             {
                 comp.Update(Content, timeMS);
             }
@@ -414,7 +653,7 @@ far.";
         {
             var handled = false;
 
-            foreach(var comp in Components)
+            foreach (var comp in Components)
             {
                 comp.HandleKeyboardState(Content, last, current, ref handled);
             }
@@ -446,6 +685,48 @@ far.";
 
             DropoffTypeCombo?.Dispose();
             DropoffTypeCombo = null;
+
+            TargetDeciderCombo?.Dispose();
+            TargetDeciderCombo = null;
+
+            TargetDeciderLabel?.Dispose();
+            TargetDeciderLabel = null;
+
+            TargetDeciderByID_DescriptionText?.Dispose();
+            TargetDeciderByID_DescriptionText = null;
+
+            TargetDeciderByID_IDLabel?.Dispose();
+            TargetDeciderByID_IDLabel = null;
+
+            TargetDeciderByID_IDTextField?.Dispose();
+            TargetDeciderByID_IDTextField = null;
+
+            TargetDeciderByPosition_DescriptionText?.Dispose();
+            TargetDeciderByPosition_DescriptionText = null;
+
+            TargetDeciderByPosition_XField?.Dispose();
+            TargetDeciderByPosition_XField = null;
+
+            TargetDeciderByPosition_XLabel?.Dispose();
+            TargetDeciderByPosition_XLabel = null;
+
+            TargetDeciderByPosition_YField?.Dispose();
+            TargetDeciderByPosition_YField = null;
+
+            TargetDeciderByPosition_YLabel?.Dispose();
+            TargetDeciderByPosition_YLabel = null;
+
+            TargetDeciderByRelPosition_DescriptionText?.Dispose();
+            TargetDeciderByRelPosition_DescriptionText = null;
+
+            TargetDeciderByRelPosition_DXLabel?.Dispose();
+            TargetDeciderByRelPosition_DXLabel = null;
+
+            TargetDeciderByRelPosition_DXField?.Dispose();
+            TargetDeciderByRelPosition_DXField = null;
+
+            TargetDeciderByRelPosition_DYLabel?.Dispose();
+            TargetDeciderByRelPosition_DYLabel = null;
 
             Components.Clear();
         }

@@ -80,7 +80,8 @@ the upper-left corner of the screen.";
 
                 DestinationXField.FocusGained += (sender, args) => OnInspectRedrawRequired();
                 DestinationXField.FocusLost += (sender, args) => OnInspectRedrawRequired();
-                DestinationXField.TextChanged += TextFieldNumbersOnly;
+                DestinationXField.TextChanged += UIUtils.TextFieldNumbersOnly;
+                DestinationXField.TextChanged += (sender, args) => OnInspectRedrawRequired();
             }
 
             if (DestinationYLabel == null)
@@ -93,34 +94,11 @@ the upper-left corner of the screen.";
 
                 DestinationYField.FocusGained += (sender, args) => OnInspectRedrawRequired();
                 DestinationYField.FocusLost += (sender, args) => OnInspectRedrawRequired();
-                DestinationYField.TextChanged += TextFieldNumbersOnly;
+                DestinationYField.TextChanged += UIUtils.TextFieldNumbersOnly;
+                DestinationYField.TextChanged += (sender, args) => OnInspectRedrawRequired();
             }
         }
-
-        void TextFieldNumbersOnly(object sender, EventArgs args)
-        {
-            var textfield = sender as TextField;
-            var newStr = new StringBuilder();
-
-            bool foundNum = false;
-            for(int i = 0; i < textfield.Text.Length; i++)
-            {
-                var ch = textfield.Text[i];
-
-
-                if (!foundNum && ch == '0' && i < textfield.Text.Length - 1)
-                    continue;
-                else
-                    foundNum = true;
-
-                if (char.IsDigit(ch))
-                    newStr.Append(ch);
-            }
-
-            textfield.Text = newStr.ToString();
-            OnInspectRedrawRequired();
-        }
-
+        
         protected override void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
         {
             var reqSpace = DestinationXField.Size.X + 5 + DestinationYField.Size.X;
