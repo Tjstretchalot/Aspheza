@@ -13,28 +13,26 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 {
     public class SpriteSheetAnimationRenderer
     {
+        private Dictionary<string, Tuple<string, List<Rectangle>>> StringToSourceFileAndRecList;
+
         string SpriteSheetName;
+        string CurrentAnimation;
+        List<Rectangle> CurrentRecList;
         Rectangle CurrentRect;
-
-        int NextAnimationTickMS;
-
         int CurrentDraw;
         Direction Direction;
-        List<Rectangle> _DownMove;
-        List<Rectangle> _UpMove;
-        List<Rectangle> _RightMove;
-        List<Rectangle> _LeftMove;
 
-        public SpriteSheetAnimationRenderer(string sheetName, List<Rectangle> downMove, List<Rectangle> upMove, List<Rectangle> rightMove, List<Rectangle> leftMove)
+        int NextAnimationTickMS;
+        
+        public SpriteSheetAnimationRenderer(Dictionary<string, Tuple<string, List<Rectangle>>> stringToSourceRecList)
         {
-            SpriteSheetName = sheetName;
 
-            _DownMove = downMove;
-            _UpMove = upMove;
-            _RightMove = rightMove;
-            _LeftMove = leftMove;
+            StringToSourceFileAndRecList = stringToSourceRecList;
 
-            CurrentRect = _DownMove[0];
+            CurrentAnimation = "DownMove";
+            SpriteSheetName = StringToSourceFileAndRecList["DownMove"].Item1;
+            CurrentRecList = StringToSourceFileAndRecList["DownMove"].Item2;
+            CurrentRect = CurrentRecList[0];
             CurrentDraw = 0;
         }
 
@@ -47,9 +45,10 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 
             CurrentRect = new Rectangle(crX, crY, crW, crH);
 
+            CurrentAnimation = message.ReadString();
+            CurrentRecList = StringToSourceFileAndRecList[CurrentAnimation].Item2;
             NextAnimationTickMS = message.ReadInt32();
             CurrentDraw = message.ReadInt32();
-            Direction = (Direction)message.ReadInt32();
         }
 
         public void Write(NetOutgoingMessage message)
@@ -59,37 +58,44 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
             message.Write(CurrentRect.Width);
             message.Write(CurrentRect.Height);
 
+            message.Write(CurrentAnimation);
             message.Write(NextAnimationTickMS);
             message.Write(CurrentDraw);
-            message.Write((int)Direction);
         }
 
         private void UpdateDirection(double dx, double dy)
         {
-            
             if(Math.Sign(dx) == -1 && Direction != Direction.Left)
             {
-                CurrentDraw = (CurrentDraw + 1) % _LeftMove.Count;
+                CurrentDraw = (CurrentDraw + 1) % CurrentRecList.Count;
                 Direction = Direction.Left;
-                CurrentRect = _LeftMove[CurrentDraw];
+                CurrentAnimation = "LeftMove";
+                CurrentRecList = StringToSourceRecList["LeftMove"];
+                CurrentRect = CurrentRecList[CurrentDraw];
             }
             else if (Math.Sign(dx) == 1 && Direction != Direction.Right)
             {
-                CurrentDraw = (CurrentDraw + 1) % _RightMove.Count;
+                CurrentDraw = (CurrentDraw + 1) % CurrentRecList.Count;
                 Direction = Direction.Right;
-                CurrentRect = _RightMove[CurrentDraw];
+                CurrentAnimation = "RightMove";
+                CurrentRecList = StringToSourceRecList["RightMove"];
+                CurrentRect = CurrentRecList[CurrentDraw];
             }
             else if (Math.Sign(dy) == 1 && Direction != Direction.Down)
             {
-                CurrentDraw = (CurrentDraw + 1) % _DownMove.Count;
+                CurrentDraw = (CurrentDraw + 1) % CurrentRecList.Count;
                 Direction = Direction.Down;
-                CurrentRect = _DownMove[CurrentDraw];
+                CurrentAnimation = "DownMove";
+                CurrentRecList = StringToSourceRecList["DownMove"];
+                CurrentRect = CurrentRecList[CurrentDraw];
             }
             else if (Math.Sign(dy) == -1 && Direction != Direction.Up)
             {
-                CurrentDraw = (CurrentDraw + 1) % _UpMove.Count;
+                CurrentDraw = (CurrentDraw + 1) % CurrentRecList.Count;
                 Direction = Direction.Up;
-                CurrentRect = _UpMove[CurrentDraw];
+                CurrentAnimation = "UpMove";
+                CurrentRecList = StringToSourceRecList["UpMove"];
+                CurrentRect = CurrentRecList[CurrentDraw];
             }
         }
 
@@ -99,56 +105,115 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
             if (NextAnimationTickMS <= 0)
             {
                 NextAnimationTickMS = 250;
-                if (Direction == Direction.Left)
-                {
-                    CurrentDraw = (CurrentDraw + 1) % _LeftMove.Count;
-                    CurrentRect = _LeftMove[CurrentDraw];
-                }
-                else if (Direction == Direction.Right)
-                {
-                    CurrentDraw = (CurrentDraw + 1) % _RightMove.Count;
-                    CurrentRect = _RightMove[CurrentDraw];
-                }
-                else if (Direction == Direction.Down)
-                {
-                    CurrentDraw = (CurrentDraw + 1) % _DownMove.Count;
-                    CurrentRect = _DownMove[CurrentDraw];
-                }
-                else if (Direction == Direction.Up)
-                {
-                    CurrentDraw = (CurrentDraw + 1) % _UpMove.Count;
-                    CurrentRect = _UpMove[CurrentDraw];
-                }
+
+                CurrentDraw = (CurrentDraw + 1) % CurrentRecList.Count;
+                CurrentRect = CurrentRecList[CurrentDraw];
             }
         }
 
-        public void UpdateSprite(SharedGameState shareState, int timeMS, double dx, double dy)
+        public void UpdateSprite(SharedGameState shareState, int timeMS, double dx, double dy, string SpecialAnimation = null)
         {
             UpdateDirection(dx, dy);
+            switch (SpecialAnimation)
+            {
+                case "ChopWood":
+                    SpriteSheetName = StringToSourceFileAndRecList["ChopWood"].Item1;
+                    CurrentRecList = StringToSourceFileAndRecList["ChopWood"].Item2;
+                    CurrentRect = CurrentRecList[CurrentDraw];
+                    break;
+                case "ChopTreeUp":
+                    SpriteSheetName = StringToSourceFileAndRecList["ChopTreeUp"].Item1;
+                    CurrentRecList = StringToSourceFileAndRecList["ChopTreeUp"].Item2;
+                    CurrentRect = CurrentRecList[CurrentDraw];
+                    break;
+                case "ChopTreeDown":
+                    SpriteSheetName = StringToSourceFileAndRecList["ChopTreeDown"].Item1;
+                    CurrentRecList = StringToSourceFileAndRecList["ChopTreeDown"].Item2;
+                    CurrentRect = CurrentRecList[CurrentDraw];
+                    break;
+                case "ChopTreeLeft":
+                    SpriteSheetName = StringToSourceFileAndRecList["ChopTreeLeft"].Item1;
+                    CurrentRecList = StringToSourceFileAndRecList["ChopTreeLeft"].Item2;
+                    CurrentRect = CurrentRecList[CurrentDraw];
+                    break;
+                case "ChopTreeRight":
+                    SpriteSheetName = StringToSourceFileAndRecList["ChopTreeRight"].Item1;
+                    CurrentRecList = StringToSourceFileAndRecList["ChopTreeRight"].Item2;
+                    CurrentRect = CurrentRecList[CurrentDraw];
+                    break;
+            }
             UpdateAnimation(timeMS);
+        }
+
+        public void Reset(Direction? direction = null)
+        {
+            if (direction.HasValue)
+            {
+                switch (direction)
+                {
+                    case Direction.Up:
+                        CurrentAnimation = "UpMove";
+                        SpriteSheetName = StringToSourceFileAndRecList["UpMove"].Item1;
+                        CurrentRecList = StringToSourceFileAndRecList["UpMove"].Item2;
+                        CurrentRect = CurrentRecList[0];
+                        break;
+                    case Direction.Down:
+                        CurrentAnimation = "DownMove";
+                        SpriteSheetName = StringToSourceFileAndRecList["DownMove"].Item1;
+                        CurrentRecList = StringToSourceFileAndRecList["DownMove"].Item2;
+                        CurrentRect = CurrentRecList[0];
+                        break;
+                    case Direction.Left:
+                        CurrentAnimation = "LeftMove";
+                        SpriteSheetName = StringToSourceFileAndRecList["LeftMove"].Item1;
+                        CurrentRecList = StringToSourceFileAndRecList["LeftMove"].Item2;
+                        CurrentRect = CurrentRecList[0];
+                        break;
+                    case Direction.Right:
+                        CurrentAnimation = "RightMove";
+                        SpriteSheetName = StringToSourceFileAndRecList["RightMove"].Item1;
+                        CurrentRecList = StringToSourceFileAndRecList["RightMove"].Item2;
+                        CurrentRect = CurrentRecList[0];
+                        break;
+                }
+            }
+
+            CurrentDraw = 0;
+            NextAnimationTickMS = 250;
         }
 
         public void MoveComplete(SharedGameState shareState)
         {
-            if (Direction == Direction.Down)
+            switch (Direction)
             {
-                CurrentDraw = 0;
-                CurrentRect = _DownMove[0];
-            }
-            else if (Direction == Direction.Up)
-            {
-                CurrentDraw = 0;
-                CurrentRect = _UpMove[0];
-            }
-            else if (Direction == Direction.Right)
-            {
-                CurrentDraw = 0;
-                CurrentRect = _RightMove[0];
-            }
-            else if (Direction == Direction.Left)
-            {
-                CurrentDraw = 0;
-                CurrentRect = _LeftMove[0];
+                case Direction.Down:
+                    CurrentDraw = 0;
+                    CurrentAnimation = "DownMove";
+                    SpriteSheetName = StringToSourceFileAndRecList["DownMove"].Item1;
+                    CurrentRecList = StringToSourceFileAndRecList["DownMove"].Item2;
+                    CurrentRect = CurrentRecList[0];
+                    break;
+                case Direction.Up:
+                    CurrentDraw = 0;
+                    CurrentAnimation = "UpMove";
+                    SpriteSheetName = StringToSourceFileAndRecList["UpMove"].Item1;
+                    CurrentRecList = StringToSourceFileAndRecList["UpMove"].Item2;
+                    CurrentRect = CurrentRecList[0];
+                    break;
+                case Direction.Right:
+                    CurrentDraw = 0;
+                    CurrentAnimation = "RightMove";
+                    SpriteSheetName = StringToSourceFileAndRecList["RightMove"].Item1;
+                    CurrentRecList = StringToSourceFileAndRecList["RightMove"].Item2;
+                    CurrentRect = CurrentRecList[0];
+                    break;
+                case Direction.Left:
+                    CurrentDraw = 0;
+                    CurrentAnimation = "LeftMove";
+                    SpriteSheetName = StringToSourceFileAndRecList["LeftMove"].Item1;
+                    CurrentRecList = StringToSourceFileAndRecList["LeftMove"].Item2;
+                    CurrentRect = CurrentRecList[0];
+                    break;
             }
         }
 

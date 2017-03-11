@@ -18,11 +18,14 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         private SpriteSheetAnimationRenderer AnimationRenderer;
         private const double SpeedConst = 0.005;
         private static CollisionMeshD2D _CollisionMesh;
-        
-        static List<Rectangle> DownMove = new List<Rectangle> { new Rectangle(0, 0, 32, 32), new Rectangle(32, 0, 32, 32), new Rectangle(64, 0, 32, 32), new Rectangle(96, 0, 32, 32) };
-        static List<Rectangle> UpMove = new List<Rectangle> { new Rectangle(0, 32, 32, 32), new Rectangle(32, 32, 32, 32), new Rectangle(64, 32, 32, 32), new Rectangle(96, 32, 32, 32) };
-        static List<Rectangle> RightMove = new List<Rectangle> { new Rectangle(0, 64, 32, 32), new Rectangle(32, 64, 32, 32), new Rectangle(64, 64, 32, 32), new Rectangle(96, 64, 32, 32) };
-        static List<Rectangle> LeftMove = new List<Rectangle> { new Rectangle(0, 96, 32, 32), new Rectangle(32, 96, 32, 32), new Rectangle(64, 96, 32, 32), new Rectangle(96, 96, 32, 32) };
+
+        static private Dictionary<string, Tuple<string, List<Rectangle>>> StringToSourceRecList = new Dictionary<string, Tuple<string, List<Rectangle>>>()
+        {
+            { "DownMove", new Tuple<string, List<Rectangle>> ( "CaveManWorker/CaveManWorker 32x32", new List<Rectangle> { new Rectangle(0, 0, 32, 32), new Rectangle(32, 0, 32, 32), new Rectangle(64, 0, 32, 32), new Rectangle(96, 0, 32, 32) } ) },
+            { "UpMove", new Tuple<string, List<Rectangle>> ( "CaveManWorker/CaveManWorker 32x32", new List<Rectangle> { new Rectangle(0, 32, 32, 32), new Rectangle(32, 32, 32, 32), new Rectangle(64, 32, 32, 32), new Rectangle(96, 32, 32, 32) } ) },
+            { "RightMove", new Tuple<string, List<Rectangle>> ( "CaveManWorker/CaveManWorker 32x32", new List<Rectangle> { new Rectangle(0, 64, 32, 32), new Rectangle(32, 64, 32, 32), new Rectangle(64, 64, 32, 32), new Rectangle(96, 64, 32, 32) } ) },
+            { "LeftMove",  new Tuple<string, List<Rectangle>> ( "CaveManWorker/CaveManWorker 32x32", new List<Rectangle> { new Rectangle(0, 96, 32, 32), new Rectangle(32, 96, 32, 32), new Rectangle(64, 96, 32, 32), new Rectangle(96, 96, 32, 32) } ) },
+        };
 
         public EntityInventory Inventory { get; set; }
 
@@ -35,7 +38,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         {
             Inventory = new EntityInventory(6);
             Inventory.SetStackSizeFor(Material.Sapling, 5);
-            AnimationRenderer = new SpriteSheetAnimationRenderer("CaveManWorker/CaveManWorker 32x32", DownMove, UpMove, RightMove, LeftMove);
+            AnimationRenderer = new SpriteSheetAnimationRenderer(StringToSourceRecList);
         }
 
         /// <summary>
@@ -43,7 +46,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         /// </summary>
         public CaveManWorker() : base()
         {
-            AnimationRenderer = new SpriteSheetAnimationRenderer("CaveManWorker/CaveManWorker 32x32", DownMove, UpMove, RightMove, LeftMove);
+            AnimationRenderer = new SpriteSheetAnimationRenderer(StringToSourceRecList);
             CollisionMesh = _CollisionMesh;
             SpeedUnitsPerMS = SpeedConst;
         }
