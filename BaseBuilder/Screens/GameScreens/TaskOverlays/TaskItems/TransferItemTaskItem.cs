@@ -123,6 +123,14 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             ByRecievingInventory,
             ByOurInventory
         }
+
+        protected enum ResultDeciderType
+        {
+            OurItems,
+            TheirItems,
+            ItemsTransferred
+        }
+
         protected class TransferRestrictorComp
         {
             protected TransferItemTaskItem Outer;
@@ -814,6 +822,43 @@ far.";
         protected List<TransferRestrictorComp> RestrictorsToDelete;
         protected Button AddRestrictorButton;
 
+        protected Text ResultDeciderComboLabel;
+        protected ComboBox<ResultDeciderType> ResultDeciderCombo;
+
+        protected Text ResultDeciderOurItems_Description;
+        protected Text ResultDeciderOurItems_TypeCheckLabel;
+        protected CheckBox ResultDeciderOurItems_TypeCheck;
+        protected Text ResultDeciderOurItems_TypeBoxLabel;
+        protected ComboBox<Material> ResultDeciderOurItems_TypeBox;
+        protected Text ResultDeciderOurItems_RepeatFailGroupLabel;
+        protected Text ResultDeciderOurItems_RepeatRadioLabel;
+        protected RadioButton ResultDeciderOurItems_RepeatRadio;
+        protected Text ResultDeciderOurItems_FailRadioLabel;
+        protected RadioButton ResultDeciderOurItems_FailRadio;
+        protected Text ResultDeciderOurItems_FieldLabel;
+        protected TextField ResultDeciderOurItems_Field;
+
+        protected Text ResultDeciderTheirItems_Description;
+        protected Text ResultDeciderTheirItems_TypeCheckLabel;
+        protected CheckBox ResultDeciderTheirItems_TypeCheck;
+        protected Text ResultDeciderTheirItems_TypeBoxLabel;
+        protected ComboBox<Material> ResultDeciderTheirItems_TypeBox;
+        protected Text ResultDeciderTheirItems_RepeatFailGroupLabel;
+        protected Text ResultDeciderTheirItems_RepeatRadioLabel;
+        protected RadioButton ResultDeciderTheirItems_RepeatRadio;
+        protected Text ResultDeciderTheirItems_FailRadioLabel;
+        protected RadioButton ResultDeciderTheirItems_FailRadio;
+        protected Text ResultDeciderTheirItems_FieldLabel;
+        protected TextField ResultDeciderTheirItems_Field;
+
+        protected Text ResultDeciderItemsTransferred_Description;
+        protected Text ResultDeciderItemsTransferred_TypeCheckLabel;
+        protected CheckBox ResultDeciderItemsTransferred_TypeCheck;
+        protected Text ResultDeciderItemsTransferred_TypeBoxLabel;
+        protected ComboBox<Material> ResultDeciderItemsTransferred_TypeBox;
+        protected Text ResultDeciderItemsTransferred_FieldLabel;
+        protected TextField ResultDeciderItemsTransferred_Field;
+
         /// <summary>
         /// Contains all of the components  of this task item (an alternative
         /// for going through each thing above one by one)
@@ -1209,6 +1254,356 @@ behavior trees.", renderContext.DefaultFont, Color.White);
             {
                 restrictor.InitializeThings(renderContext);
             }
+
+            if(ResultDeciderComboLabel == null)
+            {
+                ResultDeciderComboLabel = new Text(new Point(0, 0), "Result Decider", renderContext.DefaultFont, Color.Black);
+                Components.Add(ResultDeciderComboLabel);
+            }
+
+            if(ResultDeciderCombo == null)
+            {
+                ResultDeciderCombo = new ComboBox<ResultDeciderType>(new List<ComboBoxItem<ResultDeciderType>> {
+                    new ComboBoxItem<ResultDeciderType>(renderContext.DefaultFont, "Our Items", ResultDeciderType.OurItems),
+                    new ComboBoxItem<ResultDeciderType>(renderContext.DefaultFont, "Targets Items", ResultDeciderType.TheirItems),
+                    new ComboBoxItem<ResultDeciderType>(renderContext.DefaultFont, "Items Transferred", ResultDeciderType.ItemsTransferred),
+                }, new Point(200, 30));
+
+                ResultDeciderCombo.Selected = null;
+
+                ResultDeciderCombo.HoveredChanged += (sender, args) => OnInspectRedrawRequired();
+                ResultDeciderCombo.ScrollChanged += (sender, args) => OnInspectRedrawRequired();
+                ResultDeciderCombo.SelectedChanged += (sender, oldSelected) =>
+                {
+                    if(oldSelected != null)
+                    {
+                        switch(oldSelected.Value)
+                        {
+                            case ResultDeciderType.OurItems:
+                                Components.Remove(ResultDeciderOurItems_Description);
+                                Components.Remove(ResultDeciderOurItems_TypeCheck);
+                                Components.Remove(ResultDeciderOurItems_TypeCheckLabel);
+
+                                if(ResultDeciderOurItems_TypeCheck.Pushed)
+                                {
+                                    Components.Remove(ResultDeciderOurItems_TypeBoxLabel);
+                                    Components.Remove(ResultDeciderOurItems_TypeBox);
+                                }
+
+                                Components.Remove(ResultDeciderOurItems_RepeatFailGroupLabel);
+                                Components.Remove(ResultDeciderOurItems_RepeatRadio);
+                                Components.Remove(ResultDeciderOurItems_RepeatRadioLabel);
+                                Components.Remove(ResultDeciderOurItems_FailRadio);
+                                Components.Remove(ResultDeciderOurItems_FailRadioLabel);
+                                Components.Remove(ResultDeciderOurItems_Field);
+                                Components.Remove(ResultDeciderOurItems_FieldLabel);
+                                break;
+                            case ResultDeciderType.TheirItems:
+                                Components.Remove(ResultDeciderTheirItems_Description);
+                                Components.Remove(ResultDeciderTheirItems_TypeCheck);
+                                Components.Remove(ResultDeciderTheirItems_TypeCheckLabel);
+
+                                if(ResultDeciderTheirItems_TypeCheck.Pushed)
+                                {
+                                    Components.Remove(ResultDeciderTheirItems_TypeBoxLabel);
+                                    Components.Remove(ResultDeciderTheirItems_TypeBox);
+                                }
+
+                                Components.Remove(ResultDeciderTheirItems_RepeatFailGroupLabel);
+                                Components.Remove(ResultDeciderTheirItems_RepeatRadio);
+                                Components.Remove(ResultDeciderTheirItems_RepeatRadioLabel);
+                                Components.Remove(ResultDeciderTheirItems_FailRadio);
+                                Components.Remove(ResultDeciderTheirItems_FailRadioLabel);
+                                Components.Remove(ResultDeciderTheirItems_Field);
+                                Components.Remove(ResultDeciderTheirItems_FieldLabel);
+                                break;
+                            case ResultDeciderType.ItemsTransferred:
+                                Components.Remove(ResultDeciderItemsTransferred_Description);
+                                break;
+                        }
+                    }
+
+                    switch(ResultDeciderCombo.Selected.Value)
+                    {
+                        case ResultDeciderType.OurItems:
+                            Components.Add(ResultDeciderOurItems_Description);
+                            Components.Add(ResultDeciderOurItems_TypeCheck);
+                            Components.Add(ResultDeciderOurItems_TypeCheckLabel);
+
+                            if (ResultDeciderOurItems_TypeCheck.Pushed)
+                            {
+                                Components.Add(ResultDeciderOurItems_TypeBoxLabel);
+                                Components.Add(ResultDeciderOurItems_TypeBox);
+                            }
+
+                            Components.Add(ResultDeciderOurItems_RepeatFailGroupLabel);
+                            Components.Add(ResultDeciderOurItems_RepeatRadio);
+                            Components.Add(ResultDeciderOurItems_RepeatRadioLabel);
+                            Components.Add(ResultDeciderOurItems_FailRadio);
+                            Components.Add(ResultDeciderOurItems_FailRadioLabel);
+                            Components.Add(ResultDeciderOurItems_Field);
+                            Components.Add(ResultDeciderOurItems_FieldLabel);
+                            break;
+                        case ResultDeciderType.TheirItems:
+                            Components.Add(ResultDeciderTheirItems_Description);
+                            Components.Add(ResultDeciderTheirItems_TypeCheck);
+                            Components.Add(ResultDeciderTheirItems_TypeCheckLabel);
+
+                            if(ResultDeciderTheirItems_TypeCheck.Pushed)
+                            {
+                                Components.Add(ResultDeciderTheirItems_TypeBoxLabel);
+                                Components.Add(ResultDeciderTheirItems_TypeBox);
+                            }
+
+                            Components.Add(ResultDeciderTheirItems_RepeatFailGroupLabel);
+                            Components.Add(ResultDeciderTheirItems_RepeatRadio);
+                            Components.Add(ResultDeciderTheirItems_RepeatRadioLabel);
+                            Components.Add(ResultDeciderTheirItems_FailRadio);
+                            Components.Add(ResultDeciderTheirItems_FailRadioLabel);
+                            Components.Add(ResultDeciderTheirItems_Field);
+                            Components.Add(ResultDeciderTheirItems_FieldLabel);
+                            break;
+                        case ResultDeciderType.ItemsTransferred:
+                            Components.Add(ResultDeciderItemsTransferred_Description);
+                            break;
+                    }
+
+                    Reload = true;
+                    OnInspectRedrawRequired();
+                };
+
+                Components.Add(ResultDeciderCombo);
+            }
+
+            if(ResultDeciderOurItems_Description == null)
+            {
+                ResultDeciderOurItems_Description = new Text(new Point(0, 0), @"The result of the transfer will not be success 
+until our inventory has a certain number of items,
+optionally of a specific type. You can choose
+between either returning failure or running 
+until that happens.", renderContext.DefaultFont, Color.White);
+            }
+
+            if(ResultDeciderOurItems_TypeCheckLabel == null)
+            {
+                ResultDeciderOurItems_TypeCheckLabel = new Text(new Point(0, 0), "By material", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(ResultDeciderOurItems_TypeCheck == null)
+            {
+                ResultDeciderOurItems_TypeCheck = new CheckBox(new Point(0, 0));
+
+                ResultDeciderOurItems_TypeCheck.PushedChanged += (sender, args) =>
+                {
+                    if(ResultDeciderOurItems_TypeCheck.Pushed)
+                    {
+                        Components.Add(ResultDeciderOurItems_TypeBoxLabel);
+                        Components.Add(ResultDeciderOurItems_TypeBox);
+                    }else
+                    {
+                        Components.Remove(ResultDeciderOurItems_TypeBoxLabel);
+                        Components.Remove(ResultDeciderOurItems_TypeBox);
+                    }
+
+                    Reload = true;
+                    OnInspectRedrawRequired();
+                };
+            }
+
+            if(ResultDeciderOurItems_TypeBoxLabel == null)
+            {
+                ResultDeciderOurItems_TypeBoxLabel = new Text(new Point(0, 0), "Material", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(ResultDeciderOurItems_TypeBox == null)
+            {
+                ResultDeciderOurItems_TypeBox = new ComboBox<Material>(MaterialComboBoxItem.AllMaterialsWithFont(renderContext.DefaultFont), new Point(250, 34));
+
+                ResultDeciderOurItems_TypeBox.HoveredChanged += (sender, args) => OnInspectRedrawRequired();
+                ResultDeciderOurItems_TypeBox.ScrollChanged += (sender, args) => OnInspectRedrawRequired();
+                ResultDeciderOurItems_TypeBox.ExpandedChanged += (sender, args) => OnInspectRedrawRequired();
+                ResultDeciderOurItems_TypeBox.SelectedChanged += (sender, oldSelected) => OnInspectRedrawRequired();
+            }
+
+            if(ResultDeciderOurItems_RepeatFailGroupLabel == null)
+            {
+                ResultDeciderOurItems_RepeatFailGroupLabel = new Text(new Point(0, 0), "Result if condition not met", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(ResultDeciderOurItems_RepeatRadioLabel == null)
+            {
+                ResultDeciderOurItems_RepeatRadioLabel = new Text(new Point(0, 0), "Running", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(ResultDeciderOurItems_FailRadioLabel == null)
+            {
+                ResultDeciderOurItems_FailRadioLabel = new Text(new Point(0, 0), "Failure", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(ResultDeciderOurItems_RepeatRadio == null || ResultDeciderOurItems_FailRadio == null)
+            {
+                ResultDeciderOurItems_RepeatRadio?.Dispose();
+                ResultDeciderOurItems_RepeatRadio = null;
+                ResultDeciderOurItems_FailRadio?.Dispose();
+                ResultDeciderOurItems_FailRadio = null;
+
+                ResultDeciderOurItems_RepeatRadio = new RadioButton(new Point(0, 0));
+                ResultDeciderOurItems_FailRadio = new RadioButton(new Point(0, 0));
+
+                var grp = new RadioButtonGroup(new List<RadioButton> { ResultDeciderOurItems_FailRadio, ResultDeciderOurItems_RepeatRadio });
+                grp.Attach();
+
+                ResultDeciderOurItems_RepeatRadio.PushedChanged += (sender, args) => OnInspectRedrawRequired();
+                ResultDeciderOurItems_FailRadio.PushedChanged += (sender, args) => OnInspectRedrawRequired();
+            }
+
+            if(ResultDeciderOurItems_FieldLabel == null)
+            {
+                ResultDeciderOurItems_FieldLabel = new Text(new Point(0, 0), PickupRadio.Pushed ? "At least" : "At most", renderContext.DefaultFont, Color.Black);
+
+                EventHandler tmp = (sender, args) =>
+                {
+                    ResultDeciderOurItems_FieldLabel.Content = PickupRadio.Pushed ? "At least" : "At most";
+
+                    Reload = true;
+                    OnInspectRedrawRequired();
+                };
+
+                PickupRadio.PushedChanged += tmp;
+                DropoffRadio.PushedChanged += tmp;
+
+                ResultDeciderOurItems_FieldLabel.Disposing += (sender, args) =>
+                {
+                    if(PickupRadio != null)
+                        PickupRadio.PushedChanged -= tmp;
+
+                    if(DropoffRadio != null)
+                        DropoffRadio.PushedChanged -= tmp;
+                };
+            }
+
+            if(ResultDeciderOurItems_Field == null)
+            {
+                ResultDeciderOurItems_Field = CreateTextField(150, 30);
+            }
+
+            if(ResultDeciderTheirItems_Description == null)
+            {
+                ResultDeciderTheirItems_Description = new Text(new Point(0, 0), @"The result of the transfer will not be success
+until their inventory has a certain number of 
+items, optionally of a specific type. You can
+choose between either returning failure or 
+running until that happens.", renderContext.DefaultFont, Color.White);
+            }
+            
+            if(ResultDeciderTheirItems_TypeCheckLabel == null)
+            {
+                ResultDeciderTheirItems_TypeCheckLabel = new Text(new Point(0, 0), "By material", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(ResultDeciderTheirItems_TypeCheck == null)
+            {
+                ResultDeciderTheirItems_TypeCheck = new CheckBox(new Point(0, 0));
+
+                ResultDeciderTheirItems_TypeCheck.PushedChanged += (sender, args) =>
+                {
+                    if(ResultDeciderTheirItems_TypeCheck.Pushed)
+                    {
+                        Components.Add(ResultDeciderTheirItems_TypeBox);
+                        Components.Add(ResultDeciderTheirItems_TypeBoxLabel);
+                    }else
+                    {
+                        Components.Remove(ResultDeciderTheirItems_TypeBox);
+                        Components.Remove(ResultDeciderTheirItems_TypeBoxLabel);
+                    }
+                };
+            }
+
+            if(ResultDeciderTheirItems_TypeBoxLabel == null)
+            {
+                ResultDeciderTheirItems_TypeBoxLabel = new Text(new Point(0, 0), "Material", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(ResultDeciderTheirItems_TypeBox == null)
+            {
+                ResultDeciderTheirItems_TypeBox = new ComboBox<Material>(MaterialComboBoxItem.AllMaterialsWithFont(renderContext.DefaultFont), new Point(250, 34));
+
+                ResultDeciderTheirItems_TypeBox.HoveredChanged += (sender, args) => OnInspectRedrawRequired();
+                ResultDeciderTheirItems_TypeBox.ScrollChanged += (sender, args) => OnInspectRedrawRequired();
+                ResultDeciderTheirItems_TypeBox.ExpandedChanged += (sender, args) => OnInspectRedrawRequired();
+                ResultDeciderTheirItems_TypeBox.SelectedChanged += (sender, args) => OnInspectRedrawRequired();
+            }
+
+            if(ResultDeciderTheirItems_RepeatFailGroupLabel == null)
+            {
+                ResultDeciderTheirItems_RepeatFailGroupLabel = new Text(new Point(0, 0), "Result if condition not met", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(ResultDeciderTheirItems_RepeatRadioLabel == null)
+            {
+                ResultDeciderTheirItems_RepeatRadioLabel = new Text(new Point(0, 0), "Running", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(ResultDeciderTheirItems_FailRadioLabel == null)
+            {
+                ResultDeciderTheirItems_FailRadioLabel = new Text(new Point(0, 0), "Failure", renderContext.DefaultFont, Color.Black);
+            }
+
+            if(ResultDeciderTheirItems_FailRadio == null || ResultDeciderTheirItems_RepeatRadio == null)
+            {
+                ResultDeciderTheirItems_RepeatRadio?.Dispose();
+                ResultDeciderTheirItems_RepeatRadio = null;
+                ResultDeciderTheirItems_FailRadio?.Dispose();
+                ResultDeciderTheirItems_FailRadio = null;
+
+                ResultDeciderTheirItems_RepeatRadio = new RadioButton(new Point(0, 0));
+                ResultDeciderTheirItems_FailRadio = new RadioButton(new Point(0, 0));
+
+                var grp = new RadioButtonGroup(new List<RadioButton> { ResultDeciderTheirItems_FailRadio, ResultDeciderTheirItems_RepeatRadio });
+                grp.Attach();
+
+                ResultDeciderTheirItems_RepeatRadio.PushedChanged += (sender, args) => OnInspectRedrawRequired();
+                ResultDeciderTheirItems_FailRadio.PushedChanged += (sender, args) => OnInspectRedrawRequired();
+            }
+
+            if(ResultDeciderTheirItems_FieldLabel == null)
+            {
+                ResultDeciderTheirItems_FieldLabel = new Text(new Point(0, 0), PickupRadio.Pushed ? "At most" : "At least", renderContext.DefaultFont, Color.Black);
+
+                EventHandler tmp = (sender, args) =>
+                {
+                    ResultDeciderTheirItems_FieldLabel.Content = PickupRadio.Pushed ? "At most" : "At least";
+
+                    Reload = true;
+                    OnInspectRedrawRequired();
+                };
+
+                PickupRadio.PushedChanged += tmp;
+                DropoffRadio.PushedChanged += tmp;
+
+                ResultDeciderTheirItems_FieldLabel.Disposing += (sender, args) =>
+                {
+                    if (PickupRadio != null)
+                        PickupRadio.PushedChanged -= tmp;
+
+                    if (DropoffRadio != null)
+                        DropoffRadio.PushedChanged -= tmp;
+                };
+            }
+
+            if(ResultDeciderTheirItems_Field == null)
+            {
+                ResultDeciderTheirItems_Field = CreateTextField(150, 30);
+            }
+
+            if(ResultDeciderItemsTransferred_Description == null)
+            {
+                ResultDeciderItemsTransferred_Description = new Text(new Point(0, 0), @"The result of the transfer will not be a success
+until a certain number of items have been 
+transferred, optionally of a specific type. You
+can choose between either returning failure or 
+running until that happens.", renderContext.DefaultFont, Color.White);
+            }
         }
 
         /// <summary>
@@ -1328,6 +1723,118 @@ behavior trees.", renderContext.DefaultFont, Color.White);
 
             height += AddRestrictorButton.Size.Y + 3;
 
+            height += ResultDeciderComboLabel.Size.Y + 3;
+            ResultDeciderCombo.Center = new Point(width / 2, height + ResultDeciderCombo.Size.Y / 2);
+            ResultDeciderComboLabel.Center = GetCenterForTopLeftLabel(ResultDeciderComboLabel, ResultDeciderCombo);
+            height += ResultDeciderCombo.Size.Y + 3;
+
+            if(ResultDeciderCombo.Selected != null)
+            {
+                int requiredHeight, requiredWidth;
+                int x, y;
+                switch(ResultDeciderCombo.Selected.Value)
+                {
+                    case ResultDeciderType.OurItems:
+                        ResultDeciderOurItems_Description.Center = new Point(width / 2, height + ResultDeciderOurItems_Description.Size.Y / 2);
+                        height += ResultDeciderOurItems_Description.Size.Y + 3;
+
+                        requiredHeight = Math.Max(ResultDeciderOurItems_TypeCheck.Size.Y, ResultDeciderOurItems_TypeCheckLabel.Size.Y);
+                        requiredWidth = ResultDeciderOurItems_TypeCheck.Size.X + 3 + ResultDeciderOurItems_TypeCheckLabel.Size.X;
+                        x = (width - requiredWidth) / 2;
+                        y = height + requiredHeight / 2;
+                        ResultDeciderOurItems_TypeCheck.Center = new Point(x + ResultDeciderOurItems_TypeCheck.Size.X / 2, y);
+                        x += ResultDeciderOurItems_TypeCheck.Size.X + 3;
+                        ResultDeciderOurItems_TypeCheckLabel.Center = new Point(x + ResultDeciderOurItems_TypeCheckLabel.Size.X / 2, y);
+
+                        height += requiredHeight + 3;
+
+                        if (ResultDeciderOurItems_TypeCheck.Pushed)
+                        {
+                            height += ResultDeciderOurItems_TypeBoxLabel.Size.Y + 3;
+                            ResultDeciderOurItems_TypeBox.Center = new Point(width / 2, height + ResultDeciderOurItems_TypeBox.Size.Y / 2);
+                            ResultDeciderOurItems_TypeBoxLabel.Center = GetCenterForTopLeftLabel(ResultDeciderOurItems_TypeBoxLabel, ResultDeciderOurItems_TypeBox);
+                            height += ResultDeciderOurItems_TypeBox.Size.Y + 3;
+                        }
+
+                        height += 5;
+
+                        requiredHeight = Math.Max(Math.Max(ResultDeciderOurItems_FailRadio.Size.Y, ResultDeciderOurItems_RepeatRadio.Size.Y), Math.Max(ResultDeciderOurItems_FailRadioLabel.Size.Y, ResultDeciderOurItems_RepeatRadioLabel.Size.Y));
+                        requiredWidth = ResultDeciderOurItems_RepeatRadio.Size.X + 3 + ResultDeciderOurItems_RepeatRadioLabel.Size.X + 7 + ResultDeciderOurItems_FailRadio.Size.X + 3 + ResultDeciderOurItems_FailRadioLabel.Size.X;
+
+
+                        x = (width - requiredWidth) / 2;
+                        ResultDeciderOurItems_RepeatFailGroupLabel.Center = new Point(x + ResultDeciderOurItems_RepeatFailGroupLabel.Size.X / 2, height + ResultDeciderOurItems_RepeatFailGroupLabel.Size.Y / 2);
+                        height += ResultDeciderOurItems_RepeatFailGroupLabel.Size.Y + 3;
+
+                        y = height + requiredHeight / 2;
+                        ResultDeciderOurItems_RepeatRadio.Center = new Point(x + ResultDeciderOurItems_RepeatRadio.Size.X / 2, y);
+                        x += ResultDeciderOurItems_RepeatRadio.Size.X + 3;
+                        ResultDeciderOurItems_RepeatRadioLabel.Center = new Point(x + ResultDeciderOurItems_RepeatRadioLabel.Size.X / 2, y);
+                        x += ResultDeciderOurItems_RepeatRadioLabel.Size.X + 7;
+                        ResultDeciderOurItems_FailRadio.Center = new Point(x + ResultDeciderOurItems_FailRadio.Size.X / 2, y);
+                        x += ResultDeciderOurItems_FailRadio.Size.X + 3;
+                        ResultDeciderOurItems_FailRadioLabel.Center = new Point(x + ResultDeciderOurItems_FailRadioLabel.Size.X / 2, y);
+                        height += requiredHeight + 3;
+
+                        height += ResultDeciderOurItems_FieldLabel.Size.Y + 3;
+                        ResultDeciderOurItems_Field.Center = new Point(width / 2, height + ResultDeciderOurItems_Field.Size.Y / 2);
+                        ResultDeciderOurItems_FieldLabel.Center = GetCenterForTopLeftLabel(ResultDeciderOurItems_FieldLabel, ResultDeciderOurItems_Field);
+                        height += ResultDeciderOurItems_Field.Size.Y + 3;
+                        break;
+                    case ResultDeciderType.TheirItems:
+                        ResultDeciderTheirItems_Description.Center = new Point(width / 2, height + ResultDeciderTheirItems_Description.Size.Y / 2);
+                        height += ResultDeciderTheirItems_Description.Size.Y + 3;
+
+                        requiredHeight = Math.Max(ResultDeciderTheirItems_TypeCheck.Size.Y, ResultDeciderTheirItems_TypeCheckLabel.Size.Y);
+                        requiredWidth = ResultDeciderTheirItems_TypeCheck.Size.X + 3 + ResultDeciderTheirItems_TypeCheckLabel.Size.X;
+                        x = (width - requiredWidth) / 2;
+                        y = height + requiredHeight / 2;
+                        ResultDeciderTheirItems_TypeCheck.Center = new Point(x + ResultDeciderTheirItems_TypeCheck.Size.X / 2, y);
+                        x += ResultDeciderTheirItems_TypeCheck.Size.X + 3;
+                        ResultDeciderTheirItems_TypeCheckLabel.Center = new Point(x + ResultDeciderTheirItems_TypeCheckLabel.Size.X / 2, y);
+
+                        height += requiredHeight + 3;
+
+                        if (ResultDeciderTheirItems_TypeCheck.Pushed)
+                        {
+                            height += ResultDeciderTheirItems_TypeBoxLabel.Size.Y + 3;
+                            ResultDeciderTheirItems_TypeBox.Center = new Point(width / 2, height + ResultDeciderTheirItems_TypeBox.Size.Y / 2);
+                            ResultDeciderTheirItems_TypeBoxLabel.Center = GetCenterForTopLeftLabel(ResultDeciderTheirItems_TypeBoxLabel, ResultDeciderTheirItems_TypeBox);
+                            height += ResultDeciderTheirItems_TypeBox.Size.Y + 3;
+                        }
+
+                        height += 5;
+
+                        requiredHeight = Math.Max(Math.Max(ResultDeciderTheirItems_FailRadio.Size.Y, ResultDeciderTheirItems_RepeatRadio.Size.Y), Math.Max(ResultDeciderTheirItems_FailRadioLabel.Size.Y, ResultDeciderTheirItems_RepeatRadioLabel.Size.Y));
+                        requiredWidth = ResultDeciderTheirItems_RepeatRadio.Size.X + 3 + ResultDeciderTheirItems_RepeatRadioLabel.Size.X + 7 + ResultDeciderTheirItems_FailRadio.Size.X + 3 + ResultDeciderTheirItems_FailRadioLabel.Size.X;
+
+
+                        x = (width - requiredWidth) / 2;
+                        ResultDeciderTheirItems_RepeatFailGroupLabel.Center = new Point(x + ResultDeciderTheirItems_RepeatFailGroupLabel.Size.X / 2, height + ResultDeciderTheirItems_RepeatFailGroupLabel.Size.Y / 2);
+                        height += ResultDeciderTheirItems_RepeatFailGroupLabel.Size.Y + 3;
+
+                        y = height + requiredHeight / 2;
+                        ResultDeciderTheirItems_RepeatRadio.Center = new Point(x + ResultDeciderTheirItems_RepeatRadio.Size.X / 2, y);
+                        x += ResultDeciderTheirItems_RepeatRadio.Size.X + 3;
+                        ResultDeciderTheirItems_RepeatRadioLabel.Center = new Point(x + ResultDeciderTheirItems_RepeatRadioLabel.Size.X / 2, y);
+                        x += ResultDeciderTheirItems_RepeatRadioLabel.Size.X + 7;
+                        ResultDeciderTheirItems_FailRadio.Center = new Point(x + ResultDeciderTheirItems_FailRadio.Size.X / 2, y);
+                        x += ResultDeciderTheirItems_FailRadio.Size.X + 3;
+                        ResultDeciderTheirItems_FailRadioLabel.Center = new Point(x + ResultDeciderTheirItems_FailRadioLabel.Size.X / 2, y);
+                        height += requiredHeight + 3;
+
+                        height += ResultDeciderTheirItems_FieldLabel.Size.Y + 3;
+                        ResultDeciderTheirItems_Field.Center = new Point(width / 2, height + ResultDeciderTheirItems_Field.Size.Y / 2);
+                        ResultDeciderTheirItems_FieldLabel.Center = GetCenterForTopLeftLabel(ResultDeciderTheirItems_FieldLabel, ResultDeciderTheirItems_Field);
+                        height += ResultDeciderTheirItems_Field.Size.Y + 3;
+                        break;
+                        break;
+                    case ResultDeciderType.ItemsTransferred:
+                        ResultDeciderItemsTransferred_Description.Center = new Point(width / 2, height + ResultDeciderItemsTransferred_Description.Size.Y / 2);
+                        height += ResultDeciderItemsTransferred_Description.Size.Y + 3;
+                        break;
+                }
+            }
             height += 8;
             base.CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
             height += 150;
@@ -1335,7 +1842,7 @@ behavior trees.", renderContext.DefaultFont, Color.White);
 
         public override IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            return new EntityTransferItemTask(taskable as Container, -1, new List<ITransferRestrictor>(), new TransferResultDecider());
+            return new EntityTransferItemTask();
         }
 
         public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
@@ -1344,7 +1851,7 @@ behavior trees.", renderContext.DefaultFont, Color.White);
                 return false;
 
             if (PickupRadio == null)
-                return Task.IsValid();
+                return Task != null && Task.IsValid();
 
             if(PickupRadio.Pushed)
             {
@@ -1509,6 +2016,48 @@ behavior trees.", renderContext.DefaultFont, Color.White);
             AddRestrictorButton?.Dispose();
             AddRestrictorButton = null;
 
+            ResultDeciderComboLabel?.Dispose();
+            ResultDeciderComboLabel = null;
+
+            ResultDeciderCombo?.Dispose();
+            ResultDeciderCombo = null;
+
+            ResultDeciderOurItems_Description?.Dispose();
+            ResultDeciderOurItems_Description = null;
+
+            ResultDeciderOurItems_TypeCheckLabel?.Dispose();
+            ResultDeciderOurItems_TypeCheckLabel = null;
+
+            ResultDeciderOurItems_TypeCheck?.Dispose();
+            ResultDeciderOurItems_TypeCheck = null;
+
+            ResultDeciderOurItems_TypeBoxLabel?.Dispose();
+            ResultDeciderOurItems_TypeBoxLabel = null;
+
+            ResultDeciderOurItems_TypeBox?.Dispose();
+            ResultDeciderOurItems_TypeBox = null;
+
+            ResultDeciderOurItems_RepeatFailGroupLabel?.Dispose();
+            ResultDeciderOurItems_RepeatFailGroupLabel = null;
+
+            ResultDeciderOurItems_RepeatRadioLabel?.Dispose();
+            ResultDeciderOurItems_RepeatRadioLabel = null;
+
+            ResultDeciderOurItems_RepeatRadio?.Dispose();
+            ResultDeciderOurItems_RepeatRadio = null;
+
+            ResultDeciderOurItems_FailRadioLabel?.Dispose();
+            ResultDeciderOurItems_FailRadioLabel = null;
+
+            ResultDeciderOurItems_FailRadio?.Dispose();
+            ResultDeciderOurItems_FailRadio = null;
+
+            ResultDeciderOurItems_FieldLabel?.Dispose();
+            ResultDeciderOurItems_FieldLabel = null;
+
+            ResultDeciderOurItems_Field?.Dispose();
+            ResultDeciderOurItems_Field = null;
+            
             Restrictors.Clear();
             Components.Clear();
         }

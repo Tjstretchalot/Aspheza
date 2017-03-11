@@ -110,7 +110,7 @@
     <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\OnlyTransferMaterial.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\PreventTransferOfMaterial.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\TargetMinLeft.cs" />
-    <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\TransferIdentifier.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\TransferRestrictorIdentifier.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Bakery.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Farm.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\GoldOre.cs" />

@@ -145,7 +145,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
-            if (Child == null)
+            if (!IsValid())
                 return EntityTaskStatus.Failure;
 
             var result = Child.SimulateTimePassing(gameState, timeMS);
@@ -181,7 +181,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public bool IsValid()
         {
-            throw new NotImplementedException();
+            if (Child == null)
+                return false;
+
+            return Child.IsValid();
         }
     }
 }

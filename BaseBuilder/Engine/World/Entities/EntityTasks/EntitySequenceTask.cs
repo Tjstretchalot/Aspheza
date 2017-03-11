@@ -147,8 +147,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
-            if (Children.Count == 0)
-                return EntityTaskStatus.Success;
+            if (!IsValid())
+                return EntityTaskStatus.Failure;
 
             var currTask = Children[Counter];
 

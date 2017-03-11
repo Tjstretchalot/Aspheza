@@ -37,7 +37,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Decider = decider;
         }
 
-        public EntityTransferItemTask(Container from, int toID, List<TransferRestrictors.ITransferRestrictor> restrictors, TransferResultDecider decider)
+        public EntityTransferItemTask(Container from, int toID, List<ITransferRestrictor> restrictors, TransferResultDecider decider)
         {
             LastReturn = null;
             FromID = from.ID;
@@ -48,7 +48,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Decider = decider;
         }
 
-        public EntityTransferItemTask(Container from, Entity to, List<TransferRestrictors.ITransferRestrictor> restrictors, TransferResultDecider decider)
+        public EntityTransferItemTask(Container from, Entity to, List<ITransferRestrictor> restrictors, TransferResultDecider decider)
         {
             LastReturn = null;
             FromID = from.ID;
@@ -59,21 +59,74 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Decider = decider;
         }
 
+        public EntityTransferItemTask()
+        {
+            FromID = -1;
+            ToID = -1;
+            _From = null;
+            _To = null;
+            Restrictors = new List<ITransferRestrictor>();
+            Decider = null;
+        }
+
         public EntityTransferItemTask(NetIncomingMessage message)
         {
             FromID = message.ReadInt32();
-            _To = new TargetFinder(message);
-            Decider = new TransferResultDecider(message);
-            
+
+            if (message.ReadBoolean())
+                _To = new TargetFinder(message);
+
+            if (message.ReadBoolean())
+                Decider = new TransferResultDecider(message);
+
+            if(message.ReadBoolean())
+            {
+                int numRestrictors = message.ReadInt32();
+
+                for(int i = 0; i < numRestrictors; i++)
+                {
+                    var id = message.ReadInt16();
+                    Restrictors.Add(TransferRestrictorIdentifier.InitTransferRestrictor(TransferRestrictorIdentifier.GetTypeOfID(id), message));
+                }
+            }
         }
 
         public void Write(NetOutgoingMessage message)
         {
             message.Write(FromID);
-            _To.Write(message);
-            Decider.Write(message);
-            foreach (var restrictor in Restrictors)
-                restrictor.Write(message);
+            if (_To == null)
+            {
+                message.Write(false);
+            }
+            else
+            {
+                message.Write(true);
+                _To.Write(message);
+            }
+
+            if (Decider != null)
+            {
+                message.Write(true);
+                Decider.Write(message);
+            }else
+            {
+                message.Write(false);
+            }
+
+            if (Restrictors == null)
+            {
+                message.Write(false);
+            }
+            else
+            {
+                message.Write(true);
+                message.Write(Restrictors.Count);
+                foreach (var restrictor in Restrictors)
+                {
+                    message.Write(TransferRestrictorIdentifier.GetIDOfTransferRestrictor(restrictor.GetType()));
+                    restrictor.Write(message);
+                }
+            }
         }
 
         public string PrettyDescription
@@ -127,6 +180,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
+            if (!IsValid())
+                return EntityTaskStatus.Failure;
+
             if (LastReturn.HasValue)
                 return LastReturn.Value;
 
@@ -162,7 +218,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public bool IsValid()
         {
-            throw new NotImplementedException();
+            return FromID != -1 && _To != null && Restrictors != null && Decider == null;
         }
     }
 }

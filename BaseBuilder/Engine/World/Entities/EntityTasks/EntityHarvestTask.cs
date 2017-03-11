@@ -79,6 +79,17 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             FixedDirection = false;
         }
 
+        public EntityHarvestTask()
+        {
+            HarvesterID = -1;
+            HarvestedID = -1;
+            TotalTimeRequiredMS = -1;
+            TimeLeftMS = -1;
+            ThingToHarvest = "Bad state";
+
+            FixedDirection = false;
+        }
+
         public EntityHarvestTask(NetIncomingMessage message)
         {
             HarvesterID = message.ReadInt32();
@@ -115,6 +126,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
+            if (!IsValid())
+                return EntityTaskStatus.Failure;
+
             if (Harvester == null)
                 Harvester = gameState.World.MobileEntities.Find((m) => m.ID == HarvesterID) as Container;
             if (Harvested == null)
@@ -157,7 +171,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public bool IsValid()
         {
-            throw new NotImplementedException();
+            return HarvesterID != -1 && HarvestedID != -1 && TotalTimeRequiredMS > 0;
         }
     }
 }

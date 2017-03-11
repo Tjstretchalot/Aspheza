@@ -147,6 +147,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         }
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
+            if (!IsValid())
+                return EntityTaskStatus.Failure;
+
             var currTask = Tasks[Counter];
 
             var result = currTask.SimulateTimePassing(gameState, timeMS);
@@ -203,7 +206,16 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public bool IsValid()
         {
-            throw new NotImplementedException();
+            if (Tasks.Count == 0)
+                return false;
+
+            foreach(var task in Tasks)
+            {
+                if (!task.IsValid())
+                    return false;
+            }
+
+            return true;
         }
     }
 }

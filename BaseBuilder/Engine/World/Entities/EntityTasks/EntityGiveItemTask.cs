@@ -75,7 +75,14 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Index = index;
         }
 
-        public EntityGiveItemTask(NetIncomingMessage message)
+        public EntityGiveItemTask()
+        {
+            FromID = -1;
+            ToID = -1;
+            Index = -1;
+        }
+
+        public EntityGiveItemTask(SharedGameState gameState, NetIncomingMessage message)
         {
             FromID = message.ReadInt32();
             ToID = message.ReadInt32();
@@ -107,6 +114,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
+            if (!IsValid())
+                return EntityTaskStatus.Failure;
+
             var from = (FromMobile ? gameState.World.MobileEntities.Find((m) => m.ID == FromID) as Container : gameState.World.ImmobileEntities.Find((im) => im.ID == FromID) as Container);
             var to = (ToMobile ? gameState.World.MobileEntities.Find((m) => m.ID == ToID) as Container : gameState.World.ImmobileEntities.Find((im) => im.ID == ToID) as Container);
             
@@ -130,7 +140,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public bool IsValid()
         {
-            throw new NotImplementedException();
+            return FromID != -1 && ToID != -1 && Index >= 0;
         }
     }
 }

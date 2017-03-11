@@ -108,6 +108,19 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             random = new Random();
         }
 
+        public EntityMoveTask()
+        {
+            Start = null;
+            EntityID = -1;
+            Destination = null;
+
+            Path = null;
+            FailedToFindPath = false;
+            Finished = false;
+
+            random = new Random();
+        }
+
         /// <summary>
         /// Initializes an entity move task that was created by a call to Write on an outgoing message. Does
         /// not load the entity from the gamestate until the next call to SimulateTimePassing (meaning this can
@@ -120,7 +133,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             EntityID = message.ReadInt32();
             if (message.ReadBoolean())
                 Start = new PointD2D(message);
-            Destination = new PointI2D(message);
+            if(message.ReadBoolean())
+                Destination = new PointI2D(message);
             InitialDistance = message.ReadDouble();
 
             if(message.ReadBoolean())
@@ -150,7 +164,15 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 Start.Write(message);
             }
 
-            Destination.Write(message);
+            if (Destination != null)
+            {
+                message.Write(true);
+                Destination.Write(message);
+            }else
+            {
+                message.Write(false);
+            }
+
             message.Write(InitialDistance);
 
             if (Path == null)
@@ -181,7 +203,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public void Cancel(SharedGameState gameState)
         {
             Entity?.OnStop(gameState);
-            gameState.Reserved.Remove(Destination);
+            if(Destination != null)
+                gameState.Reserved.Remove(Destination);
         }
 
         /// <summary>
@@ -197,6 +220,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// <returns>Success if entity at destination, Failure if no path is found, Running if the entity is still moving.</returns>
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
+            if (!IsValid())
+                return EntityTaskStatus.Failure;
+
             if(Entity == null)
             {
                 Entity = gameState.World.MobileEntities.Find((me) => me.ID == EntityID);
@@ -338,7 +364,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public bool IsValid()
         {
-            throw new NotImplementedException();
+            return EntityID != -1 && Destination != null;
         }
     }
 }

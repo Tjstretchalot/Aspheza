@@ -72,6 +72,14 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             RemainingTimeForNextMS = TimeToMineMS;
         }
 
+        public EntityMineGoldTask()
+        {
+            WorkerID = -1;
+            VeinID = -1;
+            TimeToMineMS = -1;
+            RemainingTimeForNextMS = -1;
+        }
+
         public EntityMineGoldTask(SharedGameState gameState, NetIncomingMessage message)
         {
             WorkerID = message.ReadInt32();
@@ -103,6 +111,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
+            if (!IsValid())
+                return EntityTaskStatus.Failure;
+
             if (Vein == null)
             {
                 Vein = gameState.World.ImmobileEntities.Find((e) => e.ID == VeinID) as GoldOre;
@@ -145,7 +156,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public bool IsValid()
         {
-            throw new NotImplementedException();
+            return WorkerID != -1 && VeinID != -1 && TimeToMineMS != -1;
         }
     }
 }
