@@ -11,7 +11,14 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
     public class SelectorTaskItem : SimpleTaskItem
     {
-        const string _InspectDescription = "WIP";
+        const string _InspectDescription = @"A selector will run each child task in order until 
+a child task returns success.Once a child task
+returns success, the selector immediately returns
+success.If a child task returns failure or running,
+the selector will move on to the next item in the
+list. If the selector reaches the end of the list
+before any children return success, the selector
+returns failure.";
 
         /// <summary>
         /// Converts the specified task into the task item.
@@ -33,7 +40,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             }
 
             InspectDescription = _InspectDescription;
-            Expandable = false;
+            Expandable = true;
             Expanded = false;
             TaskName = "Select";
         }
@@ -46,19 +53,35 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             Children = new List<ITaskItem>();
 
             InspectDescription = _InspectDescription;
-            Expandable = false;
+            Expandable = true;
             Expanded = false;
             TaskName = "Select";
         }
 
         public override IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            throw new NotImplementedException();
+            var childrenTasks = new List<IEntityTask>();
+
+            foreach (var child in Children)
+            {
+                childrenTasks.Add(child.CreateEntityTask(taskable, sharedState, localState, netContext));
+            }
+
+            return new EntitySelectorTask(childrenTasks, "autogen");
         }
 
         public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            return false;
+            if (Children.Count == 0)
+                return false;
+
+            foreach(var child in Children)
+            {
+                if (!child.IsValid(sharedState, localState, netContext))
+                    return false;
+            }
+
+            return true;
         }
     }
 }

@@ -218,7 +218,7 @@ namespace BaseBuilder.Screens.Components
 
                     if (ch == '0')
                     {
-                        if (foundNum)
+                        if (!foundNum && i < textfield.Text.Length - 1)
                             continue;
                     }
                     else if (ch == '-')
