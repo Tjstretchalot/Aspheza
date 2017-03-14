@@ -228,7 +228,12 @@
     <Compile Include="Screens\GameScreens\TaskOverlays\LiveTaskOverlayComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\ScrollableComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\Taskable.cs" />
-    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItems\HorizontalFlowTaskItemComponent.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItems\TaskItemComponentAsLayoutManager.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItems\ComplexTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItems\ITaskItemComponent.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItems\TaskItemComponentAsDelegate.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItems\VerticalFlowTaskItemComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\FailerTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\GiveItemTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\TransferItemTaskItem.cs" />
