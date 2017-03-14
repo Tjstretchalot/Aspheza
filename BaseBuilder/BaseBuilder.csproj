@@ -118,6 +118,8 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tavern.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Temple.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\WaterMill.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Animations\Animation.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationFrame.cs" />
     <Compile Include="Engine\World\Entities\Utilities\DirectionUtils.cs" />
     <Compile Include="Engine\World\Entities\Utilities\GrowthState.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\House.cs" />
@@ -280,6 +282,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Bakery.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\CaveManWorker\CaveManSpriteSheet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\CaveManWorker\CaveManWorker 32x32.png">

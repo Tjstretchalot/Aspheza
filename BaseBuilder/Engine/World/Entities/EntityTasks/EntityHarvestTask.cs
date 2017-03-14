@@ -8,6 +8,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework.Content;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -151,12 +152,25 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
             TimeLeftMS -= timeMS;
 
-            if(TimeLeftMS <= 0)
+            var mobileHarvCave = Harvester as CaveManWorker;
+            if (TimeLeftMS <= 0)
             {
                 Harvest(gameState);
+                if (mobileHarvCave != null)
+                    mobileHarvCave.Reset();
                 return EntityTaskStatus.Success;
             }
-
+            else
+            {
+                var harvested = Harvested as Tree;
+                if (mobileHarvCave != null && harvested != null)
+                {
+                    mobileHarvCave.OnChopping(gameState, timeMS, "ChopTree");
+                }
+            }
+            
+            
+            
             return EntityTaskStatus.Running;
         }
 
