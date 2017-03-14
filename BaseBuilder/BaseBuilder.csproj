@@ -108,12 +108,8 @@
     <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\MaterialRestriction.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\QuantityRestriction.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TaskIdentifier.cs" />
-    <Compile Include="Engine\World\Entities\EntityTasks\Transferer.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityTransferItemTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\ITransferRestrictor.cs" />
-    <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\OnlyTransferMaterial.cs" />
-    <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\PreventTransferOfMaterial.cs" />
-    <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\TargetMinLeft.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferRestrictors\TransferRestrictorIdentifier.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferResultDeciders\FromInventoryResultDecider.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferResultDeciders\ToInventoryResultDecider.cs" />
@@ -232,6 +228,7 @@
     <Compile Include="Screens\GameScreens\TaskOverlays\LiveTaskOverlayComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\ScrollableComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\Taskable.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\FailerTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\GiveItemTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\TransferItemTaskItem.cs" />
