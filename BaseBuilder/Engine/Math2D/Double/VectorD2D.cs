@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lidgren.Network;
 
 namespace BaseBuilder.Engine.Math2D.Double
 {
@@ -174,7 +175,29 @@ namespace BaseBuilder.Engine.Math2D.Double
             DeltaX = dx;
             DeltaY = dy;
         }
-        
+
+        /// <summary>
+        /// Creates a new vector from the incoming message, that was 
+        /// written to using Write
+        /// </summary>
+        /// <param name="message">The message</param>
+        public VectorD2D(NetIncomingMessage message)
+        {
+            DeltaX = message.ReadDouble();
+            DeltaY = message.ReadDouble();
+        }
+
+        /// <summary>
+        /// Writes this vector to the specified message, to be used
+        /// with the constructor that accepts a net incoming message
+        /// </summary>
+        /// <param name="message">The message</param>
+        public void Write(NetOutgoingMessage message)
+        {
+            message.Write(DeltaX);
+            message.Write(DeltaY);
+        }
+
         /// <summary>
         /// Returns the vector created by scaling this vector
         /// by the specified amount.

@@ -80,7 +80,7 @@ the upper-left corner of the screen.";
 
                 DestinationXField.FocusGained += (sender, args) => OnInspectRedrawRequired();
                 DestinationXField.FocusLost += (sender, args) => OnInspectRedrawRequired();
-                DestinationXField.TextChanged += UIUtils.TextFieldNumbersOnly;
+                DestinationXField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, false);
                 DestinationXField.TextChanged += (sender, args) => OnInspectRedrawRequired();
             }
 
@@ -94,7 +94,7 @@ the upper-left corner of the screen.";
 
                 DestinationYField.FocusGained += (sender, args) => OnInspectRedrawRequired();
                 DestinationYField.FocusLost += (sender, args) => OnInspectRedrawRequired();
-                DestinationYField.TextChanged += UIUtils.TextFieldNumbersOnly;
+                DestinationYField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, false);
                 DestinationYField.TextChanged += (sender, args) => OnInspectRedrawRequired();
             }
         }

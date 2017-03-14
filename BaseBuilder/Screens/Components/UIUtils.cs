@@ -185,27 +185,71 @@ namespace BaseBuilder.Screens.Components
             return new TextField(locationRect, "", "Arial", ReallyDarkGray, "UI/TextAreaTap", "UI/TextAreaError", int.MaxValue);
         }
 
-        public static void TextFieldNumbersOnly(object sender, EventArgs args)
+        public static EventHandler TextFieldRestrictCharsByPredicate(Func<char, bool> predicate)
         {
-            var textfield = sender as TextField;
-            var newStr = new StringBuilder();
-
-            bool foundNum = false;
-            for (int i = 0; i < textfield.Text.Length; i++)
+            return (sender, args) =>
             {
-                var ch = textfield.Text[i];
+                var textfield = sender as TextField;
+                var newStr = new StringBuilder();
 
+                for(int i = 0; i < textfield.Text.Length; i++)
+                {
+                    if (predicate(textfield.Text[i]))
+                        newStr.Append(textfield.Text[i]);
+                }
 
-                if (!foundNum && ch == '0' && i < textfield.Text.Length - 1)
-                    continue;
-                else
-                    foundNum = true;
+                textfield.Text = newStr.ToString();
+            };
+        }
 
-                if (char.IsDigit(ch))
+        public static EventHandler TextFieldRestrictToNumbers(bool allowDecimal, bool allowNegatives)
+        {
+            return (sender, args) =>
+            {
+                var textfield = sender as TextField;
+                var newStr = new StringBuilder();
+
+                bool foundNum = false;
+                bool foundDecimal = false;
+                bool foundMinus = false;
+                for (int i = 0; i < textfield.Text.Length; i++)
+                {
+                    var ch = textfield.Text[i];
+
+                    if (ch == '0')
+                    {
+                        if (foundNum)
+                            continue;
+                    }
+                    else if (ch == '-')
+                    {
+                        if (!allowNegatives || foundNum || foundMinus)
+                            continue;
+                        foundMinus = true;
+                    }
+                    else if (ch == '.')
+                    {
+                        if (!allowDecimal || foundDecimal)
+                            continue;
+                        foundDecimal = true;
+                        if (!foundNum)
+                        {
+                            newStr.Append('0');
+                            foundNum = true;
+                        }
+                    }
+                    else if (!char.IsDigit(ch))
+                    {
+                        continue;
+                    }
+
                     newStr.Append(ch);
-            }
 
-            textfield.Text = newStr.ToString();
+                    foundNum = foundNum || char.IsDigit(ch);
+                }
+
+                textfield.Text = newStr.ToString();
+            };
         }
     }
 }

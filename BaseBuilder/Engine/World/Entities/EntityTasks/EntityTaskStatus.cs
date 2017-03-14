@@ -11,7 +11,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
     /// </summary>
     public enum EntityTaskStatus
     {
-        Success,
+        Success = 0,
         Failure,
         Running
     }

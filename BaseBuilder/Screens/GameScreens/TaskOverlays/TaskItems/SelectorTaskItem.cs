@@ -25,6 +25,13 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             Task = task;
             Children = new List<ITaskItem>();
 
+            foreach(var child in task.Children)
+            {
+                var tmp = TaskItemIdentifier.Init(child);
+                tmp.Parent = this;
+                Children.Add(tmp);
+            }
+
             InspectDescription = _InspectDescription;
             Expandable = false;
             Expanded = false;

@@ -162,7 +162,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
         void DisposeInspect()
         {
-            InspectScrollableOverlay.Dispose();
+            InspectScrollableOverlay?.Dispose();
 
             InspectOverlay = null;
             InspectScrollableOverlay = null;

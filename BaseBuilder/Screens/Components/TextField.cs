@@ -130,10 +130,35 @@ namespace BaseBuilder.Screens.Components
         /// </summary>
         protected Vector2? _TextPositionVec;
 
+        protected string _Text;
+
+        protected bool TextChangedTriggersSuppressed;
+
         /// <summary>
         /// The current text of the text field
         /// </summary>
-        public string Text;
+        public string Text
+        {
+            get
+            {
+                return _Text;
+            }
+
+            set
+            {
+                if((ReferenceEquals(_Text, null) != ReferenceEquals(value, null)) || !value.Equals(_Text))
+                {
+                    _Text = value;
+
+                    if (!TextChangedTriggersSuppressed)
+                    {
+                        TextChangedTriggersSuppressed = true;
+                        TextChanged?.Invoke(this, EventArgs.Empty);
+                        TextChangedTriggersSuppressed = false;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// If the text field is currently focused
@@ -316,7 +341,6 @@ namespace BaseBuilder.Screens.Components
                 {
                     PlayTapSound(content);
                     Text = Text.Substring(0, Text.Length - 1);
-                    TextChanged?.Invoke(this, EventArgs.Empty);
                 }
                 return;
             }
@@ -352,7 +376,6 @@ namespace BaseBuilder.Screens.Components
 
                 PlayTapSound(content);
                 Text = Text + keyChar;
-                TextChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

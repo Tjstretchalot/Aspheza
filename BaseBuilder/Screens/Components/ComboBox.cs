@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -64,6 +65,10 @@ namespace BaseBuilder.Screens.Components
 
             set
             {
+                var old = Selected;
+                if (ReferenceEquals(old, value))
+                    return;
+
                 if (value == null)
                 {
                     SelectedIndex = -1;
@@ -72,6 +77,8 @@ namespace BaseBuilder.Screens.Components
                 {
                     SelectedIndex = Items.FindIndex((c) => ReferenceEquals(c, value));
                 }
+
+                SelectedChanged?.Invoke(this, old);
             }
         }
 
@@ -406,6 +413,17 @@ namespace BaseBuilder.Screens.Components
 
             BlackPixel?.Dispose();
             BlackPixel = null;
+        }
+
+        public ComboBoxItem<T1> GetComboItemByValue(T1 value)
+        {
+            var comparer = EqualityComparer<T1>.Default;
+            foreach(var item in Items)
+            {
+                if(comparer.Equals(item.Value, value))
+                    return item;
+            }
+            return null;
         }
     }
 }

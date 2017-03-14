@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.Utility;
 using BaseBuilder.Engine.World.Entities.EntityTasks.TransferRestrictors;
 using Lidgren.Network;
 using System;
@@ -10,34 +11,31 @@ using System.Threading.Tasks;
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
     /// <summary>
-    /// Identifies tasks
+    /// Identifies transfer restrictors
     /// </summary>
     public class TransferRestrictorIdentifier
     {
         protected static Type[] TransferRestrictorConstructorParamTypes;
-        protected static Dictionary<short, Type> IdsToTransferRestrictor;
-        protected static Dictionary<Type, short> TransferRestrictorToIds;
+        protected static BiDictionary<short, Type> IdsToTransferRestrictor;
 
         static TransferRestrictorIdentifier()
         {
             TransferRestrictorConstructorParamTypes = new Type[] { typeof(NetIncomingMessage) };
-            IdsToTransferRestrictor = new Dictionary<short, Type>();
-            TransferRestrictorToIds = new Dictionary<Type, short>();
+            IdsToTransferRestrictor = new BiDictionary<short, Type>();
 
-            Register(typeof(TargetMinLeft), 1);
-            Register(typeof(PreventTransferOfMaterial), 2);
-            Register(typeof(OnlyTransferMaterial), 3);
+            Register(typeof(InventoryRestriction), 1);
+            Register(typeof(MaterialRestriction), 2);
+            Register(typeof(QuantityRestriction), 3);
         }
 
         public static void Register(Type type, short id)
         {
             IdsToTransferRestrictor.Add(id, type);
-            TransferRestrictorToIds.Add(type, id);
         }
 
-        public static short GetIDOfTransferRestrictor(Type type)
+        public static short GetIDOfType(Type type)
         {
-            return TransferRestrictorToIds[type];
+            return IdsToTransferRestrictor[type];
         }
 
         public static Type GetTypeOfID(short id)
@@ -45,7 +43,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             return IdsToTransferRestrictor[id];
         }
 
-        public static ITransferRestrictor InitTransferRestrictor(Type type, NetIncomingMessage message)
+        public static ITransferRestrictor Init(Type type, NetIncomingMessage message)
         {
             return type.GetConstructor(TransferRestrictorConstructorParamTypes).Invoke(new object[] { message }) as ITransferRestrictor;
         }

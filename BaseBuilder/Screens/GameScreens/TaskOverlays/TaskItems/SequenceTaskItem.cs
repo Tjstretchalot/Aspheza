@@ -32,7 +32,9 @@ success, the sequence will return success.";
             Children = new List<ITaskItem>();
             foreach(var child in task.Children)
             {
-                Children.Add(TaskItemIdentifier.Init(child));
+                var tmp = TaskItemIdentifier.Init(child);
+                tmp.Parent = this;
+                Children.Add(tmp);
             }
 
             InspectDescription = _InspectDescription;

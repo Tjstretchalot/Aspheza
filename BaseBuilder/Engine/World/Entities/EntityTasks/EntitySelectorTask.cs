@@ -33,7 +33,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                     var builder = new StringBuilder("Run ");
 
                     bool first = true;
-                    foreach (var task in Tasks)
+                    foreach (var task in Children)
                     {
                         if (!first)
                         {
@@ -73,10 +73,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
-                if (Counter == Tasks.Count)
+                if (Counter == Children.Count)
                     return "Finished";
 
-                return $"Counter={Counter} (TaskName = {Tasks[Counter].TaskName})";
+                return $"Counter={Counter} (TaskName = {Children[Counter].TaskName})";
             }
         }
 
@@ -84,7 +84,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
-                return Tasks[Counter].PrettyDescription;
+                return Children[Counter].PrettyDescription;
             }
         }
 
@@ -92,7 +92,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
-                return Tasks[Counter].Progress;
+                return Children[Counter].Progress;
             }
         }
 
@@ -100,7 +100,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         protected int Counter;
         protected bool CounterRunAtleastOnce;
 
-        protected List<IEntityTask> Tasks;
+        public List<IEntityTask> Children;
 
         /// <summary>
         /// Initialize a new selector task with the specified tasks and the specified debug name.
@@ -109,7 +109,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// <param name="specificName">The debug name. This task will have the TaskName $"Selector {SpecificName}"</param>
         public EntitySelectorTask(List<IEntityTask> tasks, string specificName)
         {
-            Tasks = tasks;
+            Children = tasks;
             SpecificName = specificName;
             Counter = 0;
         }
@@ -118,12 +118,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             var numTasks = message.ReadInt16();
 
-            Tasks = new List<IEntityTask>(numTasks);
+            Children = new List<IEntityTask>(numTasks);
             for(int i = 0; i < numTasks; i++)
             {
                 var taskID = message.ReadInt16();
 
-                Tasks.Add(TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message));
+                Children.Add(TaskIdentifier.InitEntityTask(TaskIdentifier.GetTypeOfID(taskID), gameState, message));
             }
 
             Counter = message.ReadInt32();
@@ -133,9 +133,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Write(NetOutgoingMessage message)
         {
-            message.Write((short)Tasks.Count);
+            message.Write((short)Children.Count);
 
-            foreach(var task in Tasks)
+            foreach(var task in Children)
             {
                 message.Write(TaskIdentifier.GetIDOfTask(task.GetType()));
                 task.Write(message);
@@ -150,7 +150,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             if (!IsValid())
                 return EntityTaskStatus.Failure;
 
-            var currTask = Tasks[Counter];
+            var currTask = Children[Counter];
 
             var result = currTask.SimulateTimePassing(gameState, timeMS);
 
@@ -165,7 +165,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 case EntityTaskStatus.Failure:
                     Counter++;
                     CounterRunAtleastOnce = false;
-                    if (Counter == Tasks.Count)
+                    if (Counter == Children.Count)
                         return EntityTaskStatus.Failure;
                     return EntityTaskStatus.Running;
             }
@@ -177,12 +177,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             for (int i = 0; i < Counter; i++)
             {
-                Tasks[i].Reset(gameState);
+                Children[i].Reset(gameState);
             }
 
-            if (CounterRunAtleastOnce && Counter < Tasks.Count)
+            if (CounterRunAtleastOnce && Counter < Children.Count)
             {
-                Tasks[Counter].Reset(gameState);
+                Children[Counter].Reset(gameState);
             }
 
             Counter = 0;
@@ -190,7 +190,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Cancel(SharedGameState gameState)
         {
-            foreach(var task in Tasks)
+            foreach(var task in Children)
             {
                 task.Cancel(gameState);
             }
@@ -198,7 +198,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
         {
-            foreach (var task in Tasks)
+            foreach (var task in Children)
             {
                 task.Update(content, sharedGameState, localGameState);
             }
@@ -206,10 +206,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public bool IsValid()
         {
-            if (Tasks.Count == 0)
+            if (Children.Count == 0)
                 return false;
 
-            foreach(var task in Tasks)
+            foreach(var task in Children)
             {
                 if (!task.IsValid())
                     return false;

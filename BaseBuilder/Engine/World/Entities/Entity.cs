@@ -52,6 +52,10 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         {
             get
             {
+                if(_HoverText == null)
+                {
+                    return $"ID = {ID}, Pos = {Position}";
+                }
                 return _HoverText;
             }
         }

@@ -338,17 +338,46 @@ namespace BaseBuilder.Engine.World.Entities
         /// <summary>
         /// Returns a Dictionary of material to amount held for this container
         /// </summary>
-        /// <returns></returns>
-        public Dictionary<Material, int> GetSimplifiedInvitory()
+        /// <returns>Inventory without respect to item positions</returns>
+        public Dictionary<Material, int> GetSimplifiedInventory()
         {
             var result = new Dictionary<Material, int>();
-
-            int amount;
-            foreach (Material mat in Enum.GetValues(typeof(Material)))
+            
+            foreach(var kvp in Inventory)
             {
-                amount = GetAmountOf(mat);
-                if (amount > 0)
-                    result.Add(mat, amount);
+                if(kvp != null)
+                {
+                    int oldAmount;
+                    if(result.TryGetValue(kvp.Item1, out oldAmount))
+                    {
+                        result[kvp.Item1] = oldAmount + kvp.Item2;
+                    }else
+                    {
+                        result.Add(kvp.Item1, kvp.Item2);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the total number of items in this inventory
+        /// where the material matches the specified predicate.
+        /// The predicate may be null.
+        /// </summary>
+        /// <param name="predicate">The predicate, or null</param>
+        /// <returns>Number of items with material matching predicate</returns>
+        public int GetCount(Func<Material, bool> predicate = null)
+        {
+            int result = 0;
+
+            foreach(var kvp in Inventory)
+            {
+                if(kvp != null && (predicate == null || predicate(kvp.Item1)))
+                {
+                    result += kvp.Item2;
+                }
             }
 
             return result;

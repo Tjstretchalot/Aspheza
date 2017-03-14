@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World.Entities.Utilities;
 
 namespace BaseBuilder.Engine.World
 { 
@@ -463,7 +464,7 @@ namespace BaseBuilder.Engine.World
         }
 
         /// <summary>
-        /// 
+        /// Finds the entity at the specified location, if there is one
         /// </summary>
         /// <param name="location">The location to see if falls within an entity</param>
         /// <returns></returns>
@@ -476,6 +477,28 @@ namespace BaseBuilder.Engine.World
             {
                 if (ent.Contains(new PointD2D(x, y)))
                     return ent;
+            }
+
+            return null;
+        }
+        
+        /// <summary>
+        /// Finds the entity with the specified id.
+        /// </summary>
+        /// <param name="targetID">The id</param>
+        /// <returns>The entity with the specified id</returns>
+        public Entity GetEntityByID(int targetID)
+        {
+            foreach(var me in MobileEntities)
+            {
+                if (me.ID == targetID)
+                    return me;
+            }
+            
+            foreach(var ime in ImmobileEntities)
+            {
+                if (ime.ID == targetID)
+                    return ime;
             }
 
             return null;
