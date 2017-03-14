@@ -1,5 +1,7 @@
 ﻿using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World.Entities.Utilities.Animations;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,83 +15,63 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 {
     public class SpriteSheetAnimationRenderer
     {
-        string SpriteSheetName;
-        Rectangle CurrentRect;
+        private Dictionary<string, Animation> StringToAnimation;
+
+        PointD2D RefKeyPixel;
+        Animation CurrentAnimation;
+        Direction Direction;
 
         int NextAnimationTickMS;
-
-        int CurrentDraw;
-        Direction Direction;
-        List<Rectangle> _DownMove;
-        List<Rectangle> _UpMove;
-        List<Rectangle> _RightMove;
-        List<Rectangle> _LeftMove;
-
-        public SpriteSheetAnimationRenderer(string sheetName, List<Rectangle> downMove, List<Rectangle> upMove, List<Rectangle> rightMove, List<Rectangle> leftMove)
+        
+        public SpriteSheetAnimationRenderer(PointD2D refKeyPixel, Dictionary<string, Animation> stringToAnimation)
         {
-            SpriteSheetName = sheetName;
+            RefKeyPixel = refKeyPixel;
+            StringToAnimation = stringToAnimation;
 
-            _DownMove = downMove;
-            _UpMove = upMove;
-            _RightMove = rightMove;
-            _LeftMove = leftMove;
-
-            CurrentRect = _DownMove[0];
-            CurrentDraw = 0;
+            CurrentAnimation = stringToAnimation["DownMove"];
+            NextAnimationTickMS = CurrentAnimation.GetFrameTime();
         }
 
         public void FromMessage(NetIncomingMessage message)
         {
-            int crX = message.ReadInt32();
-            int crY = message.ReadInt32();
-            int crW = message.ReadInt32();
-            int crH = message.ReadInt32();
-
-            CurrentRect = new Rectangle(crX, crY, crW, crH);
-
             NextAnimationTickMS = message.ReadInt32();
-            CurrentDraw = message.ReadInt32();
-            Direction = (Direction)message.ReadInt32();
         }
 
         public void Write(NetOutgoingMessage message)
         {
-            message.Write(CurrentRect.X);
-            message.Write(CurrentRect.Y);
-            message.Write(CurrentRect.Width);
-            message.Write(CurrentRect.Height);
-
             message.Write(NextAnimationTickMS);
-            message.Write(CurrentDraw);
-            message.Write((int)Direction);
         }
 
         private void UpdateDirection(double dx, double dy)
         {
-            
+            var currentFrameHolder = CurrentAnimation.CurrentFrame + 1;
             if(Math.Sign(dx) == -1 && Direction != Direction.Left)
-            {
-                CurrentDraw = (CurrentDraw + 1) % _LeftMove.Count;
+            {//Left
                 Direction = Direction.Left;
-                CurrentRect = _LeftMove[CurrentDraw];
+                CurrentAnimation.CurrentFrame = 0;
+                CurrentAnimation = StringToAnimation["LeftMove"];
+                CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
             }
             else if (Math.Sign(dx) == 1 && Direction != Direction.Right)
-            {
-                CurrentDraw = (CurrentDraw + 1) % _RightMove.Count;
+            {//Right
                 Direction = Direction.Right;
-                CurrentRect = _RightMove[CurrentDraw];
+                CurrentAnimation.CurrentFrame = 0;
+                CurrentAnimation = StringToAnimation["RightMove"];
+                CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
             }
             else if (Math.Sign(dy) == 1 && Direction != Direction.Down)
-            {
-                CurrentDraw = (CurrentDraw + 1) % _DownMove.Count;
+            {//Down
                 Direction = Direction.Down;
-                CurrentRect = _DownMove[CurrentDraw];
+                CurrentAnimation.CurrentFrame = 0;
+                CurrentAnimation = StringToAnimation["DownMove"];
+                CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
             }
             else if (Math.Sign(dy) == -1 && Direction != Direction.Up)
-            {
-                CurrentDraw = (CurrentDraw + 1) % _UpMove.Count;
+            {//Up
                 Direction = Direction.Up;
-                CurrentRect = _UpMove[CurrentDraw];
+                CurrentAnimation.CurrentFrame = 0;
+                CurrentAnimation = StringToAnimation["UpMove"];
+                CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
             }
         }
 
@@ -98,69 +80,141 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
             NextAnimationTickMS -= timeMS;
             if (NextAnimationTickMS <= 0)
             {
-                NextAnimationTickMS = 250;
-                if (Direction == Direction.Left)
-                {
-                    CurrentDraw = (CurrentDraw + 1) % _LeftMove.Count;
-                    CurrentRect = _LeftMove[CurrentDraw];
-                }
-                else if (Direction == Direction.Right)
-                {
-                    CurrentDraw = (CurrentDraw + 1) % _RightMove.Count;
-                    CurrentRect = _RightMove[CurrentDraw];
-                }
-                else if (Direction == Direction.Down)
-                {
-                    CurrentDraw = (CurrentDraw + 1) % _DownMove.Count;
-                    CurrentRect = _DownMove[CurrentDraw];
-                }
-                else if (Direction == Direction.Up)
-                {
-                    CurrentDraw = (CurrentDraw + 1) % _UpMove.Count;
-                    CurrentRect = _UpMove[CurrentDraw];
-                }
+                CurrentAnimation.CurrentFrame = (CurrentAnimation.CurrentFrame + 1) % CurrentAnimation.Count();
+
+                NextAnimationTickMS = CurrentAnimation.GetFrameTime();
             }
         }
 
-        public void UpdateSprite(SharedGameState shareState, int timeMS, double dx, double dy)
+        public void UpdateSprite(SharedGameState shareState, int timeMS, double dx, double dy, string SpecialAnimation = null)
         {
             UpdateDirection(dx, dy);
+
+            if (SpecialAnimation != null)
+            {
+                var currentFrameHolder = CurrentAnimation.CurrentFrame;
+                if (SpecialAnimation == "ChopTree")
+                {
+                    switch (Direction)
+                    {
+                        case Direction.Up:
+                            CurrentAnimation.CurrentFrame = 0;
+                            CurrentAnimation = StringToAnimation["ChopTreeUp"];
+                            CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
+                            break;
+                        case Direction.Down:
+                            CurrentAnimation.CurrentFrame = 0;
+                            CurrentAnimation = StringToAnimation["ChopTreeDown"];
+                            CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
+                            break;
+                        case Direction.Left:
+                            CurrentAnimation.CurrentFrame = 0;
+                            CurrentAnimation = StringToAnimation["ChopTreeLeft"];
+                            CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
+                            break;
+                        case Direction.Right:
+                            CurrentAnimation.CurrentFrame = 0;
+                            CurrentAnimation = StringToAnimation["ChopTreeRight"];
+                            CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
+                            break;
+                    }
+                }
+                else
+                {
+                    CurrentAnimation.CurrentFrame = 0;
+                    CurrentAnimation = StringToAnimation[SpecialAnimation];
+                    CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
+                }
+            }
+            
             UpdateAnimation(timeMS);
+        }
+
+        public void Reset(Direction? direction = null)
+        {
+            CurrentAnimation.CurrentFrame = 0;
+            if (direction.HasValue)
+            {
+                switch (direction.Value)
+                {
+                    case Direction.Up:
+                        CurrentAnimation = StringToAnimation["UpMove"];
+                        break;
+                    case Direction.Down:
+                        CurrentAnimation = StringToAnimation["DownMove"];
+                        break;
+                    case Direction.Left:
+                        CurrentAnimation = StringToAnimation["LeftMove"];
+                        break;
+                    case Direction.Right:
+                        CurrentAnimation = StringToAnimation["RightMove"];
+                        break;
+                }
+            }
+            else
+            {
+                switch (Direction)
+                {
+                    case Direction.Up:
+                        CurrentAnimation = StringToAnimation["UpMove"];
+                        break;
+                    case Direction.Down:
+                        CurrentAnimation = StringToAnimation["DownMove"];
+                        break;
+                    case Direction.Left:
+                        CurrentAnimation = StringToAnimation["LeftMove"];
+                        break;
+                    case Direction.Right:
+                        CurrentAnimation = StringToAnimation["RightMove"];
+                        break;
+                }
+            }
+
+            CurrentAnimation.CurrentFrame = 0;
+            NextAnimationTickMS = CurrentAnimation.GetFrameTime();
         }
 
         public void MoveComplete(SharedGameState shareState)
         {
-            if (Direction == Direction.Down)
+            CurrentAnimation.CurrentFrame = 0;
+            switch (Direction)
             {
-                CurrentDraw = 0;
-                CurrentRect = _DownMove[0];
+                case Direction.Up:
+                    CurrentAnimation = StringToAnimation["UpMove"];
+                    break;
+                case Direction.Down:
+                    CurrentAnimation = StringToAnimation["DownMove"];
+                    break;
+                case Direction.Left:
+                    CurrentAnimation = StringToAnimation["LeftMove"];
+                    break;
+                case Direction.Right:
+                    CurrentAnimation = StringToAnimation["RightMove"];
+                    break;
             }
-            else if (Direction == Direction.Up)
-            {
-                CurrentDraw = 0;
-                CurrentRect = _UpMove[0];
-            }
-            else if (Direction == Direction.Right)
-            {
-                CurrentDraw = 0;
-                CurrentRect = _RightMove[0];
-            }
-            else if (Direction == Direction.Left)
-            {
-                CurrentDraw = 0;
-                CurrentRect = _LeftMove[0];
-            }
+            CurrentAnimation.CurrentFrame = 0;
         }
 
         public void Render(RenderContext context, int x, int y, int w, int h, Color overlay)
         {
-            var texture = context.Content.Load<Texture2D>(SpriteSheetName);
+            var frameInfo = CurrentAnimation.GetFrameRenderInfo(context);
+
+            var texture = frameInfo.Item1;
+            var drawRec = frameInfo.Item2;
+            var keyPixel = frameInfo.Item3;
+
+            var shift = RefKeyPixel - keyPixel;
+
+            var worldWidth = drawRec.Width / 32.0;
+            var worldHeight = drawRec.Height / 32.0;
+            var endX = x + ((shift.X / 32.0) * context.Camera.Zoom) - (worldWidth * ((drawRec.Width - 32) / drawRec.Width) * context.Camera.Zoom);
+            var endY = y + ((shift.Y / 32.0) * context.Camera.Zoom) - (worldHeight * ((drawRec.Height - 32) / drawRec.Height) * context.Camera.Zoom);
 
             context.SpriteBatch.Draw(texture,
-                sourceRectangle: CurrentRect,
+                sourceRectangle: drawRec,
                 destinationRectangle: new Rectangle(
-                    (int)(x), (int)(y),
-                    (int)(w * context.Camera.Zoom), (int)(h * context.Camera.Zoom)
+                    (int)(endX), (int)(endY),
+                    (int)(worldWidth * context.Camera.Zoom), (int)(worldHeight * context.Camera.Zoom)
                     ),
                 color: overlay);
         }
