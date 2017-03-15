@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.State.Resources;
 using BaseBuilder.Screens.Components;
 using Microsoft.Xna.Framework;
 using System;
@@ -75,6 +76,14 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
             return strong.Component;
         }
 
+        /// <summary>
+        /// Sets up the specified component to have a label, either vertically or horizontally.
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="label">The label</param>
+        /// <param name="component">The component to label</param>
+        /// <param name="vertical">True if the label should be above, false if the label should be to the right</param>
+        /// <returns>The wrapped component</returns>
         public static ITaskItemComponent Label(RenderContext context, string label, ITaskItemComponent component, bool vertical = true)
         {
             if(vertical)
@@ -89,11 +98,22 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
             {
                 var result = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 3);
 
-                result.Children.Add(Wrap(new Text(new Point(0, 0), label, context.DefaultFont, Color.Black)));
                 result.Children.Add(component);
+                result.Children.Add(Wrap(new Text(new Point(0, 0), label, context.DefaultFont, Color.Black)));
 
                 return result;
             }
+        }
+
+        /// <summary>
+        /// Creates some padding of the specified width and height
+        /// </summary>
+        /// <param name="width">width</param>
+        /// <param name="height">height</param>
+        /// <returns>padding component</returns>
+        public static ITaskItemComponent CreatePadding(int width, int height)
+        {
+            return new PaddingTaskItemComponent(width, height);
         }
 
         /// <summary>
@@ -124,6 +144,23 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
             return result;
         }
 
+        /// <summary>
+        /// Create a combo box that has all of the materials in it.
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="redraw">Redraw</param>
+        /// <param name="redrawAndReload">Redraw and reload</param>
+        /// <returns>Material combo box</returns>
+        public static ComboBox<Material> CreateMaterialComboBox(RenderContext context, EventHandler redraw, EventHandler redrawAndReload)
+        {
+            var result = new ComboBox<Material>(MaterialComboBoxItem.AllMaterialsWithFont(context.DefaultFont), new Point(200, 34));
+            result.Selected = null;
+            result.HoveredChanged += redraw;
+            result.ScrollChanged += redraw;
+            result.ExpandedChanged += redraw;
+            result.SelectedChanged += (sender, tmp) => redrawAndReload(sender, EventArgs.Empty);
+            return result;
+        }
         /// <summary>
         /// Setup the combo box to toggle the thing to not hidden when choice is selected 
         /// and to hidden if choice is not selected
@@ -190,6 +227,154 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         public static void SetupComboBoxHiddenToggle<T1>(ComboBox<T1> box, T1 choice, ITaskItemComponent thing)
         {
             SetupComboBoxHiddenToggle(new WeakReference<ComboBox<T1>>(box), choice, new WeakReference<ITaskItemComponent>(thing));
+        }
+
+        /// <summary>
+        /// Creates a checkbox and sets it up to redraw and reload when
+        /// pushed.
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="redraw">Redraw</param>
+        /// <param name="redrawAndReload">Redraw and reload</param>
+        /// <returns>the checkbox</returns>
+        public static CheckBox CreateCheckBox(RenderContext context, EventHandler redraw, EventHandler redrawAndReload)
+        {
+            var result = new CheckBox(new Point(0, 0));
+
+            result.PushedChanged += redrawAndReload;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a radio button and sets it up to redraw and reload when pushed
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="redraw">Redraw</param>
+        /// <param name="redrawAndReload">Redraw and reload</param>
+        /// <returns>The radio button</returns>
+        public static RadioButton CreateRadioButton(RenderContext context, EventHandler redraw, EventHandler redrawAndReload)
+        {
+            var result = new RadioButton(new Point(0, 0));
+
+            result.PushedChanged += redrawAndReload;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Groups up the specified radio buttons such that only one can be pushed at onec
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="redraw">Redraw</param>
+        /// <param name="redrawAndReload">Redraw and reload</param>
+        /// <param name="buttonsWeak">Buttons to group</param>
+        public static void GroupRadioButtons(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, params WeakReference<RadioButton>[] buttonsWeak)
+        {
+            EventHandler handler = null;
+            handler = (sender, args) =>
+            {
+                var buttonPressed = sender as RadioButton;
+                if (!buttonPressed.Pushed)
+                    return;
+
+                foreach(var buttonWeak in buttonsWeak)
+                {
+                    RadioButton buttonStrong;
+                    if(buttonWeak.TryGetTarget(out buttonStrong))
+                    {
+                        if(!ReferenceEquals(buttonStrong, buttonPressed))
+                        {
+                            buttonStrong.Pushed = false;
+                        }
+                    }
+                }
+            };
+            foreach(var buttonWeak in buttonsWeak)
+            {
+                RadioButton buttonStrong;
+                if (!buttonWeak.TryGetTarget(out buttonStrong))
+                    throw new InvalidProgramException("button already disposed!");
+
+                buttonStrong.PushedChanged += handler;
+            }
+        }
+
+        /// <summary>
+        /// Groups the buttons such that only one can be pushed at a time. Holds
+        /// only a weak reference.
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="redraw">Redraw</param>
+        /// <param name="redrawAndReload">Redraw and reload</param>
+        /// <param name="buttons">The buttons</param>
+        public static void GroupRadioButtons(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, params RadioButton[] buttons)
+        {
+            GroupRadioButtons(context, redraw, redrawAndReload, buttons.Select((but) => new WeakReference<RadioButton>(but)).ToArray());
+        }
+
+        /// <summary>
+        /// Sets up the radio button to unhide the thing when radioButton.Pushed == pushed
+        /// </summary>
+        /// <param name="radioButtonWeak">The radio button</param>
+        /// <param name="thingWeak">The thing to toggle hidden</param>
+        /// <param name="pushed">The state to unhide the thing</param>
+        public static void SetupRadioButtonHiddenToggle(WeakReference<RadioButton> radioButtonWeak, WeakReference<ITaskItemComponent> thingWeak, bool pushed = true)
+        {
+            RadioButton radioButtonStrong;
+
+            if (!radioButtonWeak.TryGetTarget(out radioButtonStrong))
+                throw new InvalidProgramException("Radio button is already lost!");
+
+            EventHandler handler = null;
+            handler = (sender, args) =>
+            {
+                RadioButton radioButtonStrong2;
+                if (!radioButtonWeak.TryGetTarget(out radioButtonStrong2))
+                {
+                    return;
+                }
+
+                ITaskItemComponent thingStrong;
+                if (!thingWeak.TryGetTarget(out thingStrong))
+                {
+                    radioButtonStrong2.PushedChanged -= handler;   
+                    return;
+                }
+
+                thingStrong.Hidden = radioButtonStrong2.Pushed != pushed;
+            };
+
+            radioButtonStrong.PushedChanged += handler;
+        }
+
+        /// <summary>
+        /// As if you called SetupRadioButtonHiddenToggle(new WeakReference(checkbox), new WeakReference(thing), pushed)
+        /// </summary>
+        /// <param name="button">The radio button</param>
+        /// <param name="thing">The thing</param>
+        /// <param name="pushed">The state to unhide the thing</param>
+        public static void SetupRadioButtonHiddenToggle(RadioButton button, ITaskItemComponent thing, bool pushed = true)
+        {
+            SetupRadioButtonHiddenToggle(new WeakReference<RadioButton>(button), new WeakReference<ITaskItemComponent>(thing), pushed);
+        }
+
+        /// <summary>
+        /// Creates a text field and ensures it redraws when necessary
+        /// </summary>
+        /// <param name="context">The context</param>
+        /// <param name="redraw">Redraw</param>
+        /// <param name="redrawAndReload">Redraw and reload</param>
+        /// <returns>The textfield</returns>
+        public static TextField CreateTextField(RenderContext context, EventHandler redraw, EventHandler redrawAndReload)
+        {
+            var result = UIUtils.CreateTextField(new Point(0, 0), new Point(150, 30));
+
+            result.FocusGained += redraw;
+            result.FocusLost += redraw;
+            result.TextChanged += redraw;
+
+            return result;
         }
     }
 }

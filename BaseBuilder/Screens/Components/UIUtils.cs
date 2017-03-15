@@ -225,6 +225,7 @@ namespace BaseBuilder.Screens.Components
                     {
                         if (!allowNegatives || foundNum || foundMinus)
                             continue;
+                        
                         foundMinus = true;
                     }
                     else if (ch == '.')

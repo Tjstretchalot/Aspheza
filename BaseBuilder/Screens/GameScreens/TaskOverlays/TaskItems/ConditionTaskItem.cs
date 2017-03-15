@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 using static BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems.ComplexTaskItemUtils;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.World.Entities.EntityTasks.EntityConditionals.InventoryConditionals;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
@@ -33,7 +34,7 @@ condition task takes some time, typically one second.";
 
         protected enum InventoryConditionType
         {
-            HasOpenSlots
+            HasOpenSlots, Count
         }
 
         // These references need to be weak so when Dispose is called and Components is cleared the visuals
@@ -46,6 +47,12 @@ condition task takes some time, typically one second.";
         
         protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<InventoryConditionType>>> InventoryConditionTypeBox;
 
+        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> InventoryCount_Quantity;
+        protected WeakReference<TaskItemComponentFromScreenComponent<RadioButton>> InventoryCount_AtMostButton;
+        protected WeakReference<TaskItemComponentFromScreenComponent<RadioButton>> InventoryCount_AtLeastButton;
+        protected WeakReference<TaskItemComponentFromScreenComponent<CheckBox>> InventoryCount_TypeCheck;
+        protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>> InventoryCount_TypeBox;
+
         public ConditionTaskItem()
         {
             Task = null;
@@ -53,6 +60,12 @@ condition task takes some time, typically one second.";
             ConditionTypeBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<ConditionType>>>(null);
             
             InventoryConditionTypeBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<InventoryConditionType>>>(null);
+
+            InventoryCount_Quantity = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
+            InventoryCount_AtMostButton = new WeakReference<TaskItemComponentFromScreenComponent<RadioButton>>(null);
+            InventoryCount_AtLeastButton = new WeakReference<TaskItemComponentFromScreenComponent<RadioButton>>(null);
+            InventoryCount_TypeCheck = new WeakReference<TaskItemComponentFromScreenComponent<CheckBox>>(null);
+            InventoryCount_TypeBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>>(null);
 
             Children = new List<ITaskItem>();
             TaskName = "Condition";
@@ -94,14 +107,34 @@ condition task takes some time, typically one second.";
             if (typeBox.Selected == null)
                 return result;
 
-            switch(typeBox.Selected.Value)
+            int parsed;
+            Material material;
+            switch (typeBox.Selected.Value)
             {
                 case ConditionType.Inventory:
                     var invBox = Unwrap(InventoryConditionTypeBox);
                     if (invBox.Selected == null)
                         return result;
 
-                    result.Conditional = new EntityInventoryHasOpenSlotCondition();
+                    switch (invBox.Selected.Value)
+                    {
+                        case InventoryConditionType.HasOpenSlots:
+                            result.Conditional = new EntityInventoryHasOpenSlotCondition();
+                            break;
+                        case InventoryConditionType.Count:
+                            if (!int.TryParse(Unwrap(InventoryCount_Quantity).Text, out parsed))
+                                parsed = 0;
+
+                            material = null;
+                            if(Unwrap(InventoryCount_TypeCheck).Pushed)
+                            {
+                                var box = Unwrap(InventoryCount_TypeBox);
+                                if (box.Selected != null)
+                                    material = box.Selected.Value;
+                            }
+                            result.Conditional = new EntityInventoryCountCondition(parsed, Unwrap(InventoryCount_AtMostButton).Pushed, material);
+                            break;
+                    }
                     return result;
                 default:
                     throw new InvalidProgramException();
@@ -130,6 +163,7 @@ condition task takes some time, typically one second.";
             if (typeBox.Selected == null)
                 return false;
 
+            int parsed;
             switch(typeBox.Selected.Value)
             {
                 case ConditionType.Inventory:
@@ -140,6 +174,21 @@ condition task takes some time, typically one second.";
                     switch(invBox.Selected.Value)
                     {
                         case InventoryConditionType.HasOpenSlots:
+                            break;
+                        case InventoryConditionType.Count:
+                            if (!Unwrap(InventoryCount_AtLeastButton).Pushed && !Unwrap(InventoryCount_AtMostButton).Pushed)
+                                return false;
+
+                            var field = Unwrap(InventoryCount_Quantity);
+                            if (field.Text.Length == 0 || !int.TryParse(field.Text, out parsed))
+                                return false;
+
+                            if (parsed <= 0)
+                                return false;
+
+                            if (Unwrap(InventoryCount_TypeCheck).Pushed && Unwrap(InventoryCount_TypeBox).Selected == null)
+                                return false;
+
                             break;
                         default:
                             throw new InvalidProgramException();
@@ -165,6 +214,29 @@ condition task takes some time, typically one second.";
 
                 var invBox = Unwrap(InventoryConditionTypeBox);
                 invBox.Selected = invBox.GetComboItemByValue(InventoryConditionType.HasOpenSlots);
+            }else if(task.Conditional.GetType() == typeof(EntityInventoryCountCondition))
+            {
+                var conditional = (EntityInventoryCountCondition)task.Conditional;
+                var typeBox = Unwrap(ConditionTypeBox);
+                typeBox.Selected = typeBox.GetComboItemByValue(ConditionType.Inventory);
+
+                var invBox = Unwrap(InventoryConditionTypeBox);
+                invBox.Selected = invBox.GetComboItemByValue(InventoryConditionType.Count);
+
+                if (conditional.AtMost)
+                    Unwrap(InventoryCount_AtMostButton).Pushed = true;
+                else
+                    Unwrap(InventoryCount_AtLeastButton).Pushed = true;
+
+                Unwrap(InventoryCount_Quantity).Text = conditional.Quantity.ToString();
+                
+                if(conditional.Material != null)
+                {
+                    Unwrap(InventoryCount_TypeCheck).Pushed = true;
+
+                    var box = Unwrap(InventoryCount_TypeBox);
+                    box.Selected = box.GetComboItemByValue(conditional.Material);
+                }
             }
         }
 
@@ -193,11 +265,14 @@ condition task takes some time, typically one second.";
             InspectComponent = main;
         }
 
-        protected virtual void InitializeInventoryConditions(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main, ComboBox<ConditionType> mainBox)
+        protected void InitializeInventoryConditions(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main, ComboBox<ConditionType> mainBox)
         {
             var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 3);
 
-            var typeBox = CreateComboBox(context, redraw, redrawAndReload, Tuple.Create("Has Open Slots", InventoryConditionType.HasOpenSlots));
+            var typeBox = CreateComboBox(context, redraw, redrawAndReload, 
+                Tuple.Create("Has Open Slots", InventoryConditionType.HasOpenSlots),
+                Tuple.Create("Count", InventoryConditionType.Count));
+
             var wrapped = Wrap(typeBox);
             InventoryConditionTypeBox.SetTarget(wrapped);
             layout.Children.Add(Label(context, "Inventory Condition", wrapped));
@@ -206,6 +281,54 @@ condition task takes some time, typically one second.";
 
             layout.Hidden = true;
             main.Children.Add(layout);
+
+            InitializeInventoryCountCondition(context, redraw, redrawAndReload, main, mainBox, layout, typeBox);
+        }
+
+        protected void InitializeInventoryCountCondition(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main, ComboBox<ConditionType> mainBox, TaskItemComponentAsLayoutManager inventory, ComboBox<InventoryConditionType> inventoryBox)
+        {
+            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            layout.Children.Add(CreatePadding(2, 2));
+
+            var atMost = CreateRadioButton(context, redraw, redrawAndReload);
+            var atLeast = CreateRadioButton(context, redraw, redrawAndReload);
+            GroupRadioButtons(context, redraw, redrawAndReload, atMost, atLeast);
+
+            var atMostWrapped = Wrap(atMost);
+            var atLeastWrapped = Wrap(atLeast);
+            InventoryCount_AtMostButton.SetTarget(atMostWrapped);
+            InventoryCount_AtLeastButton.SetTarget(atLeastWrapped);
+
+            var buttonsLayout = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
+            buttonsLayout.Children.Add(Label(context, "At Most", atMostWrapped, false));
+            buttonsLayout.Children.Add(Label(context, "At Least", atLeastWrapped, false));
+            layout.Children.Add(buttonsLayout);
+
+            SetupComboBoxHiddenToggle(inventoryBox, InventoryConditionType.Count, layout);
+
+            var quantity = CreateTextField(context, redraw, redrawAndReload);
+            quantity.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, false);
+
+            var quantityWrapped = Wrap(quantity);
+            InventoryCount_Quantity.SetTarget(quantityWrapped);
+            layout.Children.Add(Label(context, "Quantity", quantityWrapped));
+
+            layout.Children.Add(CreatePadding(2, 3));
+            var typeCheck = CreateCheckBox(context, redraw, redrawAndReload);
+            var typeCheckWrapped = Wrap(typeCheck);
+            InventoryCount_TypeCheck.SetTarget(typeCheckWrapped);
+            layout.Children.Add(Label(context, "Specific Material", typeCheckWrapped, false));
+
+            var typeBox = CreateMaterialComboBox(context, redraw, redrawAndReload);
+            var typeBoxWrapped = Wrap(typeBox);
+            InventoryCount_TypeBox.SetTarget(typeBoxWrapped);
+            var typeBoxAll = Label(context, "Material", typeBoxWrapped);
+            typeBoxAll.Hidden = true;
+            SetupRadioButtonHiddenToggle(typeCheck, typeBoxAll);
+            layout.Children.Add(typeBoxAll);
+
+            layout.Hidden = true;
+            inventory.Children.Add(layout);
         }
     }
 }

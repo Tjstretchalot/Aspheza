@@ -538,6 +538,14 @@ namespace BaseBuilder.Screens.Components
                     return '9';
                 case Keys.NumPad0:
                     return '0';
+                case Keys.Subtract:
+                    return '-';
+                case Keys.Add:
+                    return '+';
+                case Keys.Divide:
+                    return '/';
+                case Keys.Multiply:
+                    return '*';
             }
 
             Console.WriteLine($"Weird key {key}");

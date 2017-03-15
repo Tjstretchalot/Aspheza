@@ -24,6 +24,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks.EntityConditionals
             IdsToConditions = new BiDictionary<short, Type>();
 
             Register(1, typeof(EntityInventoryHasOpenSlotCondition));
+            Register(2, typeof(EntityInventoryCountCondition));
         }
 
         public static void Register(short id, Type type)
