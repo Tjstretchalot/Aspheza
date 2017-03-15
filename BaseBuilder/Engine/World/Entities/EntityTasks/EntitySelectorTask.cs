@@ -84,6 +84,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
+                if (Children == null || Children.Count == 0)
+                    return "In a bad state =(";
+
                 return Children[Counter].PrettyDescription;
             }
         }
@@ -92,6 +95,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
+                if (Children == null || Children.Count == 0)
+                    return 0;
                 return Children[Counter].Progress;
             }
         }

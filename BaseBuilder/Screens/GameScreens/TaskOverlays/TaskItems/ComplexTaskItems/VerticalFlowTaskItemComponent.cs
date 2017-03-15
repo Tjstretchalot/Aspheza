@@ -69,6 +69,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// <param name="spacing">The spacing between children</param>
         public VerticalFlowTaskItemComponent(VerticalAlignmentMode alignment, int spacing)
         {
+            Alignment = alignment;
             Spacing = spacing;
         }
 
@@ -79,6 +80,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
 
             foreach(var child in Children)
             {
+                if (child.Hidden)
+                    continue;
+                
                 if (first)
                     first = false;
                 else
@@ -96,6 +100,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
             
             foreach(var child in Children)
             {
+                if (child.Hidden)
+                    continue;
+
                 result = Math.Max(result, child.GetRequiredWidth(context));
             }
 
@@ -109,6 +116,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
 
             foreach(var child in Children)
             {
+                if (child.Hidden)
+                    continue;
+
                 if (first)
                     first = false;
                 else
@@ -137,8 +147,6 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
                     default:
                         throw new InvalidProgramException($"Unknown alignment mode {Alignment}");
                 }
-
-                height += child.GetRequiredHeight(context);
             }
         }
     }

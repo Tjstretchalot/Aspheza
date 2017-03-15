@@ -35,6 +35,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         {
             Options = new List<ITaskItem>
             {
+                new ConditionTaskItem(),
                 new FailerTaskItem(),
                 new HarvestTaskItem(),
                 new MineGoldTaskItem(),
@@ -44,7 +45,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 new SelectorTaskItem(),
                 new SequenceTaskItem(),
                 new SucceederTaskItem(),
-                new TransferItemTaskItem()
+                new TransferItemTaskItem(),
             }.Where((opt) => opt.CanBeAssignedTo(taskable)).ToList();
             
 

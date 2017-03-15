@@ -20,6 +20,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
     public abstract class ComplexTaskItem : SimpleTaskItem
     {
         protected ITaskItemComponent InspectComponent;
+        protected bool LoadedFromTask;
 
         protected ComplexTaskItem() : base()
         {
@@ -31,15 +32,25 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// <param name="context">The render context</param>
         protected abstract void InitializeComponent(RenderContext context);
 
+        protected abstract void LoadFromTask();
+
         protected override void InitializeThings(RenderContext renderContext)
         {
             base.InitializeThings(renderContext);
             InitializeComponent(renderContext);
+
+            if (!LoadedFromTask && Task != null)
+            {
+                LoadedFromTask = true;
+                LoadFromTask();
+            }
         }
 
         protected override void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
         {
+            height += 8;
             InspectComponent.Layout(renderContext, 0, width, ref height);
+            height += 8;
 
             base.CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
         }
@@ -57,8 +68,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
 
         public override void DrawInspect(RenderContext context, int x, int y)
         {
-            InspectComponent.DrawLowPriority(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
             base.DrawInspect(context, x, y);
+            InspectComponent.DrawLowPriority(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
             InspectComponent.DrawHighPriority(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
         }
 
@@ -66,7 +77,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         {
             InspectComponent.HandleMouseStateHighPriority(Content, last, current, ref handled, ref scrollHandled);
             base.HandleInspectComponentsMouseState(last, current, ref handled, ref scrollHandled);
-            InspectComponent.HandleMouseStateLowPriority(Content, last, current, ref handled, ref scrollHandled);
+            InspectComponent?.HandleMouseStateLowPriority(Content, last, current, ref handled, ref scrollHandled);
         }
 
         public override bool HandleInspectKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current)

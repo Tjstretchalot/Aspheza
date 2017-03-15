@@ -23,16 +23,18 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             IdsToTasks = new Dictionary<short, Type>();
             TasksToIds = new Dictionary<Type, short>();
 
-            Register(typeof(EntityFailerTask), 1);
-            Register(typeof(EntityMoveTask), 2);
-            Register(typeof(EntityRepeaterTask), 3);
-            Register(typeof(EntityRepeatUntilFailTask), 4);
-            Register(typeof(EntitySelectorTask), 5);
-            Register(typeof(EntitySequenceTask), 6);
-            Register(typeof(EntitySucceederTask), 7);
-            Register(typeof(EntityMineGoldTask), 8);
-            Register(typeof(EntityHarvestTask), 9);
-            Register(typeof(EntityGiveItemTask), 10);
+            Register(typeof(EntityConditionTask), 1);
+            Register(typeof(EntityFailerTask), 2);
+            Register(typeof(EntityGiveItemTask), 3);
+            Register(typeof(EntityHarvestTask), 4);
+            Register(typeof(EntityMineGoldTask), 5);
+            Register(typeof(EntityMoveTask), 6);
+            Register(typeof(EntityRepeaterTask), 7);
+            Register(typeof(EntityRepeatUntilFailTask), 8);
+            Register(typeof(EntitySelectorTask), 9);
+            Register(typeof(EntitySequenceTask), 10);
+            Register(typeof(EntitySucceederTask), 11);
+            Register(typeof(EntityTransferItemTask), 12);
         }
 
         public static void Register(Type type, short id)

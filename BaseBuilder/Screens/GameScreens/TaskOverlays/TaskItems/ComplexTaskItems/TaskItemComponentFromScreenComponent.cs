@@ -18,6 +18,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
     /// </summary>
     public class TaskItemComponentFromScreenComponent <T1> : ITaskItemComponent where T1:IScreenComponent
     {
+        public bool Disposed { get; protected set; }
         public bool Hidden { get; set; }
         public T1 Component;
 
@@ -99,6 +100,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         {
             Component?.Dispose();
             Component = default(T1);
+
+            Disposed = true;
         }
 
     }

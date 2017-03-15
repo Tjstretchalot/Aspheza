@@ -47,6 +47,23 @@ namespace BaseBuilder.Engine.World.Entities
         protected int DefaultStackSize;
 
         /// <summary>
+        /// Gets if this inventory has an open slot available
+        /// </summary>
+        public bool HasOpenSlot
+        {
+            get
+            {
+                for(int i = 0; i < Inventory.Length; i++)
+                {
+                    if (Inventory[i] == null)
+                        return true;
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Initializes an empty inventory with the specifeid number of
         /// max items
         /// </summary>

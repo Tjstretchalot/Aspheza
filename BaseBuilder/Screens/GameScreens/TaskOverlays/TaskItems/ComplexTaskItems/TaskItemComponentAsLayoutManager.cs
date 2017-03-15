@@ -16,6 +16,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
     /// </summary>
     public abstract class TaskItemComponentAsLayoutManager : ITaskItemComponent
     {
+        public bool Disposed { get; protected set; }
         public bool Hidden { get; set; }
 
         public List<ITaskItemComponent> Children;
@@ -114,6 +115,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
 
         public virtual void Dispose()
         {
+            Disposed = true;
             foreach(var child in Children)
             {
                 child.Dispose();

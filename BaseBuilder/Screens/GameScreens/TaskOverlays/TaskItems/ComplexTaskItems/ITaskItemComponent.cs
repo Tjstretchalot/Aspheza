@@ -12,6 +12,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
     public interface ITaskItemComponent
     {
         bool Hidden { get; set; }
+        bool Disposed { get; }
 
         void UpdateHighPriority(ContentManager content, int deltaMS);
         void UpdateLowPriorirty(ContentManager content, int deltaMS);
