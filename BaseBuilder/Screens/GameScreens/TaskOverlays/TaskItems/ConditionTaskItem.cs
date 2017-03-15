@@ -267,7 +267,7 @@ condition task takes some time, typically one second.";
 
         protected void InitializeInventoryConditions(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main, ComboBox<ConditionType> mainBox)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 3);
+            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
             var typeBox = CreateComboBox(context, redraw, redrawAndReload, 
                 Tuple.Create("Has Open Slots", InventoryConditionType.HasOpenSlots),
@@ -288,7 +288,6 @@ condition task takes some time, typically one second.";
         protected void InitializeInventoryCountCondition(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main, ComboBox<ConditionType> mainBox, TaskItemComponentAsLayoutManager inventory, ComboBox<InventoryConditionType> inventoryBox)
         {
             var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
-            layout.Children.Add(CreatePadding(2, 2));
 
             var atMost = CreateRadioButton(context, redraw, redrawAndReload);
             var atLeast = CreateRadioButton(context, redraw, redrawAndReload);

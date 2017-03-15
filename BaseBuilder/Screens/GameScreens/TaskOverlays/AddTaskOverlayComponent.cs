@@ -38,6 +38,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 new ConditionTaskItem(),
                 new FailerTaskItem(),
                 new HarvestTaskItem(),
+                new InverterTaskItem(),
                 new MineGoldTaskItem(),
                 new MoveTaskItem(),
                 new RepeaterTaskItem(),
