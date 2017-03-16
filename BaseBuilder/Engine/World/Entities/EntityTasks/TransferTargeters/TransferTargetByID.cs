@@ -7,6 +7,7 @@ using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using Lidgren.Network;
+using BaseBuilder.Engine.World.WorldObject.Entities;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters
 {
@@ -32,9 +33,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters
             message.Write(TargetID);
         }
 
-        public Container FindTarget(SharedGameState sharedState, MobileEntity source)
+        public Entity FindTarget(SharedGameState sharedState, MobileEntity source)
         {
-            return (Container)sharedState.World.GetEntityByID(TargetID);
+            return sharedState.World.GetEntityByID(TargetID);
         }
 
         public bool IsValid()

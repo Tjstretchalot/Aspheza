@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree;
+using BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -37,7 +38,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             get
             {
-                return $"Harvesting from {HarvestedID} to {HarvesterID}";
+                return $"Harvesting";
             }
         }
 
@@ -56,11 +57,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 return $"{TimeLeftMS}ms remaining";
             }
         }
-
-        protected Container Harvester;
-        protected Harvestable Harvested;
-        protected int HarvesterID;
-        protected int HarvestedID;
+        
+        public int HarvesterID;
+        public ITransferTargeter HarvestedTargeter;
 
         protected int TotalTimeRequiredMS;
         protected int TimeLeftMS;
@@ -71,7 +70,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public EntityHarvestTask(Container harvester, Harvestable harvested, int timeReqMS)
         {
             HarvesterID = harvester.ID;
-            HarvestedID = harvested.ID;
+            HarvestedTargeter = new TransferTargetByID(harvested.ID);
 
             TotalTimeRequiredMS = timeReqMS;
             TimeLeftMS = TotalTimeRequiredMS;
@@ -80,10 +79,22 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             FixedDirection = false;
         }
 
+        public EntityHarvestTask(int sourceID, ITransferTargeter targeter, int timeReqMS = 3000)
+        {
+            HarvesterID = sourceID;
+            HarvestedTargeter = targeter;
+
+            TotalTimeRequiredMS = timeReqMS;
+            TimeLeftMS = TotalTimeRequiredMS;
+            ThingToHarvest = null;
+
+            FixedDirection = false;
+        }
+
         public EntityHarvestTask()
         {
             HarvesterID = -1;
-            HarvestedID = -1;
+            HarvestedTargeter = null;
             TotalTimeRequiredMS = -1;
             TimeLeftMS = -1;
             ThingToHarvest = "Bad state";
@@ -94,11 +105,16 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public EntityHarvestTask(NetIncomingMessage message)
         {
             HarvesterID = message.ReadInt32();
-            HarvestedID = message.ReadInt32();
+            if(message.ReadBoolean())
+            {
+                var typeID = message.ReadInt16();
+                HarvestedTargeter = TransferTargeterIdentifier.Init(TransferTargeterIdentifier.GetTypeOfID(typeID), message);
+            }
 
             TotalTimeRequiredMS = message.ReadInt32();
             TimeLeftMS = message.ReadInt32();
-            ThingToHarvest = message.ReadString();
+            if(message.ReadBoolean())
+                ThingToHarvest = message.ReadString();
 
             FixedDirection = message.ReadBoolean();
         }
@@ -106,11 +122,25 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public void Write(NetOutgoingMessage message)
         {
             message.Write(HarvesterID);
-            message.Write(HarvestedID);
+            if (HarvestedTargeter != null)
+            {
+                message.Write(true);
+                message.Write(TransferTargeterIdentifier.GetIDOfType(HarvestedTargeter.GetType()));
+                HarvestedTargeter.Write(message);
+            }else
+            {
+                message.Write(false);
+            }
 
             message.Write(TotalTimeRequiredMS);
             message.Write(TimeLeftMS);
-            message.Write(ThingToHarvest);
+            if (ThingToHarvest != null)
+            {
+                message.Write(true);
+                message.Write(ThingToHarvest);
+            }else {
+                message.Write(false);
+            }
 
             message.Write(FixedDirection);
         }
@@ -129,17 +159,18 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             if (!IsValid())
                 return EntityTaskStatus.Failure;
-
-            if (Harvester == null)
-                Harvester = gameState.World.MobileEntities.Find((m) => m.ID == HarvesterID) as Container;
-            if (Harvested == null)
-                Harvested = gameState.World.ImmobileEntities.Find((im) => im.ID == HarvestedID) as Harvestable;
+            
+            Container Harvester = gameState.World.MobileEntities.Find((m) => m.ID == HarvesterID) as Container;
+            Harvestable Harvested = HarvestedTargeter.FindTarget(gameState, Harvester as MobileEntity) as Harvestable;
 
             if (!Harvested.ReadyToHarvest(gameState))
                 return EntityTaskStatus.Failure;
 
             if (!Harvester.CollisionMesh.Intersects(Harvested.CollisionMesh, Harvester.Position, Harvested.Position) && !Harvester.CollisionMesh.MinDistanceShorterThan(Harvested.CollisionMesh, 1, Harvester.Position, Harvested.Position))
                 return EntityTaskStatus.Failure;
+
+            if (ThingToHarvest == null)
+                ThingToHarvest = Harvested.GetHarvestNamePretty();
 
             if(!FixedDirection)
             {
@@ -155,7 +186,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             var mobileHarvCave = Harvester as CaveManWorker;
             if (TimeLeftMS <= 0)
             {
-                Harvest(gameState);
+                Harvested.TryHarvest(gameState, Harvester);
                 if (mobileHarvCave != null)
                     mobileHarvCave.Reset();
                 return EntityTaskStatus.Success;
@@ -174,18 +205,13 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             return EntityTaskStatus.Running;
         }
 
-        protected void Harvest(SharedGameState gameState)
-        {
-            Harvested.TryHarvest(gameState, Harvester);
-        }
-
         public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)
         {
         }
 
         public bool IsValid()
         {
-            return HarvesterID != -1 && HarvestedID != -1 && TotalTimeRequiredMS > 0;
+            return HarvesterID != -1 && HarvestedTargeter != null && TotalTimeRequiredMS > 0;
         }
     }
 }

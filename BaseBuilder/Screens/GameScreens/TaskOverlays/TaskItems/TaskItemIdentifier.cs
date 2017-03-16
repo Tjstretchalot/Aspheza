@@ -18,7 +18,6 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
             Register(typeof(EntityConditionTask), typeof(ConditionTaskItem));
             Register(typeof(EntityFailerTask), typeof(FailerTaskItem));
-            Register(typeof(EntityGiveItemTask), typeof(GiveItemTaskItem));
             Register(typeof(EntityHarvestTask), typeof(HarvestTaskItem));
             Register(typeof(EntityInverterTask), typeof(InverterTaskItem));
             Register(typeof(EntityMineGoldTask), typeof(MineGoldTaskItem));

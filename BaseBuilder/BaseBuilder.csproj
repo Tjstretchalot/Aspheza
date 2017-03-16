@@ -101,7 +101,6 @@
     <Compile Include="Engine\World\Entities\EntityTasks\EntityConditionals\IEntityCondition.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityConditionals\InventoryConditionals\EntityInventoryCountCondition.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityConditionals\InventoryConditionals\EntityInventoryHasOpenSlotCondition.cs" />
-    <Compile Include="Engine\World\Entities\EntityTasks\EntityGiveItemTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityHarvestTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityConditionTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityInverterTask.cs" />
@@ -243,7 +242,6 @@
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItems\TaskItemComponentFromScreenComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItems\VerticalFlowTaskItemComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\FailerTaskItem.cs" />
-    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\GiveItemTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ConditionTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\InverterTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\TransferItemTaskItem.cs" />

@@ -37,7 +37,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         protected override void InitializeThings(RenderContext renderContext)
         {
             base.InitializeThings(renderContext);
-            InitializeComponent(renderContext);
+
+            if(InspectComponent == null)
+                InitializeComponent(renderContext);
 
             if (!LoadedFromTask && Task != null)
             {

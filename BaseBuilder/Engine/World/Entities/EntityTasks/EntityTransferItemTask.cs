@@ -245,7 +245,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 var source = gameState.World.MobileEntities.Find((me) => me.ID == SourceID);
                 var sourceContainer = (Container)source;
 
-                var target = Targeter.FindTarget(gameState, source);
+                var target = Targeter.FindTarget(gameState, source) as Container;
 
                 if (target == null)
                     return EntityTaskStatus.Failure;

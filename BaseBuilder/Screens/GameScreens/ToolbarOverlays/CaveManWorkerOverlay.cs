@@ -50,14 +50,14 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
 
         public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
+            InventoryOverlayComp.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
+
             base.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
 
             if (CurrentToolbarEntity == null)
             {
                 return;
             }
-
-            InventoryOverlayComp.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
 
         }
 

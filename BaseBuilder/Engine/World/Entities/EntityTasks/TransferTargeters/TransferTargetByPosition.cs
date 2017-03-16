@@ -8,6 +8,7 @@ using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using Lidgren.Network;
 using BaseBuilder.Engine.Math2D;
+using BaseBuilder.Engine.World.WorldObject.Entities;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters
 {
@@ -44,12 +45,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters
             }
         }
 
-        public Container FindTarget(SharedGameState sharedState, MobileEntity source)
+        public Entity FindTarget(SharedGameState sharedState, MobileEntity source)
         {
             if (Position.X < 0 || Position.Y < 0 || Position.X >= sharedState.World.TileWidth || Position.Y >= sharedState.World.TileHeight)
                 return null;
 
-            return (Container)sharedState.World.GetEntityAtLocation(Position);
+            return sharedState.World.GetEntityAtLocation(Position);
         }
 
         public bool IsValid()

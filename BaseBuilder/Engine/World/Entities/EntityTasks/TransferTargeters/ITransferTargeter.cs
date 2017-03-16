@@ -1,6 +1,7 @@
 ﻿using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.Utilities;
+using BaseBuilder.Engine.World.WorldObject.Entities;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters
         /// <param name="sharedState">The shared state</param>
         /// <param name="source">The source</param>
         /// <returns>The target</returns>
-        Container FindTarget(SharedGameState sharedState, MobileEntity source);
+        Entity FindTarget(SharedGameState sharedState, MobileEntity source);
 
         /// <summary>
         /// Determines if this targeter is valid

@@ -25,7 +25,6 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
             Register(typeof(EntityConditionTask), 1);
             Register(typeof(EntityFailerTask), 2);
-            Register(typeof(EntityGiveItemTask), 3);
             Register(typeof(EntityHarvestTask), 4);
             Register(typeof(EntityInverterTask), 5);
             Register(typeof(EntityMineGoldTask), 6);
