@@ -13,6 +13,7 @@ using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.World.Entities.EntityTasks.TransferResultDeciders;
 using BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters;
+using BaseBuilder.Engine.World.Entities.MobileEntities;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -69,6 +70,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         protected int TotalTimeToTransferMS;
         protected int TimeRemainingToTransferMS;
 
+        protected bool FixedDirection;
+
         public EntityTransferItemTask()
         {
             SourceID = -1;
@@ -81,6 +84,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             CachedResult = null;
             TotalTimeToTransferMS = 1500;
             TimeRemainingToTransferMS = TotalTimeToTransferMS;
+
+            FixedDirection = false;
         }
 
         public EntityTransferItemTask(int sourceID, bool pickup, ITransferTargeter targeter, List<ITransferRestrictor> restrictors, ITransferResultDecider resultDecider) : this()
@@ -128,6 +133,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
             TotalTimeToTransferMS = message.ReadInt32();
             TimeRemainingToTransferMS = message.ReadInt32();
+
+            FixedDirection = message.ReadBoolean();
         }
 
         public void Write(NetOutgoingMessage message)
@@ -182,6 +189,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
             message.Write(TotalTimeToTransferMS);
             message.Write(TimeRemainingToTransferMS);
+
+            message.Write(FixedDirection);
         }
 
         public bool IsValid()
@@ -235,6 +244,21 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             if (CachedResult.HasValue)
                 return CachedResult.Value;
 
+            if(!FixedDirection)
+            {
+                var source = gameState.World.MobileEntities.Find((me) => me.ID == SourceID);
+                var target = Targeter.FindTarget(gameState, source);
+                var worker = source as MobileEntity;
+                if (worker != null && target != null)
+                {
+                    if (!target.CollisionMesh.Intersects(source.CollisionMesh, target.Position, source.Position))
+                        return EntityTaskStatus.Failure;
+
+                    DirectionUtils.Face(gameState, worker, target);
+                }
+                FixedDirection = true;
+            }
+
             RunSinceLastReset = true;
             TimeRemainingToTransferMS -= timeMS;
 
@@ -245,12 +269,13 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 var source = gameState.World.MobileEntities.Find((me) => me.ID == SourceID);
                 var sourceContainer = (Container)source;
 
+
                 var target = Targeter.FindTarget(gameState, source) as Container;
 
                 if (target == null)
                     return EntityTaskStatus.Failure;
 
-                if (!target.CollisionMesh.Intersects(source.CollisionMesh, target.Position, source.Position) && !target.CollisionMesh.MinDistanceShorterThan(source.CollisionMesh, 1, target.Position, source.Position))
+                if (!target.CollisionMesh.Intersects(source.CollisionMesh, target.Position, source.Position))
                     return EntityTaskStatus.Failure;
                 
                 var from = Pickup ? target : sourceContainer;

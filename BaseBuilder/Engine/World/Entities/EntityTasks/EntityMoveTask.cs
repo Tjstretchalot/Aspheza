@@ -231,6 +231,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             if(Start == null)
             {
                 Start = new PointD2D(Entity.Position.X, Entity.Position.Y);
+                if (EpsilonEqual(Destination.X, Start.X) && EpsilonEqual(Destination.Y, Start.Y))
+                    return EntityTaskStatus.Success;
                 InitialDistance = (Destination - Start).AsVectorD2D().Magnitude;
             }
 

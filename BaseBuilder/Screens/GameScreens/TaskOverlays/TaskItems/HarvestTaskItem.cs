@@ -11,6 +11,9 @@ using BaseBuilder.Screens.Components;
 
 using static BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems.ComplexTaskItemUtils;
 using BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters;
+using BaseBuilder.Engine.World.Entities.Utilities;
+using BaseBuilder.Engine.Math2D;
+using BaseBuilder.Engine.Math2D.Double;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
@@ -71,12 +74,145 @@ position. ";
 
         public override IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            return new EntityHarvestTask();
+            var sourceId = ((Thing)taskable).ID;
+            bool visualsDisposed = false;
+            TaskItemComponentFromScreenComponent<ComboBox<TargetType>> targetTypeBoxWrapped = null;
+            if (TargetTypeBox == null)
+                visualsDisposed = true;
+            else if (!TargetTypeBox.TryGetTarget(out targetTypeBoxWrapped))
+                visualsDisposed = true;
+            else if (targetTypeBoxWrapped.Disposed)
+                visualsDisposed = true;
+
+            if (visualsDisposed)
+            {
+                if (Task == null)
+                    return new EntityHarvestTask();
+                else
+                {
+                    var task = Task as EntityHarvestTask;
+                    return new EntityHarvestTask(task.HarvesterID, task.HarvestedTargeter, task.TotalTimeRequiredMS);
+                }
+            }
+
+            var targetTypeBox = Unwrap(targetTypeBoxWrapped);
+            if (targetTypeBox.Selected == null)
+                return new EntityHarvestTask();
+
+            TextField field;
+            int parsed = 0, x = 0, y = 0, dx = 0, dy = 0;
+            switch(targetTypeBox.Selected.Value)
+            {
+                case TargetType.ByID:
+                    field = Unwrap(TargetByID_Field);
+
+                    if (field.Text == null || !int.TryParse(field.Text, out parsed))
+                        return new EntityHarvestTask(sourceId, new TransferTargetByID(0));
+
+                    return new EntityHarvestTask(sourceId, new TransferTargetByID(parsed));
+                case TargetType.ByPosition:
+                    field = Unwrap(TargetByPosition_XField);
+
+                    if (field.Text == null || !int.TryParse(field.Text, out x))
+                        return new EntityHarvestTask(sourceId, new TransferTargetByPosition(new PointI2D(0, 0)));
+
+                    field = Unwrap(TargetByPosition_YField);
+
+                    if (field.Text == null || !int.TryParse(field.Text, out y))
+                        return new EntityHarvestTask(sourceId, new TransferTargetByPosition(new PointI2D(x, 0)));
+
+                    return new EntityHarvestTask(sourceId, new TransferTargetByPosition(new PointI2D(x, y)));
+                case TargetType.ByRelativePosition:
+                    field = Unwrap(TargetByRelativePosition_DXField);
+
+                    if (field.Text == null || !int.TryParse(field.Text, out dx))
+                        return new EntityHarvestTask(sourceId, new TransferTargetByRelativePosition(new VectorD2D(0, 0)));
+
+                    field = Unwrap(TargetByRelativePosition_DYField);
+
+                    if (field.Text == null || !int.TryParse(field.Text, out dy))
+                        return new EntityHarvestTask(sourceId, new TransferTargetByRelativePosition(new VectorD2D(dx, 0)));
+
+                    return new EntityHarvestTask(sourceId, new TransferTargetByRelativePosition(new VectorD2D(dx, dy)));
+                default:
+                    throw new InvalidProgramException();
+            }
         }
 
         public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            return false;
+            bool visualsDisposed = false;
+            TaskItemComponentFromScreenComponent<ComboBox<TargetType>> targetTypeBoxWrapped = null;
+            if (TargetTypeBox == null)
+                visualsDisposed = true;
+            else if (!TargetTypeBox.TryGetTarget(out targetTypeBoxWrapped))
+                visualsDisposed = true;
+            else if (targetTypeBoxWrapped.Disposed)
+                visualsDisposed = true;
+
+            if(visualsDisposed)
+            {
+                if (Task == null)
+                    return false;
+                return Task.IsValid();
+            }
+
+            var targetTypeBox = Unwrap(targetTypeBoxWrapped);
+
+            if (targetTypeBox.Selected == null)
+                return false;
+
+            int parsed = 0;
+            TextField field;
+            switch(targetTypeBox.Selected.Value)
+            {
+                case TargetType.ByID:
+                    field = Unwrap(TargetByID_Field);
+
+                    if (field.Text.Length == 0 || !int.TryParse(field.Text, out parsed))
+                        return false;
+
+                    if (parsed <= 0)
+                        return false;
+
+                    break;
+                case TargetType.ByPosition:
+                    field = Unwrap(TargetByPosition_XField);
+
+                    if (field.Text.Length == 0 || !int.TryParse(field.Text, out parsed))
+                        return false;
+
+                    if (parsed <= 0)
+                        return false;
+
+                    field = Unwrap(TargetByPosition_YField);
+
+                    if (field.Text.Length == 0 || !int.TryParse(field.Text, out parsed))
+                        return false;
+
+                    if (parsed <= 0)
+                        return false;
+                    break;
+                case TargetType.ByRelativePosition:
+                    field = Unwrap(TargetByRelativePosition_DXField);
+
+                    if (field.Text.Length == 0 || !int.TryParse(field.Text, out parsed))
+                        return false;
+
+                    if (parsed <= 0)
+                        return false;
+
+                    field = Unwrap(TargetByRelativePosition_DYField);
+
+                    if (field.Text.Length == 0 || !int.TryParse(field.Text, out parsed))
+                        return false;
+
+                    if (parsed <= 0)
+                        return false;
+                    break;
+            }
+
+            return true;
         }
 
         protected override void InitializeComponent(RenderContext context)

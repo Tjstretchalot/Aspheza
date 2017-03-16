@@ -371,55 +371,7 @@ namespace BaseBuilder.Engine.Logic
 
             return best;
         }
-
-        /// <summary>
-        /// If the user has a CaveManWorker selected and right clicks on gold ore, then he is trying to have
-        /// the worker dig ore. For right now, this requires that the worker is already close enough to the ore.
-        /// </summary>
-        /// <param name="sharedGameState">Shared state</param>
-        /// <param name="localGameState">Local state</param>
-        /// <param name="netContext">Net context</param>
-        /// <param name="elapsedMS">Time since last frame in ms</param>
-        /// <param name="keyboardHandled">If the keyboard was already handled</param>
-        /// <param name="mouseHandled">If the mouse was already handled. Dig orders require mouse is not handled and handle the mouse</param>
-        protected void CheckForDigGoldOreOrder(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int elapsedMS, ref bool keyboardHandled, ref bool mouseHandled)
-        {
-            if (mouseHandled)
-                return;
-
-            var worker = localGameState.SelectedEntity as CaveManWorker;
-            var vein = localGameState.HoveredEntity as GoldOre;
-            if (worker == null || vein == null)
-                return;
-
-            if (mouseLast.Value.RightButton != ButtonState.Pressed || mouseCurr.RightButton != ButtonState.Released)
-                return;
-
-            if (!keyboardCurr.IsKeyDown(Keys.LeftShift))
-            {
-                var cancelTasksOrder = netContext.GetPoolFromPacketType(typeof(CancelTasksOrder)).GetGamePacketFromPool() as CancelTasksOrder;
-                cancelTasksOrder.EntityID = localGameState.SelectedEntity.ID;
-                localGameState.Orders.Add(cancelTasksOrder);
-            }
-
-            mouseHandled = true;
-
-            IssueTaskOrder order;
-            if (!worker.CollisionMesh.Intersects(vein.CollisionMesh, worker.Position, vein.Position, false))
-            {
-                order = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
-                order.Entity = worker;
-                order.Task = new EntityMoveTask(worker, FindDestination(sharedGameState, worker, vein));
-                localGameState.Orders.Add(order);
-                
-            }
-
-            order = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
-            order.Entity = worker;
-            order.Task = new EntityMineGoldTask(worker, vein);
-            localGameState.Orders.Add(order);
-        }
-
+        
         /// <summary>
         /// If the player has a worker selected and right clicks a harvestable that is ready to harvest,
         /// harvest the thing
@@ -690,7 +642,6 @@ namespace BaseBuilder.Engine.Logic
             CheckForHovering(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForSelect(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
             UpdateCamera(sharedGameState, localGameState, elapsedMS, ref keyboardHandled, ref mouseHandled);
-            CheckForDigGoldOreOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForHarvestOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
             CheckForMoveOrder(sharedGameState, localGameState, netContext, elapsedMS, ref keyboardHandled, ref mouseHandled);
 

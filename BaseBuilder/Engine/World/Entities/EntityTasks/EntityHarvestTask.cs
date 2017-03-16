@@ -61,7 +61,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         public int HarvesterID;
         public ITransferTargeter HarvestedTargeter;
 
-        protected int TotalTimeRequiredMS;
+        public int TotalTimeRequiredMS;
         protected int TimeLeftMS;
         protected string ThingToHarvest;
 

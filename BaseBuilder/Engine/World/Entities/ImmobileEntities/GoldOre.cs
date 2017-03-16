@@ -9,10 +9,12 @@ using BaseBuilder.Engine.State;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using BaseBuilder.Engine.World.Entities.Utilities;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
-    public class GoldOre : ImmobileEntity
+    public class GoldOre : ImmobileEntity, Harvestable
     {
         protected static CollisionMeshD2D _CollisionMesh;
 
@@ -53,6 +55,21 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             message.Write(ID);
 
             WriteTasks(message);
+        }
+
+        public bool ReadyToHarvest(SharedGameState sharedGameState)
+        {
+            return true;
+        }
+
+        public string GetHarvestNamePretty()
+        {
+            return "Gold";
+        }
+
+        public void TryHarvest(SharedGameState sharedGameState, Container reciever)
+        {
+            reciever.Inventory.AddMaterial(Material.GoldOre, 1);
         }
     }
 }

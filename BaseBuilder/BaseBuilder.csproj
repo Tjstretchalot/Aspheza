@@ -104,7 +104,6 @@
     <Compile Include="Engine\World\Entities\EntityTasks\EntityHarvestTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityConditionTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityInverterTask.cs" />
-    <Compile Include="Engine\World\Entities\EntityTasks\EntityMineGoldTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMoveTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferResultDeciders\ItemsTransferedResultDecider.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferResultDeciders\ITransferResultDecider.cs" />
@@ -138,7 +137,6 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\House.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityFailerTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityRepeaterTask.cs" />
-    <Compile Include="Engine\World\Entities\EntityTasks\EntityRepeatUntilFailTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntitySelectorTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntitySequenceTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntitySucceederTask.cs" />
@@ -248,10 +246,8 @@
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\HarvestTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ITaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\MaterialComboBoxItem.cs" />
-    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\MineGoldTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\MoveTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\RepeaterTaskItem.cs" />
-    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\RepeatUntilFailTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\SelectorTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\SequenceTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\SimpleTaskItem.cs" />

@@ -27,10 +27,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Register(typeof(EntityFailerTask), 2);
             Register(typeof(EntityHarvestTask), 4);
             Register(typeof(EntityInverterTask), 5);
-            Register(typeof(EntityMineGoldTask), 6);
             Register(typeof(EntityMoveTask), 7);
             Register(typeof(EntityRepeaterTask), 8);
-            Register(typeof(EntityRepeatUntilFailTask), 9);
             Register(typeof(EntitySelectorTask), 10);
             Register(typeof(EntitySequenceTask), 11);
             Register(typeof(EntitySucceederTask), 12);
