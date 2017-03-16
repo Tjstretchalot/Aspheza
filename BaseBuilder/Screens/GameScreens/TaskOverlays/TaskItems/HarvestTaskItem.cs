@@ -199,16 +199,11 @@ position. ";
                     if (field.Text.Length == 0 || !int.TryParse(field.Text, out parsed))
                         return false;
 
-                    if (parsed <= 0)
-                        return false;
-
                     field = Unwrap(TargetByRelativePosition_DYField);
 
                     if (field.Text.Length == 0 || !int.TryParse(field.Text, out parsed))
                         return false;
-
-                    if (parsed <= 0)
-                        return false;
+                    
                     break;
             }
 
@@ -297,14 +292,14 @@ position. ";
             var dxdyFields = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
 
             var dxField = CreateTextField(context, redraw, redrawAndReload);
-            dxField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, false);
+            dxField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, true);
 
             var wrapped = Wrap(dxField);
             TargetByRelativePosition_DXField.SetTarget(wrapped);
             dxdyFields.Children.Add(Label(context, "Delta X", wrapped));
 
             var dyField = CreateTextField(context, redraw, redrawAndReload);
-            dyField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, false);
+            dyField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, true);
 
             wrapped = Wrap(dyField);
             TargetByRelativePosition_DYField.SetTarget(wrapped);

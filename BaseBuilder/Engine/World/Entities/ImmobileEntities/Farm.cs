@@ -72,7 +72,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
             if (!IsASeed(mat))
                 return;
-
+            if (ReadyToHarvest(null))
+                return;
             if (mat == Material.WheatSeed)
                 PlantFarm(1);
             else if (mat == Material.CarrotSeed)

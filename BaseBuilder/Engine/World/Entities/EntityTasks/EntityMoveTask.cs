@@ -84,6 +84,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         protected UnitPath Path;
         protected bool Finished;
         protected bool FailedToFindPath;
+        protected bool ReservationRequired;
 
         protected Random random;
         protected bool PlaySFX;
@@ -105,6 +106,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             FailedToFindPath = false;
             Finished = false;
 
+            ReservationRequired = true;
+
             random = new Random();
         }
 
@@ -117,6 +120,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Path = null;
             FailedToFindPath = false;
             Finished = false;
+
+            ReservationRequired = true;
 
             random = new Random();
         }
@@ -141,6 +146,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 Path = new UnitPath(message);
             Finished = message.ReadBoolean();
             FailedToFindPath = message.ReadBoolean();
+
+            ReservationRequired = message.ReadBoolean();
 
             random = new Random();
         }
@@ -187,6 +194,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
             message.Write(Finished);
             message.Write(FailedToFindPath);
+
+            message.Write(ReservationRequired);
         }
 
 
@@ -197,14 +206,20 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Finished = false;
             Start = null;
 
-            gameState.Reserved.Add(Destination);
+            if (Destination != null && !ReservationRequired)
+                gameState.Reserved.Remove(Destination);
+
+            ReservationRequired = true;
+            Entity?.OnStop(gameState);
         }
 
         public void Cancel(SharedGameState gameState)
         {
             Entity?.OnStop(gameState);
-            if(Destination != null)
+            if(Destination != null && !ReservationRequired)
                 gameState.Reserved.Remove(Destination);
+
+            ReservationRequired = true;
         }
 
         /// <summary>
@@ -234,6 +249,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 if (EpsilonEqual(Destination.X, Start.X) && EpsilonEqual(Destination.Y, Start.Y))
                     return EntityTaskStatus.Success;
                 InitialDistance = (Destination - Start).AsVectorD2D().Magnitude;
+            }
+
+            if(ReservationRequired)
+            {
+                gameState.Reserved.Add(Destination);
+                ReservationRequired = false;
             }
 
             if (FailedToFindPath || Finished)

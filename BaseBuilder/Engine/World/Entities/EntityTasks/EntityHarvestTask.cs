@@ -154,6 +154,13 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             TimeLeftMS = TotalTimeRequiredMS;
         }
+        
+        private bool CloseEnough(Thing source, Thing target)
+        {
+            return target.CollisionMesh.Intersects(source.CollisionMesh, target.Position, source.Position)
+                || target.CollisionMesh.MinDistanceShorterThan(source.CollisionMesh, 0.8, target.Position, source.Position);
+        }
+
 
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
@@ -163,10 +170,10 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Container Harvester = gameState.World.MobileEntities.Find((m) => m.ID == HarvesterID) as Container;
             Harvestable Harvested = HarvestedTargeter.FindTarget(gameState, Harvester as MobileEntity) as Harvestable;
 
-            if (!Harvested.ReadyToHarvest(gameState))
+            if (Harvested == null || !Harvested.ReadyToHarvest(gameState))
                 return EntityTaskStatus.Failure;
 
-            if (!Harvester.CollisionMesh.Intersects(Harvested.CollisionMesh, Harvester.Position, Harvested.Position) && !Harvester.CollisionMesh.MinDistanceShorterThan(Harvested.CollisionMesh, 1, Harvester.Position, Harvested.Position))
+            if (!CloseEnough(Harvested, Harvester))
                 return EntityTaskStatus.Failure;
 
             if (ThingToHarvest == null)

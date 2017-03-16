@@ -239,6 +239,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
         }
 
+        private bool CloseEnough(Thing source, Thing target)
+        {
+            return target.CollisionMesh.Intersects(source.CollisionMesh, target.Position, source.Position)
+                || target.CollisionMesh.MinDistanceShorterThan(source.CollisionMesh, 0.8, target.Position, source.Position);
+        }
+
         public EntityTaskStatus SimulateTimePassing(SharedGameState gameState, int timeMS)
         {
             if (CachedResult.HasValue)
@@ -251,7 +257,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 var worker = source as MobileEntity;
                 if (worker != null && target != null)
                 {
-                    if (!target.CollisionMesh.Intersects(source.CollisionMesh, target.Position, source.Position))
+                    if (!CloseEnough(worker, target))
                         return EntityTaskStatus.Failure;
 
                     DirectionUtils.Face(gameState, worker, target);
@@ -275,7 +281,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 if (target == null)
                     return EntityTaskStatus.Failure;
 
-                if (!target.CollisionMesh.Intersects(source.CollisionMesh, target.Position, source.Position))
+                if (!CloseEnough(source, target))
                     return EntityTaskStatus.Failure;
                 
                 var from = Pickup ? target : sourceContainer;

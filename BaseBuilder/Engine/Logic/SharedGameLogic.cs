@@ -76,12 +76,6 @@ namespace BaseBuilder.Engine.Logic
         [OrderHandler(typeof(IssueTaskOrder))]
         public void OnTaskOrder(SharedGameState gameState, Player player, IssueTaskOrder order)
         {
-            if(typeof(EntityMoveTask).IsAssignableFrom(order.Task.GetType()))
-            {
-                var mt = order.Task as EntityMoveTask;
-
-                gameState.Reserved.Add(mt.Destination);
-            }
             order.Entity.QueueTask(order.Task);
         }
 

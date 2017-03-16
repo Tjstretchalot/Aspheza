@@ -581,7 +581,7 @@ every cycle, such as for a courier.", renderContext.DefaultFont, Color.White);
                 {
                     var tmp = (InventoryRestriction)Original;
 
-                    if (Outer.PickupRadio.Pushed == tmp.CheckRecievingInventory)
+                    if (Outer.PickupRadio.Pushed != tmp.CheckRecievingInventory)
                     {
                         // talking about them
                         TypeBox.Selected = TypeBox.GetComboItemByValue(TransferRestrictorType.ByTargetInventory);

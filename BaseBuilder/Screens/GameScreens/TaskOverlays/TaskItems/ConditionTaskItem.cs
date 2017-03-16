@@ -81,6 +81,11 @@ condition task takes some time, typically one second.";
 
         }
 
+        protected override void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
+        {
+            base.CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
+            height += 100;
+        }
         public override IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
             var visualsDisposed = false;
