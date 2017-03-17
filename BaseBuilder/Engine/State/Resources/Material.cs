@@ -13,6 +13,8 @@ namespace BaseBuilder.Engine.State.Resources
     /// </summary>
     public class Material : Renderable
     {
+        // ** Update GetMaterialByID if modifying ** //
+
         public static Material GoldOre { get; }
         public static Material CarrotSeed { get; }
         public static Material WheatSeed { get; }
@@ -65,6 +67,22 @@ namespace BaseBuilder.Engine.State.Resources
         {
             if (id == GoldOre.ID)
                 return GoldOre;
+            if (id == CarrotSeed.ID)
+                return CarrotSeed;
+            if (id == WheatSeed.ID)
+                return WheatSeed;
+            if (id == Carrot.ID)
+                return Carrot;
+            if (id == Wheat.ID)
+                return Wheat;
+            if (id == Flour.ID)
+                return Flour;
+            if (id == Bread.ID)
+                return Bread;
+            if (id == Wood.ID)
+                return Wood;
+            if (id == Sapling.ID)
+                return Sapling;
 
             throw new InvalidProgramException($"No material with id {id}");
         }
