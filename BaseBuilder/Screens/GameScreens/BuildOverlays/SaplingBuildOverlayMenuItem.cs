@@ -24,7 +24,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 
         public override UnbuiltImmobileEntity CreateUnbuiltImmobileEntity(SharedGameState gameState)
         {
-            return new UnbuiltImmobileEntityAsDelegator(() => new Tree(new PointD2D(0, 0), gameState.GetUniqueEntityID(), TreeSize.Sapling, TreeStyle.Pointy, TreeColor.Green));
+            return new UnbuiltImmobileEntityAsDelegator(() => new Tree(new PointD2D(0, 0), -1, TreeSize.Sapling, TreeStyle.Pointy, TreeColor.Green));
         }
 
         public override bool TryBuildEntity(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, PointD2D placeLoc, UnbuiltImmobileEntity buildingToPlace)

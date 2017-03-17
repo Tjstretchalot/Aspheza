@@ -28,7 +28,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
     /// </remarks>
     public abstract class Entity : Renderable, ITaskable, Thing
     {
-        public int ID { get; protected set; }
+        public int ID { get; set; }
 
         public bool Destroyed { get; set; }
 

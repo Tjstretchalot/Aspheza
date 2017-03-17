@@ -61,6 +61,30 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Renderer = new SpriteRenderer("Farms", EmptyDrawRec);
         }
 
+        public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)
+        {
+            Position = new PointD2D(message);
+            ID = message.ReadInt32();
+            GrowthState = (GrowthState)message.ReadInt32();
+            Inventory = new EntityInventory(message);
+            _HoverText = message.ReadString();
+
+            InitInventoryForNonnetworkableParts();
+
+            TasksFromMessage(gameState, message);
+        }
+
+        public override void Write(NetOutgoingMessage message)
+        {
+            Position.Write(message);
+            message.Write(ID);
+            message.Write((int)GrowthState);
+            Inventory.Write(message);
+            message.Write(_HoverText);
+
+            WriteTasks(message);
+        }
+
         protected void InitInventoryForNonnetworkableParts()
         {
             Inventory.AcceptsMaterialFunc = IsASeed;
@@ -142,29 +166,6 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             _HoverText = "A rudimentary farm. It's currently not growing anything";
         }
 
-        public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)
-        {
-            Position = new PointD2D(message);
-            ID = message.ReadInt32();
-            GrowthState = (GrowthState)message.ReadInt32();
-            Inventory = new EntityInventory(message);
-            _HoverText = message.ReadString();
-
-            InitInventoryForNonnetworkableParts();
-
-            TasksFromMessage(gameState, message);
-        }
-
-        public override void Write(NetOutgoingMessage message)
-        {
-            Position.Write(message);
-            message.Write(ID);
-            message.Write((int)GrowthState);
-            Inventory.Write(message);
-            message.Write(_HoverText);
-
-            WriteTasks(message);
-        }
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {

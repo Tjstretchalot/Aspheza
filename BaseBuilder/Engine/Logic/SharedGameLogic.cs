@@ -109,6 +109,8 @@ namespace BaseBuilder.Engine.Logic
         [OrderHandler(typeof(BuildOrder))]
         public void OnBuildOrder(SharedGameState gameState, Player player, BuildOrder order)
         {
+            order.Entity.ID = gameState.EntityIDCounter++;
+
             gameState.World.AddImmobileEntity(order.Entity);
         }
 

@@ -83,18 +83,18 @@ namespace BaseBuilder.Engine.Logic.WorldGen
         {
             var wcx = TileWorld.TileWidth / 2;
             var wcy = TileWorld.TileHeight / 2;
-            TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(wcx + 0, wcy), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new OverseerMage(new PointD2D(wcx + 0, wcy), SharedGameState.EntityIDCounter++));
 
-            var tmp = new CaveManWorker(new PointD2D(wcx - 2, wcy + 0), SharedGameState.GetUniqueEntityID());
+            var tmp = new CaveManWorker(new PointD2D(wcx - 2, wcy + 0), SharedGameState.EntityIDCounter++);
             tmp.Inventory.AddMaterial(Material.WheatSeed, 1);
             tmp.Inventory.AddMaterial(Material.CarrotSeed, 1);
             TileWorld.AddMobileEntity(tmp);
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 2, wcy + 1), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 1, wcy + 2), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 0, wcy + 2), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 1, wcy + 2), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 2, wcy + 1), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 2, wcy + 0), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 2, wcy + 1), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 1, wcy + 2), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 0, wcy + 2), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 1, wcy + 2), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 2, wcy + 1), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 2, wcy + 0), SharedGameState.EntityIDCounter++));
         }
 
         protected void InitBuildings()
@@ -102,9 +102,9 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             var wcx = TileWorld.TileWidth / 2;
             var wcy = TileWorld.TileHeight / 2;
 
-            TileWorld.AddImmobileEntity(new House(new PointD2D(wcx - 0.5, wcy - 4), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddImmobileEntity(new Sign(new PointD2D(wcx + 5, wcy + 1), SharedGameState.GetUniqueEntityID(), "Welcome to the game!"));
-            TileWorld.AddImmobileEntity(new GoldOre(new PointD2D(wcx - 10, wcy + 5), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(new House(new PointD2D(wcx - 0.5, wcy - 4), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntity(new Sign(new PointD2D(wcx + 5, wcy + 1), SharedGameState.EntityIDCounter++, "Welcome to the game!"));
+            TileWorld.AddImmobileEntity(new GoldOre(new PointD2D(wcx - 10, wcy + 5), SharedGameState.EntityIDCounter++));
             /*
             TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green));
             TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 4, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Red));
@@ -199,7 +199,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             else
                 color = TreeColor.Blue;
 
-            nextTree = new Tree(new PointD2D(0, 0), SharedGameState.GetUniqueEntityID(), size, style, color);
+            nextTree = new Tree(new PointD2D(0, 0), SharedGameState.EntityIDCounter++, size, style, color);
         }
         
         protected void SpawnTreeEpitrochoid(PointI2D pos, int x, int y, ref ImmobileEntity nextTree, double a, double b, double c, double scale)
@@ -283,7 +283,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             var wcx = TileWorld.TileWidth / 2;
             var wcy = TileWorld.TileHeight / 2;
             
-            ImmobileEntity nextTree = new Tree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green);
+            ImmobileEntity nextTree = new Tree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.EntityIDCounter++, TreeSize.Large, TreeStyle.Pointy, TreeColor.Green);
             var pos = new PointI2D(0, 0);
             
             for (int y = forestAvgHeight; y < TileWorld.TileHeight - forestAvgHeight; y++)

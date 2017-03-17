@@ -59,11 +59,6 @@ namespace BaseBuilder.Engine.State
         /// </summary>
         public List<PointI2D> Reserved;
 
-        public int GetUniqueEntityID()
-        {
-            return EntityIDCounter++;
-        }
-
         public SharedGameState(TileWorld world, List<Player> players, int gameTimeMS)
         {
             World = world;

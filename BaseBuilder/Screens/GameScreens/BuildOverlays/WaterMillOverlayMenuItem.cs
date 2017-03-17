@@ -24,7 +24,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 
         public override UnbuiltImmobileEntity CreateUnbuiltImmobileEntity(SharedGameState gameState)
         {
-            return new UnbuiltWaterMillEntity(() => new WaterMill(new PointD2D(0, 0), gameState.GetUniqueEntityID()));
+            return new UnbuiltWaterMillEntity(() => new WaterMill(new PointD2D(0, 0), -1));
         }
     }
 }

@@ -24,7 +24,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 
         public override UnbuiltImmobileEntity CreateUnbuiltImmobileEntity(SharedGameState gameState)
         {
-            return new UnbuiltImmobileEntityAsDelegator(() => new Bakery(new PointD2D(0, 0), gameState.GetUniqueEntityID()));
+            return new UnbuiltImmobileEntityAsDelegator(() => new Bakery(new PointD2D(0, 0), -1));
         }
     }
 }

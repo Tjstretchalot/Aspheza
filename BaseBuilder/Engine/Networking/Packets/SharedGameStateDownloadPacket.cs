@@ -99,6 +99,8 @@ namespace BaseBuilder.Engine.Networking.Packets
                 SharedState.World.RemoveImmobileEntity(SharedState.World.ImmobileEntities.Find((im) => im.ID == entID));
             }
 
+            SharedState.EntityIDCounter = message.ReadInt32();
+
             var numRecentMessages = message.ReadInt32();
             for (var i = 0; i < numRecentMessages; i++)
             {
@@ -181,6 +183,8 @@ namespace BaseBuilder.Engine.Networking.Packets
             {
                 message.Write(immobile.ID);
             }
+
+            message.Write(SharedState.EntityIDCounter);
 
             message.Write(SharedState.RecentMessages.Count);
 
