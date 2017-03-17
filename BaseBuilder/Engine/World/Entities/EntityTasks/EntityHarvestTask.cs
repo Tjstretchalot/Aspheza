@@ -190,16 +190,16 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
             TimeLeftMS -= timeMS;
 
+            var mobileHarvCave = Harvester as CaveManWorker;
             if (TimeLeftMS <= 0)
             {
                 Harvested.TryHarvest(gameState, Harvester);
                 if (mobileHarvCave != null)
-                    mobileHarvCave.Reset();
+                    mobileHarvCave.OnStop(gameState);
                 return EntityTaskStatus.Success;
             }
             else
             {
-                var mobileHarvCave = Harvester as CaveManWorker;
                 var harvested = Harvested as Tree;
                 if (mobileHarvCave != null && harvested != null)
                 {
