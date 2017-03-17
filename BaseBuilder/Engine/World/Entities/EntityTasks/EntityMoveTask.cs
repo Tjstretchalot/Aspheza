@@ -13,6 +13,7 @@ using static BaseBuilder.Engine.Math2D.Double.MathUtilsD2D;
 using Lidgren.Network;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
+using BaseBuilder.Engine.World.Entities.Utilities;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -86,9 +87,12 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         protected bool FailedToFindPath;
         protected bool ReservationRequired;
 
+        protected Direction? LastAnimationDirection;
+
         protected Random random;
         protected bool PlaySFX;
         protected int NextSFXCounter;
+
 
         /// <summary>
         /// Initializes a move task that will calculate a path on the next SimulateTimePassing
@@ -107,6 +111,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Finished = false;
 
             ReservationRequired = true;
+            LastAnimationDirection = null;
 
             random = new Random();
         }
@@ -122,6 +127,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Finished = false;
 
             ReservationRequired = true;
+            LastAnimationDirection = null;
 
             random = new Random();
         }
@@ -148,6 +154,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             FailedToFindPath = message.ReadBoolean();
 
             ReservationRequired = message.ReadBoolean();
+            if (message.ReadBoolean())
+                LastAnimationDirection = (Direction)message.ReadInt32();
 
             random = new Random();
         }
@@ -196,6 +204,15 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             message.Write(FailedToFindPath);
 
             message.Write(ReservationRequired);
+
+            if (!LastAnimationDirection.HasValue)
+            {
+                message.Write(false);
+            }else
+            {
+                message.Write(true);
+                message.Write((int)LastAnimationDirection.Value);
+            }
         }
 
 
@@ -210,14 +227,34 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
                 gameState.Reserved.Remove(Destination);
 
             ReservationRequired = true;
-            Entity?.OnStop(gameState);
+            
+            if(LastAnimationDirection.HasValue)
+            {
+                var asCaveMan = Entity as CaveManWorker;
+                if(asCaveMan != null)
+                {
+                    LastAnimationDirection = null;
+                    asCaveMan.AnimationRenderer.EndAnimation();
+                }
+            }
         }
 
         public void Cancel(SharedGameState gameState)
         {
-            Entity?.OnStop(gameState);
-            if(Destination != null && !ReservationRequired)
+            if (LastAnimationDirection.HasValue)
+            {
+                var asCaveMan = Entity as CaveManWorker;
+                if (asCaveMan != null)
+                {
+                    LastAnimationDirection = null;
+                    asCaveMan.AnimationRenderer.EndAnimation();
+                }
+            }
+
+            if (Destination != null && !ReservationRequired)
+            {
                 gameState.Reserved.Remove(Destination);
+            }
 
             ReservationRequired = true;
         }
@@ -313,15 +350,44 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Entity.Position.X = Destination.X;
             Entity.Position.Y = Destination.Y;
             gameState.World.UpdateTileCollisions(Entity);
-            Entity.OnStop(gameState);
             gameState.Reserved.Remove(Destination);
+
+            var asCaveMan = Entity as CaveManWorker;
+
+            if(asCaveMan != null)
+            {
+                asCaveMan.AnimationRenderer.EndAnimation();
+            }
         }
 
-        void OnMove(SharedGameState gameState, int timeMS, double dx, double dy)
+        void OnMove(SharedGameState gameState, int timeMs, double dx, double dy)
         {
-            Entity.OnMove(gameState, timeMS, dx, dy);
-        }
+            if (timeMs == 0)
+                return;
 
+            if (dx == 0 && dy == 0)
+                return;
+
+            var asCaveMan = Entity as CaveManWorker;
+
+            if(asCaveMan != null)
+            {
+                var direction = DirectionUtils.GetDirectionFromOffset(dx, dy);
+
+                if(LastAnimationDirection.HasValue && LastAnimationDirection.Value == direction)
+                {
+                    return;
+                }else
+                {
+                    if (LastAnimationDirection.HasValue)
+                        asCaveMan.AnimationRenderer.EndAnimation();
+
+                    asCaveMan.AnimationRenderer.StartAnimation(Utilities.Animations.AnimationType.Moving, direction);
+                    LastAnimationDirection = direction;
+                }
+            }
+        }
+        
         /// <summary>
         /// This function handles the meat of the movement. This function is built recursively;
         /// if the entity is nearly at the next grid location it will not require the full moveMS

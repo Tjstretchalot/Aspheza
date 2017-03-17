@@ -1,4 +1,5 @@
-﻿using BaseBuilder.Engine.World;
+﻿using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace BaseBuilder.Engine.Context
     /// </summary>
     public struct UpdateContext
     {
-        public TileWorld World;
+        public SharedGameState SharedState;
+        public LocalGameState LocalState;
         public int ElapsedMS;
     }
 }

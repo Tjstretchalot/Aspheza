@@ -10,6 +10,7 @@ using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree;
 using BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters;
+using BaseBuilder.Engine.World.WorldObject.Entities;
 
 namespace BaseBuilder.Engine.World.Entities.EntityTasks
 {
@@ -167,49 +168,60 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             if (!IsValid())
                 return EntityTaskStatus.Failure;
             
-            Container Harvester = gameState.World.MobileEntities.Find((m) => m.ID == HarvesterID) as Container;
-            Harvestable Harvested = HarvestedTargeter.FindTarget(gameState, Harvester as MobileEntity) as Harvestable;
+            Container harvester = gameState.World.MobileEntities.Find((m) => m.ID == HarvesterID) as Container;
+            Harvestable harvested = HarvestedTargeter.FindTarget(gameState, harvester as MobileEntity) as Harvestable;
 
-            if (Harvested == null || !Harvested.ReadyToHarvest(gameState))
+            if (harvested == null || !harvested.ReadyToHarvest(gameState))
                 return EntityTaskStatus.Failure;
 
-            if (!CloseEnough(Harvested, Harvester))
+            if (!CloseEnough(harvested, harvester))
                 return EntityTaskStatus.Failure;
 
             if (ThingToHarvest == null)
-                ThingToHarvest = Harvested.GetHarvestNamePretty();
-
-            if(!FixedDirection)
+                ThingToHarvest = harvested.GetHarvestNamePretty();
+            
+            if (!FixedDirection)
             {
                 FixedDirection = true;
 
-                var mobileHarv = Harvester as MobileEntity;
-                if(mobileHarv != null)
-                    DirectionUtils.Face(gameState, mobileHarv, Harvested);
+                InitAnimation(gameState, harvester as Entity, harvested as Entity);
             }
 
             TimeLeftMS -= timeMS;
 
-            var mobileHarvCave = Harvester as CaveManWorker;
             if (TimeLeftMS <= 0)
             {
-                Harvested.TryHarvest(gameState, Harvester);
-                if (mobileHarvCave != null)
-                    mobileHarvCave.OnStop(gameState);
+                harvested.TryHarvest(gameState, harvester);
+
+                EndAnimation(gameState, harvester as Entity, harvested as Entity);
                 return EntityTaskStatus.Success;
             }
-            else
-            {
-                var harvested = Harvested as Tree;
-                if (mobileHarvCave != null && harvested != null)
-                {
-                    mobileHarvCave.OnChopping(timeMS);
-                }
-            }
-            
             
             
             return EntityTaskStatus.Running;
+        }
+
+        private void InitAnimation(SharedGameState gameState, Entity harvester, Entity harvested)
+        {
+            var asCaveman = harvester as CaveManWorker;
+            var asTree = harvested as Tree;
+
+            if(asCaveman != null && asTree != null)
+            {
+                var direction = DirectionUtils.GetDirectionToFace(gameState, asCaveman, asTree);
+                asCaveman.AnimationRenderer.StartAnimation(Utilities.Animations.AnimationType.Logging, direction);
+            }
+        }
+
+        private void EndAnimation(SharedGameState gameState, Entity harvester, Entity harvested)
+        {
+            var asCaveman = harvester as CaveManWorker;
+            var asTree = harvested as Tree;
+
+            if (asCaveman != null && asTree != null)
+            {
+                asCaveman.AnimationRenderer.EndAnimation();
+            }
         }
 
         public void Update(ContentManager content, SharedGameState sharedGameState, LocalGameState localGameState)

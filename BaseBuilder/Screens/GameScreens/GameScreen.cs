@@ -88,7 +88,8 @@ namespace BaseBuilder.Screens.GameScreens
             localGameLogic.UpdateTasks(sharedGameState, localGameState, content);
 
             updateContext.ElapsedMS = deltaMS;
-            updateContext.World = sharedGameState.World;
+            updateContext.SharedState = sharedGameState;
+            updateContext.LocalState = localGameState;
 
             sharedGameState.World.Update(updateContext);
         }

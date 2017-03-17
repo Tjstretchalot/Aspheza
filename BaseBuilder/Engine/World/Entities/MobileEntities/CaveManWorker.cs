@@ -16,7 +16,6 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
     public class CaveManWorker : MobileEntity, Container
     {
-        private SpriteSheetAnimationRenderer2 AnimationRenderer;
         private const double SpeedConst = 0.005;
         private static CollisionMeshD2D _CollisionMesh;
 
@@ -71,6 +70,8 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         };*/
         }
 
+        public SpriteSheetAnimationRenderer2 AnimationRenderer;
+
         public CaveManWorker(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)
         {
             Inventory = new EntityInventory(6);
@@ -104,51 +105,18 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             WriteTasks(message);
         }
 
-        public override void OnMove(SharedGameState gameState, int timeMS, double dx, double dy)
-        {
-            if (AnimationRenderer == null)
-                return;
-            Direction Direction = Direction.Left;
-            if (Math.Sign(dx) == -1)
-            {//Left
-                Direction = Direction.Left;
-            }
-            else if (Math.Sign(dx) == 1)
-            {//Right
-                Direction = Direction.Right;
-            }
-            else if (Math.Sign(dy) == 1)
-            {//Down
-                Direction = Direction.Down;
-            }
-            else if (Math.Sign(dy) == -1)
-            {//Up
-                Direction = Direction.Up;
-            }
-            AnimationRenderer.StartAnimation(AnimationType.Moving, Direction);
-            AnimationRenderer.Update(timeMS);
-        }
-
-        public void OnChopping(int timeMS)
-        {
-            if (AnimationRenderer == null)
-                return;
-            AnimationRenderer.StartAnimation(AnimationType.Logging, Direction.Left);
-            AnimationRenderer.Update(timeMS);
-        }
-        
-        public override void OnStop(SharedGameState sharedState)
-        {
-            if (AnimationRenderer == null)
-                return;
-            AnimationRenderer.EndAnimation();
-        }
-
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
             if (AnimationRenderer == null)
                 InitRenderer(context);
             AnimationRenderer.Render(context, overlay, screenTopLeft, 1);
+        }
+
+        public override void Update(UpdateContext context)
+        {
+            base.Update(context);
+
+            AnimationRenderer?.Update(context.ElapsedMS);
         }
 
         public void InitRenderer(RenderContext context)

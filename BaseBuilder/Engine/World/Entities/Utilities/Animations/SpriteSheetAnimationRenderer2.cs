@@ -16,9 +16,12 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
         
         protected bool StartAnimationBool;
         public Animation2 CurrentAnimation;
+        public AnimationType CurrentAnimationType;
         
         public SpriteSheetAnimationRenderer2(Dictionary<AnimationType, List<Animation2>> typeToAnimationList)
         {
+            CurrentAnimationType = AnimationType.Idle;
+
             TypeToAnimationList = typeToAnimationList;
 
             StartAnimationBool = false;
@@ -27,19 +30,14 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 
         public void StartAnimation(AnimationType animationType, Direction? direction)
         {
+            CurrentAnimationType = animationType;
             var animationList = TypeToAnimationList[animationType];
+
             if (animationList.Count == 1)
                 CurrentAnimation = animationList[0];
             else
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    if (animationList[i].Direction == direction)
-                    {
-                        CurrentAnimation = animationList[i];
-                        break;
-                    }
-                }
+                CurrentAnimation = animationList.Find((anim) => anim.Direction == direction);
             }
 
             StartAnimationBool = true;
@@ -47,12 +45,17 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 
         public void EndAnimation()
         {
+            if (CurrentAnimation == null)
+                return;
+
+            var direction = CurrentAnimation.Direction;
+
             // End animation?
             CurrentAnimation.Reset();
 
-            CurrentAnimation = TypeToAnimationList[AnimationType.Idle][0];
+            StartAnimation(AnimationType.Idle, direction);
         }
-
+        
         public void Update(int deltaTimeMS)
         {
             CurrentAnimation.Update(deltaTimeMS);
@@ -68,6 +71,5 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 
             CurrentAnimation.Draw(context, overlay, screenTopLeft, zoomAt1TimeScale);
         }
-
     }
 }
