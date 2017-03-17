@@ -25,9 +25,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         {
             _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(1, 1) });
         }
-
-        public SpriteSheetAnimationRenderer AnimationRenderer;
-
+        
         public CaveManWorker(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)
         {
             Inventory = new EntityInventory(6);
