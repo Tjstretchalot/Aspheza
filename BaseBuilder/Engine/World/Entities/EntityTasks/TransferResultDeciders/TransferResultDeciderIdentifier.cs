@@ -31,6 +31,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks.TransferResultDeciders
 
             Register(typeof(FromInventoryResultDecider), 1);
             Register(typeof(ToInventoryResultDecider), 2);
+            Register(typeof(ItemsTransferedResultDecider), 3);
         }
 
         /// <summary>
