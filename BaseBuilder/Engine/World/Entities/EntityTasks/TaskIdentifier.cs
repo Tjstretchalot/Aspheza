@@ -13,13 +13,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
     /// </summary>
     public class TaskIdentifier
     {
-        protected static Type[] TaskConstructorParamTypes;
         protected static Dictionary<short, Type> IdsToTasks;
         protected static Dictionary<Type, short> TasksToIds;
 
         static TaskIdentifier()
         {
-            TaskConstructorParamTypes = new Type[] { typeof(SharedGameState), typeof(NetIncomingMessage) };
             IdsToTasks = new Dictionary<short, Type>();
             TasksToIds = new Dictionary<Type, short>();
 
@@ -53,7 +51,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         public static IEntityTask InitEntityTask(Type type, SharedGameState gameState, NetIncomingMessage message)
         {
-            return type.GetConstructor(TaskConstructorParamTypes).Invoke(new object[] { gameState, message }) as IEntityTask;
+            var oldStyleConstructor = type.GetConstructor(new[] { typeof(SharedGameState), typeof(NetIncomingMessage) });
+            if (oldStyleConstructor != null)
+                return oldStyleConstructor.Invoke(new object[] { gameState, message }) as IEntityTask;
+
+            return type.GetConstructor(new[] { typeof(NetIncomingMessage) }).Invoke(new object[] { message }) as IEntityTask;
         }
     }
 }
