@@ -18,7 +18,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             var largeMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(1, 2) });
             var smallMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(1, 1) });
 
-            SaplingConstructorParams = Tuple.Create(smallMesh, new List<Tuple<Rectangle, PointD2D>> { Tuple.Create(new Rectangle(66, 66, 32, 32), new PointD2D(0, 0)) });
+            SaplingConstructorParams = Tuple.Create(smallMesh, new List<Tuple<Rectangle, PointD2D>> { Tuple.Create(new Rectangle(66, 0, 32, 32), new PointD2D(0, 0)) });
             TreeTypeToConstructorParams = new Dictionary<Tuple<TreeSize, TreeStyle, TreeColor>, Tuple<CollisionMeshD2D, List<Tuple<Rectangle, PointD2D>>>>()
             {
                 { Tuple.Create(TreeSize.Small, TreeStyle.Pointy, TreeColor.Green), Tuple.Create(smallMesh, new List<Tuple<Rectangle, PointD2D>> { Tuple.Create(new Rectangle(272, 153, 16, 16), new PointD2D(0, 0)) }) },

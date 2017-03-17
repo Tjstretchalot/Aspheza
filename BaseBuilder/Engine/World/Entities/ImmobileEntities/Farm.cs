@@ -27,7 +27,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         static Rectangle PlantedDrawRec = new Rectangle(0, 69, 64, 68);
         static Rectangle CarrotHarvestDrawRec = new Rectangle(65, 53, 64, 84);
         static Rectangle WheatHarvestDrawRec = new Rectangle(130, 49, 64, 88);
-        
+        static Rectangle SugarcaneHarvestDrawRec = new Rectangle(195, 27, 64, 110);
+
         static Farm()
         {
             _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(4, 4) });
@@ -94,7 +95,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         protected bool IsASeed(Material mat)
         {
-            return mat == Material.CarrotSeed || mat == Material.WheatSeed;
+            return mat == Material.CarrotSeed || mat == Material.WheatSeed || mat == Material.Sugarcane;
         }
 
         protected void OnItemAdded(object sender, EventArgs args)
@@ -109,12 +110,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                 PlantFarm(1);
             else if (mat == Material.CarrotSeed)
                 PlantFarm(2);
+            else if (mat == Material.Sugarcane)
+                PlantFarm(3);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="plantOption">1 for Wheat, 2 for Beans</param>
+        /// <param name="plantOption">1 for Wheat, 2 for Carrot, 3 for Sugarcane</param>
         public void PlantFarm(int plantOption)
         {
             if(plantOption == 1)
@@ -131,13 +134,20 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                 TimeUntilGownMS = 10000;
                 Renderer.SourceRect = PlantedDrawRec;
             }
+            else if (plantOption == 3)
+            {
+                _HoverText = "A rudimentary farm. It's currently growing sugarcane, but\nit's not done yet.";
+                GrowthState = GrowthState.SugarcanePlanted;
+                TimeUntilGownMS = 10000;
+                Renderer.SourceRect = PlantedDrawRec;
+            }
         }
 
         public override void SimulateTimePassing(SharedGameState sharedState, int timeMS)
         {
             base.SimulateTimePassing(sharedState, timeMS);
 
-            if(GrowthState == GrowthState.CarrotsPlanted || GrowthState == GrowthState.WheatPlanted)
+            if(GrowthState == GrowthState.CarrotsPlanted || GrowthState == GrowthState.WheatPlanted || GrowthState == GrowthState.SugarcanePlanted)
             {
                 TimeUntilGownMS -= timeMS;
                 if (TimeUntilGownMS <= 0)
@@ -153,6 +163,12 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                         _HoverText = "A rudimentary farm. It has some carrots\nwhich are ready to harvest.";
                         GrowthState = GrowthState.CarrotsHarvestable;
                         Renderer.SourceRect = CarrotHarvestDrawRec;
+                    }
+                    else if (GrowthState == GrowthState.SugarcanePlanted)
+                    {
+                        _HoverText = "A rudimentary farm. It has some sugarcane\nwhich are ready to harvest.";
+                        GrowthState = GrowthState.SugarcaneHarvestable;
+                        Renderer.SourceRect = SugarcaneHarvestDrawRec;
                     }
                 }
             }
@@ -188,8 +204,15 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                     endX = (int)(screenTopLeft.X);
                     endY = (int)(screenTopLeft.Y - worldHeight * (16.0 / 84) * context.Camera.Zoom);
                     break;
+                case GrowthState.SugarcaneHarvestable:
+                    worldWidth = 4;
+                    worldHeight = 110.0 / 16;
+                    endX = (int)(screenTopLeft.X);
+                    endY = (int)(screenTopLeft.Y - worldHeight * ((110.0 - 68.0) / 110) * context.Camera.Zoom);
+                    break;
                 case GrowthState.CarrotsPlanted:
                 case GrowthState.WheatPlanted:
+                case GrowthState.SugarcanePlanted:
                 case GrowthState.Empty:
                     endX = (int)(screenTopLeft.X);
                     endY = (int)(screenTopLeft.Y);
@@ -205,7 +228,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public bool ReadyToHarvest(SharedGameState sharedGameState)
         {
-            return GrowthState == GrowthState.CarrotsHarvestable || GrowthState == GrowthState.WheatHarvestable;
+            return GrowthState == GrowthState.CarrotsHarvestable || GrowthState == GrowthState.WheatHarvestable || GrowthState == GrowthState.SugarcaneHarvestable;
         }
 
         public void TryHarvest(SharedGameState sharedGameState, Container reciever)
@@ -242,6 +265,21 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
                 reciever.Inventory.AddMaterial(Material.WheatSeed, numSeeds);
             }
+            else if (GrowthState == GrowthState.SugarcaneHarvestable)
+            {
+                if (!reciever.Inventory.HaveRoomFor(Material.Sugarcane, 1))
+                    return;
+
+                reciever.Inventory.AddMaterial(Material.Sugarcane, 1);
+
+                if (!reciever.Inventory.HaveRoomFor(Material.Sugarcane, numSeeds))
+                {
+                    ClearFarm();
+                    return;
+                }
+
+                reciever.Inventory.AddMaterial(Material.Sugarcane, numSeeds);
+            }
             else
             {
                 return;
@@ -252,13 +290,19 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public string GetHarvestNamePretty()
         {
-            if(GrowthState == GrowthState.CarrotsHarvestable)
+            if (GrowthState == GrowthState.CarrotsHarvestable)
             {
                 return "Carrots";
-            }else if(GrowthState == GrowthState.WheatHarvestable)
+            }
+            else if (GrowthState == GrowthState.WheatHarvestable)
             {
                 return "Wheat";
-            }else
+            }
+            else if (GrowthState == GrowthState.SugarcaneHarvestable)
+            {
+                return "Sugarcane";
+            }
+            else
             {
                 return "Nothing";
             }

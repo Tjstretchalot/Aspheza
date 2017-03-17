@@ -130,7 +130,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             .AddFrame(true, 7, 15, 33, 41, topLeftDif: new PointD2D(9, 1))
             .AddFrame(true, 4, 15, 33, 44, topLeftDif: new PointD2D(12, 1))
             .AddFrame(true, 9, 11, 37, 39, topLeftDif: new PointD2D(7, 5))
-            .AddFrame(true, 5, 16, width: 43, topLeftDif: new PointD2D(11, 0))
+            .AddFrame(true, 5, 16, width: 43, topLeftDif: new PointD2D(11, 0), displayTime: 250)
             .EndAnimation()
             // Up
             .BeginAnimation(Direction.Up, AnimationType.Casting, new PointD2D(0, 0), 100, sourceFile, 64, 192)
@@ -139,7 +139,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             .AddFrame(true, 16, 14, 34, 42, topLeftDif: new PointD2D(0, 2))
             .AddFrame(true, 16, 14, 34, 44, topLeftDif: new PointD2D(0, 2))
             .AddFrame(true, 16, 9, 39, 41, topLeftDif: new PointD2D(0, 7))
-            .AddFrame(true, 16, 16, width: 43)
+            .AddFrame(true, 16, 16, width: 43, displayTime: 250)
             .EndAnimation()
             // Right
             .BeginAnimation(Direction.Right, AnimationType.Casting, new PointD2D(0, 0), 100, sourceFile, 64, 256)
@@ -148,7 +148,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             .AddFrame(true, 15, 16, width: 33, topLeftDif: new PointD2D(1, 0))
             .AddFrame(true, 11, 16, width: 37, topLeftDif: new PointD2D(5, 0))
             .AddFrame(true, 16, 13, 35, topLeftDif: new PointD2D(0, 3))
-            .AddFrame(true, 13, 16, width: 35, topLeftDif: new PointD2D(3, 0))
+            .AddFrame(true, 13, 16, width: 35, topLeftDif: new PointD2D(3, 0), displayTime: 250)
             .EndAnimation()
             // Left
             .BeginAnimation(Direction.Left, AnimationType.Casting, new PointD2D(0, 0), 100, sourceFile, 64, 320)
@@ -157,7 +157,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             .AddFrame(true, 16, 16, width: 33)
             .AddFrame(true, 16, 16, width: 37)
             .AddFrame(true, 16, 13, 35, topLeftDif: new PointD2D(0, 3))
-            .AddFrame(true, 16, 16, width: 35)
+            .AddFrame(true, 16, 16, width: 35, displayTime: 250)
             .EndAnimation()
             // End Casting
 

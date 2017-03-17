@@ -22,20 +22,30 @@ namespace BaseBuilder.Engine.State.Resources
         public static Material Wheat { get; }
         public static Material Flour { get; }
         public static Material Bread { get; }
+        public static Material Sugarcane { get; }
+        public static Material Sugar { get; }
         public static Material Wood { get; }
+        public static Material Lumber { get; }
         public static Material Sapling { get; }
 
         static Material()
         {
-            GoldOre = new Material("materials", new Rectangle(0, 0, 32, 32), "Gold Ore", "Gold Ore\nSmelts into gold", 1);
+            GoldOre = new Material("materials", new Rectangle(132, 0, 32, 32), "Gold Ore", "Gold Ore\nSmelts into gold", 1);
+
             CarrotSeed = new Material("materials", new Rectangle(33, 0, 32, 32), "Carrot Seed", "Carrot Seed\nCan be planted in a farm to grow into carrots", 2);
-            WheatSeed = new Material("materials", new Rectangle(66, 0, 32, 32), "Wheat Seed", "Wheat Seed\nCan be planted in a farm to grow into wheat", 3);
-            Carrot = new Material("materials", new Rectangle(33, 66, 32, 32), "Carrot", "Carrot\nAn average source of food", 4);
-            Wheat = new Material("materials", new Rectangle(66, 33, 32, 32), "Wheat", "Wheat\nCan be made into flour via a mill. Also serves as\na poor source of food", 5);
-            Flour = new Material("materials", new Rectangle(0, 33, 32, 32), "Flour", "Flour\nCan be made into bread via a bakery.", 6);
-            Bread = new Material("materials", new Rectangle(0, 66, 32, 32), "Bread", "Bread.", 7);
-            Wood = new Material("materials", new Rectangle(99, 0, 32, 32), "Wood", "Wood\nUsed to make buildings.", 8);
-            Sapling = new Material("materials", new Rectangle(66, 66, 32, 32), "Sapling", "Sapling\nCan be planted for new trees", 9);
+            Carrot = new Material("materials", new Rectangle(33, 66, 32, 32), "Carrot", "Carrot\nAn average source of food", 3);
+
+            WheatSeed = new Material("materials", new Rectangle(0, 0, 32, 32), "Wheat Seed", "Wheat Seed\nCan be planted in a farm to grow into wheat", 4);
+            Wheat = new Material("materials", new Rectangle(0, 33, 32, 32), "Wheat", "Wheat\nCan be made into flour via a mill. Also serves as\na poor source of food", 5);
+            Flour = new Material("materials", new Rectangle(0, 66, 32, 32), "Flour", "Flour\nCan be made into bread via a bakery.", 6);
+            Bread = new Material("materials", new Rectangle(0, 99, 32, 32), "Bread", "Bread.", 7);
+
+            Sugarcane = new Material("materials", new Rectangle(99, 0, 32, 32), "Sugarcane", "Sugarcane\nCan be milled into sugar or planted for more sugarcane.", 8);
+            Sugar = new Material("materials", new Rectangle(99, 33, 32, 32), "Sugar", "Sugar\nUsed in many finished food.", 9);
+
+            Sapling = new Material("materials", new Rectangle(66, 0, 32, 32), "Sapling", "Sapling\nCan be planted for new trees.", 10);
+            Wood = new Material("materials", new Rectangle(66, 33, 32, 32), "Wood", "Wood\nCan be made into lumber via a lumbermill.", 11);
+            Lumber = new Material("materials", new Rectangle(66, 66, 32, 32), "Lumber", "Lumber\nUsed to make buildings.", 12);
         }
 
         public int ID { get; }
@@ -79,8 +89,14 @@ namespace BaseBuilder.Engine.State.Resources
                 return Flour;
             if (id == Bread.ID)
                 return Bread;
+            if (id == Sugarcane.ID)
+                return Sugarcane;
+            if (id == Sugar.ID)
+                return Sugar;
             if (id == Wood.ID)
                 return Wood;
+            if (id == Lumber.ID)
+                return Lumber;
             if (id == Sapling.ID)
                 return Sapling;
 

@@ -127,6 +127,7 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\Farm.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\GoldOre.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Library.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\LumberMill.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tavern.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Temple.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\WaterMill.cs" />
@@ -312,6 +313,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Library.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\LumberMill.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Tavern.png">

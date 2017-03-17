@@ -12,6 +12,7 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
     public class SpriteRenderer 
     {
         protected string SpriteName;
+        protected Texture2D Texture;
         public Rectangle SourceRect;
 
         public SpriteRenderer(string spriteName, Rectangle sourceRect)
@@ -22,9 +23,10 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 
         public void Render(RenderContext context, int x, int y, double w, double h, Color overlay)
         {
-            var texture = context.Content.Load<Texture2D>(SpriteName);
+            if (Texture == null)
+                Texture = context.Content.Load<Texture2D>(SpriteName);
 
-            context.SpriteBatch.Draw(texture,
+            context.SpriteBatch.Draw(Texture,
                 sourceRectangle: SourceRect,
                 destinationRectangle: new Rectangle(
                     (int)(x), (int)(y),

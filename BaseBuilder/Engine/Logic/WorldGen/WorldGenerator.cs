@@ -88,6 +88,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             var tmp = new CaveManWorker(new PointD2D(wcx - 2, wcy + 0), SharedGameState.EntityIDCounter++);
             tmp.Inventory.AddMaterial(Material.WheatSeed, 1);
             tmp.Inventory.AddMaterial(Material.CarrotSeed, 1);
+            tmp.Inventory.AddMaterial(Material.Sugarcane, 1);
             TileWorld.AddMobileEntity(tmp);
             TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 2, wcy + 1), SharedGameState.EntityIDCounter++));
             TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 1, wcy + 2), SharedGameState.EntityIDCounter++));
@@ -119,14 +120,15 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 7, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Red));
             TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 8, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Blue));
             
-            TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy + 5), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy + 0), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy - 5), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddImmobileEntity(new WaterMill(new PointD2D(wcx - 30, wcy + 5), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddImmobileEntity(new Bakery(new PointD2D(wcx - 10, wcy - 15), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddImmobileEntity(new Tavern(new PointD2D(wcx + 10, wcy - 15), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddImmobileEntity(new Library(new PointD2D(wcx + 30, wcy - 15), SharedGameState.GetUniqueEntityID()));
-            TileWorld.AddImmobileEntity(new Temple(new PointD2D(wcx + 40, wcy - 15), SharedGameState.GetUniqueEntityID()));
+            TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy + 5), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy + 0), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy - 5), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntity(new WaterMill(new PointD2D(wcx - 30, wcy + 5), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntity(new Bakery(new PointD2D(wcx - 10, wcy - 15), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntity(new Tavern(new PointD2D(wcx + 10, wcy - 15), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntity(new Library(new PointD2D(wcx + 30, wcy - 15), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntity(new Temple(new PointD2D(wcx + 40, wcy - 15), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntity(new LumberMill(new PointD2D(wcx + 10, wcy - 0), SharedGameState.EntityIDCounter++));
             */
         }
 

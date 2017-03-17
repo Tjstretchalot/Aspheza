@@ -1,36 +1,34 @@
-﻿using System;
+﻿using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.Math2D.Double;
+using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.State.Resources;
+using BaseBuilder.Engine.World.Entities.Utilities;
+using Lidgren.Network;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BaseBuilder.Engine.Context;
-using BaseBuilder.Engine.Math2D.Double;
-using BaseBuilder.Engine.State;
-using Lidgren.Network;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using BaseBuilder.Engine.World.Entities.Utilities;
-using BaseBuilder.Engine.State.Resources;
-using System.IO;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
-    public class Bakery : ImmobileEntity, Container, Harvestable
+    public class LumberMill : ImmobileEntity, Container, Harvestable
     {
         protected static CollisionMeshD2D _CollisionMesh;
 
-        protected bool Baking;
+        protected bool MillingWood;
         protected int TimeUntilNextBakeCompletionMS;
         protected int NextAnimationTickMS;
 
         protected SpriteRenderer Renderer;
-        static Rectangle SourceRec = new Rectangle(0, 0, 158, 114);
+        static Rectangle SourceRec = new Rectangle(0, 0, 164, 204);
 
         /// <summary>
         /// Items to mill
         /// </summary>
         public EntityInventory Inventory { get; protected set; }
-        public EntityInventory InventoryBaked { get; protected set; }
+        public EntityInventory InventoryLumber { get; protected set; }
 
         public override string HoverText
         {
@@ -38,30 +36,28 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             {
                 var result = new StringBuilder();
 
-                result.Append("Bakery - bakes flour into bread.");
+                result.Append("Lumbermill - Cuts raw wood into lumber.");
 
-                if (Baking)
+                if (MillingWood)
                 {
-                    result.Append("\nIt has ");
-                    result.Append(Inventory.MaterialAt(0).Item2);
-                    result.Append(" bag");
+                    result.Append("\nIt has ").Append(Inventory.MaterialAt(0).Item2).Append(" log");
                     if (Inventory.MaterialAt(0).Item2 > 1)
                         result.Append("s");
 
-                    result.Append(" of flour ready to bake.");
+                    result.Append(" of wood ready to mill.");
                 }
 
-                var millMat = InventoryBaked.MaterialAt(0);
+                var millMat = InventoryLumber.MaterialAt(0);
                 if (millMat != null)
                 {
-                    result.Append("\nIt has ").Append(millMat.Item2).Append(" loaf");
-                    if (InventoryBaked.MaterialAt(0).Item2 > 1)
+                    result.Append("\nIt has ").Append(millMat.Item2).Append(" stack");
+                    if (InventoryLumber.MaterialAt(0).Item2 > 1)
                         result.Append("s");
-                    result.Append(" of bread ready for pickup.");
+                    result.Append(" of lumber ready for pickup.");
 
-                    if (millMat.Item2 == InventoryBaked.GetStackSizeFor(millMat.Item1))
+                    if (millMat.Item2 == InventoryLumber.GetStackSizeFor(millMat.Item1))
                     {
-                        result.Append("\nIt cannot hold any more bread.");
+                        result.Append("\nIt cannot hold any more lumber.");
                     }
                 }
 
@@ -70,28 +66,28 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             }
         }
 
-        static Bakery()
+        static LumberMill()
         {
-            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D>{ new RectangleD2D(5, 3.5) });
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(5.125, 6.375) });
         }
 
-        public Bakery(PointD2D position, int id) : base(position, _CollisionMesh, id)
+        public LumberMill(PointD2D position, int id) : base(position, _CollisionMesh, id)
         {
             CollisionMesh = _CollisionMesh;
-            Renderer = new SpriteRenderer("Bakery", SourceRec);
+            Renderer = new SpriteRenderer("LumberMill", SourceRec);
 
-            Baking = false;
-            Inventory = new EntityInventory(1, IsBakable);
+            MillingWood = false;
+            Inventory = new EntityInventory(1, IsWoodMillable);
             Inventory.SetDefaultStackSize(10);
-            InventoryBaked = new EntityInventory(1, IsBaked);
-            InventoryBaked.SetDefaultStackSize(10);
+            InventoryLumber = new EntityInventory(1, IsWoodMilled);
+            InventoryLumber.SetDefaultStackSize(10);
             InitInventoryForNonnetworkableParts();
         }
 
-        public Bakery() : base()
+        public LumberMill() : base()
         {
             CollisionMesh = _CollisionMesh;
-            Renderer = new SpriteRenderer("Bakery", SourceRec);
+            Renderer = new SpriteRenderer("LumberMill", SourceRec);
         }
 
         public override void FromMessage(SharedGameState gameState, NetIncomingMessage message)
@@ -99,7 +95,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Position = new PointD2D(message);
             ID = message.ReadInt32();
             Inventory = new EntityInventory(message);
-            InventoryBaked = new EntityInventory(message);
+            InventoryLumber = new EntityInventory(message);
             _HoverText = message.ReadString();
 
             InitInventoryForNonnetworkableParts();
@@ -112,7 +108,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Position.Write(message);
             message.Write(ID);
             Inventory.Write(message);
-            InventoryBaked.Write(message);
+            InventoryLumber.Write(message);
             message.Write(_HoverText);
 
             WriteTasks(message);
@@ -120,30 +116,30 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         protected void InitInventoryForNonnetworkableParts()
         {
-            Inventory.AcceptsMaterialFunc = IsBakable;
+            Inventory.AcceptsMaterialFunc = IsWoodMillable;
             Inventory.OnMaterialAdded += OnItemAdded;
         }
 
-        protected bool IsBakable(Material mat)
+        protected bool IsWoodMillable(Material mat)
         {
-            return mat == Material.Flour;
+            return mat == Material.Wood;
         }
 
-        protected bool IsBaked(Material mat)
+        protected bool IsWoodMilled(Material mat)
         {
-            return mat == Material.Bread;
+            return mat == Material.Lumber;
         }
 
         protected void OnItemAdded(object sender, EventArgs args)
         {
             var mat = Inventory.MaterialAt(0).Item1;
 
-            if (mat != Material.Flour)
+            if (mat != Material.Wood)
                 return;
 
-            if (!Baking)
+            if (!MillingWood)
             {
-                Baking = true;
+                MillingWood = true;
                 TimeUntilNextBakeCompletionMS = 5000;
             }
         }
@@ -151,21 +147,21 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         public override void SimulateTimePassing(SharedGameState sharedState, int timeMS)
         {
             base.SimulateTimePassing(sharedState, timeMS);
-            
-            if (Baking)
+
+            if (MillingWood)
             {
                 TimeUntilNextBakeCompletionMS -= timeMS;
                 if (TimeUntilNextBakeCompletionMS <= 0)
                 {
                     TimeUntilNextBakeCompletionMS = 5000;
-                    if (InventoryBaked.HaveRoomFor(Material.Bread, 1))
+                    if (InventoryLumber.HaveRoomFor(Material.Lumber, 1))
                     {
-                        Inventory.RemoveMaterial(Material.Flour, 1);
-                        InventoryBaked.AddMaterial(Material.Bread, 1);
+                        Inventory.RemoveMaterial(Material.Wood, 1);
+                        InventoryLumber.AddMaterial(Material.Lumber, 1);
 
-                        if (Inventory.GetAmountOf(Material.Flour) == 0)
+                        if (Inventory.GetAmountOf(Material.Wood) == 0)
                         {
-                            Baking = false;
+                            MillingWood = false;
                         }
                     }
                 }
@@ -174,31 +170,31 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 156 / 32.0, 114 / 32.0, overlay);
+            Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 164 / 32.0, 204 / 32.0, overlay);
         }
 
         public bool ReadyToHarvest(SharedGameState sharedGameState)
         {
-            return (InventoryBaked.GetAmountOf(Material.Bread) != 0);
+            return (InventoryLumber.GetAmountOf(Material.Lumber) != 0);
         }
 
         public void TryHarvest(SharedGameState sharedGameState, Container reciever)
         {
-            var breadAmount = InventoryBaked.GetAmountOf(Material.Bread);
+            var lumberAmount = InventoryLumber.GetAmountOf(Material.Lumber);
 
-            var amountRecieved = reciever.Inventory.AddMaterial(Material.Bread, breadAmount);
-            InventoryBaked.RemoveMaterial(Material.Bread, amountRecieved);
+            var amountRecieved = reciever.Inventory.AddMaterial(Material.Lumber, lumberAmount);
+            InventoryLumber.RemoveMaterial(Material.Lumber, amountRecieved);
         }
 
         public string GetHarvestNamePretty()
         {
-            if (InventoryBaked.GetAmountOf(Material.Bread) == 0)
+            if (InventoryLumber.GetAmountOf(Material.Lumber) == 0)
             {
                 return "Nothing";
             }
             else
             {
-                return "Bread";
+                return "Lumber";
             }
         }
 
