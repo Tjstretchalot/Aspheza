@@ -81,17 +81,23 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Renderer = new SpriteRenderer("Bakery", SourceRec);
 
             Baking = false;
-            Inventory = new EntityInventory(1, IsBakable);
+            Inventory = new EntityInventory(1);
             Inventory.SetDefaultStackSize(10);
-            Inventory.OnMaterialAdded += OnItemAdded;
             InventoryBaked = new EntityInventory(1, IsBaked);
             InventoryBaked.SetDefaultStackSize(10);
+            InitInventoryForNonnetworkableParts();
         }
 
         public Bakery() : base()
         {
             CollisionMesh = _CollisionMesh;
             Renderer = new SpriteRenderer("Bakery", SourceRec);
+        }
+
+        protected void InitInventoryForNonnetworkableParts()
+        {
+            Inventory.AcceptsMaterialFunc = IsBakable;
+            Inventory.OnMaterialAdded += OnItemAdded;
         }
 
         protected bool IsBakable(Material mat)
@@ -149,8 +155,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Inventory = new EntityInventory(message);
             InventoryBaked = new EntityInventory(message);
             _HoverText = message.ReadString();
-
-            Inventory.OnMaterialAdded += OnItemAdded;
+            
+            InitInventoryForNonnetworkableParts();
 
             TasksFromMessage(gameState, message);
         }

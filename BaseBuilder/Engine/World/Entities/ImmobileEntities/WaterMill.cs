@@ -91,11 +91,12 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Renderer = new SpriteRenderer("WaterMill", AnimationRecs[0]);
 
             Milling = false;
-            Inventory = new EntityInventory(1, IsMillable);
+            Inventory = new EntityInventory(1);
             Inventory.SetDefaultStackSize(10);
-            Inventory.OnMaterialAdded += OnItemAdded;
-            InventoryMilled = new EntityInventory(1, IsMilled);
+            InventoryMilled = new EntityInventory(1);
             InventoryMilled.SetDefaultStackSize(10);
+
+            InitInventoryForNonnetworkableParts();
         }
 
         public WaterMill() : base()
@@ -103,6 +104,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             CollisionMesh = _CollisionMesh;
             CurrentAnimationLocation = 0;
             Renderer = new SpriteRenderer("WaterMill", AnimationRecs[0]);
+        }
+
+        protected void InitInventoryForNonnetworkableParts()
+        {
+            Inventory.AcceptsMaterialFunc = IsMillable;
+            Inventory.OnMaterialAdded += OnItemAdded;
+
+            InventoryMilled.AcceptsMaterialFunc = IsMilled;
         }
 
         protected bool IsMillable(Material mat)
@@ -169,7 +178,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             InventoryMilled = new EntityInventory(message);
             _HoverText = message.ReadString();
 
-            Inventory.OnMaterialAdded += OnItemAdded;
+            InitInventoryForNonnetworkableParts();
 
             TasksFromMessage(gameState, message);
         }

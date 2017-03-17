@@ -39,7 +39,7 @@ namespace BaseBuilder.Engine.World.Entities
         /// Returns true if the specified material is allowed in this inventory
         /// right now
         /// </summary>
-        protected Func<Material, bool> AcceptsMaterialFunc;
+        public Func<Material, bool> AcceptsMaterialFunc;
 
         /// <summary>
         /// Stack size to assume if none given
@@ -88,6 +88,8 @@ namespace BaseBuilder.Engine.World.Entities
         /// <exception cref="ArgumentNullException">If message is null</exception>
         public EntityInventory(NetIncomingMessage message)
         {
+            AcceptsMaterialFunc = (m) => true;
+
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
 

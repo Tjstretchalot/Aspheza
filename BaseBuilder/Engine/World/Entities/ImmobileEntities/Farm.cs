@@ -50,9 +50,9 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             CollisionMesh = _CollisionMesh;
             GrowthState = GrowthState.Empty;
             Renderer = new SpriteRenderer("Farms", EmptyDrawRec);
-            Inventory = new EntityInventory(1, IsASeed);
+            Inventory = new EntityInventory(1);
 
-            Inventory.OnMaterialAdded += OnItemAdded;
+            InitInventoryForNonnetworkableParts();
         }
 
         public Farm() : base()
@@ -60,7 +60,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             CollisionMesh = _CollisionMesh;
             Renderer = new SpriteRenderer("Farms", EmptyDrawRec);
         }
-        
+
+        protected void InitInventoryForNonnetworkableParts()
+        {
+            Inventory.AcceptsMaterialFunc = IsASeed;
+            Inventory.OnMaterialAdded += OnItemAdded;
+        }
+
+
         protected bool IsASeed(Material mat)
         {
             return mat == Material.CarrotSeed || mat == Material.WheatSeed;
@@ -143,8 +150,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Inventory = new EntityInventory(message);
             _HoverText = message.ReadString();
 
-            Inventory.OnMaterialAdded += OnItemAdded;
-            
+            InitInventoryForNonnetworkableParts();
+
             TasksFromMessage(gameState, message);
         }
 
