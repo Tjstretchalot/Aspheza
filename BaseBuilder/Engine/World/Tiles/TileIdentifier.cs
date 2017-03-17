@@ -21,7 +21,7 @@ namespace BaseBuilder.Engine.World.Tiles
 
         static TileIdentifier()
         {
-            TileConstructorParamTypes = new Type[] { typeof(NetIncomingMessage) };
+            TileConstructorParamTypes = new Type[] { typeof(PointI2D), typeof(RectangleD2D), typeof(NetIncomingMessage) };
             IdsToTiles = new Dictionary<short, Type>();
             TilesToIds = new Dictionary<Type, short>();
 
