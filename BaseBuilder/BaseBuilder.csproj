@@ -326,6 +326,9 @@
     <Content Include="Content\WaterMill.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\WizardOverseer\WizardSpriteSheet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="_my_icon.ico" />
     <EmbeddedResource Include="Icon.ico" />
     <Content Include="Content\Archer.png">

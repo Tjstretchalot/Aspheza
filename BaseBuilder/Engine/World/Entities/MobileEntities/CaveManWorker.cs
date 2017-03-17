@@ -100,28 +100,28 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 
             // Movements
             // Down
-            .BeginAnimation(Direction.Down, AnimationType.Moving, new PointD2D(0, 0), defaultSourceTexture: sourceFile, yLocation: 0)
+            .BeginAnimation(Direction.Down, AnimationType.Moving, new PointD2D(0, 0), 250, sourceFile, yLocation: 0)
             .AddFrame()
             .AddFrame()
             .AddFrame()
             .AddFrame()
             .EndAnimation()
             // Up
-            .BeginAnimation(Direction.Up, AnimationType.Moving, new PointD2D(0, 0), defaultSourceTexture: sourceFile, yLocation: 32)
+            .BeginAnimation(Direction.Up, AnimationType.Moving, new PointD2D(0, 0), 250, sourceFile, yLocation: 32)
             .AddFrame()
             .AddFrame()
             .AddFrame()
             .AddFrame()
             .EndAnimation()
             // Right
-            .BeginAnimation(Direction.Right, AnimationType.Moving, new PointD2D(0, 0), defaultSourceTexture: sourceFile, yLocation: 64)
+            .BeginAnimation(Direction.Right, AnimationType.Moving, new PointD2D(0, 0), 250, sourceFile, yLocation: 64)
             .AddFrame()
             .AddFrame()
             .AddFrame()
             .AddFrame()
             .EndAnimation()
             // Left
-            .BeginAnimation(Direction.Left, AnimationType.Moving, new PointD2D(0, 0), defaultSourceTexture: sourceFile, yLocation: 96)
+            .BeginAnimation(Direction.Left, AnimationType.Moving, new PointD2D(0, 0), 250, sourceFile, yLocation: 96)
             .AddFrame()
             .AddFrame()
             .AddFrame()
@@ -167,7 +167,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             .AddFrame(true, 16, 16, width: 33)
             .EndAnimation()
             // Left
-            .BeginAnimation(Direction.Left, AnimationType.Logging, new PointD2D(0, 0), 100, sourceFile, 64, 384, 1)
+            .BeginAnimation(Direction.Left, AnimationType.Logging, new PointD2D(0, 0), 125, sourceFile, 64, 384, 1)
             .AddFrame(true, 16, 16, 33)
             .AddFrame(true, 16, 16)
             .AddFrame(true, 16, 16, 38)

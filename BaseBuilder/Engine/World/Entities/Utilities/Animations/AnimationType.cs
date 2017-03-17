@@ -8,6 +8,6 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
 {
     public enum AnimationType
     {
-        Idle = 0, Standing, Moving, Chopping, Logging,
+        Idle = 0, Standing, Moving, Chopping, Logging, Casting,
     }
 }
