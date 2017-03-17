@@ -1,8 +1,6 @@
 ﻿using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.Math2D.Double;
-using Lidgren.Network;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,46 +11,66 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
 {
     public class Animation
     {
-        protected List<AnimationFrame> AnimationFrames;
+        public List<AnimationFrame> Frames { get; protected set; }
+        public Direction? Direction { get; protected set; }
+        public int CurrentFrame { get; protected set; }
 
-        public int FrameCount
-        {
-            get
-            {
-                return AnimationFrames.Count;
-            }
-        }
+        protected int BeginFrame;
+        protected bool Cycling;
+        protected int CycleStartFrame;
 
-        public Animation(string sourceFile, List<Rectangle> sourceRecs, List<PointD2D> keyPixels, List<int> displayTimes)
-        {
-            if (sourceRecs.Count != keyPixels.Count || keyPixels.Count != displayTimes.Count)
-                throw new Exception("Lists do not match");
-
-            AnimationFrames = new List<AnimationFrame>();
-            for (int count = 0; count < keyPixels.Count; count++)
-            {
-                AnimationFrames.Add(new AnimationFrame(sourceFile, sourceRecs[count], keyPixels[count], displayTimes[count]));
-            }
-            if (AnimationFrames.Count != keyPixels.Count)
-                throw new Exception("Number of animationFrames not correct");
-        }
-
-        public Animation(string sourceFile, List<Tuple<Rectangle, PointD2D, int>> frameInfos)
-        {
-            for (int count = 0; count < frameInfos.Count; count++)
-            {
-                AnimationFrames.Add(new AnimationFrame(sourceFile, frameInfos[count].Item1, frameInfos[count].Item2, frameInfos[count].Item3));
-            }
-        }
+        protected int TimeUntillNextFrameMS;
         
-        public int GetFrameTime(int currentFrame)
+        public Animation(List<AnimationFrame> frames, Direction? direction, int cycleStartFrame = 0, int beginFrame = 0)
         {
-            return AnimationFrames[currentFrame].DisplayTime;
+            Frames = frames;
+            Direction = direction;
+
+            CycleStartFrame = cycleStartFrame;
+            BeginFrame = beginFrame;
+
+            CurrentFrame = BeginFrame;
+            Cycling = false;
+            TimeUntillNextFrameMS = Frames[CurrentFrame].DisplayTimeMS;
         }
 
-        public Tuple<Texture2D, Rectangle, PointD2D> GetFrameRenderInfo(RenderContext context, int currentFrame)
+        public void Begin(RenderContext context)
         {
-            return AnimationFrames[currentFrame].GetFrameRenderInfo(context);
+            CurrentFrame = BeginFrame;
+            Cycling = false;
+
+            Frames[CurrentFrame].Begin(context);
+        }
+
+        public void End(RenderContext context)
+        {
+        }
+
+        public void Reset()
+        {
+            CurrentFrame = BeginFrame;
+            Cycling = false;
+            TimeUntillNextFrameMS = Frames[CurrentFrame].DisplayTimeMS;
+        }
+
+        public void Update(int deltaTimeMS)
+        {
+            TimeUntillNextFrameMS -= deltaTimeMS;
+            if (TimeUntillNextFrameMS <= 0)
+            {
+                CurrentFrame = (CurrentFrame + 1) % Frames.Count;
+                if (!Cycling && CurrentFrame == 0)
+                    Cycling = true;
+                if (CurrentFrame < CycleStartFrame && Cycling)
+                    CurrentFrame = CycleStartFrame;
+
+                TimeUntillNextFrameMS = Frames[CurrentFrame].DisplayTimeMS;
+            }
+        }
+
+        public void Draw(RenderContext context, Color overlay, PointD2D screenTopLeft, int zoomAt1TimeScale)
+        {
+            Frames[CurrentFrame].Draw(context, overlay, screenTopLeft, zoomAt1TimeScale);
         }
     }
 }

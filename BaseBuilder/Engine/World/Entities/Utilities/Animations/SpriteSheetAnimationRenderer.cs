@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 
 namespace BaseBuilder.Engine.World.Entities.Utilities
 {
-    public class SpriteSheetAnimationRenderer2
+    public class SpriteSheetAnimationRenderer
     {
-        protected Dictionary<AnimationType, List<Animation2>> TypeToAnimationList;
+        protected Dictionary<AnimationType, List<Animation>> TypeToAnimationList;
         
         protected bool StartAnimationBool;
-        public Animation2 CurrentAnimation;
+        public Animation CurrentAnimation;
         public AnimationType CurrentAnimationType;
         
-        public SpriteSheetAnimationRenderer2(Dictionary<AnimationType, List<Animation2>> typeToAnimationList)
+        public SpriteSheetAnimationRenderer(Dictionary<AnimationType, List<Animation>> typeToAnimationList)
         {
             CurrentAnimationType = AnimationType.Idle;
 

@@ -130,13 +130,11 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tavern.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Temple.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\WaterMill.cs" />
-    <Compile Include="Engine\World\Entities\Utilities\Animations\Animation2.cs" />
-    <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationFrame2.cs" />
-    <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationRendererBuilder.cs" />
-    <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationType.cs" />
-    <Compile Include="Engine\World\Entities\Utilities\Animations\SpriteSheetAnimationRenderer2.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Animations\Animation.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationFrame.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationRendererBuilder.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationType.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Animations\SpriteSheetAnimationRenderer.cs" />
     <Compile Include="Engine\World\Entities\Utilities\DirectionUtils.cs" />
     <Compile Include="Engine\World\Entities\Utilities\GrowthState.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\House.cs" />
@@ -161,9 +159,7 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tree\TreeUtils.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\CaveManWorker.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\MobileEntity.cs" />
-    <Compile Include="Engine\World\Entities\MobileEntities\Archer.cs" />
     <Compile Include="Engine\World\Entities\MobileEntities\OverseerMage.cs" />
-    <Compile Include="Engine\World\Entities\MobileEntities\Overseer.cs" />
     <Compile Include="Engine\World\Entities\SpriteEntity.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Container.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Direction.cs" />
@@ -171,7 +167,6 @@
     <Compile Include="Engine\World\Entities\Utilities\Harvestable.cs" />
     <Compile Include="Engine\World\Entities\Utilities\RandomUtils.cs" />
     <Compile Include="Engine\World\Entities\Utilities\SpriteRenderer.cs" />
-    <Compile Include="Engine\World\Entities\Utilities\SpriteSheetAnimationRenderer.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Thing.cs" />
     <Compile Include="Engine\World\EntityEventArgs.cs" />
     <Compile Include="Engine\World\Events.cs" />

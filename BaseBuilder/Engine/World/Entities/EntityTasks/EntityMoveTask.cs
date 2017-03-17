@@ -230,12 +230,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             
             if(LastAnimationDirection.HasValue)
             {
-                var asCaveMan = Entity as CaveManWorker;
-                if(asCaveMan != null)
-                {
-                    LastAnimationDirection = null;
-                    asCaveMan.AnimationRenderer.EndAnimation();
-                }
+                LastAnimationDirection = null;
+                Entity.AnimationRenderer.EndAnimation();
             }
         }
 
@@ -243,12 +239,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         {
             if (LastAnimationDirection.HasValue)
             {
-                var asCaveMan = Entity as CaveManWorker;
-                if (asCaveMan != null)
-                {
-                    LastAnimationDirection = null;
-                    asCaveMan.AnimationRenderer.EndAnimation();
-                }
+                LastAnimationDirection = null;
+                Entity.AnimationRenderer.EndAnimation();
             }
 
             if (Destination != null && !ReservationRequired)
@@ -351,13 +343,8 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Entity.Position.Y = Destination.Y;
             gameState.World.UpdateTileCollisions(Entity);
             gameState.Reserved.Remove(Destination);
-
-            var asCaveMan = Entity as CaveManWorker;
-
-            if(asCaveMan != null)
-            {
-                asCaveMan.AnimationRenderer.EndAnimation();
-            }
+            
+            Entity.AnimationRenderer.EndAnimation();
         }
 
         void OnMove(SharedGameState gameState, int timeMs, double dx, double dy)
@@ -367,24 +354,19 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
             if (dx == 0 && dy == 0)
                 return;
+            
+            var direction = DirectionUtils.GetDirectionFromOffset(dx, dy);
 
-            var asCaveMan = Entity as CaveManWorker;
-
-            if(asCaveMan != null)
+            if(LastAnimationDirection.HasValue && LastAnimationDirection.Value == direction)
             {
-                var direction = DirectionUtils.GetDirectionFromOffset(dx, dy);
+                return;
+            }else
+            {
+                if (LastAnimationDirection.HasValue)
+                    Entity.AnimationRenderer.EndAnimation();
 
-                if(LastAnimationDirection.HasValue && LastAnimationDirection.Value == direction)
-                {
-                    return;
-                }else
-                {
-                    if (LastAnimationDirection.HasValue)
-                        asCaveMan.AnimationRenderer.EndAnimation();
-
-                    asCaveMan.AnimationRenderer.StartAnimation(Utilities.Animations.AnimationType.Moving, direction);
-                    LastAnimationDirection = direction;
-                }
+                Entity.AnimationRenderer.StartAnimation(Utilities.Animations.AnimationType.Moving, direction);
+                LastAnimationDirection = direction;
             }
         }
         

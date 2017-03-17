@@ -25,11 +25,9 @@ namespace BaseBuilder.Engine.World.Entities
             EntityConstructorParamTypes = new Type[] { };
             IdsToEntities = new Dictionary<short, Type>();
             EntitiesToIds = new Dictionary<Type, short>();
-
-            Register(typeof(Archer), 1);
-            Register(typeof(Overseer), 2);
-            Register(typeof(OverseerMage), 3);
-            Register(typeof(CaveManWorker), 4);
+            
+            Register(typeof(OverseerMage), 1);
+            Register(typeof(CaveManWorker), 2);
 
             Register(typeof(House), 1001);
             Register(typeof(MageTower), 1002);

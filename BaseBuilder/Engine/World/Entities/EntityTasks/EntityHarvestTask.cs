@@ -203,24 +203,24 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
         private void InitAnimation(SharedGameState gameState, Entity harvester, Entity harvested)
         {
-            var asCaveman = harvester as CaveManWorker;
+            var asMobile = harvester as MobileEntity;
             var asTree = harvested as Tree;
 
-            if(asCaveman != null && asTree != null)
+            if(asMobile != null && asTree != null)
             {
-                var direction = DirectionUtils.GetDirectionToFace(gameState, asCaveman, asTree);
-                asCaveman.AnimationRenderer.StartAnimation(Utilities.Animations.AnimationType.Logging, direction);
+                var direction = DirectionUtils.GetDirectionToFace(gameState, asMobile, asTree);
+                asMobile.AnimationRenderer.StartAnimation(Utilities.Animations.AnimationType.Logging, direction);
             }
         }
 
         private void EndAnimation(SharedGameState gameState, Entity harvester, Entity harvested)
         {
-            var asCaveman = harvester as CaveManWorker;
+            var asMobile = harvester as MobileEntity;
             var asTree = harvested as Tree;
 
-            if (asCaveman != null && asTree != null)
+            if (asMobile != null && asTree != null)
             {
-                asCaveman.AnimationRenderer.EndAnimation();
+                asMobile.AnimationRenderer.EndAnimation();
             }
         }
 

@@ -173,27 +173,27 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
             return this;
         }
         
-        public SpriteSheetAnimationRenderer2 Build()
+        public SpriteSheetAnimationRenderer Build()
         {
-            var dic = new Dictionary<AnimationType, List<Animation2>>();
+            var dic = new Dictionary<AnimationType, List<Animation>>();
             var typeList = new List<AnimationType>() { AnimationType.Idle, AnimationType.Moving, AnimationType.Chopping, AnimationType.Logging };
             foreach (var currType in typeList)
             {
-                var currList = new List<Animation2>();
+                var currList = new List<Animation>();
                 for (int i = CompletedAnimations.Count - 1; i >= 0; i--)
                 {
                     if (CompletedAnimations[i].Type == currType)
                     {
-                        var frameList = new List<AnimationFrame2>();
+                        var frameList = new List<AnimationFrame>();
                         foreach (var frame in CompletedAnimations[i].Frames)
-                            frameList.Add(new AnimationFrame2(frame.Texture, frame.SoundEffect, frame.SourceRec, frame.TopLeftDif, frame.DisplayTimeMS));
-                        currList.Add(new Animation2(frameList, CompletedAnimations[i].Direction, CompletedAnimations[i].CycleStartFrame, CompletedAnimations[i].BeginFrame));
+                            frameList.Add(new AnimationFrame(frame.Texture, frame.SoundEffect, frame.SourceRec, frame.TopLeftDif, frame.DisplayTimeMS));
+                        currList.Add(new Animation(frameList, CompletedAnimations[i].Direction, CompletedAnimations[i].CycleStartFrame, CompletedAnimations[i].BeginFrame));
                         CompletedAnimations.RemoveAt(i);
                     }
                 }
                 dic.Add(currType, currList);
             }
-            return new SpriteSheetAnimationRenderer2(dic);
+            return new SpriteSheetAnimationRenderer(dic);
         }
     }
 }
