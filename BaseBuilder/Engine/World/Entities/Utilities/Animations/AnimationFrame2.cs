@@ -44,8 +44,8 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
 
             var worldWidth = SourceRec.Width / (32.0 / zoomAt1TimeScale);
             var worldHeight = SourceRec.Height / (32.0 / zoomAt1TimeScale);
-            var endX = screenTopLeft.X + ((TopLeftDif.X / (32.0 / zoomAt1TimeScale)) * context.Camera.Zoom) - (worldWidth * ((SourceRec.Width - 32) / SourceRec.Width) * context.Camera.Zoom);
-            var endY = screenTopLeft.Y + ((TopLeftDif.Y / (32.0 / zoomAt1TimeScale)) * context.Camera.Zoom) - (worldHeight * ((SourceRec.Height - 32) / SourceRec.Height) * context.Camera.Zoom);
+            var endX = screenTopLeft.X - ((TopLeftDif.X / (32.0 / zoomAt1TimeScale)) * context.Camera.Zoom) - (worldWidth * ((SourceRec.Width - 32) / SourceRec.Width) * context.Camera.Zoom);
+            var endY = screenTopLeft.Y - ((TopLeftDif.Y / (32.0 / zoomAt1TimeScale)) * context.Camera.Zoom) - (worldHeight * ((SourceRec.Height - 32) / SourceRec.Height) * context.Camera.Zoom);
 
             context.SpriteBatch.Draw(Texture,
                 sourceRectangle: SourceRec,

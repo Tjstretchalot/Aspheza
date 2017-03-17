@@ -25,7 +25,7 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
             TypeToAnimationList = typeToAnimationList;
 
             StartAnimationBool = false;
-            CurrentAnimation = TypeToAnimationList[AnimationType.Idle][0];
+            StartAnimation(AnimationType.Idle, Direction.Down);
         }
 
         public void StartAnimation(AnimationType animationType, Direction? direction)

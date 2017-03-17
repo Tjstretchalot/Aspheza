@@ -126,8 +126,21 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             AnimationRenderer = new AnimationRendererBuilder(context.Content)
 
             // Idle
-            .BeginAnimation(null, AnimationType.Idle, new PointD2D(0, 0), 50000, sourceFile)
+            // Down
+            .BeginAnimation(Direction.Down, AnimationType.Idle, new PointD2D(0, 0), 50000, sourceFile)
             .AddFrame()
+            .EndAnimation()
+            // Up
+            .BeginAnimation(Direction.Up, AnimationType.Idle, new PointD2D(0, 0), 50000, sourceFile)
+            .AddFrame(y: 32)
+            .EndAnimation()
+            // Right
+            .BeginAnimation(Direction.Right, AnimationType.Idle, new PointD2D(0, 0), 50000, sourceFile)
+            .AddFrame(y: 64)
+            .EndAnimation()
+            // Left
+            .BeginAnimation(Direction.Left, AnimationType.Idle, new PointD2D(0, 0), 50000, sourceFile)
+            .AddFrame(y: 96)
             .EndAnimation()
             // End Idle
 
