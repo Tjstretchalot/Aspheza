@@ -130,6 +130,11 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tavern.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Temple.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\WaterMill.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Animations\Animation2.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationFrame2.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationRendererBuilder.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationType.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Animations\SpriteSheetAnimationRenderer2.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Animations\Animation.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationFrame.cs" />
     <Compile Include="Engine\World\Entities\Utilities\DirectionUtils.cs" />

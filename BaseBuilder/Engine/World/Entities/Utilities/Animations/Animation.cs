@@ -14,7 +14,14 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
     public class Animation
     {
         protected List<AnimationFrame> AnimationFrames;
-        public int CurrentFrame;
+
+        public int FrameCount
+        {
+            get
+            {
+                return AnimationFrames.Count;
+            }
+        }
 
         public Animation(string sourceFile, List<Rectangle> sourceRecs, List<PointD2D> keyPixels, List<int> displayTimes)
         {
@@ -28,7 +35,6 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
             }
             if (AnimationFrames.Count != keyPixels.Count)
                 throw new Exception("Number of animationFrames not correct");
-            CurrentFrame = 0;
         }
 
         public Animation(string sourceFile, List<Tuple<Rectangle, PointD2D, int>> frameInfos)
@@ -37,22 +43,16 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
             {
                 AnimationFrames.Add(new AnimationFrame(sourceFile, frameInfos[count].Item1, frameInfos[count].Item2, frameInfos[count].Item3));
             }
-            CurrentFrame = 0;
+        }
+        
+        public int GetFrameTime(int currentFrame)
+        {
+            return AnimationFrames[currentFrame].DisplayTime;
         }
 
-        public int Count()
+        public Tuple<Texture2D, Rectangle, PointD2D> GetFrameRenderInfo(RenderContext context, int currentFrame)
         {
-            return AnimationFrames.Count;
-        }
-
-        public int GetFrameTime()
-        {
-            return AnimationFrames[CurrentFrame].DisplayTime;
-        }
-
-        public Tuple<Texture2D, Rectangle, PointD2D> GetFrameRenderInfo(RenderContext context)
-        {
-            return AnimationFrames[CurrentFrame].GetFrameRenderInfo(context);
+            return AnimationFrames[currentFrame].GetFrameRenderInfo(context);
         }
     }
 }

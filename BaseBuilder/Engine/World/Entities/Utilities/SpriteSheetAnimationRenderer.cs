@@ -18,6 +18,8 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
         private Dictionary<string, Animation> StringToAnimation;
 
         PointD2D RefKeyPixel;
+        string CurrentAnimationName;
+        int CurrentAnimationFrame;
         Animation CurrentAnimation;
         Direction Direction;
 
@@ -28,50 +30,56 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
             RefKeyPixel = refKeyPixel;
             StringToAnimation = stringToAnimation;
 
+            CurrentAnimationName = "DownMove";
+            CurrentAnimationFrame = 0;
             CurrentAnimation = stringToAnimation["DownMove"];
-            NextAnimationTickMS = CurrentAnimation.GetFrameTime();
+            NextAnimationTickMS = CurrentAnimation.GetFrameTime(CurrentAnimationFrame);
         }
 
         public void FromMessage(NetIncomingMessage message)
         {
+            CurrentAnimationName = message.ReadString();
+            CurrentAnimation = StringToAnimation[CurrentAnimationName];
+            CurrentAnimationFrame = message.ReadInt32();
             NextAnimationTickMS = message.ReadInt32();
         }
 
         public void Write(NetOutgoingMessage message)
         {
+            message.Write(CurrentAnimationName);
+            message.Write(CurrentAnimationFrame);
             message.Write(NextAnimationTickMS);
         }
 
         private void UpdateDirection(double dx, double dy)
         {
-            var currentFrameHolder = CurrentAnimation.CurrentFrame + 1;
             if(Math.Sign(dx) == -1 && Direction != Direction.Left)
             {//Left
                 Direction = Direction.Left;
-                CurrentAnimation.CurrentFrame = 0;
+                CurrentAnimationName = "LeftMove";
                 CurrentAnimation = StringToAnimation["LeftMove"];
-                CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
+                CurrentAnimationFrame = (CurrentAnimationFrame + 1) % CurrentAnimation.FrameCount;
             }
             else if (Math.Sign(dx) == 1 && Direction != Direction.Right)
             {//Right
                 Direction = Direction.Right;
-                CurrentAnimation.CurrentFrame = 0;
+                CurrentAnimationName = "RightMove";
                 CurrentAnimation = StringToAnimation["RightMove"];
-                CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
+                CurrentAnimationFrame = (CurrentAnimationFrame + 1) % CurrentAnimation.FrameCount;
             }
             else if (Math.Sign(dy) == 1 && Direction != Direction.Down)
             {//Down
                 Direction = Direction.Down;
-                CurrentAnimation.CurrentFrame = 0;
+                CurrentAnimationName = "DownMove";
                 CurrentAnimation = StringToAnimation["DownMove"];
-                CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
+                CurrentAnimationFrame = (CurrentAnimationFrame + 1) % CurrentAnimation.FrameCount;
             }
             else if (Math.Sign(dy) == -1 && Direction != Direction.Up)
             {//Up
                 Direction = Direction.Up;
-                CurrentAnimation.CurrentFrame = 0;
+                CurrentAnimationName = "UpMove";
                 CurrentAnimation = StringToAnimation["UpMove"];
-                CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
+                CurrentAnimationFrame = (CurrentAnimationFrame + 1) % CurrentAnimation.FrameCount;
             }
         }
 
@@ -80,9 +88,9 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
             NextAnimationTickMS -= timeMS;
             if (NextAnimationTickMS <= 0)
             {
-                CurrentAnimation.CurrentFrame = (CurrentAnimation.CurrentFrame + 1) % CurrentAnimation.Count();
+                CurrentAnimationFrame = (CurrentAnimationFrame + 1) % CurrentAnimation.FrameCount;
 
-                NextAnimationTickMS = CurrentAnimation.GetFrameTime();
+                NextAnimationTickMS = CurrentAnimation.GetFrameTime(CurrentAnimationFrame);
             }
         }
 
@@ -92,39 +100,34 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 
             if (SpecialAnimation != null)
             {
-                var currentFrameHolder = CurrentAnimation.CurrentFrame;
-                if (SpecialAnimation == "ChopTree")
+                if (SpecialAnimation.Equals("ChopTree"))
                 {
                     switch (Direction)
                     {
                         case Direction.Up:
-                            CurrentAnimation.CurrentFrame = 0;
+                            CurrentAnimationName = "ChopTreeUp";
                             CurrentAnimation = StringToAnimation["ChopTreeUp"];
-                            CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
                             break;
                         case Direction.Down:
-                            CurrentAnimation.CurrentFrame = 0;
+                            CurrentAnimationName = "ChopTreeDown";
                             CurrentAnimation = StringToAnimation["ChopTreeDown"];
-                            CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
                             break;
                         case Direction.Left:
-                            CurrentAnimation.CurrentFrame = 0;
+                            CurrentAnimationName = "ChopTreeLeft";
                             CurrentAnimation = StringToAnimation["ChopTreeLeft"];
-                            CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
                             break;
                         case Direction.Right:
-                            CurrentAnimation.CurrentFrame = 0;
+                            CurrentAnimationName = "ChopTreeRight";
                             CurrentAnimation = StringToAnimation["ChopTreeRight"];
-                            CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
                             break;
                     }
                 }
                 else
                 {
-                    CurrentAnimation.CurrentFrame = 0;
+                    CurrentAnimationName = SpecialAnimation;
                     CurrentAnimation = StringToAnimation[SpecialAnimation];
-                    CurrentAnimation.CurrentFrame = currentFrameHolder % CurrentAnimation.Count();
                 }
+                CurrentAnimationFrame = (CurrentAnimationFrame + 1) % CurrentAnimation.FrameCount;
             }
             
             UpdateAnimation(timeMS);
@@ -132,21 +135,24 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 
         public void Reset(Direction? direction = null)
         {
-            CurrentAnimation.CurrentFrame = 0;
             if (direction.HasValue)
             {
                 switch (direction.Value)
                 {
                     case Direction.Up:
+                        CurrentAnimationName = "UpMove";
                         CurrentAnimation = StringToAnimation["UpMove"];
                         break;
                     case Direction.Down:
+                        CurrentAnimationName = "DownMove";
                         CurrentAnimation = StringToAnimation["DownMove"];
                         break;
                     case Direction.Left:
+                        CurrentAnimationName = "LeftMove";
                         CurrentAnimation = StringToAnimation["LeftMove"];
                         break;
                     case Direction.Right:
+                        CurrentAnimationName = "RightMove";
                         CurrentAnimation = StringToAnimation["RightMove"];
                         break;
                 }
@@ -156,48 +162,56 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
                 switch (Direction)
                 {
                     case Direction.Up:
+                        CurrentAnimationName = "UpMove";
                         CurrentAnimation = StringToAnimation["UpMove"];
                         break;
                     case Direction.Down:
+                        CurrentAnimationName = "DownMove";
                         CurrentAnimation = StringToAnimation["DownMove"];
                         break;
                     case Direction.Left:
+                        CurrentAnimationName = "LeftMove";
                         CurrentAnimation = StringToAnimation["LeftMove"];
                         break;
                     case Direction.Right:
+                        CurrentAnimationName = "RightMove";
                         CurrentAnimation = StringToAnimation["RightMove"];
                         break;
                 }
             }
 
-            CurrentAnimation.CurrentFrame = 0;
-            NextAnimationTickMS = CurrentAnimation.GetFrameTime();
+            CurrentAnimationFrame = 0;
+            NextAnimationTickMS = CurrentAnimation.GetFrameTime(CurrentAnimationFrame);
         }
 
         public void MoveComplete(SharedGameState shareState)
         {
-            CurrentAnimation.CurrentFrame = 0;
             switch (Direction)
             {
                 case Direction.Up:
+                    CurrentAnimationName = "UpMove";
                     CurrentAnimation = StringToAnimation["UpMove"];
                     break;
                 case Direction.Down:
+                    CurrentAnimationName = "DownMove";
                     CurrentAnimation = StringToAnimation["DownMove"];
                     break;
                 case Direction.Left:
+                    CurrentAnimationName = "LeftMove";
                     CurrentAnimation = StringToAnimation["LeftMove"];
                     break;
                 case Direction.Right:
+                    CurrentAnimationName = "RightMove";
                     CurrentAnimation = StringToAnimation["RightMove"];
                     break;
             }
-            CurrentAnimation.CurrentFrame = 0;
+
+            CurrentAnimationFrame = 0;
         }
 
-        public void Render(RenderContext context, int x, int y, int w, int h, Color overlay)
+        public void Render(RenderContext context, PointD2D screenTopLeft, int w, int h, Color overlay)
         {
-            var frameInfo = CurrentAnimation.GetFrameRenderInfo(context);
+            var frameInfo = CurrentAnimation.GetFrameRenderInfo(context, CurrentAnimationFrame);
 
             var texture = frameInfo.Item1;
             var drawRec = frameInfo.Item2;
@@ -207,8 +221,8 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
 
             var worldWidth = drawRec.Width / 32.0;
             var worldHeight = drawRec.Height / 32.0;
-            var endX = x + ((shift.X / 32.0) * context.Camera.Zoom) - (worldWidth * ((drawRec.Width - 32) / drawRec.Width) * context.Camera.Zoom);
-            var endY = y + ((shift.Y / 32.0) * context.Camera.Zoom) - (worldHeight * ((drawRec.Height - 32) / drawRec.Height) * context.Camera.Zoom);
+            var endX = screenTopLeft.X + ((shift.X / 32.0) * context.Camera.Zoom) - (worldWidth * ((drawRec.Width - 32) / drawRec.Width) * context.Camera.Zoom);
+            var endY = screenTopLeft.Y + ((shift.Y / 32.0) * context.Camera.Zoom) - (worldHeight * ((drawRec.Height - 32) / drawRec.Height) * context.Camera.Zoom);
 
             context.SpriteBatch.Draw(texture,
                 sourceRectangle: drawRec,

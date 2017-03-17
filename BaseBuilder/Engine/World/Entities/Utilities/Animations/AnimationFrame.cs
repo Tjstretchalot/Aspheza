@@ -13,10 +13,10 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
 {
     public class AnimationFrame
     {
-        string SourceFile;
-        Texture2D Texture;
-        Rectangle SourceRec;
-        PointD2D KeyPixel;
+        public string SourceFile;
+        protected Texture2D Texture;
+        public Rectangle SourceRec;
+        public PointD2D KeyPixel;
         public int DisplayTime;
         
         public AnimationFrame(string sourceFile, Rectangle sourceRec, PointD2D keyPixel, int displayTime)
@@ -28,16 +28,13 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
             DisplayTime = displayTime;
         }
 
-        public AnimationFrame(string sourceFile, Texture2D texture, Rectangle sourceRec, PointD2D keyPixel, int displayTime)
+        public AnimationFrame(Texture2D texture, Rectangle sourceRec, PointD2D keyPixel, int displayTime)
         {
-            SourceFile = sourceFile;
             Texture = texture;
             SourceRec = sourceRec;
 
             KeyPixel = keyPixel;
             DisplayTime = displayTime;
-
-
         }
         
         public Tuple<Texture2D, Rectangle, PointD2D> GetFrameRenderInfo(RenderContext context)

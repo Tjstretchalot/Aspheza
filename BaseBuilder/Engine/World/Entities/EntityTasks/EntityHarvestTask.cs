@@ -190,7 +190,6 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
 
             TimeLeftMS -= timeMS;
 
-            var mobileHarvCave = Harvester as CaveManWorker;
             if (TimeLeftMS <= 0)
             {
                 Harvested.TryHarvest(gameState, Harvester);
@@ -200,10 +199,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             }
             else
             {
+                var mobileHarvCave = Harvester as CaveManWorker;
                 var harvested = Harvested as Tree;
                 if (mobileHarvCave != null && harvested != null)
                 {
-                    mobileHarvCave.OnChopping(gameState, timeMS, "ChopTree");
+                    mobileHarvCave.OnChopping(timeMS);
                 }
             }
             

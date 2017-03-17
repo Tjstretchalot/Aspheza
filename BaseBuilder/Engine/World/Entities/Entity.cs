@@ -178,9 +178,8 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// <param name="sharedState"></param>
         /// <param name="dx"></param>
         /// <param name="dy"></param>
-        public virtual void OnMove(SharedGameState sharedState, int timeMS, double dx, double dy)
+        public virtual void OnMove(SharedGameState gameState, int timeMS, double dx, double dy)
         {
-
         }
 
         /// <summary>
@@ -189,7 +188,6 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// <param name="sharedState"></param>
         public virtual void OnStop(SharedGameState sharedState)
         {
-
         }
 
         public virtual void SimulateTimePassing(SharedGameState sharedState, int timeMS)
