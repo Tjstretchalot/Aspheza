@@ -139,7 +139,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                         Inventory.RemoveMaterial(Material.Flour, 1);
                         InventoryBaked.AddMaterial(Material.Bread, 1);
 
-                        if (Inventory.GetAmountOf(Material.Bread) == 0)
+                        if (Inventory.GetAmountOf(Material.Flour) == 0)
                         {
                             Baking = false;
                         }
