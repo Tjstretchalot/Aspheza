@@ -255,6 +255,7 @@
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\SucceederTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\TaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\TaskItemIdentifier.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\TransferItemTaskItem2.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskMenuOverlay.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\CaveManWorkerOverlay.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\InventoryComponentWrapper.cs" />

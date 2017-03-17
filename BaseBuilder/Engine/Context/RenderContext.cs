@@ -13,7 +13,7 @@ namespace BaseBuilder.Engine.Context
     /// <summary>
     /// Contains everything that you might need to render stuff.
     /// </summary>
-    public struct RenderContext
+    public class RenderContext
     {
         public ContentManager Content;
         public GraphicsDeviceManager Graphics;

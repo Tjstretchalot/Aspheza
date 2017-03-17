@@ -64,6 +64,8 @@ namespace BaseBuilder.Screens.GameScreens
 
             localGameState.EnsureInititialized(sharedGameState);
             localGameLogic.CenterCamera(sharedGameState, localGameState);
+
+            renderContext = new RenderContext();
         }
         
         protected void InitComponents()

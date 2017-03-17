@@ -367,9 +367,8 @@ more than a specific amount.
 This is useful if you either know exactly 
 what items should be in your inventory at 
 this point and want to utilize the order 
-that items are given out, or you want to 
-throttle a portion of your inputs to get 
-an even split.", renderContext.DefaultFont, Color.White);
+that items are given out, or you are picking
+up from a larger container.", renderContext.DefaultFont, Color.White);
                 }
 
                 if(ByTotalQuantity_MaxLabel == null)

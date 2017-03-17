@@ -54,11 +54,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// <exception cref="InvalidProgramException">If the component is disposed</exception>
         public static T1 Unwrap<T1>(WeakReference<TaskItemComponentFromScreenComponent<T1>> weak) where T1:IScreenComponent
         {
-            TaskItemComponentFromScreenComponent<T1> strong;
-            if (!weak.TryGetTarget(out strong))
-                throw new InvalidProgramException("Weak reference lost!");
-
-            return Unwrap(strong);
+            return Unwrap(MakeStrong(weak));
         }
 
         /// <summary>
@@ -74,6 +70,45 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
                 throw new InvalidProgramException("Component is disposed!");
 
             return strong.Component;
+        }
+
+        /// <summary>
+        /// Makes the weak reference strong, throwing an exception if the
+        /// weak reference is lost
+        /// </summary>
+        /// <typeparam name="T1">The referenced type</typeparam>
+        /// <param name="weak">Weak reference</param>
+        /// <returns>Strong reference</returns>
+        public static T1 MakeStrong<T1>(WeakReference<T1> weak) where T1:class
+        {
+            T1 strong;
+            if (!weak.TryGetTarget(out strong))
+                throw new InvalidProgramException("Weak reference lost!");
+
+            return strong;
+        }
+        
+        /// <summary>
+        /// Tries to get the task item component from the weak reference, returning false
+        /// if the weak reference is lost OR the underlying component is disposed.
+        /// </summary>
+        /// <typeparam name="T1">Referenced screen component type</typeparam>
+        /// <param name="weakWrapped">The wrapped delegate</param>
+        /// <param name="value">The variable to set</param>
+        /// <returns>If the value was set, false otherwise</returns>
+        public static bool TryGetWrapped<T1>(WeakReference<T1> weakWrapped, out T1 value) where T1 : class,ITaskItemComponent
+        {
+            value = default(T1);
+
+            T1 strong;
+            if (!weakWrapped.TryGetTarget(out strong))
+                return false;
+
+            if (strong.Disposed)
+                return false;
+
+            value = strong;
+            return true;
         }
 
         /// <summary>
@@ -176,13 +211,23 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
             {
                 throw new InvalidProgramException("Weak reference already lost");
             }
+            
+            if(boxStrong.Selected == null || EqualityComparer<T1>.Default.Equals(boxStrong.Selected.Value, choice))
+            {
+                ITaskItemComponent thingStrong;
+
+                if(TryGetWrapped(thingToToggleWeak, out thingStrong))
+                {
+                    thingStrong.Hidden = true;
+                }
+            }
 
             ComboBoxSelectedChangedEventHandler<T1> handler = null;
             handler = (sender, oldSelected) =>
             {
                 ComboBox<T1> boxStrong2;
                 ITaskItemComponent thingToToggleStrong;
-                if (!thingToToggleWeak.TryGetTarget(out thingToToggleStrong))
+                if (!thingToToggleWeak.TryGetTarget(out thingToToggleStrong) || thingToToggleStrong.Disposed)
                 {
                     if(boxWeak.TryGetTarget(out boxStrong2))
                     {
@@ -227,6 +272,17 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         public static void SetupComboBoxHiddenToggle<T1>(ComboBox<T1> box, T1 choice, ITaskItemComponent thing)
         {
             SetupComboBoxHiddenToggle(new WeakReference<ComboBox<T1>>(box), choice, new WeakReference<ITaskItemComponent>(thing));
+        }
+
+        /// <summary>
+        /// Create text with default font and the specified text thats white
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="text">Text</param>
+        /// <returns>Text</returns>
+        public static Text CreateText(RenderContext context, string text)
+        {
+            return new Text(new Point(0, 0), text, context.DefaultFont, Color.White);
         }
 
         /// <summary>
@@ -346,6 +402,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
             };
 
             radioButtonStrong.PushedChanged += handler;
+
+            MakeStrong(thingWeak).Hidden = radioButtonStrong.Pushed != pushed;
         }
 
         /// <summary>
@@ -357,6 +415,26 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         public static void SetupRadioButtonHiddenToggle(RadioButton button, ITaskItemComponent thing, bool pushed = true)
         {
             SetupRadioButtonHiddenToggle(new WeakReference<RadioButton>(button), new WeakReference<ITaskItemComponent>(thing), pushed);
+        }
+
+        /// <summary>
+        /// Creates a button that will redraw and reload correctly
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="redraw">Redraw handler</param>
+        /// <param name="redrawAndReload">Redraw and reload handler</param>
+        /// <param name="text">The text on the button</param>
+        /// <param name="color">The color of the button</param>
+        /// <returns>The button</returns>
+        public static Button CreateButton(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, string text, UIUtils.ButtonColor color = UIUtils.ButtonColor.Blue)
+        {
+            var result = UIUtils.CreateButton(new Point(0, 0), text, color, UIUtils.ButtonSize.Medium);
+
+            result.HoveredChanged += redraw;
+            result.PressedChanged += redraw;
+            result.PressReleased += redrawAndReload;
+
+            return result;
         }
 
         /// <summary>
