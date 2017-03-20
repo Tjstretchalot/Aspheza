@@ -54,12 +54,19 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
             RedrawRequested = false;
             WrappedComponent.PreDraw(context);
-            if(Math.Min(Size.Y, WrappedComponent.Size.Y) < MaxHeightBeforeScrolling && Size.Y != WrappedComponent.Size.Y)
+
+            // A lot of components recalculate there size in predraw, so we need to ensure scroll offset isn't invalid now
+            ScrollOffsetY = Math.Max(ScrollOffsetY, -(WrappedComponent.Size.Y - Size.Y));
+
+            // And make sure we still need to scroll
+            if (Math.Min(Size.Y, WrappedComponent.Size.Y) < MaxHeightBeforeScrolling && Size.Y != WrappedComponent.Size.Y)
             {
                 Size.Y = Math.Min(MaxHeightBeforeScrolling, WrappedComponent.Size.Y);
                 ScrollOffsetY = 0;
             }
 
+            // We don't recreate render targets unless absolutely 100% necessary, it's very expensive. So instead we never downsize
+            // the render target and rely on the source rect to correct it
             if(CurrentRender != null && (CurrentRender.Width != WrappedComponent.Size.X || CurrentRender.Height < WrappedComponent.Size.Y))
             {
                 CurrentRender?.Dispose();

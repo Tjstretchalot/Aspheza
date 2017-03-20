@@ -241,9 +241,9 @@ namespace BaseBuilder.Screens.Components
                 var tmpRect = new Rectangle(visibleRect.X, visibleRect.Y, visibleRect.Width, 1);
                 spriteBatch.Draw(BlackPixel, tmpRect, Color.White);
 
-                visibleRect.Y += 1;
+                visibleRect.Height += sizeYMultiplier;
 
-                int y = 0;
+                int y = 1;
 
                 for(int i = 0; i < Items.Count; i++)
                 {
@@ -316,7 +316,7 @@ namespace BaseBuilder.Screens.Components
             if(Expanded)
             {
                 int sizeYMultiplier = Math.Min(Items.Count, 5);
-                containMouse = new Rectangle(Center.X - Size.X / 2, Center.Y - Size.Y / 2, Size.X, Size.Y * (sizeYMultiplier + 1)).Contains(current.Position);
+                containMouse = new Rectangle(Center.X - Size.X / 2, Center.Y - Size.Y / 2, Size.X, (1 + Size.Y) * (sizeYMultiplier + 1)).Contains(current.Position);
             }else
             {
                 containMouse = containMouseSimple;
@@ -377,7 +377,7 @@ namespace BaseBuilder.Screens.Components
                 if (Selected != null)
                     ourScrollableSizeUnscrollable -= (Size.Y + 1);
 
-                int ourVisibleSize = Size.Y * Math.Min(Items.Count - (Selected != null ? 1 : 0), 5);
+                int ourVisibleSize = (Size.Y + 1) * Math.Min(Items.Count - (Selected != null ? 1 : 0), 5);
 
                 var allowedScrollY = ourVisibleSize - ourScrollableSizeUnscrollable;
                 desiredNewScrollY = Math.Max(desiredNewScrollY, allowedScrollY);
