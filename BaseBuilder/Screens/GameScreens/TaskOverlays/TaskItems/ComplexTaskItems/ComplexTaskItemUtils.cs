@@ -279,10 +279,11 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// </summary>
         /// <param name="context">Context</param>
         /// <param name="text">Text</param>
+        /// <param name="cache">If it should be cached</param>
         /// <returns>Text</returns>
-        public static Text CreateText(RenderContext context, string text)
+        public static Text CreateText(RenderContext context, string text, bool cache = false)
         {
-            return new Text(new Point(0, 0), text, context.DefaultFont, Color.White);
+            return new Text(new Point(0, 0), text, context.DefaultFont, Color.White, cache);
         }
 
         /// <summary>

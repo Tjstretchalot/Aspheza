@@ -49,9 +49,6 @@ namespace BaseBuilder.Screens.Components
 
             set
             {
-                if (value.Width != Texture.Width || value.Height != Texture.Height)
-                    throw new InvalidOperationException($"Mismatching sizes, texture is {Texture.Width} x {Texture.Height} but tried to set size to {value.Width} x {value.Height}");
-
                 _Location = value;
             }
         }

@@ -15,6 +15,7 @@ namespace BaseBuilder.Engine.World.Tiles
 {
     public abstract class SpriteTile : Tile
     {
+        protected Texture2D Texture;
         protected string SpriteName;
         protected Rectangle SourceRect;
 
@@ -34,14 +35,15 @@ namespace BaseBuilder.Engine.World.Tiles
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            var texture = context.Content.Load<Texture2D>(SpriteName);
+            if(Texture == null)
+                Texture = context.Content.Load<Texture2D>(SpriteName);
 
             drawRect.X = (int)screenTopLeft.X;
             drawRect.Y = (int)screenTopLeft.Y;
             drawRect.Width = (int)(context.Camera.Zoom);
             drawRect.Height = (int)(context.Camera.Zoom);
 
-            context.SpriteBatch.Draw(texture, sourceRectangle: SourceRect, destinationRectangle: drawRect, color: overlay);
+            context.SpriteBatch.Draw(Texture, sourceRectangle: SourceRect, destinationRectangle: drawRect, color: overlay);
         }
     }
 }

@@ -8,6 +8,12 @@ using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
 using BaseBuilder.Screens.Components;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
+
+using static BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems.ComplexTaskItemUtils;
+using BaseBuilder.Engine.Math2D;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems
 {
@@ -17,10 +23,25 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
     /// should hold weak references to components that it needs to
     /// access.
     /// </summary>
-    public abstract class ComplexTaskItem : SimpleTaskItem
+    public abstract class ComplexTaskItem : TaskItem
     {
-        protected ITaskItemComponent InspectComponent;
+        protected ITaskItemComponent CompleteComponent;
+
+        public override event EventHandler InspectAddPressed;
+        public override event EventHandler InspectDeletePressed;
+        public override event EventHandler InspectRedrawRequired;
+        public override event EventHandler InspectSaveRequired;
+
+        protected string InspectDescription;
+
+        protected bool Savable;
+        protected bool Reload;
+
+        protected ContentManager Content;
+
         protected bool LoadedFromTask;
+
+        protected Texture2D BackgroundTexture;
 
         protected ComplexTaskItem() : base()
         {
@@ -30,79 +51,179 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// Initializes the Component
         /// </summary>
         /// <param name="context">The render context</param>
-        protected abstract void InitializeComponent(RenderContext context);
+        protected abstract ITaskItemComponent InitializeComponent(RenderContext context);
 
-        protected abstract void LoadFromTask();
+        protected abstract void LoadFromTask(RenderContext context);
 
-        protected override void InitializeThings(RenderContext renderContext)
+        protected virtual void InitializeThings(RenderContext renderContext)
         {
-            base.InitializeThings(renderContext);
-
-            if(InspectComponent == null)
-                InitializeComponent(renderContext);
+            Content = renderContext.Content;
+            
+            if (CompleteComponent == null)
+                InitializeCompleteComponent(renderContext);
 
             if (!LoadedFromTask && Task != null)
             {
                 LoadedFromTask = true;
-                LoadFromTask();
+                LoadFromTask(renderContext);
             }
         }
 
-        protected override void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
+        public override void LoadedOrChanged(RenderContext renderContext)
         {
-            height += 8;
-            InspectComponent.Layout(renderContext, 0, width, ref height);
-            height += 8;
+            InitializeThings(renderContext);
 
-            base.CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
+            var width = CalculateWidth(renderContext);
+
+            var height = 0;
+
+            CalculateHeight(renderContext, ref height, width);
+
+            InspectSize = new PointI2D(width, height);
         }
 
-        protected override int CalculateWidth(RenderContext renderContext)
+
+        protected virtual void InitializeCompleteComponent(RenderContext context)
         {
-            return Math.Max(base.CalculateWidth(renderContext), InspectComponent.GetRequiredWidth(renderContext));
+            EventHandler redraw = (sender, args) => OnInspectRedrawRequired();
+            EventHandler redrawAndReload = (sender, args) =>
+            {
+                Reload = true;
+                OnInspectRedrawRequired();
+            };
+
+            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredWidth, 8);
+
+            /*
+             * The performance gained from caching large texts in render target is absolutely insane. 
+             * To test, change the sort mode to immediate (so you can see the cost of each call), at
+             * the time of writing it was between 1/2 and 7/8 of the entire draw call, dwarfing even
+             * tile rendering!
+             * 
+             * It's possible that drawing text in immediate mode is particularly slow, so the performance
+             * improvements are not quite that good, but it was still a very significant improvement.
+             */
+            var text = CreateText(context, InspectDescription, true);
+
+            layout.Children.Add(CreatePadding(1, 5));
+            layout.Children.Add(Wrap(text));
+            var lineText = new Texture2D(context.GraphicsDevice, 1, 1);  // we're telling the component to handle disposing of this texture
+            lineText.SetData(new[] { Color.DarkGray });
+            layout.Children.Add(Wrap(new TextureComponent(lineText, new Rectangle(0, 0, text.Size.X, 2), true)));
+            layout.Children.Add(InitializeComponent(context));
+
+            Button button;
+            if (Savable) {
+                button = CreateButton(context, redraw, redrawAndReload, "Save");
+                button.PressReleased += (sender, args) => OnInspectSaveRequired();
+
+                layout.Children.Add(Wrap(button));
+            }
+
+            if(Expandable)
+            {
+                button = CreateButton(context, redraw, redrawAndReload, "Set Child");
+                button.PressReleased += (sender, args) => OnInspectAddPressed();
+
+                layout.Children.Add(Wrap(button));
+            }
+
+            button = CreateButton(context, redraw, redrawAndReload, "Delete", UIUtils.ButtonColor.Yellow);
+            button.PressReleased += (sender, args) => OnInspectDeletePressed();
+
+            layout.Children.Add(Wrap(button));
+
+            CompleteComponent = layout;
+        }
+
+        protected virtual void CalculateHeight(RenderContext renderContext, ref int height, int width)
+        {
+            CompleteComponent.Layout(renderContext, 0, width, ref height);
+        }
+
+        protected virtual int CalculateWidth(RenderContext renderContext)
+        {
+            return CompleteComponent.GetRequiredWidth(renderContext) + 10;
         }
 
         public override void PreDrawInspect(RenderContext context, int x, int y)
         {
-            base.PreDrawInspect(context, x, y);
-            InspectComponent.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
+            if(BackgroundTexture == null)
+            {
+                BackgroundTexture = new Texture2D(context.GraphicsDevice, 1, 1);
+                BackgroundTexture.SetData(new[] { Color.Gray });
+            }
+
+            if (Reload)
+            {
+                LoadedOrChanged(context);
+                Reload = false;
+            }
+
+            CompleteComponent.PreDraw(context.Content, context.Graphics, context.GraphicsDevice);
         }
 
         public override void DrawInspect(RenderContext context, int x, int y)
         {
-            base.DrawInspect(context, x, y);
-            InspectComponent.DrawLowPriority(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
-            InspectComponent.DrawHighPriority(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
+            context.SpriteBatch.Draw(BackgroundTexture, new Rectangle(x, y, InspectSize.X, InspectSize.Y), Color.White);
+            CompleteComponent.DrawLowPriority(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
+            CompleteComponent.DrawHighPriority(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
         }
 
-        protected override void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
+
+        public override void HandleInspectMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
         {
-            InspectComponent.HandleMouseStateHighPriority(Content, last, current, ref handled, ref scrollHandled);
-            base.HandleInspectComponentsMouseState(last, current, ref handled, ref scrollHandled);
-            InspectComponent?.HandleMouseStateLowPriority(Content, last, current, ref handled, ref scrollHandled);
+            HandleInspectComponentsMouseState(last, current, ref handled, ref scrollHandled);
+        }
+
+        protected virtual void HandleInspectComponentsMouseState(MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
+        {
+            CompleteComponent.HandleMouseStateHighPriority(Content, last, current, ref handled, ref scrollHandled);
+            CompleteComponent?.HandleMouseStateLowPriority(Content, last, current, ref handled, ref scrollHandled);
         }
 
         public override bool HandleInspectKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current)
         {
             bool handled = false;
 
-            InspectComponent.HandleKeyboardStateHighPriority(Content, last, current, ref handled);
-            InspectComponent.HandleKeyboardStateLowPriority(Content, last, current, ref handled);
+            CompleteComponent.HandleKeyboardStateHighPriority(Content, last, current, ref handled);
+            CompleteComponent.HandleKeyboardStateLowPriority(Content, last, current, ref handled);
 
             return handled;
         }
 
         public override void UpdateInspect(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {
-            InspectComponent.UpdateHighPriority(Content, timeMS);
-            base.UpdateInspect(sharedGameState, localGameState, netContext, timeMS);
-            InspectComponent.UpdateLowPriorirty(Content, timeMS);
+            CompleteComponent.UpdateHighPriority(Content, timeMS);
+            CompleteComponent.UpdateLowPriorirty(Content, timeMS);
         }
 
         public override void DisposeInspect()
         {
-            InspectComponent?.Dispose();
-            InspectComponent = null;
+            BackgroundTexture?.Dispose();
+            BackgroundTexture = null;
+            CompleteComponent?.Dispose();
+            CompleteComponent = null;
+        }
+
+        protected virtual void OnInspectAddPressed()
+        {
+            InspectAddPressed?.Invoke(null, EventArgs.Empty);
+        }
+
+        protected virtual void OnInspectDeletePressed()
+        {
+            InspectDeletePressed?.Invoke(null, EventArgs.Empty);
+        }
+
+        protected virtual void OnInspectRedrawRequired()
+        {
+            InspectRedrawRequired?.Invoke(null, EventArgs.Empty);
+        }
+
+        protected virtual void OnInspectSaveRequired()
+        {
+            InspectSaveRequired?.Invoke(null, EventArgs.Empty);
         }
     }
 }

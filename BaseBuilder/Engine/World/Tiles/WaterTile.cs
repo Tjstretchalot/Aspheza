@@ -55,6 +55,7 @@ namespace BaseBuilder.Engine.World.Tiles
 
         public override bool Ground { get { return false; } }
         public override bool Water { get { return true; } }
+        public override bool RequiresUpdate { get { return true; } }
 
         protected Rectangle DestRect;
         protected Rectangle SrcRect;

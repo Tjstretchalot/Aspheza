@@ -17,6 +17,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
     {
         public static List<ComboBoxItem<Material>> AllMaterialsWithFont(SpriteFont font)
         {
+            // sort alphabetically
             return new List<ComboBoxItem<Material>>
             {
                 new MaterialComboBoxItem(font, Material.Bread),
@@ -24,7 +25,10 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
                 new MaterialComboBoxItem(font, Material.CarrotSeed),
                 new MaterialComboBoxItem(font, Material.Flour),
                 new MaterialComboBoxItem(font, Material.GoldOre),
+                new MaterialComboBoxItem(font, Material.Lumber),
                 new MaterialComboBoxItem(font, Material.Sapling),
+                new MaterialComboBoxItem(font, Material.Sugar),
+                new MaterialComboBoxItem(font, Material.Sugarcane),
                 new MaterialComboBoxItem(font, Material.Wheat),
                 new MaterialComboBoxItem(font, Material.WheatSeed),
                 new MaterialComboBoxItem(font, Material.Wood),

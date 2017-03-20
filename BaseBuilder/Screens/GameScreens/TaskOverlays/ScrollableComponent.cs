@@ -29,6 +29,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         protected Rectangle SourceRect;
         protected Rectangle DrawRect;
 
+        protected bool RedrawRequested;
+
         public ScrollableComponentWrapper(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, MyGameComponent wrapped, PointI2D screenLoc, PointI2D size, int z) : base(content, graphics, graphicsDevice, spriteBatch)
         {
             MaxHeightBeforeScrolling = size.Y;
@@ -38,22 +40,19 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             WrappedComponent = wrapped;
             SourceRect = new Rectangle();
             DrawRect = new Rectangle();
+
+            RedrawRequested = false;
         }
 
         public override void PreDraw(RenderContext context)
         {
             if (CurrentRender != null)
             {
-                if (CurrentRender.IsContentLost)
-                {
-                    Invalidate();
-                }
-                else
-                {
+                if (!RedrawRequested && !CurrentRender.IsContentLost && CurrentRender.Width == WrappedComponent.Size.X && CurrentRender.Height >= WrappedComponent.Size.Y)
                     return;
-                }
             }
 
+            RedrawRequested = false;
             WrappedComponent.PreDraw(context);
             if(Math.Min(Size.Y, WrappedComponent.Size.Y) < MaxHeightBeforeScrolling && Size.Y != WrappedComponent.Size.Y)
             {
@@ -61,8 +60,14 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 ScrollOffsetY = 0;
             }
 
+            if(CurrentRender != null && (CurrentRender.Width != WrappedComponent.Size.X || CurrentRender.Height < WrappedComponent.Size.Y))
+            {
+                CurrentRender?.Dispose();
+                CurrentRender = null;
+            }
 
-            CurrentRender = new RenderTarget2D(context.GraphicsDevice, WrappedComponent.Size.X, WrappedComponent.Size.Y, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+            if(CurrentRender == null)
+                CurrentRender = new RenderTarget2D(context.GraphicsDevice, WrappedComponent.Size.X, WrappedComponent.Size.Y, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
             var myContext = new RenderContext();
             myContext.Content = context.Content;
@@ -154,6 +159,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
                 ScrollOffsetY = desiredNewScrollY;
             }
+
+            handled = true;
         }
 
         /// <summary>
@@ -161,15 +168,15 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// </summary>
         public void Invalidate()
         {
-            CurrentRender?.Dispose();
-            CurrentRender = null;
+            RedrawRequested = true;
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            Invalidate();
+            CurrentRender?.Dispose();
+            CurrentRender = null;
             WrappedComponent.Dispose();
         }
     }

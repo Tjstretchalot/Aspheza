@@ -55,7 +55,7 @@ namespace BaseBuilder.Screens
 
             graphicsDevice.Clear(Color.White);
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             foreach (var component in Components)
             {

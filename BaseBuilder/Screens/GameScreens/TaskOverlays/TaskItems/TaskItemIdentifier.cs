@@ -25,7 +25,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             Register(typeof(EntitySelectorTask), typeof(SelectorTaskItem));
             Register(typeof(EntitySequenceTask), typeof(SequenceTaskItem));
             Register(typeof(EntitySucceederTask), typeof(SucceederTaskItem));
-            Register(typeof(EntityTransferItemTask), typeof(TransferItemTaskItem2));
+            Register(typeof(EntityTransferItemTask), typeof(TransferItemTaskItem));
         }
 
         static void Register(Type entityTaskType, Type taskItemType)

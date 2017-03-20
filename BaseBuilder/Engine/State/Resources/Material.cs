@@ -14,6 +14,7 @@ namespace BaseBuilder.Engine.State.Resources
     public class Material : Renderable
     {
         // ** Update GetMaterialByID if modifying ** //
+        // ** Update MaterialComboBoxItem if modifying ** //
 
         public static Material GoldOre { get; }
         public static Material CarrotSeed { get; }
@@ -28,12 +29,19 @@ namespace BaseBuilder.Engine.State.Resources
         public static Material Lumber { get; }
         public static Material Sapling { get; }
 
+
+        // ** Update GetMaterialByID if modifying ** //
+        // ** Update MaterialComboBoxItem if modifying ** //
+
         static Material()
         {
+            // ** Update GetMaterialByID if modifying ** //
+            // ** Update MaterialComboBoxItem if modifying ** //
+
             GoldOre = new Material("materials", new Rectangle(132, 0, 32, 32), "Gold Ore", "Gold Ore\nSmelts into gold", 1);
 
             CarrotSeed = new Material("materials", new Rectangle(33, 0, 32, 32), "Carrot Seed", "Carrot Seed\nCan be planted in a farm to grow into carrots", 2);
-            Carrot = new Material("materials", new Rectangle(33, 66, 32, 32), "Carrot", "Carrot\nAn average source of food", 3);
+            Carrot = new Material("materials", new Rectangle(33, 33, 32, 32), "Carrot", "Carrot\nAn average source of food", 3);
 
             WheatSeed = new Material("materials", new Rectangle(0, 0, 32, 32), "Wheat Seed", "Wheat Seed\nCan be planted in a farm to grow into wheat", 4);
             Wheat = new Material("materials", new Rectangle(0, 33, 32, 32), "Wheat", "Wheat\nCan be made into flour via a mill. Also serves as\na poor source of food", 5);
@@ -46,6 +54,9 @@ namespace BaseBuilder.Engine.State.Resources
             Sapling = new Material("materials", new Rectangle(66, 0, 32, 32), "Sapling", "Sapling\nCan be planted for new trees.", 10);
             Wood = new Material("materials", new Rectangle(66, 33, 32, 32), "Wood", "Wood\nCan be made into lumber via a lumbermill.", 11);
             Lumber = new Material("materials", new Rectangle(66, 66, 32, 32), "Lumber", "Lumber\nUsed to make buildings.", 12);
+
+            // ** Update GetMaterialByID if modifying ** //
+            // ** Update MaterialComboBoxItem if modifying ** //
         }
 
         public int ID { get; }

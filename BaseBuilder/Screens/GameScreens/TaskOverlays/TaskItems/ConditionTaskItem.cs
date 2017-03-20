@@ -81,9 +81,9 @@ condition task takes some time, typically one second.";
 
         }
 
-        protected override void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
+        protected override void CalculateHeight(RenderContext renderContext, ref int height, int width)
         {
-            base.CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
+            base.CalculateHeight(renderContext, ref height, width);
             height += 100;
         }
         public override IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
@@ -206,7 +206,7 @@ condition task takes some time, typically one second.";
             return true;
         }
 
-        protected override void LoadFromTask()
+        protected override void LoadFromTask(RenderContext context)
         {
             var task = Task as EntityConditionTask;
             if (task.Conditional == null)
@@ -245,11 +245,8 @@ condition task takes some time, typically one second.";
             }
         }
 
-        protected override void InitializeComponent(RenderContext context)
+        protected override ITaskItemComponent InitializeComponent(RenderContext context)
         {
-            if (InspectComponent != null)
-                return;
-
             EventHandler redraw = (sender, args) => OnInspectRedrawRequired();
             EventHandler redrawAndReload = (sender, args) =>
             {
@@ -267,7 +264,7 @@ condition task takes some time, typically one second.";
 
             InitializeInventoryConditions(context, redraw, redrawAndReload, main, typeBox);
 
-            InspectComponent = main;
+            return main;
         }
 
         protected void InitializeInventoryConditions(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main, ComboBox<ConditionType> mainBox)

@@ -40,6 +40,8 @@ namespace BaseBuilder.Engine.World
         /// </summary>
         public List<Tile> Tiles;
 
+        public List<Tile> TilesThatNeedUpdating;
+
         public List<MobileEntity> MobileEntities;
 
         public List<ImmobileEntity> ImmobileEntities;
@@ -82,6 +84,16 @@ namespace BaseBuilder.Engine.World
 
             MobileEntitiesQueuedForRemoval = new List<MobileEntity>();
             ImmobileEntitiesQueuedForRemoval = new List<ImmobileEntity>();
+
+            TilesThatNeedUpdating = new List<Tile>();
+
+            foreach(var tile in Tiles)
+            {
+                if(tile.RequiresUpdate)
+                {
+                    TilesThatNeedUpdating.Add(tile);
+                }
+            }
         }
 
         /// <summary>
@@ -406,13 +418,9 @@ namespace BaseBuilder.Engine.World
             var tileWidth = TileWidth;
             var tileHeight = TileHeight;
             
-            for(int x = 0; x < tileWidth; x++)
+            for(int i = 0; i < TilesThatNeedUpdating.Count; i++)
             {
-                for(int y = 0; y < TileHeight; y++)
-                {
-                    // i performance profiled this change from TileAt, it's actually significant
-                    Tiles[x + y * tileHeight].Update(context);
-                }
+                TilesThatNeedUpdating[i].Update(context);
             }
 
             foreach(var e in MobileEntities)

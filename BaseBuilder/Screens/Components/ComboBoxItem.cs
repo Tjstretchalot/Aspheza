@@ -193,7 +193,7 @@ namespace BaseBuilder.Screens.Components
             graphicsDevice.Clear(Color.White);
             var spriteBatch = new SpriteBatch(graphicsDevice);
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, samplerState: SamplerState.PointClamp);
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             DrawImpl(content, graphics, graphicsDevice, spriteBatch, 0, 0);
 

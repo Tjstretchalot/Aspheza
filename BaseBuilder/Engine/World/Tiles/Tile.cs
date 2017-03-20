@@ -42,6 +42,11 @@ namespace BaseBuilder.Engine.World.Tiles
         /// </summary>
         public abstract bool Water { get; }
 
+        /// <summary>
+        /// If this tile requires updating
+        /// </summary>
+        public virtual bool RequiresUpdate { get { return false; } }
+
         protected Tile(PointI2D position, RectangleD2D collisionMesh)
         {
             Position = position;

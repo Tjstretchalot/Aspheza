@@ -96,22 +96,71 @@ namespace BaseBuilder.Screens.Components
 
         public Color TextColor;
 
+        protected bool Cache;
+        protected RenderTarget2D CacheTarget;
+
+
         /// <summary>
         /// Triggered when disposing
         /// </summary>
         public event EventHandler Disposing;
 
-        public Text(Point center, string text, SpriteFont font, Color textColor)
+        public Text(Point center, string text, SpriteFont font, Color textColor, bool cache = false)
         {
             _Center = center;
             Content = text;
             _Font = font;
             TextColor = textColor;
+
+            Cache = cache;
+        }
+
+
+        public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)
+        {
+            if(Cache)
+            {
+                bool redraw = false;
+                if(CacheTarget == null || CacheTarget.Width != Size.X || CacheTarget.Height != Size.Y)
+                {
+                    CacheTarget?.Dispose();
+
+                    CacheTarget = new RenderTarget2D(graphicsDevice, Size.X, Size.Y);
+                    redraw = true;
+                }
+
+                redraw = redraw || CacheTarget.IsContentLost;
+
+                if(redraw)
+                {
+                    graphicsDevice.SetRenderTarget(CacheTarget);
+
+                    graphicsDevice.Clear(new Color(0, 0, 0, 0));
+
+                    var spriteBatch = new SpriteBatch(graphicsDevice);
+                    spriteBatch.Begin();
+
+                    spriteBatch.DrawString(Font, Content, new Vector2(0, 0), TextColor);
+
+                    spriteBatch.End();
+
+                    graphicsDevice.SetRenderTarget(null);
+
+                    spriteBatch.Dispose();
+                }
+            }
         }
 
         public void Draw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(Font, Content, TopLeft, TextColor);
+            if (!Cache || CacheTarget == null || CacheTarget.IsContentLost)
+            {
+                spriteBatch.DrawString(Font, Content, TopLeft, TextColor);
+            }
+            else
+            {
+                spriteBatch.Draw(CacheTarget, new Rectangle((int)TopLeft.X, (int)TopLeft.Y, Size.X, Size.Y), TextColor);
+            }
         }
 
         public void Update(ContentManager content, int deltaMS)
@@ -141,13 +190,12 @@ namespace BaseBuilder.Screens.Components
         {
         }
 
-        public void PreDraw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice)
-        {
-        }
-
         public void Dispose()
         {
             Disposing?.Invoke(this, EventArgs.Empty);
+
+            CacheTarget?.Dispose();
+            CacheTarget = null;
         }
     }
 }

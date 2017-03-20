@@ -210,7 +210,7 @@ position. ";
             return true;
         }
 
-        protected override void InitializeComponent(RenderContext context)
+        protected override ITaskItemComponent InitializeComponent(RenderContext context)
         {
             var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredWidth, 5);
 
@@ -233,7 +233,8 @@ position. ";
             InitializeTargetByID(context, redraw, redrawAndReload, layout, box);
             InitializeTargetByPosition(context, redraw, redrawAndReload, layout, box);
             InitializeTargetByRelativePosition(context, redraw, redrawAndReload, layout, box);
-            InspectComponent = layout;
+
+            return layout;
         }
 
         protected void InitializeTargetByID(RenderContext context, EventHandler redraw, EventHandler redrawAndReload,
@@ -313,13 +314,13 @@ position. ";
             main.Children.Add(layout);
         }
 
-        protected override void CalculateHeightPostButtonsAndInitButtons(RenderContext renderContext, ref int height, int width)
+        protected override void CalculateHeight(RenderContext renderContext, ref int height, int width)
         {
-            base.CalculateHeightPostButtonsAndInitButtons(renderContext, ref height, width);
+            base.CalculateHeight(renderContext, ref height, width);
             height += 50;
         }
 
-        protected override void LoadFromTask()
+        protected override void LoadFromTask(RenderContext context)
         {
             var harvestTask = Task as EntityHarvestTask;
 
