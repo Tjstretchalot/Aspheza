@@ -18,7 +18,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         protected static CollisionMeshD2D _CollisionMesh;
 
         protected bool MillingWood;
-        protected int TimeUntilNextBakeCompletionMS;
+        protected int TimeUntilNextMillingCompletionMS;
         protected int NextAnimationTickMS;
 
         protected SpriteRenderer Renderer;
@@ -97,6 +97,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             ID = message.ReadInt32();
             Inventory = new EntityInventory(message);
             InventoryLumber = new EntityInventory(message);
+            TimeUntilNextMillingCompletionMS = message.ReadInt32();
             _HoverText = message.ReadString();
 
             InitInventoryForNonnetworkableParts();
@@ -110,6 +111,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             message.Write(ID);
             Inventory.Write(message);
             InventoryLumber.Write(message);
+            message.Write(TimeUntilNextMillingCompletionMS);
             message.Write(_HoverText);
 
             WriteTasks(message);
@@ -141,7 +143,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             if (!MillingWood)
             {
                 MillingWood = true;
-                TimeUntilNextBakeCompletionMS = 5000;
+                TimeUntilNextMillingCompletionMS = 5000;
             }
         }
 
@@ -151,10 +153,10 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
             if (MillingWood)
             {
-                TimeUntilNextBakeCompletionMS -= timeMS;
-                if (TimeUntilNextBakeCompletionMS <= 0)
+                TimeUntilNextMillingCompletionMS -= timeMS;
+                if (TimeUntilNextMillingCompletionMS <= 0)
                 {
-                    TimeUntilNextBakeCompletionMS = 5000;
+                    TimeUntilNextMillingCompletionMS = 5000;
                     if (InventoryLumber.HaveRoomFor(Material.Lumber, 1))
                     {
                         Inventory.RemoveMaterial(Material.Wood, 1);

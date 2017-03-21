@@ -67,6 +67,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Position = new PointD2D(message);
             ID = message.ReadInt32();
             GrowthState = (GrowthState)message.ReadInt32();
+            TimeUntilGownMS = message.ReadInt32();
             Inventory = new EntityInventory(message);
             _HoverText = message.ReadString();
 
@@ -80,6 +81,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Position.Write(message);
             message.Write(ID);
             message.Write((int)GrowthState);
+            message.Write(TimeUntilGownMS);
             Inventory.Write(message);
             message.Write(_HoverText);
 
