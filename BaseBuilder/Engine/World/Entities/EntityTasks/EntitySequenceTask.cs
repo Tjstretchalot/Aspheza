@@ -123,7 +123,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             var numTasks = message.ReadInt16();
             Children = new List<IEntityTask>(numTasks);
 
-            for(int i = 0; i < Children.Count; i++)
+            for(int i = 0; i < numTasks; i++)
             {
                 var taskID = message.ReadInt16();
 
