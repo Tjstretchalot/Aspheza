@@ -73,7 +73,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             AnimationRenderer?.Update(context.ElapsedMS);
         }
 
-        public void InitRenderer(RenderContext context)
+        protected override void InitRenderer(RenderContext context)
         {
             string sourceFile = "WizardOverseer/WizardSpriteSheet";
 
