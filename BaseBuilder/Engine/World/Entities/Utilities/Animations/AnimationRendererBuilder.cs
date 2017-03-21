@@ -37,20 +37,20 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
             }
         }
         
-        ContentManager Content;
+        public ContentManager Content;
 
-        List<UnbuiltAnimation> CompletedAnimations;
-        UnbuiltAnimation CurrentAnimation;
-        int CurrentAnimationMajorAxis;
-        int CurrentAnimationDefaultSpacing;
-        int CurrentAnimationMinorAxis;
-        bool CurrentAnimationHorizontal;
-        int CurrentAnimationDefaultWidth;
-        int CurrentAnimationDefaultHeight;
-        PointD2D CurrentAnimtionDefaultTopLeftDif;
-        int CurrentAnimationDefaultDisplayTime;
-        string CurrentAnimationDefualtSound;
-        string CurrentAnimationDefaultSourceTexture;
+        private List<UnbuiltAnimation> CompletedAnimations;
+        private UnbuiltAnimation CurrentAnimation;
+        private int CurrentAnimationMajorAxis;
+        private int CurrentAnimationDefaultSpacing;
+        private int CurrentAnimationMinorAxis;
+        private bool CurrentAnimationHorizontal;
+        private int CurrentAnimationDefaultWidth;
+        private int CurrentAnimationDefaultHeight;
+        private PointD2D CurrentAnimtionDefaultTopLeftDif;
+        private int CurrentAnimationDefaultDisplayTime;
+        private string CurrentAnimationDefualtSound;
+        private string CurrentAnimationDefaultSourceTexture;
 
 
         public AnimationRendererBuilder(ContentManager content)

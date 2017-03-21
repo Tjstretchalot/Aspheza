@@ -63,8 +63,8 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            if (AnimationRenderer == null)
-                InitRenderer(context);
+            base.Render(context, screenTopLeft, overlay);
+
             AnimationRenderer.Render(context, overlay, screenTopLeft, 1);
         }
 
@@ -75,7 +75,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             AnimationRenderer?.Update(context.ElapsedMS);
         }
 
-        public void InitRenderer(RenderContext context)
+        public override void InitRenderer(RenderContext context)
         {
             string sourceFile = "CaveManWorker/CaveManSpriteSheet";
 

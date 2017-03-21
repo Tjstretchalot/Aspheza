@@ -58,11 +58,11 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             WriteAnimationSync(message);
             WriteTasks(message);
         }
-
+        
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            if (AnimationRenderer == null)
-                InitRenderer(context);
+            base.Render(context, screenTopLeft, overlay);
+
             AnimationRenderer.Render(context, overlay, screenTopLeft, 1);
         }
 
