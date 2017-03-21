@@ -65,7 +65,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// Called whenever this component will need to be redrawn
         /// </summary>
         public event EventHandler RedrawRequired;
-
+        
         /// <summary>
         /// What task item is selected
         /// </summary>
@@ -92,7 +92,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// The button for toggling if an entity is completing his tasks
         /// </summary>
         public Button PauseResumeButton;
-
+        
         protected bool Valid;
 
         protected ITaskable Taskable;
@@ -127,7 +127,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             RedrawRequired += (sender, args) => { RecalculateSize(); };
 
             AddButton = UIUtils.CreateButton(new Point(0, 0), "Add Task", UIUtils.ButtonColor.Blue, UIUtils.ButtonSize.Medium);
-            PauseResumeButton = UIUtils.CreateButton(new Point(0, 0), Taskable.Paused ? "Resume" : "Stop", UIUtils.ButtonColor.Yellow, UIUtils.ButtonSize.Medium);
+            PauseResumeButton = UIUtils.CreateButton(new Point(0, 0), Taskable.IsPaused ? "Resume" : "Stop", UIUtils.ButtonColor.Yellow, UIUtils.ButtonSize.Medium);
 
             AddButton.HoveredChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
             AddButton.PressedChanged += (sender, args) => RedrawRequired?.Invoke(this, EventArgs.Empty);
@@ -136,17 +136,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
             PauseResumeButton.PressReleased += (sender, args) =>
             {
-                if(Taskable.Paused && !Valid)
+                if(Taskable.IsPaused && !Valid)
                 {
                     Content.Load<SoundEffect>("UI/TextAreaError").Play();
                     return;
                 }
-
-                if (Taskable.Paused)
-                    PauseResumeButton.Text = "Stop";
-                else
-                    PauseResumeButton.Text = "Resume";
-
+                
                 var order = netContext.GetPoolFromPacketType(typeof(TogglePausedTasksOrder)).GetGamePacketFromPool() as TogglePausedTasksOrder;
                 order.Entity = Taskable as Entity;
                 localState.Orders.Add(order);
@@ -159,8 +154,18 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             };
 
             CreateTaskItemsFromTaskable();
+            
+            Taskable.PausedChanged += (sender, args) =>
+            {
+                if (Taskable.IsPaused)
+                    PauseResumeButton.Text = "Resume";
+                else
+                    PauseResumeButton.Text = "Stop";
+
+                RedrawRequired?.Invoke(null, EventArgs.Empty);
+            };
         }
-        
+
         public override void Draw(RenderContext context)
         {
             context.SpriteBatch.Draw(BackgroundTexture, new Rectangle(ScreenLocation.X, ScreenLocation.Y, Size.X, Size.Y), Color.White);

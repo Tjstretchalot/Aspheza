@@ -63,6 +63,11 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         event EventHandler TaskQueued;
 
         /// <summary>
+        /// Caleld when IsPaused changes
+        /// </summary>
+        event EventHandler PausedChanged;
+
+        /// <summary>
         /// Gets the current task
         /// </summary>
         IEntityTask CurrentTask { get; }
@@ -76,7 +81,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
         /// If this taskable is currently paused then it is not
         /// running its tasks.
         /// </summary>
-        bool Paused { get; set; }
+        bool IsPaused { get; set; }
 
         /// <summary>
         /// Queue the specified task to occur once the entity has finished other tasks

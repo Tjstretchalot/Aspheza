@@ -66,10 +66,28 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         /// </summary>
         public bool Selected;
 
+        protected bool _IsPaused;
         /// <summary>
         /// True if we are not running our tasks right now
         /// </summary>
-        public bool Paused { get; set; }
+        public bool IsPaused
+        {
+            get
+            {
+                return _IsPaused;
+            }
+
+            set
+            {
+                if(_IsPaused != value)
+                {
+                    _IsPaused = value;
+                    PausedChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public event EventHandler PausedChanged;
 
         public Queue<IEntityTask> TaskQueue { get; set; }
         public IEntityTask CurrentTask { get; set; }
@@ -174,7 +192,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         
         public virtual void SimulateTimePassing(SharedGameState sharedState, int timeMS)
         {
-            if (Paused)
+            if (IsPaused)
                 return;
 
             if (CurrentTask == null && TaskQueue.Count > 0)

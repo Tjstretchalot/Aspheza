@@ -196,7 +196,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 var ent = Taskable as Entity;
                 var task = AddOverlay.Selected;
 
-                if (!task.IsValid(sharedState, localState, netContext) && !ent.Paused)
+                if (!task.IsValid(sharedState, localState, netContext) && !ent.IsPaused)
                 {
                     LiveOverlay.PauseResumeButton.Text = "Resume";
                     LiveScrollableOverlay.Invalidate();
