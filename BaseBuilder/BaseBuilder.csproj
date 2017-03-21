@@ -209,6 +209,7 @@
     <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\FarmBuildOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\LibraryBuildOverlayMenuItem.cs" />
+    <Compile Include="Screens\GameScreens\BuildOverlays\LumbermillOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\SaplingBuildOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\SimpleBuildOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\TavernBuildOverlayMenuItem.cs" />

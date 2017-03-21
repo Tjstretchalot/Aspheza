@@ -68,7 +68,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         static LumberMill()
         {
-            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(5.125, 6.375) });
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(5.125, 5, 0, 1.375),
+                new PolygonD2D(new List<PointD2D> { new PointD2D(0.4375, 1.375), new PointD2D(0.4375, 0.9375), new PointD2D(1.4375, 0), new PointD2D(2.4375, 0.9375), new PointD2D(2.4375, 1.375) }) });
         }
 
         public LumberMill(PointD2D position, int id) : base(position, _CollisionMesh, id)
