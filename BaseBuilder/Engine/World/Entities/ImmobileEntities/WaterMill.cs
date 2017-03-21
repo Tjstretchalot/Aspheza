@@ -19,19 +19,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
     {
         protected static CollisionMeshD2D _CollisionMesh;
 
-        protected bool Milling;
-        protected int TimeUntilNextMillCompletionMS;
-        protected int NextAnimationTickMS;
-
-        protected SpriteRenderer Renderer;
-        protected int CurrentAnimationLocation;
         static List<Rectangle> AnimationRecs = new List<Rectangle> { new Rectangle(0, 0, 180, 100), new Rectangle(180, 0, 180, 100), new Rectangle(360, 0, 180, 100) };
-
-        /// <summary>
-        /// Items to mill
-        /// </summary>
-        public EntityInventory Inventory { get; protected set; }
-        public EntityInventory InventoryMilled { get; protected set; }
 
         public override string UnbuiltHoverText
         {
@@ -97,6 +85,19 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(11, 6) });
         }
 
+        /// <summary>
+        /// Items to mill
+        /// </summary>
+        public EntityInventory Inventory { get; protected set; }
+        public EntityInventory InventoryMilled { get; protected set; }
+        
+        protected bool Milling;
+        protected int TimeUntilNextMillCompletionMS;
+        protected int NextAnimationTickMS;
+
+        protected SpriteRenderer Renderer;
+        protected int CurrentAnimationLocation;
+
         public WaterMill(PointD2D position, int id) : base(position, _CollisionMesh, id)
         {
             CollisionMesh = _CollisionMesh;
@@ -125,7 +126,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             ID = message.ReadInt32();
             Inventory = new EntityInventory(message);
             InventoryMilled = new EntityInventory(message);
-            _HoverText = message.ReadString();
+            message.Write(Milling);
+            message.Write(TimeUntilNextMillCompletionMS);
 
             InitInventoryForNonnetworkableParts();
 
@@ -138,7 +140,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             message.Write(ID);
             Inventory.Write(message);
             InventoryMilled.Write(message);
-            message.Write(_HoverText);
+            Milling = message.ReadBoolean();
+            TimeUntilNextMillCompletionMS = message.ReadInt32();
 
             WriteTasks(message);
         }

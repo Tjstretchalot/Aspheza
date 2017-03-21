@@ -124,6 +124,7 @@
     <Compile Include="Engine\World\Entities\EntityTasks\TransferTargeters\TransferTargetByRelativePosition.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferTargeters\TransferTargeterIdentifier.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Bakery.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\ChickenCoop.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Farm.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\GoldOre.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Library.cs" />
@@ -309,6 +310,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\CaveManWorker\CaveManWorker 32x32.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\ChickenCoop.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\icons.png">

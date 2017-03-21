@@ -18,19 +18,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
     public class Bakery : ImmobileEntity, Container, Harvestable
     {
         protected static CollisionMeshD2D _CollisionMesh;
-
-        protected bool Baking;
-        protected int TimeUntilNextBakeCompletionMS;
-        protected int NextAnimationTickMS;
-
-        protected SpriteRenderer Renderer;
-        static Rectangle SourceRec = new Rectangle(0, 0, 158, 114);
-
-        /// <summary>
-        /// Items to mill
-        /// </summary>
-        public EntityInventory Inventory { get; protected set; }
-        public EntityInventory InventoryBaked { get; protected set; }
+        protected static Rectangle SourceRec = new Rectangle(0, 0, 158, 114);
 
         public override string HoverText
         {
@@ -70,6 +58,17 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             }
         }
 
+        protected bool Baking;
+        protected int TimeUntilNextBakeCompletionMS;
+
+        protected SpriteRenderer Renderer;
+
+        /// <summary>
+        /// Items to bake
+        /// </summary>
+        public EntityInventory Inventory { get; protected set; }
+        public EntityInventory InventoryBaked { get; protected set; }
+
         static Bakery()
         {
             _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D>{ new RectangleD2D(5, 3.5) });
@@ -81,9 +80,9 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Renderer = new SpriteRenderer("Bakery", SourceRec);
 
             Baking = false;
-            Inventory = new EntityInventory(1, IsBakable);
+            Inventory = new EntityInventory(1);
             Inventory.SetDefaultStackSize(10);
-            InventoryBaked = new EntityInventory(1, IsBaked);
+            InventoryBaked = new EntityInventory(1);
             InventoryBaked.SetDefaultStackSize(10);
             InitInventoryForNonnetworkableParts();
         }
@@ -100,7 +99,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             ID = message.ReadInt32();
             Inventory = new EntityInventory(message);
             InventoryBaked = new EntityInventory(message);
-            _HoverText = message.ReadString();
+            Baking = message.ReadBoolean();
+            TimeUntilNextBakeCompletionMS = message.ReadInt32();
 
             InitInventoryForNonnetworkableParts();
 
@@ -113,7 +113,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             message.Write(ID);
             Inventory.Write(message);
             InventoryBaked.Write(message);
-            message.Write(_HoverText);
+            message.Write(Baking);
+            message.Write(TimeUntilNextBakeCompletionMS);
 
             WriteTasks(message);
         }
@@ -122,6 +123,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
             Inventory.AcceptsMaterialFunc = IsBakable;
             Inventory.OnMaterialAdded += OnItemAdded;
+
+            InventoryBaked.AcceptsMaterialFunc = IsBaked;
         }
 
         protected bool IsBakable(Material mat)
