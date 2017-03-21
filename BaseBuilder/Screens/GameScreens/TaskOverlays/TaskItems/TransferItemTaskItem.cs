@@ -214,17 +214,19 @@ in your inventory or the targets inventory.", true);
                 layout.Children.Add(Wrap(description));
 
                 var buttonsLayout = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
-                var radio = CreateRadioButton(context, redraw, redrawAndReload);
-                var radioWrapped = Wrap(radio);
+                var radio1 = CreateRadioButton(context, redraw, redrawAndReload);
+                var radioWrapped = Wrap(radio1);
                 ByItemType_DenyOthersRadio.SetTarget(radioWrapped);
                 buttonsLayout.Children.Add(Label(context, "Deny Everything Else", radioWrapped, false));
 
-                radio = CreateRadioButton(context, redraw, redrawAndReload);
-                radioWrapped = Wrap(radio);
+                var radio2 = CreateRadioButton(context, redraw, redrawAndReload);
+                radioWrapped = Wrap(radio2);
                 ByItemType_DenyThisRadio.SetTarget(radioWrapped);
                 buttonsLayout.Children.Add(Label(context, "Deny Just This", radioWrapped, false));
 
                 layout.Children.Add(buttonsLayout);
+
+                new RadioButtonGroup(new[] { radio1, radio2 }).Attach();
 
                 var matBox = CreateMaterialComboBox(context, redraw, redrawAndReload);
                 var wrappedBox = Wrap(matBox);
