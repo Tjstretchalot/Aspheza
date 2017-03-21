@@ -259,6 +259,7 @@
     <Compile Include="Screens\GameScreens\ToolbarOverlays\CaveManWorkerOverlay.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\InventoryComponentWrapper.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\InventoryOverlayComponent.cs" />
+    <Compile Include="Screens\GameScreens\ToolbarOverlays\OverseerMageOverlay.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\StorageBarnOverlay.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\ToolbarOverlay.cs" />
     <Compile Include="Screens\GameScreens\ToolbarOverlays\WaterMillOverlay.cs" />

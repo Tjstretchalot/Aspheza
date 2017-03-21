@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using BaseBuilder.Engine.World.Entities.MobileEntities;
-using BaseBuilder.Engine.Context;
-using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Input;
-using BaseBuilder.Engine.Utility;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
 {
-    public class CaveManWorkerOverlay : ToolbarOverlay
+    public class OverseerMageOverlay : ToolbarOverlay
     {
         protected InventoryOverlayComponent InventoryOverlayComp;
 
-        public CaveManWorkerOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
+        public OverseerMageOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {
             const int invWidth = 216;
             const int invHeight = 38;
@@ -43,7 +42,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
         protected override void DrawImpl(RenderContext context)
         {
             base.DrawImpl(context);
-            
+
             InventoryOverlayComp.Draw(context);
             InventoryOverlayComp.DrawHoverText(context);
         }
@@ -56,18 +55,12 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             InventoryOverlayComp.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
 
             base.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
-
-            if (CurrentToolbarEntity == null)
-            {
-                return;
-            }
-
         }
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {
             base.Update(sharedGameState, localGameState, netContext, timeMS);
-            
+
             if (CurrentToolbarEntity == null)
                 return;
 
@@ -78,13 +71,13 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
         {
             base.UpdateToolbarEntity(newEntity);
 
-            var caveman = (CaveManWorker)newEntity;
-            InventoryOverlayComp.SetInventory(caveman); // works if null
+            var overseer = (OverseerMage)newEntity;
+            InventoryOverlayComp.SetInventory(overseer); // works if null
         }
 
         protected override bool IsOverlayFor(Entity selected)
         {
-            return typeof(CaveManWorker).IsAssignableFrom(selected.GetType());
+            return typeof(OverseerMage).IsAssignableFrom(selected.GetType());
         }
     }
 }

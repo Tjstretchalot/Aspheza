@@ -13,7 +13,7 @@ using BaseBuilder.Engine.World.Entities.Utilities.Animations;
 
 namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
-    public class OverseerMage : MobileEntity
+    public class OverseerMage : MobileEntity, Container
     {
         private const double SpeedConst = 0.005;
         private static CollisionMeshD2D _CollisionMesh;
@@ -23,8 +23,11 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(1, 1) });
         }
 
+        public EntityInventory Inventory { get; set; }
+
         public OverseerMage(PointD2D position, int id) : base(position, _CollisionMesh, id, SpeedConst)
         {
+            Inventory = new EntityInventory(6);
         }
 
         /// <summary>
@@ -40,6 +43,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         {
             Position = new PointD2D(message);
             ID = message.ReadInt32();
+            Inventory = new EntityInventory(message);
 
             TasksFromMessage(gameState, message);
         }
@@ -48,6 +52,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         {
             Position.Write(message);
             message.Write(ID);
+            Inventory.Write(message);
 
             WriteTasks(message);
         }

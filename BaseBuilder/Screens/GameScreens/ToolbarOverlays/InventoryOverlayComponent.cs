@@ -267,7 +267,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 cancelTasksOrder.EntityID = BaseEntity.ID;
                 localGameState.Orders.Add(cancelTasksOrder);
 
-                if (!BaseEntity.CollisionMesh.Intersects(cont.CollisionMesh, BaseEntity.Position, cont.Position) && !BaseEntity.CollisionMesh.MinDistanceShorterThan(cont.CollisionMesh, 1, BaseEntity.Position, cont.Position))
+                if (!BaseEntity.CollisionMesh.Intersects(cont.CollisionMesh, BaseEntity.Position, cont.Position) && !BaseEntity.CollisionMesh.MinDistanceShorterThan(cont.CollisionMesh, 0.8, BaseEntity.Position, cont.Position))
                 {
                     var mob = BaseEntity as MobileEntity;
 

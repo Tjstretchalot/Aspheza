@@ -36,6 +36,12 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         public event EventHandler TaskUnselected;
 
         /// <summary>
+        /// Called when we don't have a task selected but we are clicking
+        /// the grey area of this live task overlay.
+        /// </summary>
+        public event EventHandler FocusRequested;
+
+        /// <summary>
         /// Called when a task is selected and then a different task is selecetd
         /// </summary>
         public event EventHandler TaskSelectionChanged;
@@ -231,6 +237,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 
             AddButton.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
             PauseResumeButton.HandleMouseState(Content, last, current, ref handled, ref scrollHandled);
+            bool buttonsHandled = handled;
             bool foundSideHover = false;
             foreach(var pair in ExpandOrMinimizeIconLocationsToTaskItems.KVPs)
             {
@@ -316,10 +323,16 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 }
             }
 
-            if (Selected != null && !foundHover && last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
+            if (!foundHover && last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
             {
-                Selected = null;
-                TaskUnselected?.Invoke(null, EventArgs.Empty);
+                if (Selected != null)
+                {
+                    Selected = null;
+                    TaskUnselected?.Invoke(null, EventArgs.Empty);
+                }else if(!buttonsHandled)
+                {
+                    FocusRequested?.Invoke(null, EventArgs.Empty);
+                }
             }
 
             handled = true;

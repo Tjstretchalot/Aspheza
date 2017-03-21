@@ -79,6 +79,7 @@ namespace BaseBuilder.Screens.GameScreens
             //localGameLogic.AddComponent(localGameState, new ResourceOverlay(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new EscapeMenuOverlay(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new CaveManWorkerOverlay(content, graphics, graphicsDevice, spriteBatch));
+            localGameLogic.AddComponent(localGameState, new OverseerMageOverlay(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new StorageBarnOverlay(content, graphics, graphicsDevice, spriteBatch));
             //localGameLogic.AddComponent(localGameState, new WaterMillOverlay(content, graphics, graphicsDevice, spriteBatch));
         }

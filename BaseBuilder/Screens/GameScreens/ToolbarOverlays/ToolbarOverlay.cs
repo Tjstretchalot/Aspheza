@@ -102,7 +102,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
 
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {
-            if(localGameState.SelectedEntity != CurrentToolbarEntity)
+            if (localGameState.SelectedEntity != CurrentToolbarEntity)
             {
                 if (localGameState.SelectedEntity != null && IsOverlayFor(localGameState.SelectedEntity))
                     UpdateToolbarEntity(localGameState.SelectedEntity);

@@ -63,6 +63,11 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 LiveOverlay.Selected = null;
             };
 
+            LiveOverlay.FocusRequested += (sender, args) =>
+            {
+                DisposeAdd();
+            };
+
             LiveOverlay.TaskSelectionChanged += (sender, args) =>
             {
                 DisposeInspect();

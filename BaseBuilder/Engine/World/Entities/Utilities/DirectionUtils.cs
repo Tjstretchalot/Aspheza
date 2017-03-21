@@ -64,18 +64,13 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
         /// Sets up the mobile entity to face the target
         /// </summary>
         /// <param name="gameState">Game state</param>
-        /// <param name="worker">Mobile entity</param>
+        /// <param name="entity">Mobile entity</param>
         /// <param name="target">Target</param>
-        public static void Face(SharedGameState gameState, MobileEntity worker, Entity target)
+        public static void Face(SharedGameState gameState, MobileEntity entity, Entity target)
         {
-            var asCaveMan = worker as CaveManWorker;
+            var direction = GetDirectionToFace(gameState, entity, target);
 
-            if(asCaveMan != null)
-            {
-                var direction = GetDirectionToFace(gameState, worker, target);
-
-                asCaveMan.AnimationRenderer.StartAnimation(asCaveMan.AnimationRenderer.CurrentAnimationType, direction);
-            }
+            entity.AnimationRenderer.StartAnimation(entity.AnimationRenderer.CurrentAnimationType, direction);
         }
     }
 }
