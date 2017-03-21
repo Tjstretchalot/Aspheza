@@ -105,6 +105,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                  new TempleBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
                  new TavernBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
                  new LumbermillBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
+                 new ChickenCoopBuildOverlayMenuItem(content, graphics, graphicsDevice, spriteBatch),
             };
 
             MyRectIfNoScrollbar = new Rectangle(MyVisualRect.X, MyVisualRect.Y, MyVisualRect.Width, 5); // 5px padding on top

@@ -208,6 +208,7 @@
     <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlay.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlayMenuComponent.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlayMenuItem.cs" />
+    <Compile Include="Screens\GameScreens\BuildOverlays\ChickenCoopBuildOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\FarmBuildOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\LibraryBuildOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\LumbermillOverlayMenuItem.cs" />

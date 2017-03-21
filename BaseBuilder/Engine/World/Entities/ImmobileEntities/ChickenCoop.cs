@@ -116,14 +116,12 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         protected bool IsChicken(Material material)
         {
-            //return material == Material.Chicken;
-            return false;
+            return material == Material.Chicken;
         }
 
         protected bool IsEgg(Material material)
         {
-            //return material == Material.Egg;
-            return false;
+            return material == Material.Egg;
         }
 
         public override void SimulateTimePassing(SharedGameState sharedState, int timeMS)
@@ -138,7 +136,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                 {
                     TimeToNextEgg = TimeToEggWithOneChickenMS / Inventory.GetCount();
 
-                    //InventoryProducts.AddMaterial(Material.Egg, 1);
+                    InventoryProducts.AddMaterial(Material.Egg, 1);
                 }
             }
         }
@@ -159,9 +157,9 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         public void TryHarvest(SharedGameState sharedGameState, Container reciever)
         {
-            // int numGiven = reciever.Inventory.AddMaterial(Material.Egg, InventoryProducts.GetCount());
+            int numGiven = reciever.Inventory.AddMaterial(Material.Egg, InventoryProducts.GetCount());
 
-            // InventoryProducts.RemoveMaterial(Material.Egg, numGiven);
+            InventoryProducts.RemoveMaterial(Material.Egg, numGiven);
         }
     }
 }
