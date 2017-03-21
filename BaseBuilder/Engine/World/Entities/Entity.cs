@@ -119,6 +119,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         
         protected virtual void TasksFromMessage(SharedGameState gameState, NetIncomingMessage message)
         {
+            _IsPaused = message.ReadBoolean();
             var numTasks = message.ReadInt16();
             TaskQueue = new Queue<IEntityTask>(numTasks);
             for(int i = 0; i < numTasks; i++)
@@ -137,6 +138,7 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
 
         protected virtual void WriteTasks(NetOutgoingMessage message)
         {
+            message.Write(_IsPaused);
             message.Write((short)TaskQueue.Count);
             for(int i = 0; i < TaskQueue.Count; i++)
             {
