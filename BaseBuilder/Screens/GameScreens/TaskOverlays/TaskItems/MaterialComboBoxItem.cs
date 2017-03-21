@@ -32,6 +32,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
                 new MaterialComboBoxItem(font, Material.Wheat),
                 new MaterialComboBoxItem(font, Material.WheatSeed),
                 new MaterialComboBoxItem(font, Material.Wood),
+                new MaterialComboBoxItem(font, Material.Chicken),
+                new MaterialComboBoxItem(font, Material.Egg),
             };
         }
         
