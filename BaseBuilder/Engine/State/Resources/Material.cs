@@ -57,8 +57,8 @@ namespace BaseBuilder.Engine.State.Resources
             Wood = new Material("materials", new Rectangle(66, 33, 32, 32), "Wood", "Wood\nCan be made into lumber via a lumbermill.", 11);
             Lumber = new Material("materials", new Rectangle(66, 66, 32, 32), "Lumber", "Lumber\nUsed to make buildings.", 12);
 
-            Chicken = new Material("materials", new Rectangle(66, 66, 32, 32), "Chicken", "Chicken\nCan be placed in a chicken coop to make eggs.", 13);
-            Egg = new Material("materials", new Rectangle(66, 99, 32, 32), "Egg", "Egg\nUsed in many finished foods.", 14);
+            Chicken = new Material("materials", new Rectangle(33, 66, 32, 32), "Chicken", "Chicken\nCan be placed in a chicken coop to make eggs.", 13);
+            Egg = new Material("materials", new Rectangle(33, 99, 32, 32), "Egg", "Egg\nUsed in many finished foods.", 14);
             
             // ** Update GetMaterialByID if modifying ** //
             // ** Update MaterialComboBoxItem if modifying ** //

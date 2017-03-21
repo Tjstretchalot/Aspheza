@@ -193,8 +193,8 @@ namespace BaseBuilder.Screens.Components
             {
                 int sizeYMultiplier = Math.Min(Items.Count, 5);
                 Rectangle visibleRect = new Rectangle(Center.X - Size.X / 2, Center.Y + Size.Y / 2, Size.X, Size.Y * sizeYMultiplier);
-                visibleRect.Y += 1;
-                var y = 0;
+
+                var y = 1;
                 for(int i = 0; i < Items.Count; i++)
                 {
                     if (i == SelectedIndex)
@@ -240,9 +240,7 @@ namespace BaseBuilder.Screens.Components
 
                 var tmpRect = new Rectangle(visibleRect.X, visibleRect.Y, visibleRect.Width, 1);
                 spriteBatch.Draw(BlackPixel, tmpRect, Color.White);
-
-                visibleRect.Height += sizeYMultiplier;
-
+                
                 int y = 1;
 
                 for(int i = 0; i < Items.Count; i++)
