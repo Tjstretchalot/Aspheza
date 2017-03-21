@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.World.Entities.EntityTasks;
+using BaseBuilder.Engine.World.Entities.EntityTasks.OverseerTasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             Register(typeof(EntitySequenceTask), typeof(SequenceTaskItem));
             Register(typeof(EntitySucceederTask), typeof(SucceederTaskItem));
             Register(typeof(EntityTransferItemTask), typeof(TransferItemTaskItem));
+            Register(typeof(SummonChicken), typeof(OverseerSummonChickenTaskItem));
         }
 
         static void Register(Type entityTaskType, Type taskItemType)

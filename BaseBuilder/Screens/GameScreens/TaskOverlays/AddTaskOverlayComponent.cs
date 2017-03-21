@@ -45,6 +45,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 new SequenceTaskItem(),
                 new SucceederTaskItem(),
                 new TransferItemTaskItem(),
+                new OverseerSummonChickenTaskItem()
             }.Where((opt) => opt.CanBeAssignedTo(taskable)).ToList();
             
 

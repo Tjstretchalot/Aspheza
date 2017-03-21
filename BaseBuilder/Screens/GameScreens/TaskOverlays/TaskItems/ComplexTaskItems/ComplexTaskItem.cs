@@ -139,6 +139,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         protected virtual void CalculateHeight(RenderContext renderContext, ref int height, int width)
         {
             CompleteComponent.Layout(renderContext, 0, width, ref height);
+            height += 5;
         }
 
         protected virtual int CalculateWidth(RenderContext renderContext)

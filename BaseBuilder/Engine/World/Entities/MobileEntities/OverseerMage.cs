@@ -45,6 +45,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             ID = message.ReadInt32();
             Inventory = new EntityInventory(message);
 
+            SyncAnimationFromMessage(message);
             TasksFromMessage(gameState, message);
         }
 
@@ -54,6 +55,7 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
             message.Write(ID);
             Inventory.Write(message);
 
+            WriteAnimationSync(message);
             WriteTasks(message);
         }
 

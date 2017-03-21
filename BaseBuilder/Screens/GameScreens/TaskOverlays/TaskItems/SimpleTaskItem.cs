@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
+    [Obsolete("Very inefficient, always extend from complex task item")]
     public abstract class SimpleTaskItem : TaskItem
     {
         protected string InspectDescription;

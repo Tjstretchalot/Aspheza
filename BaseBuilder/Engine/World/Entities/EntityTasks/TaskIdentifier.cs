@@ -1,4 +1,5 @@
 ﻿using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World.Entities.EntityTasks.OverseerTasks;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Register(typeof(EntitySequenceTask), 11);
             Register(typeof(EntitySucceederTask), 12);
             Register(typeof(EntityTransferItemTask), 13);
+            Register(typeof(SummonChicken), 14);
         }
 
         public static void Register(Type type, short id)

@@ -105,6 +105,8 @@
     <Compile Include="Engine\World\Entities\EntityTasks\EntityConditionTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityInverterTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityMoveTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\OverseerTasks\EntityOverseerTask.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\OverseerTasks\SummonChicken.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferResultDeciders\ItemsTransferedResultDecider.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferResultDeciders\ITransferResultDecider.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TargetFinder.cs" />
@@ -250,6 +252,7 @@
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ITaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\MaterialComboBoxItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\MoveTaskItem.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\OverseerSummonChickenTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\RepeaterTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\SelectorTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\SequenceTaskItem.cs" />

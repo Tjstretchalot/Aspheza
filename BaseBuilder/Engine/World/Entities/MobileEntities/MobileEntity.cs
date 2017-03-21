@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.World.Entities.Utilities;
+using Lidgren.Network;
+using BaseBuilder.Engine.World.Entities.Utilities.Animations;
 
 namespace BaseBuilder.Engine.World.Entities.MobileEntities
 {
@@ -24,6 +26,30 @@ namespace BaseBuilder.Engine.World.Entities.MobileEntities
         /// </summary>
         public MobileEntity() : base()
         {
+        }
+
+        protected void SyncAnimationFromMessage(NetIncomingMessage message)
+        {
+            var animType = (AnimationType)message.ReadInt32();
+            Direction? direction = null;
+            if (message.ReadBoolean())
+                direction = (Direction)message.ReadInt32();
+
+            AnimationRenderer.StartAnimation(animType, direction);
+        }
+
+        protected void WriteAnimationSync(NetOutgoingMessage message)
+        {
+            message.Write((int)AnimationRenderer.CurrentAnimationType);
+
+            if(AnimationRenderer.CurrentAnimation.Direction.HasValue)
+            {
+                message.Write(true);
+                message.Write((int)AnimationRenderer.CurrentAnimation.Direction);
+            }else
+            {
+                message.Write(false);
+            }
         }
     }
 }
