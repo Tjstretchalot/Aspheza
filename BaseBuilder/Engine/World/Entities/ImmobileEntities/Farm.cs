@@ -67,6 +67,16 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Position = new PointD2D(message);
             ID = message.ReadInt32();
             GrowthState = (GrowthState)message.ReadInt32();
+            if (GrowthState == GrowthState.Empty)
+                Renderer.SourceRect = EmptyDrawRec;
+            else if (GrowthState == GrowthState.WheatPlanted || GrowthState == GrowthState.CarrotsPlanted || GrowthState == GrowthState.SugarcanePlanted)
+                Renderer.SourceRect = PlantedDrawRec;
+            else if (GrowthState == GrowthState.WheatHarvestable)
+                Renderer.SourceRect = WheatHarvestDrawRec;
+            else if (GrowthState == GrowthState.CarrotsHarvestable)
+                Renderer.SourceRect = CarrotHarvestDrawRec;
+            else if (GrowthState == GrowthState.SugarcaneHarvestable)
+                Renderer.SourceRect = SugarcaneHarvestDrawRec;
             TimeUntilGownMS = message.ReadInt32();
             Inventory = new EntityInventory(message);
             _HoverText = message.ReadString();
