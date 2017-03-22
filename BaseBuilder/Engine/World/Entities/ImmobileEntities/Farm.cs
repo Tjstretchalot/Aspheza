@@ -100,24 +100,22 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         protected void InitInventoryForNonnetworkableParts()
         {
-            Inventory.AcceptsMaterialFunc = IsASeed;
+            Inventory.AcceptsMaterialFunc = AcceptingMaterial;
             Inventory.OnMaterialAdded += OnItemAdded;
         }
 
 
-        protected bool IsASeed(Material mat)
+        protected bool AcceptingMaterial(Material mat)
         {
             return mat == Material.CarrotSeed || mat == Material.WheatSeed || mat == Material.Sugarcane;
         }
 
-        protected void OnItemAdded(object sender, EventArgs args)
+        protected void OnItemAdded(object sender, EntityInventory.InventoryChangedEventArgs args)
         {
-            var mat = Inventory.MaterialAt(0).Item1;
+            if (args.ChangedItem.Item2 <= 0)
+                return;
 
-            if (!IsASeed(mat))
-                return;
-            if (ReadyToHarvest(null))
-                return;
+            var mat = Inventory.MaterialAt(0).Item1;
             if (mat == Material.WheatSeed)
                 PlantFarm(1);
             else if (mat == Material.CarrotSeed)
