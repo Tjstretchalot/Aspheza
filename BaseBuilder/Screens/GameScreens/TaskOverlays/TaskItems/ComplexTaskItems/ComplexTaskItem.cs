@@ -47,6 +47,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
 
         protected ComplexTaskItem() : base()
         {
+            LoadedFromTask = false;
         }
 
         /// <summary>
@@ -207,6 +208,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
             BackgroundTexture = null;
             CompleteComponent?.Dispose();
             CompleteComponent = null;
+
+            LoadedFromTask = false;
         }
 
         protected virtual void OnInspectAddPressed()

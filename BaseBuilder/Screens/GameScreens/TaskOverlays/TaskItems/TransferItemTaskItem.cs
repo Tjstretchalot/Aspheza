@@ -609,7 +609,7 @@ far.";
         protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>> ResultDeciderByReceivingItems_MaterialBox;
         protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> ResultDeciderByReceivingItems_Field;
 
-        public TransferItemTaskItem()
+        public TransferItemTaskItem() : base()
         {
             Children = new List<ITaskItem>();
 
