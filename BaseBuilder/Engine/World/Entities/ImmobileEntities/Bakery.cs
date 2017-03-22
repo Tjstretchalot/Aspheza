@@ -26,7 +26,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             {
                 var result = new StringBuilder();
 
-                result.Append("Bakery - bakes flour into bread.");
+                result.Append("Bakery - bakes flour, sugar, and eggs into bread.");
 
                 if (Inventory.GetAmountOf(Material.Flour) > 0)
                 {
