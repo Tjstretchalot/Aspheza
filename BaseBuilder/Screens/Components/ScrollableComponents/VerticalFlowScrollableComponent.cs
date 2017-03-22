@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
+using BaseBuilder.Screens.Components.ScrollableComponents;
 
-namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems
+namespace BaseBuilder.Screens.GComponents.ScrollableComponents
 {
     /// <summary>
     /// Lays children out vertically based on a specified alignment mode, spacing,
     /// and horizontal padding
     /// </summary>
-    public class VerticalFlowTaskItemComponent : TaskItemComponentAsLayoutManager
+    public class VerticalFlowScrollableComponent : ScrollableComponentAsLayoutManager
     {
         public enum VerticalAlignmentMode
         {
@@ -67,7 +68,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// </summary>
         /// <param name="alignment">How children will be aligned</param>
         /// <param name="spacing">The spacing between children</param>
-        public VerticalFlowTaskItemComponent(VerticalAlignmentMode alignment, int spacing)
+        public VerticalFlowScrollableComponent(VerticalAlignmentMode alignment, int spacing)
         {
             Alignment = alignment;
             Spacing = spacing;

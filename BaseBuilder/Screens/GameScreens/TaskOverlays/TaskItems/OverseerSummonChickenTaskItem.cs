@@ -9,8 +9,9 @@ using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
 using BaseBuilder.Engine.World.Entities.EntityTasks.OverseerTasks;
 using BaseBuilder.Engine.World.Entities.Utilities;
-using static BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems.ComplexTaskItemUtils;
+using static BaseBuilder.Screens.Components.ScrollableComponents.ScrollableComponentUtils;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
+using BaseBuilder.Screens.Components.ScrollableComponents;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
@@ -47,7 +48,7 @@ the course of 2 minutes.";
             return true;
         }
 
-        protected override ITaskItemComponent InitializeComponent(RenderContext context)
+        protected override IScrollableComponent InitializeComponent(RenderContext context)
         {
             return CreatePadding(1, 1);
         }

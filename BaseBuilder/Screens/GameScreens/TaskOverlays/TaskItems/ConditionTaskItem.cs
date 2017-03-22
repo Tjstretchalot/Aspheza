@@ -10,10 +10,12 @@ using BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems;
 using BaseBuilder.Screens.Components;
 using Microsoft.Xna.Framework;
 
-using static BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems.ComplexTaskItemUtils;
+using static BaseBuilder.Screens.Components.ScrollableComponents.ScrollableComponentUtils;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.World.Entities.EntityTasks.EntityConditionals.InventoryConditionals;
 using BaseBuilder.Engine.State.Resources;
+using BaseBuilder.Screens.Components.ScrollableComponents;
+using BaseBuilder.Screens.GComponents.ScrollableComponents;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
@@ -245,7 +247,7 @@ condition task takes some time, typically one second.";
             }
         }
 
-        protected override ITaskItemComponent InitializeComponent(RenderContext context)
+        protected override IScrollableComponent InitializeComponent(RenderContext context)
         {
             EventHandler redraw = (sender, args) => OnInspectRedrawRequired();
             EventHandler redrawAndReload = (sender, args) =>
@@ -254,7 +256,7 @@ condition task takes some time, typically one second.";
                 OnInspectRedrawRequired();
             };
 
-            var main = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredWidth, 5);
+            var main = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredWidth, 5);
 
             var typeBox = CreateComboBox(context, redraw, redrawAndReload, Tuple.Create("Inventory", ConditionType.Inventory));
 
@@ -267,9 +269,9 @@ condition task takes some time, typically one second.";
             return main;
         }
 
-        protected void InitializeInventoryConditions(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main, ComboBox<ConditionType> mainBox)
+        protected void InitializeInventoryConditions(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager main, ComboBox<ConditionType> mainBox)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
             var typeBox = CreateComboBox(context, redraw, redrawAndReload, 
                 Tuple.Create("Has Open Slots", InventoryConditionType.HasOpenSlots),
@@ -287,9 +289,9 @@ condition task takes some time, typically one second.";
             InitializeInventoryCountCondition(context, redraw, redrawAndReload, main, mainBox, layout, typeBox);
         }
 
-        protected void InitializeInventoryCountCondition(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main, ComboBox<ConditionType> mainBox, TaskItemComponentAsLayoutManager inventory, ComboBox<InventoryConditionType> inventoryBox)
+        protected void InitializeInventoryCountCondition(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager main, ComboBox<ConditionType> mainBox, ScrollableComponentAsLayoutManager inventory, ComboBox<InventoryConditionType> inventoryBox)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
             var atMost = CreateRadioButton(context, redraw, redrawAndReload);
             var atLeast = CreateRadioButton(context, redraw, redrawAndReload);
@@ -300,7 +302,7 @@ condition task takes some time, typically one second.";
             InventoryCount_AtMostButton.SetTarget(atMostWrapped);
             InventoryCount_AtLeastButton.SetTarget(atLeastWrapped);
 
-            var buttonsLayout = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
+            var buttonsLayout = new HorizontalFlowScrollableComponent(HorizontalFlowScrollableComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
             buttonsLayout.Children.Add(Label(context, "At Most", atMostWrapped, false));
             buttonsLayout.Children.Add(Label(context, "At Least", atLeastWrapped, false));
             layout.Children.Add(buttonsLayout);

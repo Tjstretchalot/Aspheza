@@ -9,12 +9,12 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems
+namespace BaseBuilder.Screens.Components.ScrollableComponents
 {
     /// <summary>
     /// Takes up space but doesnt draw anything
     /// </summary>
-    public class PaddingTaskItemComponent : ITaskItemComponent
+    public class PaddingScrollableComponent : IScrollableComponent
     {
         public bool Disposed { get; protected set; }
 
@@ -23,7 +23,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         public int Width;
         public int Height;
 
-        public PaddingTaskItemComponent(int width, int height)
+        public PaddingScrollableComponent(int width, int height)
         {
             Width = width;
             Height = height;

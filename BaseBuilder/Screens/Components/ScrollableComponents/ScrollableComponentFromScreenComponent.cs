@@ -10,13 +10,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using BaseBuilder.Screens.Components;
 
-namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems
+namespace BaseBuilder.Screens.Components.ScrollableComponents
 {
     /// <summary>
     /// Describes a task item component that is simply a screen component
     /// laid out with no spacing at the suggested x.
     /// </summary>
-    public class TaskItemComponentFromScreenComponent <T1> : ITaskItemComponent where T1:IScreenComponent
+    public class TaskItemComponentFromScreenComponent <T1> : IScrollableComponent where T1:IScreenComponent
     {
         public bool Disposed { get; protected set; }
         public bool Hidden { get; set; }

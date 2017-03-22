@@ -4,12 +4,12 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems
+namespace BaseBuilder.Screens.Components.ScrollableComponents
 {
     /// <summary>
     /// This is a component inside a complex task item.
     /// </summary>
-    public interface ITaskItemComponent
+    public interface IScrollableComponent
     {
         bool Hidden { get; set; }
         bool Disposed { get; }

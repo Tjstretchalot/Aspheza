@@ -10,10 +10,12 @@ using BaseBuilder.Screens.Components;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 
-using static BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems.ComplexTaskItemUtils;
+using static BaseBuilder.Screens.Components.ScrollableComponents.ScrollableComponentUtils;
 using BaseBuilder.Engine.Math2D;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using BaseBuilder.Screens.Components.ScrollableComponents;
+using BaseBuilder.Screens.GComponents.ScrollableComponents;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems
 {
@@ -25,7 +27,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
     /// </summary>
     public abstract class ComplexTaskItem : TaskItem
     {
-        protected ITaskItemComponent CompleteComponent;
+        protected IScrollableComponent CompleteComponent;
 
         public override event EventHandler InspectAddPressed;
         public override event EventHandler InspectDeletePressed;
@@ -51,7 +53,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// Initializes the Component
         /// </summary>
         /// <param name="context">The render context</param>
-        protected abstract ITaskItemComponent InitializeComponent(RenderContext context);
+        protected abstract IScrollableComponent InitializeComponent(RenderContext context);
 
         protected abstract void LoadFromTask(RenderContext context);
 
@@ -92,7 +94,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
                 OnInspectRedrawRequired();
             };
 
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredWidth, 8);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredWidth, 8);
 
             /*
              * The performance gained from caching large texts in render target is absolutely insane. 

@@ -84,7 +84,9 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             var wcx = TileWorld.TileWidth / 2;
             var wcy = TileWorld.TileHeight / 2;
             var tmp1 = new OverseerMage(new PointD2D(wcx - 0, wcy + 0), SharedGameState.EntityIDCounter++);
+#if DEBUG
             tmp1.Inventory.AddMaterial(Material.Wheat, 6);
+#endif
             TileWorld.AddMobileEntity(tmp1);
 
             var tmp = new CaveManWorker(new PointD2D(wcx - 2, wcy + 0), SharedGameState.EntityIDCounter++);

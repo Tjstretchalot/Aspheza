@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.EntityTasks;
 using BaseBuilder.Engine.World.Entities.EntityTasks.TransferRestrictors;
-using static BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems.ComplexTaskItemUtils;
+using static BaseBuilder.Screens.Components.ScrollableComponents.ScrollableComponentUtils;
 using BaseBuilder.Screens.Components;
 using BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters;
 using BaseBuilder.Engine.World.Entities.EntityTasks.TransferResultDeciders;
@@ -16,6 +16,8 @@ using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State.Resources;
+using BaseBuilder.Screens.GComponents.ScrollableComponents;
+using BaseBuilder.Screens.Components.ScrollableComponents;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
@@ -129,7 +131,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
             public TransferItemTaskItem Outer;
             public ITransferRestrictor Original;
 
-            public WeakReference<ITaskItemComponent> Component;
+            public WeakReference<IScrollableComponent> Component;
 
             public WeakReference<TaskItemComponentFromScreenComponent<ComboBox<RestrictorType>>> TypeBox;
 
@@ -152,7 +154,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
                 Outer = outer;
                 Original = restrictor;
 
-                Component = new WeakReference<ITaskItemComponent>(null);
+                Component = new WeakReference<IScrollableComponent>(null);
 
                 TypeBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<RestrictorType>>>(null);
 
@@ -173,7 +175,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
             public void InitializeComponent(RenderContext context, EventHandler redraw, EventHandler redrawAndReload)
             {
-                var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+                var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
                 var box = CreateComboBox(context, redraw, redrawAndReload,
                     Tuple.Create("By Item Type", RestrictorType.ByItemType),
@@ -199,10 +201,10 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
                 Component.SetTarget(layout);
             }
             
-            public void InitItemTypeRestriction(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager parent,
+            public void InitItemTypeRestriction(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager parent,
                 ComboBox<RestrictorType> box)
             {
-                var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+                var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
                 var description = CreateText(context, @"Restrict the transfer by either denying a
 specific material or denying everything 
@@ -213,7 +215,7 @@ useful whenever you have multiple item types
 in your inventory or the targets inventory.", true);
                 layout.Children.Add(Wrap(description));
 
-                var buttonsLayout = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
+                var buttonsLayout = new HorizontalFlowScrollableComponent(HorizontalFlowScrollableComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
                 var radio1 = CreateRadioButton(context, redraw, redrawAndReload);
                 var radioWrapped = Wrap(radio1);
                 ByItemType_DenyOthersRadio.SetTarget(radioWrapped);
@@ -237,10 +239,10 @@ in your inventory or the targets inventory.", true);
                 parent.Children.Add(layout);
             }
 
-            public void InitTotalQuantityRestriction(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager parent,
+            public void InitTotalQuantityRestriction(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager parent,
                 ComboBox<RestrictorType> box)
             {
-                var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+                var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
                 var description = CreateText(context, @"Restrict the transfer by not transferring 
 more than a specific amount. 
@@ -262,10 +264,10 @@ up from a larger container.", true);
                 parent.Children.Add(layout);
             }
 
-            public void InitReceivingRestriction(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager parent,
+            public void InitReceivingRestriction(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager parent,
                 ComboBox<RestrictorType> box)
             {
-                var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+                var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
                 var description = CreateText(context, @"Restrict the transfer based on what 
 would be in the receiving inventory
@@ -298,10 +300,10 @@ specific type of item.", true);
                 parent.Children.Add(layout);
             }
 
-            public void InitDeliveringInventory(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager parent,
+            public void InitDeliveringInventory(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager parent,
                 ComboBox<RestrictorType> box)
             {
-                var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+                var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
                 var description = CreateText(context, @"Restrict the transfer based on what
 would be in the delivering inventory
@@ -578,7 +580,7 @@ far.";
         /// nothing but transfer restrictor components Component, in the same order that is
         /// in Restrictors.
         /// </summary>
-        protected WeakReference<TaskItemComponentAsLayoutManager> RestrictorsInnerLayout;
+        protected WeakReference<ScrollableComponentAsLayoutManager> RestrictorsInnerLayout;
 
         protected WeakReference<TaskItemComponentFromScreenComponent<RadioButton>> PickupRadio;
         protected WeakReference<TaskItemComponentFromScreenComponent<RadioButton>> DropoffRadio;
@@ -620,7 +622,7 @@ far.";
 
             Restrictors = new List<TransferRestrictorComponent>();
 
-            RestrictorsInnerLayout = new WeakReference<TaskItemComponentAsLayoutManager>(null);
+            RestrictorsInnerLayout = new WeakReference<ScrollableComponentAsLayoutManager>(null);
 
             PickupRadio = new WeakReference<TaskItemComponentFromScreenComponent<RadioButton>>(null);
             DropoffRadio = new WeakReference<TaskItemComponentFromScreenComponent<RadioButton>>(null);
@@ -665,7 +667,7 @@ far.";
             height += 150;
         }
 
-        protected override ITaskItemComponent InitializeComponent(RenderContext context)
+        protected override IScrollableComponent InitializeComponent(RenderContext context)
         {
             EventHandler redraw = (sender, args) => OnInspectRedrawRequired();
             EventHandler redrawAndReload = (sender, args) =>
@@ -674,7 +676,7 @@ far.";
                 OnInspectRedrawRequired();
             };
 
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredWidth, 7);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredWidth, 7);
 
             InitPickupDropoff(context, redraw, redrawAndReload, layout);
             InitTargetDecider(context, redraw, redrawAndReload, layout);
@@ -684,11 +686,11 @@ far.";
             return layout;
         }
 
-        protected void InitPickupDropoff(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main)
+        protected void InitPickupDropoff(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager main)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
-            var radioLayout = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
+            var radioLayout = new HorizontalFlowScrollableComponent(HorizontalFlowScrollableComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
             var pickupRadio = CreateRadioButton(context, redraw, redrawAndReload);
             var wrappedRadio = Wrap(pickupRadio);
             PickupRadio.SetTarget(wrappedRadio);
@@ -705,9 +707,9 @@ far.";
             main.Children.Add(layout);
         }
 
-        protected void InitTargetDecider(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main)
+        protected void InitTargetDecider(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager main)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
             
             var combo = CreateComboBox(context, redraw, redrawAndReload,
                 Tuple.Create("By ID", TargetDeciderType.ByID),
@@ -724,9 +726,9 @@ far.";
             main.Children.Add(layout);
         }
 
-        protected void InitTargetDeciderByID(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager parent, ComboBox<TargetDeciderType> box)
+        protected void InitTargetDeciderByID(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager parent, ComboBox<TargetDeciderType> box)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
             var description = CreateText(context, @"Select the target by searching for the entity 
 with the specified ID. This is a good choice 
@@ -744,9 +746,9 @@ the same entity", true);
             parent.Children.Add(layout);
         }
 
-        protected void InitTargetDeciderByPosition(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager parent, ComboBox<TargetDeciderType> box)
+        protected void InitTargetDeciderByPosition(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager parent, ComboBox<TargetDeciderType> box)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
             var description = CreateText(context, @"Select the target by searching for the entity 
 at the specified position. This is helpful if
@@ -754,7 +756,7 @@ you want to be able to swap out the target
 without modifying this entity.", true);
             layout.Children.Add(Wrap(description));
 
-            var fieldsLayout = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
+            var fieldsLayout = new HorizontalFlowScrollableComponent(HorizontalFlowScrollableComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
 
             var xField = CreateTextField(context, redraw, redrawAndReload);
             xField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, false);
@@ -774,9 +776,9 @@ without modifying this entity.", true);
             parent.Children.Add(layout);
         }
 
-        protected void InitTargetDeciderByRelativePosition(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager parent, ComboBox<TargetDeciderType> box)
+        protected void InitTargetDeciderByRelativePosition(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager parent, ComboBox<TargetDeciderType> box)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
             var description = CreateText(context, @"Select the target by searching for an entity 
 at a position relative to this entity at the 
@@ -785,7 +787,7 @@ typically the easiest to use. Left is
 negative x, up is negative y.", true);
             layout.Children.Add(Wrap(description));
 
-            var fieldsLayout = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
+            var fieldsLayout = new HorizontalFlowScrollableComponent(HorizontalFlowScrollableComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
 
             var dxField = CreateTextField(context, redraw, redrawAndReload);
             dxField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, true);
@@ -805,11 +807,11 @@ negative x, up is negative y.", true);
             parent.Children.Add(layout);
         }
 
-        protected void InitRestrictors(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main)
+        protected void InitRestrictors(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager main)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 7);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 7);
 
-            var innerLayout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var innerLayout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
             RestrictorsInnerLayout.SetTarget(innerLayout);
             layout.Children.Add(innerLayout);
             
@@ -832,11 +834,11 @@ negative x, up is negative y.", true);
                 throw new InvalidProgramException("You are using this function incorrectly - it will add to Restrictors");
 #endif
 
-            ITaskItemComponent component;
+            IScrollableComponent component;
             if (!TryGetWrapped(restrictor.Component, out component))
                 throw new InvalidProgramException("Restrictor is not initialized");
 
-            TaskItemComponentAsLayoutManager layout;
+            ScrollableComponentAsLayoutManager layout;
             if (!TryGetWrapped(RestrictorsInnerLayout, out layout))
                 throw new InvalidOperationException("Visuals are disposed - cannot add restrictor!");
 
@@ -855,7 +857,7 @@ negative x, up is negative y.", true);
             if (index < 0)
                 throw new InvalidProgramException("Restrictor is not in restrictors!");
 
-            TaskItemComponentAsLayoutManager layout;
+            ScrollableComponentAsLayoutManager layout;
             if (!TryGetWrapped(RestrictorsInnerLayout, out layout))
                 throw new InvalidOperationException("Visuals are disposed - can't remove the restrictor");
 
@@ -867,9 +869,9 @@ negative x, up is negative y.", true);
             component.Dispose();
         }
 
-        protected void InitResultDecider(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, TaskItemComponentAsLayoutManager main)
+        protected void InitResultDecider(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, ScrollableComponentAsLayoutManager main)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
             var box = CreateComboBox(context, redraw, redrawAndReload,
                 Tuple.Create("By Items Transfered", ResultDeciderType.ByItemsTransferred),
@@ -887,9 +889,9 @@ negative x, up is negative y.", true);
         }
 
         protected void InitItemsTransferedResultDecider(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, 
-            TaskItemComponentAsLayoutManager parent, ComboBox<ResultDeciderType> box)
+            ScrollableComponentAsLayoutManager parent, ComboBox<ResultDeciderType> box)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
             layout.Children.Add(Wrap(CreateText(context, @"The result of this transfer will be
 failure unless at least the specified
@@ -918,9 +920,9 @@ specific type.", true)));
         }
 
         protected void InitDeliveringInventoryResultDecider(RenderContext context, EventHandler redraw, EventHandler redrawAndReload,
-            TaskItemComponentAsLayoutManager parent, ComboBox<ResultDeciderType> box)
+            ScrollableComponentAsLayoutManager parent, ComboBox<ResultDeciderType> box)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
             layout.Children.Add(Wrap(CreateText(context, @"The result of this transfer will be
 failure if the delivering inventory
@@ -951,9 +953,9 @@ specific type.", true)));
         }
 
         protected void InitReceivingInventoryResultDecider(RenderContext context, EventHandler redraw, EventHandler redrawAndReload,
-            TaskItemComponentAsLayoutManager parent, ComboBox<ResultDeciderType> box)
+            ScrollableComponentAsLayoutManager parent, ComboBox<ResultDeciderType> box)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
 
             layout.Children.Add(Wrap(CreateText(context, @"The result of this transfer will be

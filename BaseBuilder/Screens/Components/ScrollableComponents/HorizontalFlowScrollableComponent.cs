@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
 
-namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems
+namespace BaseBuilder.Screens.Components.ScrollableComponents
 {
     /// <summary>
     /// Lays out components horizontally based on the specified alignment and spacing.
     /// </summary>
-    public class HorizontalFlowTaskItemComponent : TaskItemComponentAsLayoutManager
+    public class HorizontalFlowScrollableComponent : ScrollableComponentAsLayoutManager
     {
         public enum HorizontalAlignmentMode
         {
@@ -54,7 +54,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         public HorizontalAlignmentMode Alignment;
         public int Spacing;
 
-        public HorizontalFlowTaskItemComponent(HorizontalAlignmentMode alignment, int spacing)
+        public HorizontalFlowScrollableComponent(HorizontalAlignmentMode alignment, int spacing)
         {
             Alignment = alignment;
             Spacing = spacing;

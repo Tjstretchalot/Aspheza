@@ -9,21 +9,21 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems
+namespace BaseBuilder.Screens.Components.ScrollableComponents
 {
     /// <summary>
     /// Describes a task item which is acting as a layout manager
     /// </summary>
-    public abstract class TaskItemComponentAsLayoutManager : ITaskItemComponent
+    public abstract class ScrollableComponentAsLayoutManager : IScrollableComponent
     {
         public bool Disposed { get; protected set; }
         public bool Hidden { get; set; }
 
-        public List<ITaskItemComponent> Children;
+        public List<IScrollableComponent> Children;
 
-        public TaskItemComponentAsLayoutManager()
+        public ScrollableComponentAsLayoutManager()
         {
-            Children = new List<ITaskItemComponent>();
+            Children = new List<IScrollableComponent>();
         }
 
 

@@ -9,11 +9,13 @@ using BaseBuilder.Engine.World.Entities.EntityTasks;
 using BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems;
 using BaseBuilder.Screens.Components;
 
-using static BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems.ComplexTaskItemUtils;
+using static BaseBuilder.Screens.Components.ScrollableComponents.ScrollableComponentUtils;
 using BaseBuilder.Engine.World.Entities.EntityTasks.TransferTargeters;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
+using BaseBuilder.Screens.Components.ScrollableComponents;
+using BaseBuilder.Screens.GComponents.ScrollableComponents;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
@@ -210,9 +212,9 @@ position. ";
             return true;
         }
 
-        protected override ITaskItemComponent InitializeComponent(RenderContext context)
+        protected override IScrollableComponent InitializeComponent(RenderContext context)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredWidth, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredWidth, 5);
 
             EventHandler redraw = (sender, args) => OnInspectRedrawRequired();
             EventHandler redrawAndReload = (sender, args) =>
@@ -238,9 +240,9 @@ position. ";
         }
 
         protected void InitializeTargetByID(RenderContext context, EventHandler redraw, EventHandler redrawAndReload,
-            TaskItemComponentAsLayoutManager main, ComboBox<TargetType> targetBox)
+            ScrollableComponentAsLayoutManager main, ComboBox<TargetType> targetBox)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
             var idField = CreateTextField(context, redraw, redrawAndReload);
             idField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, false);
@@ -256,11 +258,11 @@ position. ";
         }
 
         protected void InitializeTargetByPosition(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, 
-            TaskItemComponentAsLayoutManager main, ComboBox<TargetType> targetBox)
+            ScrollableComponentAsLayoutManager main, ComboBox<TargetType> targetBox)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
-            var xyFields = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
+            var xyFields = new HorizontalFlowScrollableComponent(HorizontalFlowScrollableComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
 
             var xField = CreateTextField(context, redraw, redrawAndReload);
             xField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, false);
@@ -285,12 +287,12 @@ position. ";
         }
 
         protected void InitializeTargetByRelativePosition(RenderContext context, EventHandler redraw, EventHandler redrawAndReload,
-            TaskItemComponentAsLayoutManager main, ComboBox<TargetType> targetBox)
+            ScrollableComponentAsLayoutManager main, ComboBox<TargetType> targetBox)
         {
-            var layout = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.CenteredSuggested, 5);
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
 
 
-            var dxdyFields = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
+            var dxdyFields = new HorizontalFlowScrollableComponent(HorizontalFlowScrollableComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
 
             var dxField = CreateTextField(context, redraw, redrawAndReload);
             dxField.TextChanged += UIUtils.TextFieldRestrictToNumbers(false, true);

@@ -1,6 +1,8 @@
 ﻿using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.State.Resources;
 using BaseBuilder.Screens.Components;
+using BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems;
+using BaseBuilder.Screens.GComponents.ScrollableComponents;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,21 +10,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems
+namespace BaseBuilder.Screens.Components.ScrollableComponents
 {
     /// <summary>
     /// A collection of utility functions for complex task items
     /// </summary>
-    public class ComplexTaskItemUtils
+    public class ScrollableComponentUtils
     {
         /// <summary>
         /// Wraps all of the specified screen components, losing their type information.
         /// </summary>
         /// <param name="comps">The components</param>
         /// <returns>The wrapped components</returns>
-        public static List<ITaskItemComponent> WrapAll(params IScreenComponent[] comps)
+        public static List<IScrollableComponent> WrapAll(params IScreenComponent[] comps)
         {
-            var result = new List<ITaskItemComponent>();
+            var result = new List<IScrollableComponent>();
 
             foreach(var comp in comps)
             {
@@ -96,7 +98,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// <param name="weakWrapped">The wrapped delegate</param>
         /// <param name="value">The variable to set</param>
         /// <returns>If the value was set, false otherwise</returns>
-        public static bool TryGetWrapped<T1>(WeakReference<T1> weakWrapped, out T1 value) where T1 : class,ITaskItemComponent
+        public static bool TryGetWrapped<T1>(WeakReference<T1> weakWrapped, out T1 value) where T1 : class,IScrollableComponent
         {
             value = default(T1);
 
@@ -119,11 +121,11 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// <param name="component">The component to label</param>
         /// <param name="vertical">True if the label should be above, false if the label should be to the right</param>
         /// <returns>The wrapped component</returns>
-        public static ITaskItemComponent Label(RenderContext context, string label, ITaskItemComponent component, bool vertical = true)
+        public static IScrollableComponent Label(RenderContext context, string label, IScrollableComponent component, bool vertical = true)
         {
             if(vertical)
             {
-                var result = new VerticalFlowTaskItemComponent(VerticalFlowTaskItemComponent.VerticalAlignmentMode.LeftAlignSuggested, 3);
+                var result = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.LeftAlignSuggested, 3);
 
                 result.Children.Add(Wrap(new Text(new Point(0, 0), label, context.DefaultFont, Color.Black)));
                 result.Children.Add(component);
@@ -131,7 +133,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
                 return result;
             }else
             {
-                var result = new HorizontalFlowTaskItemComponent(HorizontalFlowTaskItemComponent.HorizontalAlignmentMode.CenterAlignSuggested, 3);
+                var result = new HorizontalFlowScrollableComponent(HorizontalFlowScrollableComponent.HorizontalAlignmentMode.CenterAlignSuggested, 3);
 
                 result.Children.Add(component);
                 result.Children.Add(Wrap(new Text(new Point(0, 0), label, context.DefaultFont, Color.Black)));
@@ -146,9 +148,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// <param name="width">width</param>
         /// <param name="height">height</param>
         /// <returns>padding component</returns>
-        public static ITaskItemComponent CreatePadding(int width, int height)
+        public static IScrollableComponent CreatePadding(int width, int height)
         {
-            return new PaddingTaskItemComponent(width, height);
+            return new PaddingScrollableComponent(width, height);
         }
 
         /// <summary>
@@ -204,7 +206,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// <param name="boxWeak">The weak reference to the combo box</param>
         /// <param name="choice">The choice that thing should not be hidden for</param>
         /// <param name="thingToToggleWeak">The thing</param>
-        public static void SetupComboBoxHiddenToggle<T1>(WeakReference<ComboBox<T1>> boxWeak, T1 choice, WeakReference<ITaskItemComponent> thingToToggleWeak)
+        public static void SetupComboBoxHiddenToggle<T1>(WeakReference<ComboBox<T1>> boxWeak, T1 choice, WeakReference<IScrollableComponent> thingToToggleWeak)
         {
             ComboBox<T1> boxStrong;
             if(!boxWeak.TryGetTarget(out boxStrong))
@@ -214,7 +216,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
             
             if(boxStrong.Selected == null || EqualityComparer<T1>.Default.Equals(boxStrong.Selected.Value, choice))
             {
-                ITaskItemComponent thingStrong;
+                IScrollableComponent thingStrong;
 
                 if(TryGetWrapped(thingToToggleWeak, out thingStrong))
                 {
@@ -226,7 +228,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
             handler = (sender, oldSelected) =>
             {
                 ComboBox<T1> boxStrong2;
-                ITaskItemComponent thingToToggleStrong;
+                IScrollableComponent thingToToggleStrong;
                 if (!thingToToggleWeak.TryGetTarget(out thingToToggleStrong) || thingToToggleStrong.Disposed)
                 {
                     if(boxWeak.TryGetTarget(out boxStrong2))
@@ -269,9 +271,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// <param name="box">the box</param>
         /// <param name="choice">the choice</param>
         /// <param name="thing">the thing</param>
-        public static void SetupComboBoxHiddenToggle<T1>(ComboBox<T1> box, T1 choice, ITaskItemComponent thing)
+        public static void SetupComboBoxHiddenToggle<T1>(ComboBox<T1> box, T1 choice, IScrollableComponent thing)
         {
-            SetupComboBoxHiddenToggle(new WeakReference<ComboBox<T1>>(box), choice, new WeakReference<ITaskItemComponent>(thing));
+            SetupComboBoxHiddenToggle(new WeakReference<ComboBox<T1>>(box), choice, new WeakReference<IScrollableComponent>(thing));
         }
 
         /// <summary>
@@ -376,7 +378,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// <param name="radioButtonWeak">The radio button</param>
         /// <param name="thingWeak">The thing to toggle hidden</param>
         /// <param name="pushed">The state to unhide the thing</param>
-        public static void SetupRadioButtonHiddenToggle(WeakReference<RadioButton> radioButtonWeak, WeakReference<ITaskItemComponent> thingWeak, bool pushed = true)
+        public static void SetupRadioButtonHiddenToggle(WeakReference<RadioButton> radioButtonWeak, WeakReference<IScrollableComponent> thingWeak, bool pushed = true)
         {
             RadioButton radioButtonStrong;
 
@@ -392,7 +394,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
                     return;
                 }
 
-                ITaskItemComponent thingStrong;
+                IScrollableComponent thingStrong;
                 if (!thingWeak.TryGetTarget(out thingStrong))
                 {
                     radioButtonStrong2.PushedChanged -= handler;   
@@ -413,9 +415,9 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         /// <param name="button">The radio button</param>
         /// <param name="thing">The thing</param>
         /// <param name="pushed">The state to unhide the thing</param>
-        public static void SetupRadioButtonHiddenToggle(RadioButton button, ITaskItemComponent thing, bool pushed = true)
+        public static void SetupRadioButtonHiddenToggle(RadioButton button, IScrollableComponent thing, bool pushed = true)
         {
-            SetupRadioButtonHiddenToggle(new WeakReference<RadioButton>(button), new WeakReference<ITaskItemComponent>(thing), pushed);
+            SetupRadioButtonHiddenToggle(new WeakReference<RadioButton>(button), new WeakReference<IScrollableComponent>(thing), pushed);
         }
 
         /// <summary>
