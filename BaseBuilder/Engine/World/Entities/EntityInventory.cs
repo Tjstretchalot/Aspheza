@@ -13,6 +13,36 @@ namespace BaseBuilder.Engine.World.Entities
     public class EntityInventory
     {
         /// <summary>
+        /// Event arguments for when inventory is modified
+        /// </summary>
+        /// <seealso cref="OnMaterialAdded"/>
+        /// <seealso cref="OnMaterialRemoved"/>
+        public class InventoryChangedEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Item that was added or removed.
+            /// </summary>
+            public Tuple<Material, int> ChangedItem { get; }
+
+            /// <summary>
+            /// Creates a new instance of <see cref="InventoryChangedEventArgs"/>
+            /// </summary>
+            /// <param name="changedItem">Item that was added or removed.</param>
+            public InventoryChangedEventArgs(Tuple<Material, int> changedItem)
+            {
+                ChangedItem = changedItem;
+            }
+        }
+
+        /// <summary>
+        /// Handles that cause the a single item to be added or removed from
+        /// the inventory.
+        /// </summary>
+        /// <param name="sender">Unused</param>
+        /// <param name="args">Specify what was added or removed.</param>
+        public delegate void InventoryChangedEventHandler(object sender, InventoryChangedEventArgs args);
+
+        /// <summary>
         /// Contains the data behind the inventory. int is the number of Material.
         /// </summary>
         protected Tuple<Material, int>[] Inventory;
@@ -28,12 +58,12 @@ namespace BaseBuilder.Engine.World.Entities
         /// <summary>
         /// Called when material is added to this inventory
         /// </summary>
-        public event EventHandler OnMaterialAdded;
+        public event InventoryChangedEventHandler OnMaterialAdded;
 
         /// <summary>
         /// Called when material is removed from this inventory
         /// </summary>
-        public event EventHandler OnMaterialRemoved;
+        public event InventoryChangedEventHandler OnMaterialRemoved;
 
         /// <summary>
         /// Returns true if the specified material is allowed in this inventory
@@ -236,7 +266,10 @@ namespace BaseBuilder.Engine.World.Entities
             if (index < 0 || index > Inventory.Length)
                 throw new ArgumentOutOfRangeException(nameof(index), index, $"Index must be 0 <= index <= {Inventory.Length}");
 
+            var itemRemoved = Inventory[index];
             Inventory[index] = null;
+            if (itemRemoved != null)
+                OnMaterialRemoved?.Invoke(this, new InventoryChangedEventArgs(itemRemoved));
         }
 
         /// <summary>
@@ -466,7 +499,7 @@ namespace BaseBuilder.Engine.World.Entities
                             // There is enough space
                             int amountToAdd = maxAmount - amountAdded;
                             Inventory[i] = Tuple.Create(material, Inventory[i].Item2 + amountToAdd);
-                            OnMaterialAdded?.Invoke(this, EventArgs.Empty);
+                            OnMaterialAdded?.Invoke(this, new InventoryChangedEventArgs(Tuple.Create(material, maxAmount)));
                             return maxAmount;
                         }else // if(spaceAvailable + amountAdded < amount)
                         {
@@ -489,7 +522,7 @@ namespace BaseBuilder.Engine.World.Entities
                         // There is enough space
                         int amountToAdd = maxAmount - amountAdded;
                         Inventory[i] = Tuple.Create(material, amountToAdd);
-                        OnMaterialAdded?.Invoke(this, EventArgs.Empty);
+                        OnMaterialAdded?.Invoke(this, new InventoryChangedEventArgs(Tuple.Create(material, maxAmount)));
                         return maxAmount;
                     }else
                     {
@@ -500,7 +533,7 @@ namespace BaseBuilder.Engine.World.Entities
                 }
             }
 
-            OnMaterialAdded?.Invoke(this, EventArgs.Empty);
+            OnMaterialAdded?.Invoke(this, new InventoryChangedEventArgs(Tuple.Create(material, amountAdded)));
             return amountAdded;
         }
 
@@ -539,12 +572,13 @@ namespace BaseBuilder.Engine.World.Entities
                                 // There is more than we need here
                                 int amountToRemove = maxAmount - amountRemoved;
                                 Inventory[i] = Tuple.Create(material, Inventory[i].Item2 - amountToRemove);
-                                OnMaterialRemoved?.Invoke(this, EventArgs.Empty);
+                                OnMaterialRemoved?.Invoke(this, new InventoryChangedEventArgs(Tuple.Create(material, maxAmount)));
                                 return maxAmount;
                             }else if(Inventory[i].Item2 + amountRemoved == maxAmount)
                             {
                                 // There is exactly enough here
                                 Inventory[i] = null;
+                                OnMaterialRemoved?.Invoke(this, new InventoryChangedEventArgs(Tuple.Create(material, maxAmount)));
                                 return maxAmount;
                             }else // if(Inventory[i].Item2 + amountRemoved < maxAmount)
                             {
@@ -567,13 +601,14 @@ namespace BaseBuilder.Engine.World.Entities
                         // There is more than we need here
                         int amountToRemove = maxAmount - amountRemoved;
                         Inventory[i] = Tuple.Create(material, Inventory[i].Item2 - amountToRemove);
-                        OnMaterialRemoved?.Invoke(this, EventArgs.Empty);
+                        OnMaterialRemoved?.Invoke(this, new InventoryChangedEventArgs(Tuple.Create(material, maxAmount)));
                         return maxAmount;
                     }
                     else if (Inventory[i].Item2 + amountRemoved == maxAmount)
                     {
                         // There is exactly enough here
                         Inventory[i] = null;
+                        OnMaterialRemoved?.Invoke(this, new InventoryChangedEventArgs(Tuple.Create(material, maxAmount)));
                         return maxAmount;
                     }
                     else // if(Inventory[i].Item2 + amountRemoved < maxAmount)
@@ -585,7 +620,7 @@ namespace BaseBuilder.Engine.World.Entities
                 }
             }
 
-            OnMaterialRemoved?.Invoke(this, EventArgs.Empty);
+            OnMaterialRemoved?.Invoke(this, new InventoryChangedEventArgs(Tuple.Create(material, amountRemoved)));
             return amountRemoved;
         }
     }

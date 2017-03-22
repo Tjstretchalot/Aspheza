@@ -28,16 +28,37 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
                 result.Append("Bakery - bakes flour into bread.");
 
-                if (Baking)
+                if (Inventory.GetAmountOf(Material.Flour) > 0)
                 {
                     result.Append("\nIt has ");
-                    result.Append(Inventory.MaterialAt(0).Item2);
+                    result.Append(Inventory.GetAmountOf(Material.Flour));
                     result.Append(" bag");
-                    if (Inventory.MaterialAt(0).Item2 > 1)
+                    if (Inventory.GetAmountOf(Material.Flour) > 1)
                         result.Append("s");
 
-                    result.Append(" of flour ready to bake.");
+                    result.Append(" of flour ready to bake with.");
                 }
+                if (Inventory.GetAmountOf(Material.Sugar) > 0)
+                {
+                    result.Append("\nIt has ");
+                    result.Append(Inventory.GetAmountOf(Material.Sugar));
+                    result.Append(" cube");
+                    if (Inventory.GetAmountOf(Material.Sugar) > 1)
+                        result.Append("s");
+
+                    result.Append(" of sugar ready to bake with.");
+                }
+                if (Inventory.GetAmountOf(Material.Egg) > 0)
+                {
+                    result.Append("\nIt has ");
+                    result.Append(Inventory.GetAmountOf(Material.Egg));
+                    result.Append(" egg");
+                    if (Inventory.GetAmountOf(Material.Egg) > 1)
+                        result.Append("s");
+
+                    result.Append(" ready to bake with.");
+                }
+
 
                 var millMat = InventoryBaked.MaterialAt(0);
                 if (millMat != null)
@@ -57,8 +78,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                 return result.ToString();
             }
         }
-
-        protected bool Baking;
+        
         protected int TimeUntilNextBakeCompletionMS;
 
         protected SpriteRenderer Renderer;
@@ -78,9 +98,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
             CollisionMesh = _CollisionMesh;
             Renderer = new SpriteRenderer("Bakery", SourceRec);
-
-            Baking = false;
-            Inventory = new EntityInventory(1);
+            
+            Inventory = new EntityInventory(3);
             Inventory.SetDefaultStackSize(10);
             InventoryBaked = new EntityInventory(1);
             InventoryBaked.SetDefaultStackSize(10);
@@ -99,7 +118,6 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             ID = message.ReadInt32();
             Inventory = new EntityInventory(message);
             InventoryBaked = new EntityInventory(message);
-            Baking = message.ReadBoolean();
             TimeUntilNextBakeCompletionMS = message.ReadInt32();
 
             InitInventoryForNonnetworkableParts();
@@ -113,7 +131,6 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             message.Write(ID);
             Inventory.Write(message);
             InventoryBaked.Write(message);
-            message.Write(Baking);
             message.Write(TimeUntilNextBakeCompletionMS);
 
             WriteTasks(message);
@@ -129,7 +146,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         protected bool IsBakable(Material mat)
         {
-            return mat == Material.Flour;
+            return mat == Material.Flour || mat == Material.Sugar || mat == Material.Egg;
         }
 
         protected bool IsBaked(Material mat)
@@ -137,16 +154,15 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             return mat == Material.Bread;
         }
 
-        protected void OnItemAdded(object sender, EventArgs args)
+        protected bool HaveMaterials()
         {
-            var mat = Inventory.MaterialAt(0).Item1;
+            return (Inventory.GetAmountOf(Material.Flour) >= 1 && Inventory.GetAmountOf(Material.Sugar) >= 1 && Inventory.GetAmountOf(Material.Egg) >= 1);
+        }
 
-            if (mat != Material.Flour)
-                return;
-
-            if (!Baking)
+        protected void OnItemAdded(object sender, EntityInventory.InventoryChangedEventArgs args)
+        {      
+            if (HaveMaterials())
             {
-                Baking = true;
                 TimeUntilNextBakeCompletionMS = 5000;
             }
         }
@@ -154,23 +170,17 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         public override void SimulateTimePassing(SharedGameState sharedState, int timeMS)
         {
             base.SimulateTimePassing(sharedState, timeMS);
-            
-            if (Baking)
-            {
-                TimeUntilNextBakeCompletionMS -= timeMS;
-                if (TimeUntilNextBakeCompletionMS <= 0)
-                {
-                    TimeUntilNextBakeCompletionMS = 5000;
-                    if (InventoryBaked.HaveRoomFor(Material.Bread, 1))
-                    {
-                        Inventory.RemoveMaterial(Material.Flour, 1);
-                        InventoryBaked.AddMaterial(Material.Bread, 1);
 
-                        if (Inventory.GetAmountOf(Material.Flour) == 0)
-                        {
-                            Baking = false;
-                        }
-                    }
+            TimeUntilNextBakeCompletionMS -= timeMS;
+            if (TimeUntilNextBakeCompletionMS <= 0)
+            {
+                TimeUntilNextBakeCompletionMS = 5000;
+                if (InventoryBaked.HaveRoomFor(Material.Bread, 1) && HaveMaterials())
+                {
+                    Inventory.RemoveMaterial(Material.Flour, 1);
+                    Inventory.RemoveMaterial(Material.Sugar, 1);
+                    Inventory.RemoveMaterial(Material.Egg, 1);
+                    InventoryBaked.AddMaterial(Material.Bread, 1);
                 }
             }
         }
