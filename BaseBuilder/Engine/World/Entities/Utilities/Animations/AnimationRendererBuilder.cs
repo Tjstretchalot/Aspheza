@@ -36,7 +36,7 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
                 Frames = new List<UnbuiltAnimationFrame>();
             }
         }
-        
+
         public ContentManager Content;
 
         private List<UnbuiltAnimation> CompletedAnimations;
@@ -148,7 +148,7 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
                     y += CurrentAnimationMinorAxis;
                 }
             }
-            frame.SourceRec = new Rectangle(x, y, height, width);
+            frame.SourceRec = new Rectangle(x, y, width, height);
 
             if (topLeftDif == null)
             {
@@ -172,27 +172,26 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
 
             return this;
         }
-        
+
         public SpriteSheetAnimationRenderer Build()
         {
             var dic = new Dictionary<AnimationType, List<Animation>>();
-            var typeList = new List<AnimationType>() { AnimationType.Idle, AnimationType.Moving, AnimationType.Chopping, AnimationType.Logging };
-            foreach (var currType in typeList)
+            List<Animation> belongTo;
+            foreach (var animation in CompletedAnimations)
             {
-                var currList = new List<Animation>();
-                for (int i = CompletedAnimations.Count - 1; i >= 0; i--)
+                belongTo = null;
+                if (!dic.TryGetValue(animation.Type, out belongTo))
                 {
-                    if (CompletedAnimations[i].Type == currType)
-                    {
-                        var frameList = new List<AnimationFrame>();
-                        foreach (var frame in CompletedAnimations[i].Frames)
-                            frameList.Add(new AnimationFrame(frame.Texture, frame.SoundEffect, frame.SourceRec, frame.TopLeftDif, frame.DisplayTimeMS));
-                        currList.Add(new Animation(frameList, CompletedAnimations[i].Direction, CompletedAnimations[i].CycleStartFrame, CompletedAnimations[i].BeginFrame));
-                        CompletedAnimations.RemoveAt(i);
-                    }
+                    belongTo = new List<Animation>();
+                    dic.Add(animation.Type, belongTo);
                 }
-                dic.Add(currType, currList);
+                var frameList = new List<AnimationFrame>();
+                foreach (var frame in animation.Frames)
+                    frameList.Add(new AnimationFrame(frame.Texture, frame.SoundEffect, frame.SourceRec, frame.TopLeftDif, frame.DisplayTimeMS));
+                belongTo.Add(new Animation(frameList, animation.Direction, animation.CycleStartFrame, animation.BeginFrame));
             }
+
+
             return new SpriteSheetAnimationRenderer(dic);
         }
     }
