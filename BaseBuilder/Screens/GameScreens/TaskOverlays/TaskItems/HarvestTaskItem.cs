@@ -141,7 +141,7 @@ position. ";
             }
         }
 
-        public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override bool IsValid()
         {
             bool visualsDisposed = false;
             TaskItemComponentFromScreenComponent<ComboBox<TargetType>> targetTypeBoxWrapped = null;

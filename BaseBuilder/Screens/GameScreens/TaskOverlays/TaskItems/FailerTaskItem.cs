@@ -85,9 +85,9 @@ failure, the failer returns failure.";
             return new EntityFailerTask(childTask, childTask.GetType().Name);
         }
 
-        public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override bool IsValid()
         {
-            return Children.Count == 1 && Children[0].IsValid(sharedState, localState, netContext);
+            return Children.Count == 1 && Children[0].IsValid();
         }
 
         protected override void OnInspectAddPressed()

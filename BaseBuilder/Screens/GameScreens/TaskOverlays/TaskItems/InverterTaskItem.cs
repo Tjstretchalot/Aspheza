@@ -54,12 +54,12 @@ failure, the inverter returns success.";
             }
         }
 
-        public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override bool IsValid()
         {
             if (Children.Count != 1)
                 return false;
 
-            return Children[0].IsValid(sharedState, localState, netContext);
+            return Children[0].IsValid();
         }
     }
 }

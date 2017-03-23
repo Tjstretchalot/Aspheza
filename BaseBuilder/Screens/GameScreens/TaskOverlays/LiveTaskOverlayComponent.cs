@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Input;
 using BaseBuilder.Engine.Logic.Orders;
 using BaseBuilder.Engine.World.WorldObject.Entities;
 using Microsoft.Xna.Framework.Audio;
+using System.Linq;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays
 {
@@ -34,7 +35,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// Called whenever a task is selected then no task is selected.
         /// </summary>
         public event EventHandler TaskUnselected;
-
+        
         /// <summary>
         /// Called when we don't have a task selected but we are clicking
         /// the grey area of this live task overlay.
@@ -92,17 +93,49 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         /// The button for toggling if an entity is completing his tasks
         /// </summary>
         public Button PauseResumeButton;
+
+        /// <summary>
+        /// If the user is trying to drag an item right now
+        /// </summary>
+        protected bool Dragging;
+
+        /// <summary>
+        /// The parent of the item that is being dragged. May be null
+        /// if the task has no parent.
+        /// </summary>
+        protected ITaskItem DraggingItemsParent;
+
+        /// <summary>
+        /// The index of the item being dragged in DraggingItemsParent's children.
+        /// Items can only be dragged within their current parent, never to a 
+        /// different parent.
+        /// </summary>
+        protected int DraggingItemIndex;
+
+        /// <summary>
+        /// Where the items index should be after the drag is complete based on the
+        /// current mouse location. May be -1, which would imply the mouse isn't 
+        /// hovering somewhere that makes sense. May also be the length of the 
+        /// parents children array; this just means that it should be placed at
+        /// the end of the array. Otherwise, assume the item at this index should be
+        /// pushed up an index.
+        /// 
+        /// Remember to be careful; this index should be considered as the index if
+        /// a NEW one is added, not the index after removing and readding.
+        /// </summary>
+        protected int DraggingToIndex;
         
         protected bool Valid;
 
         protected ITaskable Taskable;
-        public ICollection<ITaskItem> TaskItems;
+        public IList<ITaskItem> TaskItems;
         protected BiDictionary<Rectangle, ITaskItem> ExpandOrMinimizeIconLocationsToTaskItems;
         
         protected BiDictionary<Rectangle, ITaskItem> SelectLocationsToTaskItems;
 
         protected Texture2D BackgroundTexture;
         protected Texture2D IconsTexture;
+        protected Texture2D LineTexture;
         protected Rectangle ExpandSourceRect;
         protected Rectangle MinimizeSourceRect;
 
@@ -120,6 +153,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             BackgroundTexture = new Texture2D(graphicsDevice, 1, 1);
             BackgroundTexture.SetData(new[] { Color.Gray });
 
+            LineTexture = new Texture2D(graphicsDevice, 1, 1);
+            LineTexture.SetData(new Color[] { Color.Black });
             IconsTexture = content.Load<Texture2D>("icons");
             ExpandSourceRect = new Rectangle(0, 0, 8, 8);
             MinimizeSourceRect = new Rectangle(9, 0, 8, 8);
@@ -188,9 +223,31 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 var task = stack.First.Value;
                 stack.RemoveFirst();
 
+                bool usedYShift = false;
 
                 var str = task.TaskName;
                 var strSize = context.DefaultFont.MeasureString(str);
+
+                if (Dragging && DraggingToIndex == 0 && ReferenceEquals(task.Parent, DraggingItemsParent))
+                {
+                    bool isIndex0;
+                    if (task.Parent == null)
+                    {
+                        isIndex0 = ReferenceEquals(TaskItems[0], task);
+                    }
+                    else
+                    {
+                        isIndex0 = ReferenceEquals(task.Parent.Children[0], task);
+                    }
+
+                    if (isIndex0)
+                    {
+                        context.SpriteBatch.Draw(LineTexture, new Rectangle(ScreenLocation.X + xPadding + 11, y, (int)strSize.X, 2), Color.White);
+                        usedYShift = true;
+                        y += 2;
+                    }
+                }
+
                 Rectangle rect;
                 if (ExpandOrMinimizeIconLocationsToTaskItems.TryGetValue(task, out rect))
                 {
@@ -228,7 +285,31 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 }
                 context.SpriteBatch.DrawString(context.DefaultFont, task.TaskName, new Vector2(rect.X, rect.Y), Color.White);
 
-                y += context.DefaultFont.LineSpacing + 2;
+                if(!task.IsValid())
+                {
+                    var rect2 = new Rectangle(rect.X + rect.Width + 3, rect.Y, 9, 15);
+                    context.SpriteBatch.Draw(IconsTexture, rect2, new Rectangle(18, 0, 9, 15), Color.White);
+                }
+
+                y += context.DefaultFont.LineSpacing;
+
+                if (Dragging && DraggingToIndex != -1 && DraggingToIndex != DraggingItemIndex && ReferenceEquals(task.Parent, DraggingItemsParent))
+                {
+                    var indexInParent = -1;
+                    if(task.Parent == null)
+                    {
+                        indexInParent = TaskItems.IndexOf(task);
+                    }else
+                    {
+                        indexInParent = task.Parent.Children.IndexOf(task);
+                    }
+
+                    if(indexInParent == DraggingToIndex - 1)
+                        context.SpriteBatch.Draw(LineTexture, new Rectangle(ScreenLocation.X + xPadding + 11, y, (int)strSize.X, 2), Color.White);
+                }
+
+                if(!usedYShift)
+                    y += 2;
             }
 
             AddButton.Draw(context.Content, context.Graphics, context.GraphicsDevice, context.SpriteBatch);
@@ -292,6 +373,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             }
 
             var foundHover = false;
+            var bottomHalfHover = false;
             foreach(var kvp in SelectLocationsToTaskItems.KVPs)
             {
                 var rect = kvp.Item1;
@@ -300,6 +382,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 if(rect.Contains(current.Position))
                 {
                     foundHover = true;
+                    bottomHalfHover = rect.Center.Y < current.Position.Y;
                     if (Hovered != item)
                     {
                         Hovered = item;
@@ -314,16 +397,90 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 Hovered = null;
             }else if(foundHover)
             {
+                if(Dragging)
+                {
+                    // If we're dragging and we found a hover, we need to update the
+                    // DraggingToIndex
+
+                    var oldIndex = DraggingToIndex;
+                    if (!ReferenceEquals(Hovered.Parent, DraggingItemsParent)) {
+                        DraggingToIndex = -1;
+                    }else
+                    {
+                        if(DraggingItemsParent == null)
+                        {
+                            DraggingToIndex = TaskItems.IndexOf(Hovered);
+                        }else
+                        {
+                            DraggingToIndex = Hovered.Parent.Children.IndexOf(Hovered);
+                        }
+
+                        if (bottomHalfHover)
+                            DraggingToIndex++;
+                    }
+
+                    if (oldIndex != DraggingToIndex)
+                        RedrawRequired?.Invoke(null, EventArgs.Empty);
+                }else if (current.LeftButton == ButtonState.Pressed)
+                {
+                    // If we have the mouse down, assume we're trying to drag 
+
+                    Dragging = true;
+                    DraggingItemsParent = Hovered.Parent;
+
+                    if (Hovered.Parent == null)
+                        DraggingItemIndex = TaskItems.IndexOf(Hovered);
+                    else
+                        DraggingItemIndex = Hovered.Parent.Children.IndexOf(Hovered);
+
+                    DraggingToIndex = DraggingItemIndex;
+                }
+
                 if (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
                 {
-                    if(Selected == null)
+                    var selecting = !Dragging;
+                    if(!selecting)
                     {
-                        Selected = Hovered;
-                        TaskSelected?.Invoke(null, EventArgs.Empty);
-                    }else if(Selected != Hovered)
+                        if(Hovered.Parent == null)
+                        {
+                            selecting = DraggingItemIndex == TaskItems.IndexOf(Hovered);
+                        }else
+                        {
+                            selecting = DraggingItemIndex == Hovered.Parent.Children.IndexOf(Hovered);
+                        }
+                    }
+
+                    if (selecting)
                     {
-                        Selected = Hovered;
-                        TaskSelectionChanged?.Invoke(null, EventArgs.Empty);
+                        if (Dragging)
+                        {
+                            Dragging = false;
+                            RedrawRequired?.Invoke(null, EventArgs.Empty);
+                        }
+                        if (Selected == null)
+                        {
+                            Selected = Hovered;
+                            TaskSelected?.Invoke(null, EventArgs.Empty);
+                        }
+                        else if (Selected != Hovered)
+                        {
+                            Selected = Hovered;
+                            TaskSelectionChanged?.Invoke(null, EventArgs.Empty);
+                        }
+                    }else if(Dragging)
+                    {
+                        if (DraggingToIndex != -1 && DraggingToIndex != DraggingItemIndex)
+                        {
+                            if (DraggingItemsParent == null)
+                            {
+                                var result = CloneAndSwapIndexesInList(TaskItems, DraggingItemIndex, DraggingToIndex);
+                                ReplaceTasksWith(sharedGameState, localGameState, netContext, result);
+                            }else
+                            {
+                                PerformComplicatedDrag(sharedGameState, localGameState, netContext);
+                            }
+                        }
+                        Dragging = false;
                     }
                 }
             }
@@ -343,13 +500,114 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             handled = true;
         }
 
+        /// <summary>
+        /// A complicated drag occurs when we complete a valid drag for a child whose parent is not
+        /// null.
+        /// </summary>
+        /// <param name="sharedGameState"></param>
+        /// <param name="localGameState"></param>
+        /// <param name="netContext"></param>
+        private void PerformComplicatedDrag(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext)
+        {
+            // First lets create the new copy of DraggingItemsParent with the childrens indexes swapped. Then we will
+            // swap that in each of their parents where the old version was until we get to TaskItems.
+
+            // *************************************************************************************************************************
+            // Note that we do NOT have the correct parent for many items in these lists, and if we tried to replace ITaskItems
+            // with this list we would 100% get errors. However, we only need to create a list good enough to call CreateTaskItems 
+            // on, which purges the parent/child relationship. We keep track of parent for the item we're replacing purely 
+            // out of conveinence for this swap.
+            // *************************************************************************************************************************
+
+            // Step 1: The new version of DraggingItemsParent. 
+            var newParentOfDraggedItem = DraggingItemsParent.GetType().GetConstructor(new Type[] { }).Invoke(new object[] { }) as ITaskItem;
+            newParentOfDraggedItem.Children = CloneAndSwapIndexesInList(DraggingItemsParent.Children, DraggingItemIndex, DraggingToIndex);
+            newParentOfDraggedItem.Parent = DraggingItemsParent.Parent;
+
+            // Step 2: We need to replace the upper-most parent of DraggingItemsParent with a new version who reflects this change.
+            // To do so, we will have to create a new version of the parent of DraggingItemsParent, and his parent, and his parent, etc.
+
+            // For each iteration of the loop, we are creating a copy of currentlyReplacing.Parent that has 
+            // currentlySwapping as the child where currentlyReplacing was before.
+            var currentlyReplacing = DraggingItemsParent;
+            var currentlySwapping = newParentOfDraggedItem;
+
+            while(currentlySwapping.Parent != null)
+            {
+                var newParentOfReplacing = currentlyReplacing.Parent.GetType().GetConstructor(new Type[] { }).Invoke(new object[] { }) as ITaskItem;
+                newParentOfReplacing.Children = new List<ITaskItem>();
+                
+                for(int i = 0; i < currentlyReplacing.Parent.Children.Count; i++)
+                {
+                    if(ReferenceEquals(currentlyReplacing.Parent.Children[i], currentlyReplacing))
+                    {
+                        newParentOfReplacing.Children.Add(currentlySwapping);
+                    }else
+                    {
+                        newParentOfReplacing.Children.Add(currentlyReplacing.Parent.Children[i]);
+                    }
+                }
+
+                newParentOfReplacing.Parent = currentlyReplacing.Parent.Parent;
+
+                currentlyReplacing = currentlyReplacing.Parent;
+                currentlySwapping = newParentOfReplacing;
+            }
+            
+            var result = new List<ITaskItem>();
+            for(int i = 0; i < TaskItems.Count; i++)
+            {
+                if (ReferenceEquals(TaskItems[i], currentlyReplacing))
+                    result.Add(currentlySwapping);
+                else
+                    result.Add(TaskItems[i]);
+            }
+
+            ReplaceTasksWith(sharedGameState, localGameState, netContext, result);
+        }
+
+        private IList<T> CloneAndSwapIndexesInList<T>(IList<T> list, int from, int to)
+        {
+            List<T> result = new List<T>();
+
+            for(int i = 0; i < list.Count; i++)
+            {
+                if (i == from)
+                    continue;
+
+                if (i == to)
+                    result.Add(list[from]);
+
+                result.Add(list[i]);
+            }
+
+            if (to == list.Count)
+                result.Add(list[from]);
+
+            return result;
+        }
+        private void ReplaceTasksWith(SharedGameState shared, LocalGameState local, NetContext netContext, IList<ITaskItem> newTasks)
+        {
+            List<IEntityTask> tasks = new List<IEntityTask>();
+
+            foreach(var item in newTasks)
+            {
+                tasks.Add(item.CreateEntityTask(Taskable, shared, local, netContext));
+            }
+            
+            var order = netContext.GetPoolFromPacketType(typeof(ReplaceTasksOrder)).GetGamePacketFromPool() as ReplaceTasksOrder;
+            order.Entity = Taskable as Entity;
+            order.NewQueue = tasks;
+            local.Orders.Add(order);
+        }
+
         public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {
             var wasValid = Valid;
             Valid = true;
             foreach(var item in TaskItems)
             {
-                if(!item.IsValid(sharedGameState, localGameState, netContext))
+                if(!item.IsValid())
                 {
                     Valid = false;
                     break;
@@ -368,13 +626,13 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
                 Selected = null;
             }
             var queue = Taskable.TaskQueue.ToArray();
-            var taskItems = new LinkedList<ITaskItem>();
+            var taskItems = new List<ITaskItem>();
             
             if (Taskable.CurrentTask != null)
-                taskItems.AddLast(TaskItemIdentifier.Init(Taskable.CurrentTask));
+                taskItems.Add(TaskItemIdentifier.Init(Taskable.CurrentTask));
             for (int i = 0; i < Taskable.TaskQueue.Count; i++)
             {
-                taskItems.AddLast(TaskItemIdentifier.Init(queue[i]));
+                taskItems.Add(TaskItemIdentifier.Init(queue[i]));
             }
 
             TaskItems = taskItems;
@@ -451,6 +709,23 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
             height += 5;
 
             Size = new PointI2D(width, height);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            LineTexture?.Dispose();
+            LineTexture = null;
+
+            BackgroundTexture?.Dispose();
+            BackgroundTexture = null;
+
+            AddButton?.Dispose();
+            AddButton = null;
+
+            PauseResumeButton?.Dispose();
+            PauseResumeButton = null;
         }
     }
 }

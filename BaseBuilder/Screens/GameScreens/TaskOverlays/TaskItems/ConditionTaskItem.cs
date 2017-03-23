@@ -148,7 +148,7 @@ condition task takes some time, typically one second.";
             }
         }
 
-        public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override bool IsValid()
         {
             var visualsDisposed = false;
 

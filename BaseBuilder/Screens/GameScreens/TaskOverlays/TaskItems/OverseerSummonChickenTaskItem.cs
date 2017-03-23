@@ -43,7 +43,7 @@ the course of 2 minutes.";
             return new SummonChicken(((Thing)taskable).ID);
         }
 
-        public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override bool IsValid()
         {
             return true;
         }

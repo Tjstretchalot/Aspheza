@@ -230,12 +230,12 @@ failure.";
             return new EntityRepeaterTask(childTask, childTask.GetType().Name, times);
         }
 
-        public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override bool IsValid()
         {
             if (TimesTextField != null && !RepeatForever && TimesTextField.Text.Length == 0)
                 return false;
 
-            return Children.Count == 1 && Children[0].IsValid(sharedState, localState, netContext);
+            return Children.Count == 1 && Children[0].IsValid();
         }
 
         public override void DisposeInspect()

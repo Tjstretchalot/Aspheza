@@ -487,7 +487,7 @@ every cycle, such as for a courier.", true);
                 }
             }
 
-            public bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+            public bool IsValid()
             {
                 TaskItemComponentFromScreenComponent<ComboBox<RestrictorType>> typeBox;
                 if (!TryGetWrapped(TypeBox, out typeBox))
@@ -1099,7 +1099,7 @@ specific type.", true)));
             }
         }
 
-        public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override bool IsValid()
         {
             TaskItemComponentFromScreenComponent<RadioButton> pickupWrapped;
             if (!TryGetWrapped(PickupRadio, out pickupWrapped))
@@ -1116,7 +1116,7 @@ specific type.", true)));
                 return false;
             if (!IsTargetDeciderValid())
                 return false;
-            if (!AreRestrictorsValid(sharedState, localState, netContext))
+            if (!AreRestrictorsValid())
                 return false;
             if (!IsResultDeciderValid())
                 return false;
@@ -1155,11 +1155,11 @@ specific type.", true)));
             }
         }
 
-        protected bool AreRestrictorsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        protected bool AreRestrictorsValid()
         {
             foreach(var restr in Restrictors)
             {
-                if (!restr.IsValid(sharedState, localState, netContext))
+                if (!restr.IsValid())
                     return false;
             }
             return true;

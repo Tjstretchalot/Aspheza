@@ -55,7 +55,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         /// Gets the children of this task item. A task item does
         /// not draw its own children in the live menu.
         /// </summary>
-        List<ITaskItem> Children { get; }
+        IList<ITaskItem> Children { get; set; }
 
         /// <summary>
         /// If this task item can be expanded in the live view. If expandable is
@@ -90,11 +90,8 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         /// <summary>
         /// Determines if this task item is currently in a valid state (i.e. able to create a task)
         /// </summary>
-        /// <param name="sharedState">the shared state</param>
-        /// <param name="localState">the local state</param>
-        /// <param name="netContext">the net context</param>
         /// <returns>If this task item is in a good state</returns>
-        bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext);
+        bool IsValid();
 
         /// <summary>
         /// Called before accessing any visual-related components or when there

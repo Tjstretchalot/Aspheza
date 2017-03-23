@@ -15,7 +15,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         public abstract event EventHandler InspectRedrawRequired;
         public abstract event EventHandler InspectSaveRequired;
 
-        public virtual List<ITaskItem> Children { get; protected set; }
+        public virtual IList<ITaskItem> Children { get; set; }
         public virtual bool Expandable { get; protected set; }
 
         public virtual bool Expanded { get; set; }
@@ -33,7 +33,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         public abstract void PreDrawInspect(RenderContext context, int x, int y);
         public abstract void DrawInspect(RenderContext context, int x, int y);
 
-        public abstract bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext);
+        public abstract bool IsValid();
 
         public abstract void LoadedOrChanged(RenderContext renderContext);
 

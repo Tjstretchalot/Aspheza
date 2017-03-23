@@ -68,11 +68,11 @@ success, the sequence will return success.";
             return new EntitySequenceTask(childrenTasks, "autogen");
         }
 
-        public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override bool IsValid()
         {
             foreach(var child in Children)
             {
-                if (!child.IsValid(sharedState, localState, netContext))
+                if (!child.IsValid())
                     return false;
             }
 

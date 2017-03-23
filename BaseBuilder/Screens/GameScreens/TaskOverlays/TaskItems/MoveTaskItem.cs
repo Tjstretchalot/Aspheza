@@ -181,7 +181,7 @@ the upper-left corner of the screen.";
             return typeof(MobileEntity).IsAssignableFrom(taskable.GetType());
         }
 
-        public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override bool IsValid()
         {
             if (DestinationXField == null)
                 return true;

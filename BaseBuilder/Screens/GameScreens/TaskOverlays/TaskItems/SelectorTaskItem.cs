@@ -70,14 +70,14 @@ returns failure.";
             return new EntitySelectorTask(childrenTasks, "autogen");
         }
 
-        public override bool IsValid(SharedGameState sharedState, LocalGameState localState, NetContext netContext)
+        public override bool IsValid()
         {
             if (Children.Count == 0)
                 return false;
 
             foreach(var child in Children)
             {
-                if (!child.IsValid(sharedState, localState, netContext))
+                if (!child.IsValid())
                     return false;
             }
 
