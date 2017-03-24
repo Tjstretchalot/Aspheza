@@ -125,10 +125,12 @@
     <Compile Include="Engine\World\Entities\EntityTasks\TransferTargeters\TransferTargetByPosition.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferTargeters\TransferTargetByRelativePosition.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\TransferTargeters\TransferTargeterIdentifier.cs" />
-    <Compile Include="Engine\World\Entities\ImmobileEntities\Bakery.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\ChickenCoop.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Farm.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\GoldOre.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\Bakery.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\HarvestableEntity.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\HarvestableRecipe.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Library.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\LumberMill.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tavern.cs" />

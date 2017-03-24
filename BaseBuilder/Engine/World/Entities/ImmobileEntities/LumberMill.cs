@@ -78,9 +78,9 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Renderer = new SpriteRenderer("LumberMill", SourceRec);
 
             MillingWood = false;
-            Inventory = new EntityInventory(1, IsWoodMillable);
+            Inventory = new EntityInventory(1);
             Inventory.SetDefaultStackSize(10);
-            InventoryLumber = new EntityInventory(1, IsWoodMilled);
+            InventoryLumber = new EntityInventory(1);
             InventoryLumber.SetDefaultStackSize(10);
             InitInventoryForNonnetworkableParts();
         }
@@ -119,13 +119,13 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         protected void InitInventoryForNonnetworkableParts()
         {
-            Inventory.AcceptsMaterialFunc = IsWoodMillable;
+            Inventory.AcceptsMaterialFunc = AcceptsMaterial;
             Inventory.OnMaterialAdded += OnItemAdded;
         }
 
-        protected bool IsWoodMillable(Material mat)
+        protected int AcceptsMaterial(Material mat, int amt)
         {
-            return mat == Material.Wood;
+            return (mat == Material.Wood) ? amt : 0;
         }
 
         protected bool IsWoodMilled(Material mat)

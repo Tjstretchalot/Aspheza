@@ -103,15 +103,18 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         protected void InitInventoriesForNonnetworkableParts()
         {
-            Inventory.AcceptsMaterialFunc = IsChicken;
+            Inventory.AcceptsMaterialFunc = InputAllowed;
             Inventory.OnMaterialAdded += OnItemAdded;
-
-            InventoryProducts.AcceptsMaterialFunc = IsEgg;
         }
 
         protected void OnItemAdded(object sender, EventArgs args)
         {
             TimeToNextEgg = TimeToEggWithOneChickenMS / Inventory.GetCount();
+        }
+
+        protected int InputAllowed(Material material, int amt)
+        {
+            return IsChicken(material) ? amt : 0;
         }
 
         protected bool IsChicken(Material material)

@@ -103,11 +103,10 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             Inventory.AcceptsMaterialFunc = AcceptingMaterial;
             Inventory.OnMaterialAdded += OnItemAdded;
         }
-
-
-        protected bool AcceptingMaterial(Material mat)
+        
+        protected int AcceptingMaterial(Material mat, int amt)
         {
-            return mat == Material.CarrotSeed || mat == Material.WheatSeed || mat == Material.Sugarcane;
+            return (mat == Material.CarrotSeed || mat == Material.WheatSeed || mat == Material.Sugarcane) ? amt : 0;
         }
 
         protected void OnItemAdded(object sender, EntityInventory.InventoryChangedEventArgs args)

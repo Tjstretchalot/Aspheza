@@ -148,10 +148,13 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         protected void InitInventoryForNonnetworkableParts()
         {
-            Inventory.AcceptsMaterialFunc = IsMillable;
+            Inventory.AcceptsMaterialFunc = AcceptsMaterial;
             Inventory.OnMaterialAdded += OnItemAdded;
+        }
 
-            InventoryMilled.AcceptsMaterialFunc = IsMilled;
+        protected int AcceptsMaterial(Material mat, int amt)
+        {
+            return IsMillable(mat) ? amt : 0;
         }
 
         protected bool IsMillable(Material mat)

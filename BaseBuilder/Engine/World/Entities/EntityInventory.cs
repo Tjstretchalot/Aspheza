@@ -66,10 +66,20 @@ namespace BaseBuilder.Engine.World.Entities
         public event InventoryChangedEventHandler OnMaterialRemoved;
 
         /// <summary>
-        /// Returns true if the specified material is allowed in this inventory
+        /// Returns how much of the input material and amount will be allowed into
+        /// this inventory. This does not need to check if there is room for the material
+        /// as the inventory will never accept more than it can handle.
+        /// </summary>
+        /// <param name="inputMaterial">The material</param>
+        /// <param name="inputAmount">The amount</param>
+        /// <returns>How much (0 allowed) of inputMaterial x inputAmount will be accepted</returns>
+        public delegate int AcceptsMaterialDelegate(Material inputMaterial, int inputAmount);
+
+        /// <summary>
+        /// Returns how much of the specified material is allowed in this inventory
         /// right now
         /// </summary>
-        public Func<Material, bool> AcceptsMaterialFunc;
+        public AcceptsMaterialDelegate AcceptsMaterialFunc;
 
         /// <summary>
         /// Stack size to assume if none given
@@ -94,20 +104,31 @@ namespace BaseBuilder.Engine.World.Entities
         }
 
         /// <summary>
+        /// Returns the number of slots in this inventory
+        /// </summary>
+        public int Slots
+        {
+            get
+            {
+                return Inventory.Length;
+            }
+        }
+
+        /// <summary>
         /// Initializes an empty inventory with the specifeid number of
         /// max items
         /// </summary>
         /// <param name="maxItems">Maximum number of items</param>
         /// <param name="acceptsMatFunc">If this inv</param>
         /// <exception cref="ArgumentOutOfRangeException">If maxItems is not strictly positive</exception>
-        public EntityInventory(int maxItems, Func<Material, bool> acceptsMatFunc = null)
+        public EntityInventory(int maxItems, AcceptsMaterialDelegate acceptsMatFunc = null)
         {
             if (maxItems <= 0)
                 throw new ArgumentOutOfRangeException(nameof(maxItems), maxItems, "Max items must be strictly positive");
 
             Inventory = new Tuple<Material, int>[maxItems];
             MaterialsToMaxStackCount = new Dictionary<Material, int>();
-            AcceptsMaterialFunc = (acceptsMatFunc == null ? (m) => true : acceptsMatFunc);
+            AcceptsMaterialFunc = (acceptsMatFunc == null ? (m, i) => i : acceptsMatFunc);
             DefaultStackSize = 1;
         }
 
@@ -118,7 +139,7 @@ namespace BaseBuilder.Engine.World.Entities
         /// <exception cref="ArgumentNullException">If message is null</exception>
         public EntityInventory(NetIncomingMessage message)
         {
-            AcceptsMaterialFunc = (m) => true;
+            AcceptsMaterialFunc = (m, i) => i;
 
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
@@ -289,7 +310,7 @@ namespace BaseBuilder.Engine.World.Entities
             if (amount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(amount), amount, "Amount must be strictly positive");
 
-            if (!AcceptsMaterialFunc(material))
+            if (AcceptsMaterialFunc(material, amount) < amount)
                 return false;
 
             int spacesFound = 0;
@@ -316,7 +337,9 @@ namespace BaseBuilder.Engine.World.Entities
 
         /// <summary>
         /// Determines if there is room in this inventory for all of the specified
-        /// materials. Must not contain any duplicate materials.
+        /// materials. Must not contain any duplicate materials. Does not check 
+        /// AcceptsMaterialFunc, since that would not be reliable (since it usually
+        /// checks the inventory quantities)
         /// </summary>
         /// <param name="materials">The materials</param>
         /// <returns>If there is room in this inventory for all of the materials</returns>
@@ -338,7 +361,7 @@ namespace BaseBuilder.Engine.World.Entities
                 }
             }
 #endif
-
+            
             var usedIndexes = new HashSet<int>();
 
             foreach(var mat in materials)
@@ -477,7 +500,8 @@ namespace BaseBuilder.Engine.World.Entities
             if (maxAmount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(maxAmount), maxAmount, "Max amount must be strictly positive");
 
-            if (!AcceptsMaterialFunc(material))
+            maxAmount = AcceptsMaterialFunc(material, maxAmount);
+            if (maxAmount == 0)
                 return 0;
 
             // Add to existing stacks

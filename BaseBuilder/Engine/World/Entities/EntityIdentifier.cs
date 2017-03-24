@@ -2,6 +2,7 @@
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.WorldObject.Entities;
