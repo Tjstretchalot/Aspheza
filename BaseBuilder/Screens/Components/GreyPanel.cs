@@ -143,7 +143,7 @@ namespace BaseBuilder.Screens.Components
             // Create a rounded rectangle with a center color of (238, 238, 238)
             // a 2px wide border of white (255, 255, 255) and another border of (153, 153, 153) that's also 2px wide
 
-            Texture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, spriteBatch, Location.Width, Location.Height,
+            Texture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, Location.Width, Location.Height,
                 new Color(238, 238, 238), new Color(153, 153, 153), Color.White, 15, 4, 2);
         }
 

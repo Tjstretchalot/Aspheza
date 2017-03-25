@@ -304,17 +304,17 @@ namespace BaseBuilder.Screens.Components
 
         protected virtual void InitBackgroundTexture(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
-            BackgroundTexture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, spriteBatch, Size.X, Size.Y, Color.White, new Color(198, 198, 198), new Color(236, 236, 236), 5, 2, 1);
+            BackgroundTexture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, Size.X, Size.Y, Color.White, new Color(198, 198, 198), new Color(236, 236, 236), 5, 2, 1);
         }
         
         protected virtual void InitFocusedBackgroundTexture(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
-            FocusedBackgroundTexture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, spriteBatch, Size.X, Size.Y, Color.White, new Color(198, 198, 198), new Color(155, 155, 255), 5, 2, 1);
+            FocusedBackgroundTexture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, Size.X, Size.Y, Color.White, new Color(198, 198, 198), new Color(155, 155, 255), 5, 2, 1);
         }
 
         protected virtual void InitDisabledBackgroundTexture(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
-            DisabledBackgroundTexture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, spriteBatch, Size.X, Size.Y, new Color(105, 105, 105), new Color(169, 169, 169), new Color(55, 55, 55), 5, 2, 1);
+            DisabledBackgroundTexture = RoundedRectUtils.CreateRoundedRect(content, graphics, graphicsDevice, Size.X, Size.Y, new Color(105, 105, 105), new Color(169, 169, 169), new Color(55, 55, 55), 5, 2, 1);
         }
 
         protected virtual void PlayErrorSound(ContentManager content)

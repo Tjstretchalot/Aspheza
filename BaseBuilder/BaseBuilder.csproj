@@ -202,6 +202,9 @@
     <Compile Include="Screens\Components\IResizableComponent.cs" />
     <Compile Include="Screens\Components\RadioButton.cs" />
     <Compile Include="Screens\Components\RadioButtonGroup.cs" />
+    <Compile Include="Screens\Components\ScrollableComponents\Distinguishers\IDistinguisherComponent.cs" />
+    <Compile Include="Screens\Components\ScrollableComponents\Distinguishers\RoundedRectDistinguisher.cs" />
+    <Compile Include="Screens\Components\ScrollableComponents\ScrollableComponentAsDistinguisher.cs" />
     <Compile Include="Screens\Components\Text.cs" />
     <Compile Include="Screens\Components\TextureComponent.cs" />
     <Compile Include="Screens\Components\UIUtils.cs" />

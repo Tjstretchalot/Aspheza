@@ -47,7 +47,8 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays.BuildOverlays2
             BackgroundTexture.SetData(new[] { Color.Gray });
 
             var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredWidth, 7);
-            layout.Children.Add(Wrap(CreateText(context, "Hello World")));
+            layout.Children.Add(CreatePadding(1, 5));
+            layout.Children.Add(Wrap(CreateText(context, "Build Menu", true)));
 
             EventHandler redraw = (sender, args) => OnRedrawRequired();
             EventHandler redrawAndReload = (sender, args) =>
@@ -59,6 +60,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays.BuildOverlays2
             {
                 layout.Children.Add(item.BuildComponent(context, this, redraw, redrawAndReload));
             }
+            layout.Children.Add(CreatePadding(1, 5));
 
             Component = layout;
             RecalculateSize(context);

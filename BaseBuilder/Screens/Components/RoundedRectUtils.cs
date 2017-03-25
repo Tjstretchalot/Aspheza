@@ -16,7 +16,7 @@ namespace BaseBuilder.Screens.Components
     {
         private const int SAMPLES_SQRT = 3; // this number must be odd and increases the number of operations quadratically
 
-        public static Texture2D CreateRoundedRect(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, 
+        public static Texture2D CreateRoundedRect(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, 
             int width, int height, Color centerColor, Color secondBorderColor, Color firstBorderColor, int radius, int innerBorder, int outerBorder)
         {
             radius *= SAMPLES_SQRT;
@@ -24,14 +24,14 @@ namespace BaseBuilder.Screens.Components
             outerBorder *= SAMPLES_SQRT;
 
             var outsideBorderColor = new Color(0, 0, 0, 0);
-            var colors = CreateScaledTexture(content, graphics, graphicsDevice, spriteBatch, width, height, centerColor, outsideBorderColor, secondBorderColor, 
+            var colors = CreateScaledTexture(content, graphics, graphicsDevice, width, height, centerColor, outsideBorderColor, secondBorderColor, 
                 firstBorderColor, radius, innerBorder, outerBorder);
-            var texture = InitTextureByAntialiasingColors(content, graphics, graphicsDevice, spriteBatch, colors, width, height);
+            var texture = InitTextureByAntialiasingColors(content, graphics, graphicsDevice, colors, width, height);
 
             return texture;
         }
 
-        public static Color[] CreateScaledTexture(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch,
+        public static Color[] CreateScaledTexture(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice,
             int finalWidth, int finalHeight, Color centerColor, Color outsideBorderColor, Color secondBorderColor, Color firstBorderColor, int radius, 
             int innerBorder, int outerBorder)
         {
@@ -117,7 +117,7 @@ namespace BaseBuilder.Screens.Components
         /// <param name="graphicsDevice"></param>
         /// <param name="spriteBatch"></param>
         /// <param name="colors"></param>
-        public static Texture2D InitTextureByAntialiasingColors(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, Color[] colors, int finalWidth, int finalHeight)
+        public static Texture2D InitTextureByAntialiasingColors(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, Color[] colors, int finalWidth, int finalHeight)
         {
 
             Func<int, int, Color> pointToColor = (x, y) => colors[y * (finalWidth * SAMPLES_SQRT) + x];

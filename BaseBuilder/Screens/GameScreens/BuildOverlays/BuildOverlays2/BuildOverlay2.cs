@@ -92,7 +92,14 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays.BuildOverlays2
             {
                 if (keysReleasedThisFrame.Any((k) => k == Keys.B || k == Keys.Escape))
                 {
-                    DisposeMenu();
+                    if (BuildingToPlace != null)
+                    {
+                        BuildOverlayImpl.ResetSelected();
+                    }
+                    else
+                    {
+                        DisposeMenu();
+                    }
                     return true;
                 }
                 else
