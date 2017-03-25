@@ -15,7 +15,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         bool Disposed { get; }
 
         void UpdateHighPriority(ContentManager content, int deltaMS);
-        void UpdateLowPriorirty(ContentManager content, int deltaMS);
+        void UpdateLowPriority(ContentManager content, int deltaMS);
         void HandleMouseStateHighPriority(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled);
         void HandleMouseStateLowPriority(ContentManager content, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled);
         void HandleKeyboardStateHighPriority(ContentManager content, KeyboardState last, KeyboardState current, ref bool handled);

@@ -133,21 +133,21 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
             public WeakReference<IScrollableComponent> Component;
 
-            public WeakReference<TaskItemComponentFromScreenComponent<ComboBox<RestrictorType>>> TypeBox;
+            public WeakReference<ScrollableComponentFromScreenComponent<ComboBox<RestrictorType>>> TypeBox;
 
-            public WeakReference<TaskItemComponentFromScreenComponent<RadioButton>> ByItemType_DenyOthersRadio;
-            public WeakReference<TaskItemComponentFromScreenComponent<RadioButton>> ByItemType_DenyThisRadio;
-            public WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>> ByItemType_MaterialBox;
+            public WeakReference<ScrollableComponentFromScreenComponent<RadioButton>> ByItemType_DenyOthersRadio;
+            public WeakReference<ScrollableComponentFromScreenComponent<RadioButton>> ByItemType_DenyThisRadio;
+            public WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>> ByItemType_MaterialBox;
 
-            public WeakReference<TaskItemComponentFromScreenComponent<TextField>> ByQuantity_Field;
+            public WeakReference<ScrollableComponentFromScreenComponent<TextField>> ByQuantity_Field;
 
-            public WeakReference<TaskItemComponentFromScreenComponent<CheckBox>> ByReceiving_MaterialCheck;
-            public WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>> ByReceiving_MaterialBox;
-            public WeakReference<TaskItemComponentFromScreenComponent<TextField>> ByReceiving_Field;
+            public WeakReference<ScrollableComponentFromScreenComponent<CheckBox>> ByReceiving_MaterialCheck;
+            public WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>> ByReceiving_MaterialBox;
+            public WeakReference<ScrollableComponentFromScreenComponent<TextField>> ByReceiving_Field;
 
-            public WeakReference<TaskItemComponentFromScreenComponent<CheckBox>> ByDelivering_MaterialCheck;
-            public WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>> ByDelivering_MaterialBox;
-            public WeakReference<TaskItemComponentFromScreenComponent<TextField>> ByDelivering_Field;
+            public WeakReference<ScrollableComponentFromScreenComponent<CheckBox>> ByDelivering_MaterialCheck;
+            public WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>> ByDelivering_MaterialBox;
+            public WeakReference<ScrollableComponentFromScreenComponent<TextField>> ByDelivering_Field;
 
             public TransferRestrictorComponent(TransferItemTaskItem outer, ITransferRestrictor restrictor = null)
             {
@@ -156,21 +156,21 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 
                 Component = new WeakReference<IScrollableComponent>(null);
 
-                TypeBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<RestrictorType>>>(null);
+                TypeBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<RestrictorType>>>(null);
 
-                ByItemType_DenyOthersRadio = new WeakReference<TaskItemComponentFromScreenComponent<RadioButton>>(null);
-                ByItemType_DenyThisRadio = new WeakReference<TaskItemComponentFromScreenComponent<RadioButton>>(null);
-                ByItemType_MaterialBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>>(null);
+                ByItemType_DenyOthersRadio = new WeakReference<ScrollableComponentFromScreenComponent<RadioButton>>(null);
+                ByItemType_DenyThisRadio = new WeakReference<ScrollableComponentFromScreenComponent<RadioButton>>(null);
+                ByItemType_MaterialBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>>(null);
 
-                ByQuantity_Field = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
+                ByQuantity_Field = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
 
-                ByReceiving_MaterialCheck = new WeakReference<TaskItemComponentFromScreenComponent<CheckBox>>(null);
-                ByReceiving_MaterialBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>>(null);
-                ByReceiving_Field = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
+                ByReceiving_MaterialCheck = new WeakReference<ScrollableComponentFromScreenComponent<CheckBox>>(null);
+                ByReceiving_MaterialBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>>(null);
+                ByReceiving_Field = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
 
-                ByDelivering_MaterialCheck = new WeakReference<TaskItemComponentFromScreenComponent<CheckBox>>(null);
-                ByDelivering_MaterialBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>>(null);
-                ByDelivering_Field = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
+                ByDelivering_MaterialCheck = new WeakReference<ScrollableComponentFromScreenComponent<CheckBox>>(null);
+                ByDelivering_MaterialBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>>(null);
+                ByDelivering_Field = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
             }
 
             public void InitializeComponent(RenderContext context, EventHandler redraw, EventHandler redrawAndReload)
@@ -404,7 +404,7 @@ every cycle, such as for a courier.", true);
 
             public ITransferRestrictor CreateRestrictor(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
             {
-                TaskItemComponentFromScreenComponent<ComboBox<RestrictorType>> typeBox;
+                ScrollableComponentFromScreenComponent<ComboBox<RestrictorType>> typeBox;
                 if(!TryGetWrapped(TypeBox, out typeBox))
                 {
                     if(Original != null)
@@ -489,7 +489,7 @@ every cycle, such as for a courier.", true);
 
             public bool IsValid()
             {
-                TaskItemComponentFromScreenComponent<ComboBox<RestrictorType>> typeBox;
+                ScrollableComponentFromScreenComponent<ComboBox<RestrictorType>> typeBox;
                 if (!TryGetWrapped(TypeBox, out typeBox))
                 {
                     if (Original != null)
@@ -582,32 +582,32 @@ far.";
         /// </summary>
         protected WeakReference<ScrollableComponentAsLayoutManager> RestrictorsInnerLayout;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<RadioButton>> PickupRadio;
-        protected WeakReference<TaskItemComponentFromScreenComponent<RadioButton>> DropoffRadio;
+        protected WeakReference<ScrollableComponentFromScreenComponent<RadioButton>> PickupRadio;
+        protected WeakReference<ScrollableComponentFromScreenComponent<RadioButton>> DropoffRadio;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<TargetDeciderType>>> TargeterCombo;
+        protected WeakReference<ScrollableComponentFromScreenComponent<ComboBox<TargetDeciderType>>> TargeterCombo;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> TargetByID_Field;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> TargetByID_Field;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> TargetByPosition_XField;
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> TargetByPosition_YField;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> TargetByPosition_XField;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> TargetByPosition_YField;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> TargetByRelPosition_DXField;
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> TargetByRelPosition_DYField;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> TargetByRelPosition_DXField;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> TargetByRelPosition_DYField;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<ResultDeciderType>>> ResultDeciderCombo;
+        protected WeakReference<ScrollableComponentFromScreenComponent<ComboBox<ResultDeciderType>>> ResultDeciderCombo;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<CheckBox>> ResultDeciderByItemsTransfered_MaterialCheck;
-        protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>> ResultDeciderByItemsTransfered_MaterialBox;
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> ResultDeciderByItemsTransfered_Field;
+        protected WeakReference<ScrollableComponentFromScreenComponent<CheckBox>> ResultDeciderByItemsTransfered_MaterialCheck;
+        protected WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>> ResultDeciderByItemsTransfered_MaterialBox;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> ResultDeciderByItemsTransfered_Field;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<CheckBox>> ResultDeciderByDeliveringItems_MaterialCheck;
-        protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>> ResultDeciderByDeliveringItems_MaterialBox;
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> ResultDeciderByDeliveringItems_Field;
+        protected WeakReference<ScrollableComponentFromScreenComponent<CheckBox>> ResultDeciderByDeliveringItems_MaterialCheck;
+        protected WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>> ResultDeciderByDeliveringItems_MaterialBox;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> ResultDeciderByDeliveringItems_Field;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<CheckBox>> ResultDeciderByReceivingItems_MaterialCheck;
-        protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>> ResultDeciderByReceivingItems_MaterialBox;
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> ResultDeciderByReceivingItems_Field;
+        protected WeakReference<ScrollableComponentFromScreenComponent<CheckBox>> ResultDeciderByReceivingItems_MaterialCheck;
+        protected WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>> ResultDeciderByReceivingItems_MaterialBox;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> ResultDeciderByReceivingItems_Field;
 
         public TransferItemTaskItem() : base()
         {
@@ -624,32 +624,32 @@ far.";
 
             RestrictorsInnerLayout = new WeakReference<ScrollableComponentAsLayoutManager>(null);
 
-            PickupRadio = new WeakReference<TaskItemComponentFromScreenComponent<RadioButton>>(null);
-            DropoffRadio = new WeakReference<TaskItemComponentFromScreenComponent<RadioButton>>(null);
+            PickupRadio = new WeakReference<ScrollableComponentFromScreenComponent<RadioButton>>(null);
+            DropoffRadio = new WeakReference<ScrollableComponentFromScreenComponent<RadioButton>>(null);
 
-            TargeterCombo = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<TargetDeciderType>>>(null);
+            TargeterCombo = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<TargetDeciderType>>>(null);
 
-            TargetByID_Field = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
+            TargetByID_Field = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
 
-            TargetByPosition_XField = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
-            TargetByPosition_YField = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
+            TargetByPosition_XField = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
+            TargetByPosition_YField = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
 
-            TargetByRelPosition_DXField = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
-            TargetByRelPosition_DYField = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
+            TargetByRelPosition_DXField = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
+            TargetByRelPosition_DYField = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
 
-            ResultDeciderCombo = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<ResultDeciderType>>>(null);
+            ResultDeciderCombo = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<ResultDeciderType>>>(null);
 
-            ResultDeciderByItemsTransfered_Field = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
-            ResultDeciderByItemsTransfered_MaterialBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>>(null);
-            ResultDeciderByItemsTransfered_MaterialCheck = new WeakReference<TaskItemComponentFromScreenComponent<CheckBox>>(null);
+            ResultDeciderByItemsTransfered_Field = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
+            ResultDeciderByItemsTransfered_MaterialBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>>(null);
+            ResultDeciderByItemsTransfered_MaterialCheck = new WeakReference<ScrollableComponentFromScreenComponent<CheckBox>>(null);
 
-            ResultDeciderByDeliveringItems_Field = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
-            ResultDeciderByDeliveringItems_MaterialBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>>(null);
-            ResultDeciderByDeliveringItems_MaterialCheck = new WeakReference<TaskItemComponentFromScreenComponent<CheckBox>>(null);
+            ResultDeciderByDeliveringItems_Field = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
+            ResultDeciderByDeliveringItems_MaterialBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>>(null);
+            ResultDeciderByDeliveringItems_MaterialCheck = new WeakReference<ScrollableComponentFromScreenComponent<CheckBox>>(null);
 
-            ResultDeciderByReceivingItems_Field = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
-            ResultDeciderByReceivingItems_MaterialBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>>(null);
-            ResultDeciderByReceivingItems_MaterialCheck = new WeakReference<TaskItemComponentFromScreenComponent<CheckBox>>(null);
+            ResultDeciderByReceivingItems_Field = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
+            ResultDeciderByReceivingItems_MaterialBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>>(null);
+            ResultDeciderByReceivingItems_MaterialCheck = new WeakReference<ScrollableComponentFromScreenComponent<CheckBox>>(null);
 
             RestrictorQueuedToAdd = false;
             RestrictorIndexQueuedToRemove = -1;
@@ -988,7 +988,7 @@ specific type.", true)));
 
         public override IEntityTask CreateEntityTask(ITaskable taskable, SharedGameState sharedState, LocalGameState localState, NetContext netContext)
         {
-            TaskItemComponentFromScreenComponent<RadioButton> pickupWrapped;
+            ScrollableComponentFromScreenComponent<RadioButton> pickupWrapped;
             if (!TryGetWrapped(PickupRadio, out pickupWrapped))
             {
                 if (Task == null)
@@ -1101,7 +1101,7 @@ specific type.", true)));
 
         public override bool IsValid()
         {
-            TaskItemComponentFromScreenComponent<RadioButton> pickupWrapped;
+            ScrollableComponentFromScreenComponent<RadioButton> pickupWrapped;
             if (!TryGetWrapped(PickupRadio, out pickupWrapped))
             {
                 if (Task == null)

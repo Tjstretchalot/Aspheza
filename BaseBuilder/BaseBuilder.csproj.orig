@@ -212,13 +212,8 @@
     <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlay.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlayMenuComponent.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlayMenuItem.cs" />
-    <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlays2\BakeryItem2.cs" />
-    <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlays2\BarnItem2.cs" />
-    <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlays2\BuildOverlay2.cs" />
-    <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlays2\BuildOverlayImpl.cs" />
-    <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlays2\BuildOverlayMenuItem2.cs" />
-    <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlays2\ChickenCoopItem2.cs" />
-    <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlays2\Farm.cs" />
+    <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlays2\BuildOverlay.cs" />
+    <Compile Include="Screens\GameScreens\BuildOverlays\BuildOverlays2\BuildOverlayImp.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\ChickenCoopBuildOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\FarmBuildOverlayMenuItem.cs" />
     <Compile Include="Screens\GameScreens\BuildOverlays\LibraryBuildOverlayMenuItem.cs" />
@@ -244,7 +239,7 @@
     <Compile Include="Screens\GameScreens\TaskOverlays\AddTaskOverlayComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\InspectTaskOverlayComponent.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\LiveTaskOverlayComponent.cs" />
-    <Compile Include="Screens\GameScreens\TaskOverlays\ScrollableComponentWrapper.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\ScrollableComponent.cs" />
     <Compile Include="Screens\Components\ScrollableComponents\ScrollableComponentUtils.cs" />
     <Compile Include="Screens\Components\ScrollableComponents\HorizontalFlowScrollableComponent.cs" />
     <Compile Include="Screens\Components\ScrollableComponents\PaddingScrollableComponent.cs" />

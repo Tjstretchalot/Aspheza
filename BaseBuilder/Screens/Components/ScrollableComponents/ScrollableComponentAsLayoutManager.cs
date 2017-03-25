@@ -104,12 +104,12 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
             }
         }
 
-        public virtual void UpdateLowPriorirty(ContentManager content, int deltaMS)
+        public virtual void UpdateLowPriority(ContentManager content, int deltaMS)
         {
             foreach(var child in Children)
             {
                 if (!child.Hidden)
-                    child.UpdateLowPriorirty(content, deltaMS);
+                    child.UpdateLowPriority(content, deltaMS);
             }
         }
 

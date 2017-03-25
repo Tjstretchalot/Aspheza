@@ -32,15 +32,15 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 building. Can harvest by entity id, position, or relative
 position. ";
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<TargetType>>> TargetTypeBox;
+        protected WeakReference<ScrollableComponentFromScreenComponent<ComboBox<TargetType>>> TargetTypeBox;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> TargetByID_Field;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> TargetByID_Field;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> TargetByPosition_XField;
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> TargetByPosition_YField;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> TargetByPosition_XField;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> TargetByPosition_YField;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> TargetByRelativePosition_DXField;
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> TargetByRelativePosition_DYField;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> TargetByRelativePosition_DXField;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> TargetByRelativePosition_DYField;
 
         /// <summary>
         /// Converts the specified task into the task item.
@@ -59,12 +59,12 @@ position. ";
         /// </summary>
         public HarvestTaskItem()
         {
-            TargetTypeBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<TargetType>>>(null);
-            TargetByID_Field = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
-            TargetByPosition_XField = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
-            TargetByPosition_YField = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
-            TargetByRelativePosition_DXField = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
-            TargetByRelativePosition_DYField = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
+            TargetTypeBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<TargetType>>>(null);
+            TargetByID_Field = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
+            TargetByPosition_XField = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
+            TargetByPosition_YField = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
+            TargetByRelativePosition_DXField = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
+            TargetByRelativePosition_DYField = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
 
             Children = new List<ITaskItem>();
             InspectDescription = _InspectDescription;
@@ -78,7 +78,7 @@ position. ";
         {
             var sourceId = ((Thing)taskable).ID;
             bool visualsDisposed = false;
-            TaskItemComponentFromScreenComponent<ComboBox<TargetType>> targetTypeBoxWrapped = null;
+            ScrollableComponentFromScreenComponent<ComboBox<TargetType>> targetTypeBoxWrapped = null;
             if (TargetTypeBox == null)
                 visualsDisposed = true;
             else if (!TargetTypeBox.TryGetTarget(out targetTypeBoxWrapped))
@@ -144,7 +144,7 @@ position. ";
         public override bool IsValid()
         {
             bool visualsDisposed = false;
-            TaskItemComponentFromScreenComponent<ComboBox<TargetType>> targetTypeBoxWrapped = null;
+            ScrollableComponentFromScreenComponent<ComboBox<TargetType>> targetTypeBoxWrapped = null;
             if (TargetTypeBox == null)
                 visualsDisposed = true;
             else if (!TargetTypeBox.TryGetTarget(out targetTypeBoxWrapped))

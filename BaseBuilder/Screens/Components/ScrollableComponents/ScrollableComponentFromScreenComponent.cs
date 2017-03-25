@@ -16,13 +16,13 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
     /// Describes a task item component that is simply a screen component
     /// laid out with no spacing at the suggested x.
     /// </summary>
-    public class TaskItemComponentFromScreenComponent <T1> : IScrollableComponent where T1:IScreenComponent
+    public class ScrollableComponentFromScreenComponent <T1> : IScrollableComponent where T1:IScreenComponent
     {
         public bool Disposed { get; protected set; }
         public bool Hidden { get; set; }
         public T1 Component;
 
-        public TaskItemComponentFromScreenComponent(T1 component)
+        public ScrollableComponentFromScreenComponent(T1 component)
         {
             Component = component;
         }
@@ -90,7 +90,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
                 Component.Update(content, deltaMS);
         }
 
-        public void UpdateLowPriorirty(ContentManager content, int deltaMS)
+        public void UpdateLowPriority(ContentManager content, int deltaMS)
         {
             if (!Component.HighPriorityZ)
                 Component.Update(content, deltaMS);

@@ -1,9 +1,11 @@
 ﻿using BaseBuilder.Engine.Context;
+using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State.Resources;
 using BaseBuilder.Screens.Components;
 using BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems;
 using BaseBuilder.Screens.GComponents.ScrollableComponents;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +28,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         {
             var result = new List<IScrollableComponent>();
 
-            foreach(var comp in comps)
+            foreach (var comp in comps)
             {
                 result.Add(Wrap(comp));
             }
@@ -40,9 +42,9 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         /// <typeparam name="T">The type of the screen component so it may be preserved</typeparam>
         /// <param name="component">The component to wrap</param>
         /// <returns>The wrapped component</returns>
-        public static TaskItemComponentFromScreenComponent<T> Wrap<T>(T component) where T:IScreenComponent
+        public static ScrollableComponentFromScreenComponent<T> Wrap<T>(T component) where T : IScreenComponent
         {
-            return new TaskItemComponentFromScreenComponent<T>(component);
+            return new ScrollableComponentFromScreenComponent<T>(component);
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         /// <returns>Unwrapped component</returns>
         /// <exception cref="InvalidProgramException">If the weak reference is lost</exception>
         /// <exception cref="InvalidProgramException">If the component is disposed</exception>
-        public static T1 Unwrap<T1>(WeakReference<TaskItemComponentFromScreenComponent<T1>> weak) where T1:IScreenComponent
+        public static T1 Unwrap<T1>(WeakReference<ScrollableComponentFromScreenComponent<T1>> weak) where T1 : IScreenComponent
         {
             return Unwrap(MakeStrong(weak));
         }
@@ -66,7 +68,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         /// <param name="strong">The strong reference</param>
         /// <returns>The component</returns>
         /// <exception cref="InvalidProgramException">If the component is disposed</exception>
-        public static T1 Unwrap<T1>(TaskItemComponentFromScreenComponent<T1> strong) where T1:IScreenComponent
+        public static T1 Unwrap<T1>(ScrollableComponentFromScreenComponent<T1> strong) where T1 : IScreenComponent
         {
             if (strong.Disposed)
                 throw new InvalidProgramException("Component is disposed!");
@@ -81,7 +83,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         /// <typeparam name="T1">The referenced type</typeparam>
         /// <param name="weak">Weak reference</param>
         /// <returns>Strong reference</returns>
-        public static T1 MakeStrong<T1>(WeakReference<T1> weak) where T1:class
+        public static T1 MakeStrong<T1>(WeakReference<T1> weak) where T1 : class
         {
             T1 strong;
             if (!weak.TryGetTarget(out strong))
@@ -89,7 +91,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
 
             return strong;
         }
-        
+
         /// <summary>
         /// Tries to get the task item component from the weak reference, returning false
         /// if the weak reference is lost OR the underlying component is disposed.
@@ -98,7 +100,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         /// <param name="weakWrapped">The wrapped delegate</param>
         /// <param name="value">The variable to set</param>
         /// <returns>If the value was set, false otherwise</returns>
-        public static bool TryGetWrapped<T1>(WeakReference<T1> weakWrapped, out T1 value) where T1 : class,IScrollableComponent
+        public static bool TryGetWrapped<T1>(WeakReference<T1> weakWrapped, out T1 value) where T1 : class, IScrollableComponent
         {
             value = default(T1);
 
@@ -123,7 +125,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         /// <returns>The wrapped component</returns>
         public static IScrollableComponent Label(RenderContext context, string label, IScrollableComponent component, bool vertical = true)
         {
-            if(vertical)
+            if (vertical)
             {
                 var result = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.LeftAlignSuggested, 3);
 
@@ -131,7 +133,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
                 result.Children.Add(component);
 
                 return result;
-            }else
+            } else
             {
                 var result = new HorizontalFlowScrollableComponent(HorizontalFlowScrollableComponent.HorizontalAlignmentMode.CenterAlignSuggested, 3);
 
@@ -167,7 +169,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         {
             List<ComboBoxItem<T1>> items = new List<ComboBoxItem<T1>>();
 
-            foreach(var opt in options)
+            foreach (var opt in options)
             {
                 items.Add(new ComboBoxItem<T1>(context.DefaultFont, opt.Item1, opt.Item2));
             }
@@ -209,16 +211,16 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         public static void SetupComboBoxHiddenToggle<T1>(WeakReference<ComboBox<T1>> boxWeak, T1 choice, WeakReference<IScrollableComponent> thingToToggleWeak)
         {
             ComboBox<T1> boxStrong;
-            if(!boxWeak.TryGetTarget(out boxStrong))
+            if (!boxWeak.TryGetTarget(out boxStrong))
             {
                 throw new InvalidProgramException("Weak reference already lost");
             }
-            
-            if(boxStrong.Selected == null || EqualityComparer<T1>.Default.Equals(boxStrong.Selected.Value, choice))
+
+            if (boxStrong.Selected == null || EqualityComparer<T1>.Default.Equals(boxStrong.Selected.Value, choice))
             {
                 IScrollableComponent thingStrong;
 
-                if(TryGetWrapped(thingToToggleWeak, out thingStrong))
+                if (TryGetWrapped(thingToToggleWeak, out thingStrong))
                 {
                     thingStrong.Hidden = true;
                 }
@@ -231,7 +233,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
                 IScrollableComponent thingToToggleStrong;
                 if (!thingToToggleWeak.TryGetTarget(out thingToToggleStrong) || thingToToggleStrong.Disposed)
                 {
-                    if(boxWeak.TryGetTarget(out boxStrong2))
+                    if (boxWeak.TryGetTarget(out boxStrong2))
                     {
                         boxStrong2.SelectedChanged -= handler;
                     }
@@ -254,7 +256,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
                 if (boxStrong2.Selected == null)
                     return;
 
-                if(comparer.Equals(boxStrong2.Selected.Value, choice))
+                if (comparer.Equals(boxStrong2.Selected.Value, choice))
                 {
                     thingToToggleStrong.Hidden = false;
                     return;
@@ -286,6 +288,23 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         public static Text CreateText(RenderContext context, string text, bool cache = false)
         {
             return new Text(new Point(0, 0), text, context.DefaultFont, Color.White, cache);
+        }
+
+        /// <summary>
+        /// Create texture with one times zoom loaded from the content manager with
+        /// the specified texure name
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="textureName">TextureName</param>
+        /// <param name="size">Size, if null will be set to the size of the texture.</param>
+        /// <param name="disposeRequired">If the texture component should dispose the texture.</param>
+        /// <returns>The TextureComponent</returns>
+        public static TextureComponent CreateTexture(RenderContext context, string textureName, PointI2D size = null, bool disposeRequired = false)
+        {
+            var texture = context.Content.Load<Texture2D>(textureName);
+            if (size == null)
+                size = new PointI2D(texture.Width, texture.Height);
+            return new TextureComponent(texture, new Rectangle(0, 0, size.X, size.Y), disposeRequired);
         }
 
         /// <summary>

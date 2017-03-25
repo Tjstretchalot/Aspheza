@@ -81,7 +81,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         {
         }
 
-        public void UpdateLowPriorirty(ContentManager content, int deltaMS)
+        public void UpdateLowPriority(ContentManager content, int deltaMS)
         {
         }
     }

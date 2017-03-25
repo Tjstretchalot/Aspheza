@@ -45,29 +45,29 @@ condition task takes some time, typically one second.";
         // if somehow a component was removed from components without a call to dispose we wouldn't get any
         // exceptions.
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<ConditionType>>> ConditionTypeBox;
+        protected WeakReference<ScrollableComponentFromScreenComponent<ComboBox<ConditionType>>> ConditionTypeBox;
         
-        protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<InventoryConditionType>>> InventoryConditionTypeBox;
+        protected WeakReference<ScrollableComponentFromScreenComponent<ComboBox<InventoryConditionType>>> InventoryConditionTypeBox;
 
-        protected WeakReference<TaskItemComponentFromScreenComponent<TextField>> InventoryCount_Quantity;
-        protected WeakReference<TaskItemComponentFromScreenComponent<RadioButton>> InventoryCount_AtMostButton;
-        protected WeakReference<TaskItemComponentFromScreenComponent<RadioButton>> InventoryCount_AtLeastButton;
-        protected WeakReference<TaskItemComponentFromScreenComponent<CheckBox>> InventoryCount_TypeCheck;
-        protected WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>> InventoryCount_TypeBox;
+        protected WeakReference<ScrollableComponentFromScreenComponent<TextField>> InventoryCount_Quantity;
+        protected WeakReference<ScrollableComponentFromScreenComponent<RadioButton>> InventoryCount_AtMostButton;
+        protected WeakReference<ScrollableComponentFromScreenComponent<RadioButton>> InventoryCount_AtLeastButton;
+        protected WeakReference<ScrollableComponentFromScreenComponent<CheckBox>> InventoryCount_TypeCheck;
+        protected WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>> InventoryCount_TypeBox;
 
         public ConditionTaskItem()
         {
             Task = null;
 
-            ConditionTypeBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<ConditionType>>>(null);
+            ConditionTypeBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<ConditionType>>>(null);
             
-            InventoryConditionTypeBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<InventoryConditionType>>>(null);
+            InventoryConditionTypeBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<InventoryConditionType>>>(null);
 
-            InventoryCount_Quantity = new WeakReference<TaskItemComponentFromScreenComponent<TextField>>(null);
-            InventoryCount_AtMostButton = new WeakReference<TaskItemComponentFromScreenComponent<RadioButton>>(null);
-            InventoryCount_AtLeastButton = new WeakReference<TaskItemComponentFromScreenComponent<RadioButton>>(null);
-            InventoryCount_TypeCheck = new WeakReference<TaskItemComponentFromScreenComponent<CheckBox>>(null);
-            InventoryCount_TypeBox = new WeakReference<TaskItemComponentFromScreenComponent<ComboBox<Material>>>(null);
+            InventoryCount_Quantity = new WeakReference<ScrollableComponentFromScreenComponent<TextField>>(null);
+            InventoryCount_AtMostButton = new WeakReference<ScrollableComponentFromScreenComponent<RadioButton>>(null);
+            InventoryCount_AtLeastButton = new WeakReference<ScrollableComponentFromScreenComponent<RadioButton>>(null);
+            InventoryCount_TypeCheck = new WeakReference<ScrollableComponentFromScreenComponent<CheckBox>>(null);
+            InventoryCount_TypeBox = new WeakReference<ScrollableComponentFromScreenComponent<ComboBox<Material>>>(null);
 
             Children = new List<ITaskItem>();
             TaskName = "Condition";
@@ -92,7 +92,7 @@ condition task takes some time, typically one second.";
         {
             var visualsDisposed = false;
 
-            TaskItemComponentFromScreenComponent<ComboBox<ConditionType>> typeBoxWrapped;
+            ScrollableComponentFromScreenComponent<ComboBox<ConditionType>> typeBoxWrapped;
             if (!ConditionTypeBox.TryGetTarget(out typeBoxWrapped))
                 visualsDisposed = true;
             else if (typeBoxWrapped.Disposed)
@@ -152,7 +152,7 @@ condition task takes some time, typically one second.";
         {
             var visualsDisposed = false;
 
-            TaskItemComponentFromScreenComponent<ComboBox<ConditionType>> typeBoxWrapped;
+            ScrollableComponentFromScreenComponent<ComboBox<ConditionType>> typeBoxWrapped;
             if (!ConditionTypeBox.TryGetTarget(out typeBoxWrapped))
                 visualsDisposed = true;
             else if (typeBoxWrapped.Disposed)

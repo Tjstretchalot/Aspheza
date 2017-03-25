@@ -22,6 +22,7 @@ using BaseBuilder.Screens.GameScreens.BuildOverlays;
 using Microsoft.Xna.Framework.Audio;
 using BaseBuilder.Screens.GameScreens.ToolbarOverlays;
 using System.Diagnostics;
+using BaseBuilder.Screens.GameScreens.BuildOverlays.BuildOverlays2;
 
 namespace BaseBuilder.Screens.GameScreens
 {
@@ -74,7 +75,7 @@ namespace BaseBuilder.Screens.GameScreens
             localGameLogic.AddComponent(localGameState, new ChatOverlay(content, graphics, graphicsDevice, spriteBatch));
             //localGameLogic.AddComponent(localGameState, new GameBackgroundMusicComponent(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new HoverTextComponent(content, graphics, graphicsDevice, spriteBatch));
-            localGameLogic.AddComponent(localGameState, new BuildOverlay(content, graphics, graphicsDevice, spriteBatch));
+            localGameLogic.AddComponent(localGameState, new BuildOverlay2(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new PlayersOverlay(content, graphics, graphicsDevice, spriteBatch));
             //localGameLogic.AddComponent(localGameState, new ResourceOverlay(content, graphics, graphicsDevice, spriteBatch));
             localGameLogic.AddComponent(localGameState, new EscapeMenuOverlay(content, graphics, graphicsDevice, spriteBatch));

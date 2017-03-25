@@ -199,7 +199,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
         public override void UpdateInspect(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
         {
             CompleteComponent.UpdateHighPriority(Content, timeMS);
-            CompleteComponent.UpdateLowPriorirty(Content, timeMS);
+            CompleteComponent.UpdateLowPriority(Content, timeMS);
         }
 
         public override void DisposeInspect()
