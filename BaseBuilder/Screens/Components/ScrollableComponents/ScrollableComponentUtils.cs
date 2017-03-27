@@ -299,12 +299,14 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         /// <param name="size">Size, if null will be set to the size of the texture.</param>
         /// <param name="disposeRequired">If the texture component should dispose the texture.</param>
         /// <returns>The TextureComponent</returns>
-        public static TextureComponent CreateTexture(RenderContext context, string textureName, PointI2D size = null, bool disposeRequired = false)
+        public static TextureComponent CreateTexture(RenderContext context, string textureName, PointI2D size = null, Rectangle? sourceRect = null, bool disposeRequired = false)
         {
             var texture = context.Content.Load<Texture2D>(textureName);
+            if (!sourceRect.HasValue)
+                sourceRect = new Rectangle(0, 0, texture.Width, texture.Height);
             if (size == null)
-                size = new PointI2D(texture.Width, texture.Height);
-            return new TextureComponent(texture, new Rectangle(0, 0, size.X, size.Y), disposeRequired);
+                size = new PointI2D(sourceRect.Value.Width, sourceRect.Value.Height);
+            return new TextureComponent(texture, new Rectangle(0, 0, size.X, size.Y), sourceRect.Value, disposeRequired);
         }
 
         /// <summary>

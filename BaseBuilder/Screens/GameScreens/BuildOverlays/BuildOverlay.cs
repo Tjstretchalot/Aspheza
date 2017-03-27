@@ -1,4 +1,5 @@
 ﻿using System;
+using static BaseBuilder.Screens.Components.ScrollableComponents.ScrollableComponentUtils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,115 +8,127 @@ using BaseBuilder.Engine.Context;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using BaseBuilder.Engine.Math2D;
+using BaseBuilder.Screens.Components.ScrollableComponents;
+using BaseBuilder.Screens.GameScreens.TaskOverlays;
 using BaseBuilder.Engine.Math2D.Double;
+using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Input;
-using BaseBuilder.Engine.World.Entities.ImmobileEntities;
-using BaseBuilder.Engine.Logic.Orders;
-using BaseBuilder.Engine.World.Entities.Utilities;
 
 namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
-    /// <summary>
-    /// A build overlay shows where a building will be placed
-    /// </summary>
     public class BuildOverlay : MyGameComponent
     {
-        protected BuildOverlayMenuComponent Menu;
-        protected bool MenuVisible;
+        public ScrollableComponentWrapper ScrollableComponent;
+        public BuildOverlayImpl BuildOverlayImpl;
 
-        protected static Color PlaceableColor = new Color(200, 200, 100);
-        protected UnbuiltImmobileEntity BuildingToPlace;
-        protected PointD2D CurrentPlaceLocation;
-        protected bool CantPlace;
-
-        protected int ScrollWheelAmountToNext;
+        public UnbuiltImmobileEntity BuildingToPlace;
+        public PointD2D PlaceLocation;
+        public bool CantPlace;
+        public int ScrollWheelAmountToNext;
 
         public BuildOverlay(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) : base(content, graphics, graphicsDevice, spriteBatch)
         {
-            CurrentPlaceLocation = new PointD2D(0, 0);
             Init(new PointI2D(0, 0), new PointI2D(0, 0), 10);
 
-            Menu = new BuildOverlayMenuComponent(content, graphics, graphicsDevice, spriteBatch);
+            PlaceLocation = new PointD2D(0, 0);
+        }
+
+        public override void PreDraw(RenderContext renderContext)
+        {
+            ScrollableComponent?.PreDraw(renderContext);
         }
 
         public override void Draw(RenderContext context)
         {
-            if (!MenuVisible)
+            if (ScrollableComponent == null)
                 return;
-
-            if (BuildingToPlace != null)
-            {
-                var placeLocationScreen = new PointD2D((int)context.Camera.PixelLocationOfWorldX(CurrentPlaceLocation.X), (int)context.Camera.PixelLocationOfWorldY(CurrentPlaceLocation.Y));
-
-                BuildingToPlace.Render(context, placeLocationScreen, CantPlace ? Color.Red : PlaceableColor);
-            }
             
-            Menu.Draw(context);
+            if(BuildingToPlace != null)
+            {
+                var drawLocation = new PointD2D((int)context.Camera.PixelLocationOfWorldX(PlaceLocation.X), (int)context.Camera.PixelLocationOfWorldY(PlaceLocation.Y));
+
+                BuildingToPlace.Render(context, drawLocation, CantPlace ? Color.Red : new Color(200, 200, 100));
+            }
+
+            ScrollableComponent.Draw(context);
+        }
+
+        public void InitMenu()
+        {
+            BuildOverlayImpl = new BuildOverlayImpl();
+            ScrollableComponent = new ScrollableComponentWrapper(Content, Graphics, GraphicsDevice, SpriteBatch, BuildOverlayImpl,
+                new PointI2D(GraphicsDevice.Viewport.Width - 300, 25), new PointI2D(250, GraphicsDevice.Viewport.Height - 250), 1);
+
+            BuildOverlayImpl.RedrawRequired += (sender, args) => RedrawMenu();
+            BuildOverlayImpl.SelectionChanged += (sender, args) =>
+            {
+                BuildingToPlace = BuildOverlayImpl.Selected;
+            };
+        }
+
+        public void RedrawMenu()
+        {
+            ScrollableComponent.Invalidate();
+        }
+
+        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
+        {
+            ScrollableComponent?.Update(sharedGameState, localGameState, netContext, timeMS);
         }
 
         public override bool HandleKeyboardState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, KeyboardState last, KeyboardState current, List<Keys> keysReleasedThisFrame)
         {
-            if (!MenuVisible)
+            if (ScrollableComponent == null)
             {
                 if (keysReleasedThisFrame.Contains(Keys.B))
                 {
-                    MenuVisible = true;
+                    InitMenu();
                     return true;
                 }
-            }else
+                return false;
+            }
+            else
             {
-                if(keysReleasedThisFrame.Contains(Keys.Escape))
+                if (keysReleasedThisFrame.Any((k) => k == Keys.B || k == Keys.Escape))
                 {
-                    if (Menu.Current != null)
-                        Menu.ClearSelection();
+                    if (BuildingToPlace != null)
+                    {
+                        BuildOverlayImpl.ResetSelected();
+                    }
                     else
-                        MenuVisible = false;
-                    return true;
-                }else
-                {
-                    if (Menu.HandleKeyboardState(sharedGameState, localGameState, netContext, last, current, keysReleasedThisFrame))
-                        return true;
-                }
-            }
-
-
-            if(keysReleasedThisFrame.Contains(Keys.Delete))
-            {
-                var immobileSel = localGameState.SelectedEntity as ImmobileEntity;
-
-                if(immobileSel != null)
-                {
-                    var order = netContext.GetPoolFromPacketType(typeof(DeconstructOrder)).GetGamePacketFromPool() as DeconstructOrder;
-                    order.EntityID = immobileSel.ID;
-                    localGameState.Orders.Add(order);
+                    {
+                        DisposeMenu();
+                    }
                     return true;
                 }
+                else
+                {
+                    return ScrollableComponent.HandleKeyboardState(sharedGameState, localGameState, netContext, last, current, keysReleasedThisFrame);
+                }
             }
-
-            return false;
         }
 
-        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool scrollHandled)
+        public override void HandleMouseState(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, MouseState last, MouseState current, ref bool handled, ref bool handledScroll)
         {
-            if (!MenuVisible)
+            if (ScrollableComponent == null)
                 return;
 
-            Menu.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref scrollHandled);
+            ScrollableComponent.HandleMouseState(sharedGameState, localGameState, netContext, last, current, ref handled, ref handledScroll);
+
+            if (BuildingToPlace == null)
+                return;
             if (handled)
                 return;
 
-            BuildingToPlace = Menu.Current;
-            if (BuildingToPlace == null)
-                return;
-
+            handled = true;
+            
             var desLeft = current.Position.X - ((BuildingToPlace.CollisionMesh.Right - BuildingToPlace.CollisionMesh.Left) * localGameState.Camera.Zoom) / 2.0;
             var desTop = current.Position.Y - ((BuildingToPlace.CollisionMesh.Bottom - BuildingToPlace.CollisionMesh.Top) * localGameState.Camera.Zoom) / 2.0;
 
             // Snap to tiles
-            CurrentPlaceLocation.X = (int)Math.Round(localGameState.Camera.WorldLocationOfPixelX(desLeft));
-            CurrentPlaceLocation.Y = (int)Math.Round(localGameState.Camera.WorldLocationOfPixelY(desTop));
+            PlaceLocation.X = (int)Math.Round(localGameState.Camera.WorldLocationOfPixelX(desLeft));
+            PlaceLocation.Y = (int)Math.Round(localGameState.Camera.WorldLocationOfPixelY(desTop));
 
             // Snap to half-tiles
             //CurrentPlaceLocation.X = ((int)Math.Round(localGameState.Camera.WorldLocationOfPixelX(desLeft) * 2)) / 2.0;
@@ -126,57 +139,59 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             //CurrentPlaceLocation.Y = localGameState.Camera.WorldLocationOfPixelY(current.Position.Y);
 
             CantPlace = false;
-            if (CurrentPlaceLocation.X < 0 || CurrentPlaceLocation.Y < 0 ||
-                CurrentPlaceLocation.X + BuildingToPlace.CollisionMesh.Right >= sharedGameState.World.TileWidth ||
-                CurrentPlaceLocation.Y + BuildingToPlace.CollisionMesh.Bottom >= sharedGameState.World.TileHeight)
+            if (PlaceLocation.X < 0 || PlaceLocation.Y < 0 ||
+                PlaceLocation.X + BuildingToPlace.CollisionMesh.Right >= sharedGameState.World.TileWidth ||
+                PlaceLocation.Y + BuildingToPlace.CollisionMesh.Bottom >= sharedGameState.World.TileHeight)
             {
                 CantPlace = true;
             }
             else
             {
-                foreach (var ent in sharedGameState.World.GetEntitiesAtLocation(BuildingToPlace.CollisionMesh, CurrentPlaceLocation))
+                foreach (var ent in sharedGameState.World.GetEntitiesAtLocation(BuildingToPlace.CollisionMesh, PlaceLocation))
                 {
                     CantPlace = true;
                     break;
                 }
 
-                if(!CantPlace)
+                if (!CantPlace)
                 {
-                    CantPlace = !BuildingToPlace.TilesAreValid(sharedGameState, CurrentPlaceLocation);
+                    CantPlace = !BuildingToPlace.TilesAreValid(sharedGameState, PlaceLocation);
                 }
             }
 
             if (last.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released && !CantPlace)
             {
-                Menu.TryBuildEntity(sharedGameState, localGameState, netContext, CurrentPlaceLocation, BuildingToPlace);
-                Menu.ClearSelection();
-            }else if(!scrollHandled && last.ScrollWheelValue != current.ScrollWheelValue)
+                BuildOverlayImpl.TryBuildEntity(sharedGameState, localGameState, netContext, PlaceLocation, BuildingToPlace);
+                BuildOverlayImpl.ResetSelected();
+            }
+            else if (!handledScroll && last.ScrollWheelValue != current.ScrollWheelValue)
             {
-                scrollHandled = true;
+                handledScroll = true;
                 var deltaScrollWheel = current.ScrollWheelValue - last.ScrollWheelValue;
 
                 ScrollWheelAmountToNext -= Math.Abs(deltaScrollWheel);
 
-                if(ScrollWheelAmountToNext <= 0)
+                if (ScrollWheelAmountToNext <= 0)
                 {
                     ScrollWheelAmountToNext = 100;
 
                     BuildingToPlace.TryRotate(Math.Sign(deltaScrollWheel));
                 }
             }
-            handled = true;
         }
 
-        public override void Update(SharedGameState sharedGameState, LocalGameState localGameState, NetContext netContext, int timeMS)
+        public void DisposeMenu()
         {
-            base.Update(sharedGameState, localGameState, netContext, timeMS);
-            Menu.Update(sharedGameState, localGameState, netContext, timeMS);
+            ScrollableComponent.Dispose();
+            BuildOverlayImpl = null;
+            ScrollableComponent = null;
+            BuildingToPlace = null;
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            Menu.Dispose();
+            DisposeMenu();
         }
     }
 }

@@ -112,7 +112,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItem
             layout.Children.Add(Wrap(text));
             var lineText = new Texture2D(context.GraphicsDevice, 1, 1);  // we're telling the component to handle disposing of this texture
             lineText.SetData(new[] { Color.DarkGray });
-            layout.Children.Add(Wrap(new TextureComponent(lineText, new Rectangle(0, 0, text.Size.X, 2), true)));
+            layout.Children.Add(Wrap(new TextureComponent(lineText, new Rectangle(0, 0, text.Size.X, 2), new Rectangle(0, 0, 1, 1), true)));
             layout.Children.Add(InitializeComponent(context));
 
             Button button;

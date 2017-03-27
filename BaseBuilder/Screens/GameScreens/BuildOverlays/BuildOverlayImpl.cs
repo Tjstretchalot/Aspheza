@@ -15,17 +15,17 @@ using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Input;
 using BaseBuilder.Engine.Math2D.Double;
 
-namespace BaseBuilder.Screens.GameScreens.BuildOverlays.BuildOverlays2
+namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
     public class BuildOverlayImpl : MyGameComponent
     {
         public event EventHandler RedrawRequired;
         public event EventHandler SelectionChanged;
         
-        protected List<BuildOverlayMenuItem2> Items;
+        protected List<BuildOverlayMenuItem> Items;
         public UnbuiltImmobileEntity Selected { get; protected set; }
-        public BuildOverlayMenuItem2 SelectedItem { get; protected set; }
-        protected BuildOverlayMenuItem2 ToSelect;
+        public BuildOverlayMenuItem SelectedItem { get; protected set; }
+        protected BuildOverlayMenuItem ToSelect;
 
         public bool Disposed;
         public bool Reload;
@@ -35,9 +35,18 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays.BuildOverlays2
         public BuildOverlayImpl() : base(null, null, null, null)
         {
             Init(new PointI2D(0, 0), new PointI2D(250, 1), 1);
-            Items = new List<BuildOverlayMenuItem2>
+            Items = new List<BuildOverlayMenuItem>
             {
-                new BakeryItem2(),
+                new BakeryItem(),
+                new BarnItem(),
+                new ChickenCoopItem(),
+                new FarmItem(),
+                new LibraryItem(),
+                new LumberMillItem(),
+                new SaplingItem(),
+                new TavernItem(),
+                new TempleItem(),
+                new WaterMillItem()
             };
         }
 
@@ -141,7 +150,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays.BuildOverlays2
             SelectedItem.TryBuildEntity(sharedGameState, localGameState, netContext, placeLocation, buildingToPlace);
         }
 
-        public void SetSelectedItem(BuildOverlayMenuItem2 item)
+        public void SetSelectedItem(BuildOverlayMenuItem item)
         {
             ToSelect = item;
         }

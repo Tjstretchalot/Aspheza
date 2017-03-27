@@ -13,28 +13,18 @@ using BaseBuilder.Screens.Components;
 using Microsoft.Xna.Framework.Content;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
+using Microsoft.Xna.Framework;
 
-namespace BaseBuilder.Screens.GameScreens.BuildOverlays.BuildOverlays2
+namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
-    public class FarmItem2 : BuildOverlayMenuItem2
+    public class FarmItem : BuildOverlayMenuItem
     {
         public override IScrollableComponent BuildComponent(RenderContext context, BuildOverlayImpl menu, EventHandler redraw, EventHandler redrawAndReload)
         {
-            var weakMenu = new WeakReference<BuildOverlayImpl>(menu);
-            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
-            var texture = CreateTexture(context, "Farm");
-            layout.Children.Add(Wrap(texture));
-            var button = CreateButton(context, redraw, redrawAndReload, "Build");
-            button.PressReleased += (sender, args) =>
-            {
-                BuildOverlayImpl strongMenu;
-                if (!weakMenu.TryGetTarget(out strongMenu))
-                    return;
+            var texture = CreateTexture(context, "farms", sourceRect: new Rectangle(0, 0, 64, 68));
 
-                strongMenu.SetSelectedItem(this);
-            };
-            layout.Children.Add(Wrap(button));
-            return layout;
+            return CreateMenuItemFromTexture(context, menu, redraw, redrawAndReload, "Farm", texture, @"A farm can grow 
+seeds.");
         }
 
         public override UnbuiltImmobileEntity CreateUnbuiltImmobileEntity(SharedGameState gameState)

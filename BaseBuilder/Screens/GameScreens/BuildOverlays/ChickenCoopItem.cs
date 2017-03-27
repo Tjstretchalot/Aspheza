@@ -13,28 +13,20 @@ using BaseBuilder.Screens.Components;
 using Microsoft.Xna.Framework.Content;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
+using BaseBuilder.Engine.Math2D;
+using Microsoft.Xna.Framework;
 
-namespace BaseBuilder.Screens.GameScreens.BuildOverlays.BuildOverlays2
+namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
-    public class ShickenCoopItem2 : BuildOverlayMenuItem2
+    public class ChickenCoopItem : BuildOverlayMenuItem
     {
         public override IScrollableComponent BuildComponent(RenderContext context, BuildOverlayImpl menu, EventHandler redraw, EventHandler redrawAndReload)
         {
-            var weakMenu = new WeakReference<BuildOverlayImpl>(menu);
-            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 5);
-            var texture = CreateTexture(context, "ChickenCoop");
-            layout.Children.Add(Wrap(texture));
-            var button = CreateButton(context, redraw, redrawAndReload, "Build");
-            button.PressReleased += (sender, args) =>
-            {
-                BuildOverlayImpl strongMenu;
-                if (!weakMenu.TryGetTarget(out strongMenu))
-                    return;
+            var texture = CreateTexture(context, "ChickenCoop", new PointI2D(121, 118), new Rectangle(0, 0, 242, 236));
 
-                strongMenu.SetSelectedItem(this);
-            };
-            layout.Children.Add(Wrap(button));
-            return layout;
+            return CreateMenuItemFromTexture(context, menu, redraw, redrawAndReload, "Chicken Coop", texture, @"A chicken coop lets
+chickens produce 
+eggs.");
         }
 
         public override UnbuiltImmobileEntity CreateUnbuiltImmobileEntity(SharedGameState gameState)

@@ -32,6 +32,11 @@ namespace BaseBuilder.Screens.Components
         protected Texture2D Texture;
 
         /// <summary>
+        /// The source rect inside the texture to draw
+        /// </summary>
+        protected Rectangle SourceRect;
+
+        /// <summary>
         /// The actual location of this component
         /// </summary>
         protected Rectangle _Location;
@@ -85,7 +90,7 @@ namespace BaseBuilder.Screens.Components
         /// </summary>
         /// <param name="texture">The texture to use</param>
         /// <param name="location">The location of this component</param>
-        public TextureComponent(Texture2D texture, Rectangle location, bool disposeRequired)
+        public TextureComponent(Texture2D texture, Rectangle location, Rectangle sourceRect, bool disposeRequired)
         {
             if (texture == null)
                 throw new ArgumentNullException(nameof(texture));
@@ -95,11 +100,12 @@ namespace BaseBuilder.Screens.Components
             DisposeRequired = disposeRequired;
             Texture = texture;
             Location = location;
+            SourceRect = sourceRect;
         }
 
         public virtual void Draw(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, destinationRectangle: _Location);
+            spriteBatch.Draw(Texture, sourceRectangle: SourceRect, destinationRectangle: _Location);
         }
 
         public virtual void Update(ContentManager content, int deltaMS)

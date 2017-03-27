@@ -56,7 +56,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         {
             foreach(var distinguisher in Distinguishers)
             {
-                distinguisher.Draw(content, graphics, graphicsDevice, spriteBatch, TopleftX, TopleftY, Width, Height);
+                distinguisher.Draw(content, graphics, graphicsDevice, spriteBatch, TopleftX + HorizontalPadding, TopleftY + VerticalPadding, Width - HorizontalPadding * 2, Height - VerticalPadding * 2);
             }
 
             Child.DrawLowPriority(content, graphics, graphicsDevice, spriteBatch);
@@ -108,7 +108,7 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         {
             foreach(var distinguisher in Distinguishers)
             {
-                distinguisher.PreDraw(content, graphics, graphicsDevice, TopleftX, TopleftY, Width, Height);
+                distinguisher.PreDraw(content, graphics, graphicsDevice, TopleftX + HorizontalPadding, TopleftY + VerticalPadding, Width - HorizontalPadding * 2, Height - VerticalPadding * 2);
             }
 
             Child.PreDraw(content, graphics, graphicsDevice);
