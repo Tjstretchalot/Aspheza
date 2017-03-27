@@ -148,9 +148,10 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
         /// <param name="collisionMesh">The collision mesh</param>
         /// <param name="id">The ID</param>
         /// <param name="recipes">The recipe</param>
-        protected HarvestableEntity(PointD2D position, CollisionMeshD2D collisionMesh, int id, List<HarvestableRecipe> recipes) : base(position, collisionMesh, id)
+        protected HarvestableEntity(PointD2D position, CollisionMeshD2D collisionMesh, int id, List<HarvestableRecipe> recipes, double craftSpeed) : base(position, collisionMesh, id)
         {
             Recipes = recipes;
+            CraftSpeed = craftSpeed;
         }
 
         public override void SimulateTimePassing(SharedGameState sharedState, int timeMS)
@@ -172,6 +173,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
                     }else
                     {
                         CurrentRecipe.Craft(Inventory, OutputInventory);
+                        CurrentRecipe = null;
                         RecheckRecipe();
                     }
                 }
@@ -323,6 +325,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
                 var amtTransfered = reciever.Inventory.AddMaterial(matAt.Item1, matAt.Item2);
                 OutputInventory.RemoveMaterial(matAt.Item1, amtTransfered);
             }
+            RecheckRecipe();
         }
     }
 }

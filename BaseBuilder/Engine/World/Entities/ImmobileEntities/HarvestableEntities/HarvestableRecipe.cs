@@ -33,7 +33,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
         /// </summary>
         /// <param name="inputs">The inputs</param>
         /// <param name="outputs">The outputs</param>
-        public HarvestableRecipe(List<Tuple<Material, int>> inputs, List<Tuple<Material, int>> outputs)
+        public HarvestableRecipe(List<Tuple<Material, int>> inputs, List<Tuple<Material, int>> outputs, int craftTime)
         {
 #if DEBUG
             for(int i = 0; i < inputs.Count; i++)
@@ -60,6 +60,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
 #endif
             Inputs = inputs;
             Outputs = outputs;
+            CraftTime = craftTime;
         }
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
             for(int i = 0; i < inventory.Slots; i++)
             {
                 var matAt = inventory.MaterialAt(i);
-                if (!Inputs.Any((inputTup) => inputTup.Item1 == matAt.Item1))
+                if (matAt != null && !Inputs.Any((inputTup) => inputTup.Item1 == matAt.Item1))
                     return false;
             }
 
@@ -132,7 +133,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
             {
                 var matAt = inventory.MaterialAt(i);
 
-                if (!Inputs.Any((inputTup) => inputTup.Item1 == matAt.Item1))
+                if (matAt != null && !Inputs.Any((inputTup) => inputTup.Item1 == matAt.Item1))
                     return false;
             }
 

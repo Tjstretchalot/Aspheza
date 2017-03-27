@@ -131,11 +131,11 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\Bakery.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\HarvestableEntity.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\HarvestableRecipe.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\LumberMill.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\WaterMill.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Library.cs" />
-    <Compile Include="Engine\World\Entities\ImmobileEntities\LumberMill.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tavern.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Temple.cs" />
-    <Compile Include="Engine\World\Entities\ImmobileEntities\WaterMill.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Animations\Animation.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationFrame.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationRendererBuilder.cs" />

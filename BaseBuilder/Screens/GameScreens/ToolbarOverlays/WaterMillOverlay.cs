@@ -11,6 +11,7 @@ using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Input;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities;
 
 namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
 {
@@ -72,7 +73,7 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
             if (waterMill == null)
                 InventoryOverlayComp.SetInventory(waterMill);
             else
-                InventoryOverlayComp.SetInventory(waterMill, waterMill.InventoryMilled);
+                InventoryOverlayComp.SetInventory(waterMill, waterMill.Inventory);
         }
 
         protected override bool IsOverlayFor(Entity selected)

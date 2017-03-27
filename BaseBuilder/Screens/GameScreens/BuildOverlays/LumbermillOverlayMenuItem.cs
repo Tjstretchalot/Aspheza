@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
+using BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities;
 
 namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
