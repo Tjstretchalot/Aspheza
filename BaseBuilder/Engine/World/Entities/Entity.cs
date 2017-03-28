@@ -44,6 +44,11 @@ namespace BaseBuilder.Engine.World.WorldObject.Entities
         public CollisionMeshD2D CollisionMesh { get; protected set; }
 
         /// <summary>
+        /// The list of preferred adjacent points, or null if no preference.
+        /// </summary>
+        public virtual List<PointI2D> PreferredAdjacentPoints { get { return null; } }
+
+        /// <summary>
         /// Not-null if this entity has text on hover
         /// </summary>
         protected string _HoverText { get; set; }

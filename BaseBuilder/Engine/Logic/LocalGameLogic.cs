@@ -230,146 +230,38 @@ namespace BaseBuilder.Engine.Logic
         /// <returns>Location that if e1 goes to he will be adjacent to e2</returns>
         public static PointI2D FindDestination(SharedGameState gameState, MobileEntity e1, Thing e2)
         {
-            /*
-             * Imagine you had two rectangles. Clearly, the only viable locations are either
-             * ones that are e1.Height above e2, e1.Height below e2, e1.Width left of e2, or
-             * e1.Width right of e2.
-             * 
-             * This can be generalized to all polygons by projections upon normal axes like so:
-             * 
-             * ALL potential locations can be found by:
-             * 
-             * For each line = a line in e1 or e2,
-             *   normal = normal of line
-             *   
-             *   p1 = e1 projected onto normal
-             *   p2 = e2 projected onto normal
-             *   
-             *   pl1 = e1 projected onto line
-             *   pl2 = e2 projected onto line
-             *   
-             *   We are going to construct a line that will be parallel to line and go 
-             *   through (p2.Min - p1.length). The lower end of this line will be the same
-             *   as line, and the upper end will be the same as line.
-             *   
-             *   That is to say, we can find a line of potential points by shifting line to
-             *   p2.Min - p1.Length 
-             *   
-             *   Similiarly,
-             *   
-             *   We can find a line of potential points by shifting line to p2.Max + p1.Length
-             */
+            PointD2D best = null;
+            var bestDist = 0.0;
 
-            PointI2D best = null;
-            double bestDistance = -1;
-
-            Action<PointI2D> foundChoice = (p) =>
+            PointD2D actPt = new PointD2D(0, 0);
+            var ptsToCheck = e2.PreferredAdjacentPoints == null ? e2.CollisionMesh.AdjacentPoints : e2.PreferredAdjacentPoints;
+            foreach(var adjPt in ptsToCheck)
             {
-                if (best != null && bestDistance <= 0)
-                    return;
+                actPt.X = adjPt.X + e2.Position.X;
+                actPt.Y = adjPt.Y + e2.Position.Y;
 
-                if(e1.CollisionMesh.Intersects(CollisionMeshD2D.UnitSquare, e1.Position, p))
+                var badPt = false;
+                foreach(var ent in gameState.World.GetEntitiesAtLocation(e1.CollisionMesh, actPt))
                 {
-                    best = p;
-                    bestDistance = 0;
-                    return;
+                    if (ent == e1)
+                        continue;
+
+                    badPt = true;
+                    break;
                 }
+                if (badPt)
+                    continue;
 
-                var dist = Math.Abs(e1.Position.X - p.X) + Math.Abs(e1.Position.Y - p.Y);
+                var dist = Math.Abs(e1.Position.X - actPt.X) + Math.Abs(e1.Position.Y - actPt.Y);
 
-                if(best == null || dist < bestDistance)
+                if(best == null || dist < bestDist)
                 {
-                    best = p;
-                    bestDistance = dist;
+                    best = new PointD2D(actPt.X, actPt.Y);
+                    bestDist = dist;
                 }
-            };
-
-            Func<PointI2D, bool> isValid = (p) =>
-            {
-                if (gameState.Reserved.Contains(p))
-                    return false;
-
-                // Top left
-                if (p.X < e2.CollisionMesh.Left + e2.Position.X && p.Y < e2.CollisionMesh.Top + e2.Position.Y)
-                    return false;
-
-                // Top right
-                if (p.X >= e2.CollisionMesh.Right + e2.Position.X && p.Y < e2.CollisionMesh.Top + e2.Position.Y)
-                    return false;
-
-                // Bottom left
-                if (p.X < e2.CollisionMesh.Left + e2.Position.X && p.Y >= e2.CollisionMesh.Bottom + e2.Position.Y)
-                    return false;
-
-                // Bottom right
-                if (p.X >= e2.CollisionMesh.Right + e2.Position.X && p.Y >= e2.CollisionMesh.Bottom + e2.Position.Y)
-                    return false;
-
-                foreach (var e in gameState.World.GetEntitiesAtLocation(e1.CollisionMesh, p, true))
-                {
-                    if (e != e1)
-                        return false;
-                }
-
-                return true;
-            };
-
-            Action<FiniteLineD2D, PointD2D> checkLine = (testLine, shift) =>
-            {
-                foreach(var pt in testLine.Shift(shift.X, shift.Y).GetTilesIntersected())
-                {
-                    if (isValid(pt))
-                    {
-                        foundChoice(pt);
-                    }
-                }
-            };
-
-            Action<FiniteLineD2D, PointD2D> tryLine = (line, shift) =>
-            {
-                shift = (shift == null ? PointD2D.Origin : shift);
-
-                var movingProjectedOnNormal = e1.CollisionMesh.BoundingBox.ProjectOntoAxis(line.Normal.UnitVector); // UNSHIFTED, DOESNT REQUIRE SHIFT
-                var nmovinProjectedOnNormal = e2.CollisionMesh.BoundingBox.ProjectOntoAxis(line.Normal.UnitVector, e2.Position); // SHIFTED
-
-                var movingProjectedOnNormalAsLine = movingProjectedOnNormal.AsFiniteLineD2D(); // UNSHIFTED, DOESNT REQUIRE SHIFT
-                var nmovinProjectedOnNormalAsLine = nmovinProjectedOnNormal.AsFiniteLineD2D(); // SHIFTED
-
-                var movingProjectedOnLine = e1.CollisionMesh.BoundingBox.ProjectOntoAxis(line.Axis.UnitVector); // UNSHIFTED, DOESNT REQUIRE SHIFT
-                var nmovinProjectedOnLine = e2.CollisionMesh.BoundingBox.ProjectOntoAxis(line.Axis.UnitVector, e2.Position); // SHIFTED
-
-
-                var linePointInNormal = OneDimensionalLine.DistanceOnAxis(line.Normal.UnitVector, line.Start, shift); // SHIFTED
-                
-                var destinationLinePointInNormal = nmovinProjectedOnNormal.Min - movingProjectedOnNormal.Length; // SHIFTED - UNSHIFTED = SHIFTED
-                var shiftRequiredInNormal = destinationLinePointInNormal - linePointInNormal; // SHIFTED - SHIFTED = SHIFTED
-                var shiftRequiredAsLine = new OneDimensionalLine(line.Normal.UnitVector, 0, shiftRequiredInNormal).AsFiniteLineD2D(); // SHIFTED
-                var shiftRequiredAsVector = (shiftRequiredAsLine.End - shiftRequiredAsLine.Start).AsVectorD2D(); // SHIFTED
-                var slightlyTowardsUsOnNormalVector = line.Normal.UnitVector.Scale(Math.Sign(-shiftRequiredInNormal) * 0.05);
-
-                var resultingLine = new FiniteLineD2D(line.Start + shift + shiftRequiredAsVector, line.End + shift + shiftRequiredAsVector); // SHIFT REQUIRED ON line.Start + line.End -> SHIFTED
-                checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED; BUT WE NEED IT NOT TO BE AN EVEN POINT
-
-                destinationLinePointInNormal = nmovinProjectedOnNormal.Max + movingProjectedOnNormal.Length; // SHIFTED - SHIFTED = SHIFTED
-                shiftRequiredInNormal = destinationLinePointInNormal - linePointInNormal; // SHIFTED - SHIFTED = SHIFTED
-                shiftRequiredAsLine = new OneDimensionalLine(line.Normal.UnitVector, 0, shiftRequiredInNormal).AsFiniteLineD2D(); // SHIFTED
-                shiftRequiredAsVector = (shiftRequiredAsLine.End - shiftRequiredAsLine.Start).AsVectorD2D(); // SHIFTED
-                slightlyTowardsUsOnNormalVector = line.Normal.UnitVector.Scale(Math.Sign(-shiftRequiredInNormal) * 0.05);
-
-
-                resultingLine = new FiniteLineD2D(line.Start + shift + shiftRequiredAsVector, line.End + shift + shiftRequiredAsVector); // SHIFT REQUIRED ON line.Start + line.End -> SHIFTED
-                checkLine(resultingLine, slightlyTowardsUsOnNormalVector.AsPointD2D()); // NO SHIFT NECESSARY; ALREADY SHIFTED
-            };
-
-            var goodEnoughDistance = 0;// e1.CollisionMesh.MinDistanceTo(e2.CollisionMesh, e1.Position, e2.Position);
-            foreach(var line in e2.CollisionMesh.Lines)
-            {
-                tryLine(line, e2.Position);
-                if (best != null && bestDistance <= goodEnoughDistance)
-                    return best;
             }
 
-            return best;
+            return (PointI2D)best;
         }
         
         /// <summary>

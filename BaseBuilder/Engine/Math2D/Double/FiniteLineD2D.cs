@@ -318,6 +318,10 @@ namespace BaseBuilder.Engine.Math2D.Double
         /// <returns>Shortest vector from this line to other, ties broken arbitrarily</returns>
         public VectorD2D MinVectorTo(PointD2D other, PointD2D myPosition, PointD2D otherPosition)
         {
+            var myX = myPosition == null ? 0 : myPosition.X;
+            var myY = myPosition == null ? 0 : myPosition.Y;
+            var otherX = otherPosition == null ? 0 : otherPosition.X;
+            var otherY = otherPosition == null ? 0 : otherPosition.Y;
             /*
              * Method:
              *   Project the point onto this axis -> One dimensional point on axis
@@ -333,7 +337,7 @@ namespace BaseBuilder.Engine.Math2D.Double
              */
 
             var usProjOnAxis = ProjectOntoAxis(Axis.UnitVector, myPosition);
-            var pointProjOnAxis = other.DotProduct(Axis.UnitVector.DeltaX, Axis.UnitVector.DeltaY, otherPosition.X, otherPosition.Y);
+            var pointProjOnAxis = other.DotProduct(Axis.UnitVector.DeltaX, Axis.UnitVector.DeltaY, otherX, otherY);
 
             var minPoint = (usProjOnAxis.Start == usProjOnAxis.Min) ? Start : End;
             var maxPoint = (usProjOnAxis.Start == usProjOnAxis.Max) ? Start : End;
@@ -341,17 +345,17 @@ namespace BaseBuilder.Engine.Math2D.Double
             if(pointProjOnAxis < usProjOnAxis.Min)
             {
                 // from us to them = them - us
-                return new VectorD2D((other.X + otherPosition.X) - (minPoint.X + myPosition.X), (other.Y + otherPosition.Y) - (minPoint.Y + myPosition.Y));
+                return new VectorD2D((other.X + otherX) - (minPoint.X + myX), (other.Y + otherY) - (minPoint.Y + myY));
             }
 
             if(pointProjOnAxis > usProjOnAxis.Max)
             {
-                return new VectorD2D((other.X + otherPosition.X) - (maxPoint.X + myPosition.X), (other.Y + otherPosition.Y) - (maxPoint.Y + myPosition.Y));
+                return new VectorD2D((other.X + otherX) - (maxPoint.X + myX), (other.Y + otherY) - (maxPoint.Y + myY));
             }
 
             // projecting this onto the normal axis is the same as projecting any point on this line to the normal axis
-            var usProjOnNormal = Start.DotProduct(Normal.UnitVector.DeltaX, Normal.UnitVector.DeltaY, myPosition.X, myPosition.Y);
-            var pointProjOnNormal = other.DotProduct(Normal.UnitVector.DeltaX, Normal.UnitVector.DeltaY, otherPosition.X, otherPosition.Y);
+            var usProjOnNormal = Start.DotProduct(Normal.UnitVector.DeltaX, Normal.UnitVector.DeltaY, myX, myY);
+            var pointProjOnNormal = other.DotProduct(Normal.UnitVector.DeltaX, Normal.UnitVector.DeltaY, otherX, otherY);
 
             // Slow version:
             //   var tmp = new OneDimensionalLine(Normal, usProjOnAxis, pointProjOnAxis).AsFiniteLineD2D();

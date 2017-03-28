@@ -1,4 +1,6 @@
-﻿using BaseBuilder.Engine.Math2D.Double;
+﻿using BaseBuilder.Engine.Math2D;
+using BaseBuilder.Engine.Math2D.Double;
+using System.Collections.Generic;
 
 namespace BaseBuilder.Engine.World.Entities.Utilities
 {
@@ -27,5 +29,11 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
         /// </summary>
         CollisionMeshD2D CollisionMesh { get; }
 
+        /// <summary>
+        /// Returns preferred adjacent points for interacting with this
+        /// thing, or null if no preferences. These points should be 
+        /// relative to the position of this thing.
+        /// </summary>
+        List<PointI2D> PreferredAdjacentPoints { get; }
     }
 }

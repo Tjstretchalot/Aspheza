@@ -10,6 +10,7 @@ using BaseBuilder.Engine.State.Resources;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.State;
 using Lidgren.Network;
+using BaseBuilder.Engine.Math2D;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
 {
@@ -19,25 +20,28 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
     public class Bakery : HarvestableEntity
     {
         protected static CollisionMeshD2D _CollisionMesh;
+        protected static List<PointI2D> _PreferredInteractionPoints;
         protected static List<HarvestableRecipe> _Recipes;
 
         protected static Rectangle SourceRec = new Rectangle(0, 0, 158, 114);
 
         static Bakery()
         {
-            //_CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(5, 3.5) });
-
-            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> {
-                new PolygonD2D(new List<PointD2D> { new PointD2D(0, 0), new PointD2D(2.5, 0), new PointD2D(2.5, 3.5), new PointD2D(0, 3.5), }),
-                new PolygonD2D(new List<PointD2D> { new PointD2D(2.5, 0), new PointD2D(5, 0), new PointD2D(5, 4.5), new PointD2D(2.5, 4.5) })
-            });
-
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(5, 3.5) });
+            _PreferredInteractionPoints = new List<PointI2D> { new PointI2D(2, 4) };
             _Recipes = new List<HarvestableRecipe>
             {
-                new HarvestableRecipe(new List<Tuple<Material, int>> { Tuple.Create(Material.Sugar, 1), Tuple.Create(Material.Egg, 1), Tuple.Create(Material.Wheat, 1) }, new List<Tuple<Material, int>> { Tuple.Create(Material.Bread, 1) }, 5000)
+                new HarvestableRecipe(new List<Tuple<Material, int>> { Tuple.Create(Material.Sugar, 1), Tuple.Create(Material.Egg, 1), Tuple.Create(Material.Flour, 1) }, new List<Tuple<Material, int>> { Tuple.Create(Material.Bread, 1) }, 5000)
             };
         }
 
+        public override List<PointI2D> PreferredAdjacentPoints
+        {
+            get
+            {
+                return _PreferredInteractionPoints;
+            }
+        }
         protected SpriteRenderer Renderer;
 
         public Bakery(PointD2D position, int id) : base(position, _CollisionMesh, id, _Recipes, 1)

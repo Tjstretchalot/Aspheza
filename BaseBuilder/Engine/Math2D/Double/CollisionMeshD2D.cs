@@ -106,6 +106,42 @@ namespace BaseBuilder.Engine.Math2D.Double
                 return _Lines;
             }
         }
+
+        protected List<PointI2D> _AdjacentPoints;
+
+        /// <summary>
+        /// Gets the list of adjacent points, lazily initialized
+        /// </summary>
+        public List<PointI2D> AdjacentPoints
+        {
+            get
+            {
+                if(_AdjacentPoints == null)
+                {
+                    _AdjacentPoints = new List<PointI2D>();
+
+                    var floorTop = (int)Math.Floor(Top);
+                    var ceilBot = (int)Math.Ceiling(Bottom);
+                    var floorLeft = (int)Math.Floor(Left);
+                    var ceilRight = (int)Math.Ceiling(Right);
+                    for(int y = floorTop - 1; y <= ceilBot + 1; y++)
+                    {
+                        for(int x = floorLeft - 1; x <= ceilRight + 1; x++)
+                        {
+                            if (Intersects(UnitSquare, null, new PointD2D(x, y), true))
+                                continue;
+
+                            if (!Intersects(UnitSquare, null, new PointD2D(x, y), false) && !MinDistanceShorterThan(UnitSquare, 0.8, null, new PointD2D(x, y)))
+                                continue;
+
+                            _AdjacentPoints.Add(new PointI2D(x, y));
+                        }
+                    }
+                }
+
+                return _AdjacentPoints;
+            }
+        }
         /// <summary>
         /// Create the collision mesh containing the specified polygons
         /// </summary>
@@ -212,7 +248,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         }
 
         /// <summary>
-        /// Determines if the min distance from this polygon to the otherp olygon is shorter than the specified
+        /// Determines if the min distance from this polygon to the other polygon is shorter than the specified
         /// maximum minimum distance. This allows for more optimizations than could be done calculating MinDistanceTo.
         /// Does not work if the two collision meshes are intersecting.
         /// </summary>

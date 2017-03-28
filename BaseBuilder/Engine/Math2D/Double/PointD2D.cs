@@ -88,6 +88,14 @@ namespace BaseBuilder.Engine.Math2D.Double
             return p1.X != p2.X || p1.Y != p2.Y;
         }
 
+        public static explicit operator PointI2D(PointD2D p)
+        {
+            if (ReferenceEquals(p, null))
+                return null;
+
+            return new PointI2D((int)p.X, (int)p.Y);
+        }
+
         /// <summary>
         /// Returns the vector representation of this point. 
         /// </summary>
