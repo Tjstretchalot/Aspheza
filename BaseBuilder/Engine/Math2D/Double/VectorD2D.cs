@@ -116,8 +116,16 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
+                // Fixes rounding
                 if (!_CosTheta.HasValue)
-                    _CosTheta = Math.Cos(Theta);
+                {
+                    if (DeltaX == 0)
+                        _CosTheta = 0;
+                    else if (DeltaY == 0)
+                        _CosTheta = Math.Sign(DeltaX);
+                    else
+                        _CosTheta = Math.Cos(Theta);
+                }
 
                 return _CosTheta.Value;
             }
@@ -133,7 +141,14 @@ namespace BaseBuilder.Engine.Math2D.Double
             get
             {
                 if (!_SinTheta.HasValue)
-                    _SinTheta = Math.Sin(Theta);
+                {
+                    if (DeltaX == 0)
+                        _SinTheta = Math.Sign(DeltaY);
+                    else if (DeltaY == 0)
+                        _SinTheta = 0;
+                    else
+                        _SinTheta = Math.Sin(Theta);
+                }
 
                 return _SinTheta.Value;
             }

@@ -362,7 +362,7 @@ namespace BaseBuilder.Engine.Logic
             };
 
             var goodEnoughDistance = 0;// e1.CollisionMesh.MinDistanceTo(e2.CollisionMesh, e1.Position, e2.Position);
-            foreach(var line in e2.CollisionMesh.BoundingBox.Lines)
+            foreach(var line in e2.CollisionMesh.Lines)
             {
                 tryLine(line, e2.Position);
                 if (best != null && bestDistance <= goodEnoughDistance)

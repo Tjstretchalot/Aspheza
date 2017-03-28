@@ -25,7 +25,12 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
 
         static Bakery()
         {
-            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(5, 3.5) });
+            //_CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(5, 3.5) });
+
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> {
+                new PolygonD2D(new List<PointD2D> { new PointD2D(0, 0), new PointD2D(2.5, 0), new PointD2D(2.5, 3.5), new PointD2D(0, 3.5), }),
+                new PolygonD2D(new List<PointD2D> { new PointD2D(2.5, 0), new PointD2D(5, 0), new PointD2D(5, 4.5), new PointD2D(2.5, 4.5) })
+            });
 
             _Recipes = new List<HarvestableRecipe>
             {

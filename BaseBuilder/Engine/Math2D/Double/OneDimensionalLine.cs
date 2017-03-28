@@ -97,7 +97,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             get
             {
-                return Start == End;
+                return EpsilonEqual(Start, End);
             }
         }
 
@@ -246,8 +246,8 @@ namespace BaseBuilder.Engine.Math2D.Double
             if (!IsPoint)
                 throw new InvalidOperationException("This line is not a point - you should have checked using IsPoint. The correct method is AsVectorD2D");
 
-            var cosTheta = Math.Cos(Axis.Theta);
-            var sinTheta = Math.Sin(Axis.Theta);
+            var cosTheta = Axis.CosTheta;
+            var sinTheta = Axis.SinTheta;
 
             return new PointD2D(Start * cosTheta, Start * sinTheta);
         }

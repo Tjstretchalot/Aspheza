@@ -29,6 +29,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
                 new MaterialComboBoxItem(font, Material.Sapling),
                 new MaterialComboBoxItem(font, Material.Sugar),
                 new MaterialComboBoxItem(font, Material.Sugarcane),
+                new MaterialComboBoxItem(font, Material.Rum),
                 new MaterialComboBoxItem(font, Material.Wheat),
                 new MaterialComboBoxItem(font, Material.WheatSeed),
                 new MaterialComboBoxItem(font, Material.Wood),

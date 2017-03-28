@@ -25,6 +25,7 @@ namespace BaseBuilder.Engine.State.Resources
         public static Material Bread { get; }
         public static Material Sugarcane { get; }
         public static Material Sugar { get; }
+        public static Material Rum { get; }
         public static Material Wood { get; }
         public static Material Lumber { get; }
         public static Material Sapling { get; }
@@ -52,6 +53,7 @@ namespace BaseBuilder.Engine.State.Resources
 
             Sugarcane = new Material("materials", new Rectangle(99, 0, 32, 32), "Sugarcane", "Sugarcane\nCan be milled into sugar or planted for more sugarcane.", 8);
             Sugar = new Material("materials", new Rectangle(99, 33, 32, 32), "Sugar", "Sugar\nUsed in many finished food.", 9);
+            Rum = new Material("materials", new Rectangle(99, 66, 32, 32), "Rum", "Rum\n.", 9);
 
             Sapling = new Material("materials", new Rectangle(66, 0, 32, 32), "Sapling", "Sapling\nCan be planted for new trees.", 10);
             Wood = new Material("materials", new Rectangle(66, 33, 32, 32), "Wood", "Wood\nCan be made into lumber via a lumbermill.", 11);
@@ -119,6 +121,8 @@ namespace BaseBuilder.Engine.State.Resources
                 return Chicken;
             if (id == Egg.ID)
                 return Egg;
+            if (id == Rum.ID)
+                return Rum;
 
             throw new InvalidProgramException($"No material with id {id}");
         }

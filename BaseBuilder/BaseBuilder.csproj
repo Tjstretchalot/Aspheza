@@ -132,6 +132,7 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\HarvestableEntity.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\HarvestableRecipe.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\LumberMill.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\Tavern2.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\HarvestableEntities\WaterMill.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Library.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tavern.cs" />

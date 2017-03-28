@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using BaseBuilder.Engine.Logic;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,82 @@ namespace BaseBuilder.Engine.Math2D.Double
         public double Top { get; protected set; }
         public double Bottom { get; protected set; }
 
+        protected List<FiniteLineD2D> _Lines;
+        public List<FiniteLineD2D> Lines
+        {
+            get
+            {
+                if (_Lines == null)
+                {
+                    var naive = new List<FiniteLineD2D>();
+                    foreach(var poly in Polygons)
+                    {
+                        foreach (var line in poly.Lines)
+                        {
+                            //LogicUtils.BinaryInsert(naive, line, (line1, line2) => Math.Sign(line2.LengthSquared - line1.LengthSquared));
+                            naive.Add(line);
+                        }
+                    }
+
+                    for (int outerLineIndex = 0; outerLineIndex < naive.Count; outerLineIndex++)
+                    {
+                        var outerLine = naive[outerLineIndex];
+                        var outerLineAxisProj = outerLine.ProjectOntoAxis(outerLine.Axis.UnitVector);
+                        var outerLineNormalProj = outerLine.ProjectOntoAxis(outerLine.Normal.UnitVector);
+                        var outerLineNormalPoint = outerLineNormalProj.AsPointD2D();
+                        for (int innerLineIndex = outerLineIndex + 1; innerLineIndex < naive.Count; innerLineIndex++)
+                        {
+                            var innerLine = naive[innerLineIndex];
+                            if (!innerLine.Axis.UnitVector.IsParallel(outerLine.Axis.UnitVector))
+                                continue;
+                            var innerLineNormalProj = innerLine.ProjectOntoAxis(outerLine.Normal.UnitVector);
+                            if (outerLineNormalProj.Start != innerLineNormalProj.Start)
+                                continue;
+                            var innerLineAxisProj = innerLine.ProjectOntoAxis(outerLine.Axis.UnitVector);
+                            var intersection = outerLineAxisProj.IntersectionLine(innerLineAxisProj);
+                            if (intersection == null)
+                                continue;
+                            if (outerLineAxisProj.Min != intersection.Min)
+                            {
+                                var newLine1D = new OneDimensionalLine(intersection.Axis, outerLineAxisProj.Min, intersection.Min);
+                                var asLine = newLine1D.AsFiniteLineD2D();
+                                asLine = asLine.Shift(outerLineNormalPoint.X, outerLineNormalPoint.Y);
+                                naive.Add(asLine);
+                            }
+                            if (outerLineAxisProj.Max != intersection.Max)
+                            {
+                                var newLine1D = new OneDimensionalLine(intersection.Axis, intersection.Max, outerLineAxisProj.Max);
+                                var asLine = newLine1D.AsFiniteLineD2D();
+                                asLine = asLine.Shift(outerLineNormalPoint.X, outerLineNormalPoint.Y);
+                                naive.Add(asLine);
+                            }
+
+                            if (innerLineAxisProj.Min != intersection.Min)
+                            {
+                                var newLine1D = new OneDimensionalLine(intersection.Axis, innerLineAxisProj.Min, intersection.Min);
+                                var asLine = newLine1D.AsFiniteLineD2D();
+                                asLine = asLine.Shift(outerLineNormalPoint.X, outerLineNormalPoint.Y);
+                                naive.Add(asLine);
+                            }
+                            if (innerLineAxisProj.Max != intersection.Max)
+                            {
+                                var newLine1D = new OneDimensionalLine(intersection.Axis, intersection.Max, innerLineAxisProj.Max);
+                                var asLine = newLine1D.AsFiniteLineD2D();
+                                asLine = asLine.Shift(outerLineNormalPoint.X, outerLineNormalPoint.Y);
+                                naive.Add(asLine);
+                            }
+
+                            naive.RemoveAt(innerLineIndex);
+                            naive.RemoveAt(outerLineIndex);
+                            outerLineIndex--;
+                            break;
+                        }
+                    }
+                    _Lines = naive;
+                }
+                return _Lines;
+            }
+        }
         /// <summary>
         /// Create the collision mesh containing the specified polygons
         /// </summary>
