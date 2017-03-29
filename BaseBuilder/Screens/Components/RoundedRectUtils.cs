@@ -14,73 +14,105 @@ namespace BaseBuilder.Screens.Components
     /// </summary>
     public class RoundedRectUtils
     {
-        private const int SAMPLES_SQRT = 3; // this number must be odd and increases the number of operations quadratically
+        private const int SAMPLES_SQRT = 3; // this number must be odd and increases the number of operations for the upper-left corner quadratically
 
         public static Texture2D CreateRoundedRect(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, 
             int width, int height, Color centerColor, Color secondBorderColor, Color firstBorderColor, int radius, int innerBorder, int outerBorder)
         {
-            radius *= SAMPLES_SQRT;
-            innerBorder *= SAMPLES_SQRT;
-            outerBorder *= SAMPLES_SQRT;
-
-            var outsideBorderColor = new Color(0, 0, 0, 0);
-            var colors = CreateScaledTexture(content, graphics, graphicsDevice, width, height, centerColor, outsideBorderColor, secondBorderColor, 
-                firstBorderColor, radius, innerBorder, outerBorder);
-            var texture = InitTextureByAntialiasingColors(content, graphics, graphicsDevice, colors, width, height);
-
-            return texture;
-        }
-
-        public static Color[] CreateScaledTexture(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice,
-            int finalWidth, int finalHeight, Color centerColor, Color outsideBorderColor, Color secondBorderColor, Color firstBorderColor, int radius, 
-            int innerBorder, int outerBorder)
-        {
-            var textureWidth = finalWidth * SAMPLES_SQRT;
-            var textureHeight = finalHeight * SAMPLES_SQRT;
-
-            var colors = new Color[textureWidth * textureHeight];
-
-            var counter = 0;
+            var radiusSc = radius * SAMPLES_SQRT;
+            var innerBorderSc = innerBorder * SAMPLES_SQRT;
+            var outerBorderSc = outerBorder * SAMPLES_SQRT;
             
-            for (int y = 0; y < textureHeight; y++)
+            var outsideBorderColor = new Color(0, 0, 0, 0);
+            var upperLeftCornerScaled = CreateScaledUpperLeftCorner(content, graphics, graphicsDevice, width, height, centerColor, outsideBorderColor, secondBorderColor,
+                firstBorderColor, radiusSc, innerBorderSc, outerBorderSc);
+            var upperLeftCorner = AntialiasColors(content, graphics, graphicsDevice, upperLeftCornerScaled, radius, radius);
+
+            var result = new Color[width * height];
+            int counter = 0;
+            for(int y = 0; y < height; y++)
             {
-                for (int x = 0; x < textureWidth; x++)
+                for(int x = 0; x < width; x++)
                 {
-                    if (x < outerBorder || x >= textureWidth - outerBorder || y < outerBorder || y >= textureHeight - outerBorder)
+                    if (x < outerBorder || x >= width - outerBorder || y < outerBorder || y >= height - outerBorder)
                     {
-                        colors[counter] = secondBorderColor;
+                        result[counter] = secondBorderColor;
                     }
-                    else if (x < innerBorder || x >= textureWidth - innerBorder || y < innerBorder || y >= textureHeight - innerBorder)
+                    else if (x < innerBorder || x >= width - innerBorder || y < innerBorder || y >= height - innerBorder)
                     {
-                        colors[counter] = firstBorderColor;
+                        result[counter] = firstBorderColor;
                     }
                     else
                     {
-                        colors[counter] = centerColor;
+                        result[counter] = centerColor;
                     }
 
                     counter++;
                 }
             }
 
-            // round corners
-            RoundCorner(true, true, colors, textureWidth, textureHeight, outsideBorderColor, secondBorderColor, firstBorderColor, radius, innerBorder, outerBorder);
-            RoundCorner(true, false, colors, textureWidth, textureHeight, outsideBorderColor, secondBorderColor, firstBorderColor, radius, innerBorder, outerBorder);
-            RoundCorner(false, true, colors, textureWidth, textureHeight, outsideBorderColor, secondBorderColor, firstBorderColor, radius, innerBorder, outerBorder);
-            RoundCorner(false, false, colors, textureWidth, textureHeight, outsideBorderColor, secondBorderColor, firstBorderColor, radius, innerBorder, outerBorder);
+            for(int y = 0; y < radius; y++)
+            {
+                for(int x = 0; x < radius; x++)
+                {
+                    var color = upperLeftCorner[y * radius + x];
+                    result[y * width + x] = color;
+                    result[(height - y - 1) * width + x] = color;
+                    result[(height - y - 1) * width + (width - x - 1)] = color;
+                    result[y * width + (width - x - 1)] = color;
+                }
+            }
 
-            return colors;
+            var texture = new Texture2D(graphicsDevice, width, height);
+            texture.SetData(result);
+            return texture;
         }
 
-        public static void RoundCorner(bool top, bool left, Color[] colors, int textureWidth, int textureHeight, Color outsideBorderColor, Color secondBorderColor,
+        
+        public static Color[] CreateScaledUpperLeftCorner(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice,
+            int finalWidth, int finalHeight, Color centerColor, Color outsideBorderColor, Color secondBorderColor, Color firstBorderColor, int radius,
+            int innerBorder, int outerBorder)
+        {
+            var textureWidth = finalWidth * SAMPLES_SQRT;
+            var textureHeight = finalHeight * SAMPLES_SQRT;
+            var scaledRadius = radius;
+            Color[] result = new Color[scaledRadius * scaledRadius];
+            int counter = 0;
+            for(int y = 0; y < scaledRadius; y++)
+            {
+                for(int x = 0; x < scaledRadius; x++)
+                {
+                    if (x < outerBorder || y < outerBorder)
+                    {
+                        result[counter] = secondBorderColor;
+                    }
+                    else if (x < innerBorder || y < innerBorder)
+                    {
+                        result[counter] = firstBorderColor;
+                    }
+                    else
+                    {
+                        result[counter] = centerColor;
+                    }
+
+                    counter++;
+                }
+            }
+
+            RoundUpperLeftCorner(result, radius, outsideBorderColor, secondBorderColor, firstBorderColor, radius, innerBorder, outerBorder);
+
+            return result;
+        }
+        
+        public static void RoundUpperLeftCorner(Color[] colors, int arrWidth, Color outsideBorderColor, Color secondBorderColor,
             Color firstBorderColor, int radius, int innerBorder, int outerBorder)
         {
-            var yStart = top ? 0 : textureHeight - radius;
-            var yEnd = top ? radius : textureHeight;
-            var xStart = left ? 0 : textureWidth - radius;
-            var xEnd = left ? radius : textureWidth;
+            var yStart = 0;
+            var yEnd = radius;
+            var xStart = 0;
+            var xEnd = radius;
 
-            var point = new Point(left ? radius : textureWidth - radius, top ? radius : textureHeight - radius);
+            var point = new Point(radius, radius);
 
             var cutoffOne = (radius - innerBorder) * (radius - innerBorder);
             var cutoffTwo = (radius - outerBorder) * (radius - outerBorder);
@@ -90,7 +122,7 @@ namespace BaseBuilder.Screens.Components
                 for (var x = xStart; x < xEnd; x++)
                 {
                     var distSqToPoint = (x - point.X) * (x - point.X) + (y - point.Y) * (y - point.Y);
-                    var index = y * textureWidth + x;
+                    var index = y * arrWidth + x;
 
                     if (distSqToPoint > cutoffThree)
                     {
@@ -117,9 +149,8 @@ namespace BaseBuilder.Screens.Components
         /// <param name="graphicsDevice"></param>
         /// <param name="spriteBatch"></param>
         /// <param name="colors"></param>
-        public static Texture2D InitTextureByAntialiasingColors(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, Color[] colors, int finalWidth, int finalHeight)
+        public static Color[] AntialiasColors(ContentManager content, GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, Color[] colors, int finalWidth, int finalHeight)
         {
-
             Func<int, int, Color> pointToColor = (x, y) => colors[y * (finalWidth * SAMPLES_SQRT) + x];
 
             // Now we're going to anti-alias down to the true size
@@ -150,10 +181,7 @@ namespace BaseBuilder.Screens.Components
                 }
             }
 
-            var texture = new Texture2D(graphicsDevice, finalWidth, finalHeight);
-            texture.SetData(actColors);
-
-            return texture;
+            return actColors;
         }
 
         public static Color AverageColor(List<Color> colors)
