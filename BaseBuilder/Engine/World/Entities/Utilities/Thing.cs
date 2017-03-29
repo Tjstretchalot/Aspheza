@@ -1,5 +1,6 @@
 ﻿using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
+using System;
 using System.Collections.Generic;
 
 namespace BaseBuilder.Engine.World.Entities.Utilities
@@ -34,6 +35,6 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
         /// thing, or null if no preferences. These points should be 
         /// relative to the position of this thing.
         /// </summary>
-        List<PointI2D> PreferredAdjacentPoints { get; }
+        List<Tuple<PointI2D, Direction>> PreferredAdjacentPoints { get; }
     }
 }

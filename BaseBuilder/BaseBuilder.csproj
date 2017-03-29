@@ -172,6 +172,7 @@
     <Compile Include="Engine\World\Entities\Utilities\Direction.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Directional.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Harvestable.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\InteractionUtils.cs" />
     <Compile Include="Engine\World\Entities\Utilities\RandomUtils.cs" />
     <Compile Include="Engine\World\Entities\Utilities\SpriteRenderer.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Thing.cs" />

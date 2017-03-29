@@ -217,7 +217,7 @@ namespace BaseBuilder.Engine.Math2D.Double
         {
             return Polygons.Any((p) => p.Contains(point, myPosition, false));
         }
-
+        
         /// <summary>
         /// Calculates the shortest distance that must be traveled for this
         /// collision mesh to get to the other collision mesh. Does not work

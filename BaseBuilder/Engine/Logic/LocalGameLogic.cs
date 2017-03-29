@@ -234,7 +234,7 @@ namespace BaseBuilder.Engine.Logic
             var bestDist = 0.0;
 
             PointD2D actPt = new PointD2D(0, 0);
-            var ptsToCheck = e2.PreferredAdjacentPoints == null ? e2.CollisionMesh.AdjacentPoints : e2.PreferredAdjacentPoints;
+            var ptsToCheck = e2.PreferredAdjacentPoints == null ? e2.CollisionMesh.AdjacentPoints : e2.PreferredAdjacentPoints.Select((tup) => tup.Item1);
             foreach(var adjPt in ptsToCheck)
             {
                 actPt.X = adjPt.X + e2.Position.X;

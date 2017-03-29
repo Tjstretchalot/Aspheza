@@ -20,7 +20,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
     public class Bakery : HarvestableEntity
     {
         protected static CollisionMeshD2D _CollisionMesh;
-        protected static List<PointI2D> _PreferredInteractionPoints;
+        protected static List<Tuple<PointI2D, Direction>> _PreferredInteractionPoints;
         protected static List<HarvestableRecipe> _Recipes;
 
         protected static Rectangle SourceRec = new Rectangle(0, 0, 158, 114);
@@ -28,14 +28,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
         static Bakery()
         {
             _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(5, 3.5) });
-            _PreferredInteractionPoints = new List<PointI2D> { new PointI2D(2, 4) };
+            _PreferredInteractionPoints = new List<Tuple<PointI2D, Direction>> { Tuple.Create(new PointI2D(2, 4), Direction.Up) };
             _Recipes = new List<HarvestableRecipe>
             {
                 new HarvestableRecipe(new List<Tuple<Material, int>> { Tuple.Create(Material.Sugar, 1), Tuple.Create(Material.Egg, 1), Tuple.Create(Material.Flour, 1) }, new List<Tuple<Material, int>> { Tuple.Create(Material.Bread, 1) }, 5000)
             };
         }
 
-        public override List<PointI2D> PreferredAdjacentPoints
+        public override List<Tuple<PointI2D, Direction>> PreferredAdjacentPoints
         {
             get
             {

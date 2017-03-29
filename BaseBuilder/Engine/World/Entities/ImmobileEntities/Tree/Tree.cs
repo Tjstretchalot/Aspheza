@@ -16,18 +16,22 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 {
     public class Tree : SpriteSheetBuilding, Harvestable
     {
-        protected static List<PointI2D> PreferredOffsetsLarge;
+        protected static List<Tuple<PointI2D, Direction>> PreferredOffsetsLarge;
 
         static Tree()
         {
-            PreferredOffsetsLarge = new List<PointI2D> { new PointI2D(1, 1), new PointI2D(-1, 1), new PointI2D(0, 2) };
+            PreferredOffsetsLarge = new List<Tuple<PointI2D, Direction>> {
+                Tuple.Create(new PointI2D(1, 1), Direction.Left),
+                Tuple.Create(new PointI2D(-1, 1), Direction.Right),
+                Tuple.Create(new PointI2D(0, 2), Direction.Up),
+            };
         }
 
         protected TreeSize Size;
         protected TreeStyle Style;
         protected TreeColor Color;
 
-        public override List<PointI2D> PreferredAdjacentPoints
+        public override List<Tuple<PointI2D, Direction>> PreferredAdjacentPoints
         {
             get
             {

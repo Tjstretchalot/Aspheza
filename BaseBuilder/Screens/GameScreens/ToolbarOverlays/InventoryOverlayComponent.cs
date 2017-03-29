@@ -257,7 +257,8 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
 
                 var cont = sharedGameState.World.GetEntityAtLocation(new PointD2D(mouseWorldX, mouseWorldY)) as Container;
 
-                if (cont == null) {
+                if (cont == null)
+                {
                     CarryingIndex = -1;
                     handled = true;
                     return;
@@ -267,11 +268,10 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                 cancelTasksOrder.EntityID = BaseEntity.ID;
                 localGameState.Orders.Add(cancelTasksOrder);
 
-                if (!BaseEntity.CollisionMesh.Intersects(cont.CollisionMesh, BaseEntity.Position, cont.Position) && !BaseEntity.CollisionMesh.MinDistanceShorterThan(cont.CollisionMesh, 0.8, BaseEntity.Position, cont.Position))
+                var mob = BaseEntity as MobileEntity;
+                if (mob != null)
                 {
-                    var mob = BaseEntity as MobileEntity;
-
-                    if (mob != null)
+                    if (!InteractionUtils.CanInteract(mob, cont))
                     {
                         var dest = LocalGameLogic.FindDestination(sharedGameState, mob, cont);
 
@@ -280,20 +280,22 @@ namespace BaseBuilder.Screens.GameScreens.ToolbarOverlays
                             CarryingIndex = -1;
                             handled = true;
                             return;
-                        } else
+                        }
+                        else
                         {
                             var issueMoveOrder = netContext.GetPoolFromPacketType(typeof(IssueTaskOrder)).GetGamePacketFromPool() as IssueTaskOrder;
                             issueMoveOrder.Entity = mob;
                             issueMoveOrder.Task = new EntityMoveTask(mob, dest);
                             localGameState.Orders.Add(issueMoveOrder);
                         }
+
                     }
-                    else
-                    {
-                        CarryingIndex = -1;
-                        handled = true;
-                        return;
-                    }
+                }
+                else
+                {
+                    CarryingIndex = -1;
+                    handled = true;
+                    return;
                 }
 
                 var tup = BaseInventory.MaterialAt(CarryingIndex);

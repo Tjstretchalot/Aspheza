@@ -11,16 +11,42 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.State.Resources;
 using Lidgren.Network;
+using BaseBuilder.Engine.Math2D;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
     public class ChickenCoop : ImmobileEntity, Container, Harvestable
     {
         protected static CollisionMeshD2D _CollisionMesh;
+        protected static List<Tuple<PointI2D, Direction>> _PreferredAdjacentPoints;
 
         static ChickenCoop()
         {
-            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> { new RectangleD2D(242 / 32.0, 236 / 32.0) });
+            _CollisionMesh = new CollisionMeshD2D(new List<PolygonD2D> {
+                new RectangleD2D(226 / 32.0, 32 / 32.0, 8 / 32.0, 0),
+                new RectangleD2D(8 / 32.0, 236 / 32.0),
+                new RectangleD2D(54 / 32.0, 32 / 32.0, 8 / 32.0, 204 / 32.0),
+                new RectangleD2D(54 / 32.0, 32 / 32.0, 180 / 32.0, 204 / 32.0),
+                new RectangleD2D(8 / 32.0, 236 / 32.0, 234 / 32.0, 0 / 32.0),
+                new RectangleD2D(226 / 32.0, 108 / 32.0, 8 / 32.0, 33 / 32.0),
+            });
+
+            _PreferredAdjacentPoints = new List<Tuple<PointI2D, Direction>>
+            {
+                Tuple.Create(new PointI2D(2, 5), Direction.Up),
+                Tuple.Create(new PointI2D(3, 5), Direction.Up),
+                Tuple.Create(new PointI2D(4, 5), Direction.Up),
+                Tuple.Create(new PointI2D(5, 5), Direction.Up),
+                Tuple.Create(new PointI2D(6, 5), Direction.Up),
+            };
+        }
+
+        public override List<Tuple<PointI2D, Direction>> PreferredAdjacentPoints
+        {
+            get
+            {
+                return _PreferredAdjacentPoints;
+            }
         }
 
         public override string HoverText

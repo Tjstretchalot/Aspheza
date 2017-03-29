@@ -95,13 +95,16 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             tmp.Inventory.AddMaterial(Material.CarrotSeed, 1);
             tmp.Inventory.AddMaterial(Material.Sugarcane, 1);
             // Rum ingredients
-            tmp.Inventory.AddMaterial(Material.Sugarcane, 3);
-            
-             // Bread ingredients
+            //tmp.Inventory.AddMaterial(Material.Sugarcane, 3);
+
+            // Bread ingredients
             //tmp.Inventory.AddMaterial(Material.Wheat, 1);
             //tmp.Inventory.AddMaterial(Material.Sugar, 1);
             //tmp.Inventory.AddMaterial(Material.Egg, 1);
-            
+
+            // Coop ingredients
+            tmp.Inventory.AddMaterial(Material.Chicken, 1);
+
             TileWorld.AddMobileEntity(tmp);
             TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 2, wcy + 1), SharedGameState.EntityIDCounter++));
             TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 1, wcy + 2), SharedGameState.EntityIDCounter++));

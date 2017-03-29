@@ -156,10 +156,9 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             TimeLeftMS = TotalTimeRequiredMS;
         }
         
-        private bool CloseEnough(Thing source, Thing target)
+        private bool CloseEnough(MobileEntity source, Thing target)
         {
-            return target.CollisionMesh.Intersects(source.CollisionMesh, target.Position, source.Position)
-                || target.CollisionMesh.MinDistanceShorterThan(source.CollisionMesh, 0.8, target.Position, source.Position);
+            return InteractionUtils.CanInteract(source, target);
         }
 
 
@@ -174,7 +173,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             if (harvested == null || !harvested.ReadyToHarvest(gameState))
                 return EntityTaskStatus.Failure;
 
-            if (!CloseEnough(harvested, harvester))
+            if (!CloseEnough(harvested as MobileEntity, harvester))
                 return EntityTaskStatus.Failure;
 
             if (ThingToHarvest == null)

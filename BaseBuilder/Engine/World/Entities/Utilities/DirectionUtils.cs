@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BaseBuilder.Engine.World.WorldObject.Entities;
+using BaseBuilder.Engine.Math2D;
 
 namespace BaseBuilder.Engine.World.Entities.Utilities
 {
@@ -20,6 +21,15 @@ namespace BaseBuilder.Engine.World.Entities.Utilities
         /// <returns>Direction for entity to face thing</returns>
         public static Direction GetDirectionToFace(SharedGameState gameState, MobileEntity entity, Thing thing)
         {
+            if (thing.PreferredAdjacentPoints != null)
+            {
+                var entityLocationAsOffset = (PointI2D)(entity.Position - thing.Position);
+
+                var preferredTuple = thing.PreferredAdjacentPoints.Find((tup) => tup.Item1 == entityLocationAsOffset);
+                if (preferredTuple != null)
+                    return preferredTuple.Item2;
+            }
+
             if (entity.CollisionMesh.Left + entity.Position.X >= thing.CollisionMesh.Right + thing.Position.X)
             {
                 return Direction.Left;
