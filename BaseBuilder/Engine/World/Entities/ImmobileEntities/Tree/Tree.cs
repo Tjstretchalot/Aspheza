@@ -10,14 +10,32 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.State.Resources;
+using BaseBuilder.Engine.Math2D;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 {
     public class Tree : SpriteSheetBuilding, Harvestable
     {
+        protected static List<PointI2D> PreferredOffsetsLarge;
+
+        static Tree()
+        {
+            PreferredOffsetsLarge = new List<PointI2D> { new PointI2D(1, 1), new PointI2D(-1, 1), new PointI2D(0, 2) };
+        }
+
         protected TreeSize Size;
         protected TreeStyle Style;
         protected TreeColor Color;
+
+        public override List<PointI2D> PreferredAdjacentPoints
+        {
+            get
+            {
+                if (Size == TreeSize.Large)
+                    return PreferredOffsetsLarge;
+                return base.PreferredAdjacentPoints;
+            }
+        }
 
         protected bool GrowthTimeNeedsRandoming;
         protected int GrowthTimeRemainingMS;
