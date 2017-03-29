@@ -36,8 +36,6 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                 Tuple.Create(new PointI2D(2, 5), Direction.Up),
                 Tuple.Create(new PointI2D(3, 5), Direction.Up),
                 Tuple.Create(new PointI2D(4, 5), Direction.Up),
-                Tuple.Create(new PointI2D(5, 5), Direction.Up),
-                Tuple.Create(new PointI2D(6, 5), Direction.Up),
             };
         }
 
