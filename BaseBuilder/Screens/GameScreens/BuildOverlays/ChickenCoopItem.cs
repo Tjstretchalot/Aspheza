@@ -8,7 +8,6 @@ using BaseBuilder.Engine.State;
 using BaseBuilder.Screens.Components.ScrollableComponents;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities;
 using BaseBuilder.Engine.Math2D.Double;
-using BaseBuilder.Screens.GComponents.ScrollableComponents;
 using BaseBuilder.Screens.Components;
 using Microsoft.Xna.Framework.Content;
 using BaseBuilder.Engine.Context;

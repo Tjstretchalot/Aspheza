@@ -35,6 +35,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays
         {
             Options = new List<ITaskItem>
             {
+                new AidTaskItem(),
                 new ConditionTaskItem(),
                 new FailerTaskItem(),
                 new HarvestTaskItem(),

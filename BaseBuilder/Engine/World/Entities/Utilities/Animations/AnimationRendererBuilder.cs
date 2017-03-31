@@ -59,9 +59,9 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
             CompletedAnimations = new List<UnbuiltAnimation>();
         }
 
-        public AnimationRendererBuilder BeginAnimation(Direction? dir, AnimationType type, PointD2D defualtTopLeftDif = null, int defualtDisplayTime = 250, string defaultSourceTexture = null, int defualtSpacing = 32,
-                            int yLocation = 0, int cycleStartLocation = 0, int startLocation = 0, int defualtWidth = 32, int defaultHeight = 32, bool horizontalOrintation = true,
-                            string defualtSound = null)
+        public AnimationRendererBuilder BeginAnimation(Direction? dir, AnimationType type, PointD2D defaultTopLeftDif = null, int defaultDisplayTime = 250, string defaultSourceTexture = null, int defaultSpacing = 32,
+                            int yLocation = 0, int cycleStartLocation = 0, int startLocation = 0, int defaultWidth = 32, int defaultHeight = 32, bool horizontalOrientation = true,
+                            string defaultSound = null)
         {
             if (CurrentAnimation != null)
                 throw new InvalidOperationException($"Begin animation called before ending previous animation: check for matching BeginAnimation and EndAnimation CurrentAnimationDefaultSourceTexture={CurrentAnimationDefaultSourceTexture}");
@@ -74,15 +74,15 @@ namespace BaseBuilder.Engine.World.Entities.Utilities.Animations
 
             CurrentAnimationDefaultSourceTexture = defaultSourceTexture;
             CurrentAnimationMajorAxis = 0;
-            CurrentAnimationDefaultSpacing = defualtSpacing;
+            CurrentAnimationDefaultSpacing = defaultSpacing;
             CurrentAnimationMinorAxis = yLocation;
-            CurrentAnimationDefaultWidth = defualtWidth;
+            CurrentAnimationDefaultWidth = defaultWidth;
             CurrentAnimationDefaultHeight = defaultHeight;
-            CurrentAnimtionDefaultTopLeftDif = defualtTopLeftDif;
-            CurrentAnimationDefaultDisplayTime = defualtDisplayTime;
+            CurrentAnimtionDefaultTopLeftDif = defaultTopLeftDif;
+            CurrentAnimationDefaultDisplayTime = defaultDisplayTime;
             CurrentAnimationHorizontal = true;
 
-            CurrentAnimationDefualtSound = defualtSound;
+            CurrentAnimationDefualtSound = defaultSound;
 
             return this;
         }

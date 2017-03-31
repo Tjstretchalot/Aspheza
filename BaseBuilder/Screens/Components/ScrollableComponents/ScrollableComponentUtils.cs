@@ -3,7 +3,6 @@ using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State.Resources;
 using BaseBuilder.Screens.Components;
 using BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems;
-using BaseBuilder.Screens.GComponents.ScrollableComponents;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -468,9 +467,9 @@ namespace BaseBuilder.Screens.Components.ScrollableComponents
         /// <param name="redraw">Redraw</param>
         /// <param name="redrawAndReload">Redraw and reload</param>
         /// <returns>The textfield</returns>
-        public static TextField CreateTextField(RenderContext context, EventHandler redraw, EventHandler redrawAndReload)
+        public static TextField CreateTextField(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, int width = 150, int height = 30)
         {
-            var result = UIUtils.CreateTextField(new Point(0, 0), new Point(150, 30));
+            var result = UIUtils.CreateTextField(new Point(0, 0), new Point(width, height));
 
             result.FocusGained += redraw;
             result.FocusLost += redraw;

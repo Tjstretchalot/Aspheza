@@ -17,6 +17,7 @@ namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
         {
             EntityTaskTypesToTaskItemType = new Dictionary<Type, Type>();
 
+            Register(typeof(EntityAidTask), typeof(AidTaskItem));
             Register(typeof(EntityConditionTask), typeof(ConditionTaskItem));
             Register(typeof(EntityFailerTask), typeof(FailerTaskItem));
             Register(typeof(EntityHarvestTask), typeof(HarvestTaskItem));

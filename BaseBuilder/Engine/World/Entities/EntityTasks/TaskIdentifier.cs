@@ -33,6 +33,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             Register(typeof(EntitySucceederTask), 12);
             Register(typeof(EntityTransferItemTask), 13);
             Register(typeof(SummonChicken), 14);
+            Register(typeof(EntityAidTask), 15);
         }
 
         public static void Register(Type type, short id)

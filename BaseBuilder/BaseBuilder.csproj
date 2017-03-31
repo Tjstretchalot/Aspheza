@@ -97,6 +97,7 @@
     <Compile Include="Engine\World\Entities\Entity.cs" />
     <Compile Include="Engine\World\Entities\EntityIdentifier.cs" />
     <Compile Include="Engine\World\Entities\EntityInventory.cs" />
+    <Compile Include="Engine\World\Entities\EntityTasks\EntityAidTask.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityConditionals\EntityConditionIdentifier.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityConditionals\IEntityCondition.cs" />
     <Compile Include="Engine\World\Entities\EntityTasks\EntityConditionals\InventoryConditionals\EntityInventoryCountCondition.cs" />
@@ -137,6 +138,8 @@
     <Compile Include="Engine\World\Entities\ImmobileEntities\Library.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Tavern.cs" />
     <Compile Include="Engine\World\Entities\ImmobileEntities\Temple.cs" />
+    <Compile Include="Engine\World\Entities\ImmobileEntities\UnbuiltBuilding.cs" />
+    <Compile Include="Engine\World\Entities\Utilities\Aidable.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Animations\Animation.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationFrame.cs" />
     <Compile Include="Engine\World\Entities\Utilities\Animations\AnimationRendererBuilder.cs" />
@@ -246,6 +249,7 @@
     <Compile Include="Screens\Components\ScrollableComponents\HorizontalFlowScrollableComponent.cs" />
     <Compile Include="Screens\Components\ScrollableComponents\PaddingScrollableComponent.cs" />
     <Compile Include="Screens\Components\ScrollableComponents\ScrollableComponentAsLayoutManager.cs" />
+    <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\AidTaskItem.cs" />
     <Compile Include="Screens\GameScreens\TaskOverlays\TaskItems\ComplexTaskItems\ComplexTaskItem.cs" />
     <Compile Include="Screens\Components\ScrollableComponents\IScrollableComponent.cs" />
     <Compile Include="Screens\Components\ScrollableComponents\ScrollableComponentFromScreenComponent.cs" />

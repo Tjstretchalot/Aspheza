@@ -13,6 +13,7 @@ using BaseBuilder.Engine.World.Entities;
 using BaseBuilder.Engine.World.Entities.MobileEntities;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.State.Resources;
+using BaseBuilder.Engine.World.WorldObject.Entities;
 
 namespace BaseBuilder.Engine.Networking.Packets
 {
@@ -28,6 +29,34 @@ namespace BaseBuilder.Engine.Networking.Packets
 
         public SharedGameStateDownloadPacket(GamePacketPool pool) : base(pool)
         {
+        }
+
+        private List<T> ReadEntityArray<T>(NetContext context, SharedGameState gameState, NetIncomingMessage message, Action<T> action = null, bool getResult=true) where T:Entity
+        {
+            int size = message.ReadInt32();
+            List<T> result = null;
+            if (getResult)
+                result = new List<T>(size);
+            for (int i = 0; i < size; i++)
+            {
+                var typeID = message.ReadInt16();
+                var entity = (T)EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(typeID), gameState, message);
+                if(getResult)
+                    result.Add(entity);
+
+                action?.Invoke(entity);
+            }
+            return result;
+        }
+
+        private void WriteEntityArray<T>(List<T> arr, NetContext context, SharedGameState gameState, NetOutgoingMessage message) where T:Entity
+        {
+            message.Write(arr.Count);
+            foreach(var ent in arr)
+            {
+                message.Write(EntityIdentifier.GetIDOfEntity(ent.GetType()));
+                ent.Write(message);
+            }
         }
 
         public override void LoadFrom(NetContext context, SharedGameState gameState, NetIncomingMessage message)
@@ -66,38 +95,12 @@ namespace BaseBuilder.Engine.Networking.Packets
 
             SharedState = new SharedGameState(new World.TileWorld(worldWidth, worldHeight, tiles), players, gameTimeMS);
 
-            var numMobileEntities = message.ReadInt32();
-
-            for(var i = 0; i < numMobileEntities; i++)
-            {
-                var entID = message.ReadInt16();
-
-                SharedState.World.AddMobileEntity((MobileEntity)EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(entID), SharedState, message));
-            }
-
-            var numImmobileEntities = message.ReadInt32();
-            for (var i = 0; i < numImmobileEntities; i++)
-            {
-                var entID = message.ReadInt16();
-
-                SharedState.World.AddImmobileEntity((ImmobileEntity)EntityIdentifier.InitEntity(EntityIdentifier.GetTypeOfID(entID), SharedState, message));
-            }
-
-            var numMobileEntsQueuedForRem = message.ReadInt32();
-            for(var i = 0; i < numMobileEntsQueuedForRem; i++)
-            {
-                var entID = message.ReadInt32();
-
-                SharedState.World.RemoveMobileEntity(SharedState.World.MobileEntities.Find((m) => m.ID == entID));
-            }
-
-            var numImmobileEntsQueuedForRem = message.ReadInt32();
-            for (var i = 0; i < numImmobileEntsQueuedForRem; i++)
-            {
-                var entID = message.ReadInt32();
-
-                SharedState.World.RemoveImmobileEntity(SharedState.World.ImmobileEntities.Find((im) => im.ID == entID));
-            }
+            ReadEntityArray<MobileEntity>(context, gameState, message, (me) => SharedState.World.AddMobileEntity(me), false);
+            ReadEntityArray<ImmobileEntity>(context, gameState, message, (im) => SharedState.World.AddImmobileEntity(im), false);
+            ReadEntityArray<MobileEntity>(context, gameState, message, (me) => SharedState.World.AddMobileEntityImpl(me), false);
+            ReadEntityArray<ImmobileEntity>(context, gameState, message, (im) => SharedState.World.AddImmobileEntityImpl(im), false);
+            ReadEntityArray<MobileEntity>(context, gameState, message, (me) => SharedState.World.RemoveMobileEntity(me), false);
+            ReadEntityArray<ImmobileEntity>(context, gameState, message, (im) => SharedState.World.RemoveImmobileEntity(im), false);
 
             SharedState.EntityIDCounter = message.ReadInt32();
 
@@ -151,38 +154,12 @@ namespace BaseBuilder.Engine.Networking.Packets
 
             message.Write(SharedState.GameTimeMS);
 
-            message.Write(SharedState.World.MobileEntities.Count);
-
-            foreach(var mobile in SharedState.World.MobileEntities)
-            {
-                message.Write(EntityIdentifier.GetIDOfEntity(mobile.GetType()));
-
-                mobile.Write(message);
-            }
-
-
-            message.Write(SharedState.World.ImmobileEntities.Count);
-
-            foreach (var immobile in SharedState.World.ImmobileEntities)
-            {
-                message.Write(EntityIdentifier.GetIDOfEntity(immobile.GetType()));
-
-                immobile.Write(message);
-            }
-
-            message.Write(SharedState.World.MobileEntitiesQueuedForRemoval.Count);
-
-            foreach(var mobile in SharedState.World.MobileEntitiesQueuedForRemoval)
-            {
-                message.Write(mobile.ID);
-            }
-
-            message.Write(SharedState.World.ImmobileEntitiesQueuedForRemoval.Count);
-
-            foreach(var immobile in SharedState.World.ImmobileEntitiesQueuedForRemoval)
-            {
-                message.Write(immobile.ID);
-            }
+            WriteEntityArray(SharedState.World.MobileEntitiesQueuedForAddition, context, gameState, message);
+            WriteEntityArray(SharedState.World.ImmobileEntitiesQueuedForAddition, context, gameState, message);
+            WriteEntityArray(SharedState.World.MobileEntities, context, gameState, message);
+            WriteEntityArray(SharedState.World.ImmobileEntities, context, gameState, message);
+            WriteEntityArray(SharedState.World.MobileEntitiesQueuedForRemoval, context, gameState, message);
+            WriteEntityArray(SharedState.World.ImmobileEntitiesQueuedForRemoval, context, gameState, message);
 
             message.Write(SharedState.EntityIDCounter);
 

@@ -88,7 +88,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
 #if DEBUG
             tmp1.Inventory.AddMaterial(Material.Wheat, 6);
 #endif
-            TileWorld.AddMobileEntity(tmp1);
+            TileWorld.AddMobileEntityImpl(tmp1);
 
             var tmp = new CaveManWorker(new PointD2D(wcx - 2, wcy + 0), SharedGameState.EntityIDCounter++);
             tmp.Inventory.AddMaterial(Material.WheatSeed, 1);
@@ -105,13 +105,13 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             // Coop ingredients
             tmp.Inventory.AddMaterial(Material.Chicken, 1);
 
-            TileWorld.AddMobileEntity(tmp);
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 2, wcy + 1), SharedGameState.EntityIDCounter++));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx - 1, wcy + 2), SharedGameState.EntityIDCounter++));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 0, wcy + 2), SharedGameState.EntityIDCounter++));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 1, wcy + 2), SharedGameState.EntityIDCounter++));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 2, wcy + 1), SharedGameState.EntityIDCounter++));
-            TileWorld.AddMobileEntity(new CaveManWorker(new PointD2D(wcx + 2, wcy + 0), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntityImpl(tmp);
+            TileWorld.AddMobileEntityImpl(new CaveManWorker(new PointD2D(wcx - 2, wcy + 1), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntityImpl(new CaveManWorker(new PointD2D(wcx - 1, wcy + 2), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntityImpl(new CaveManWorker(new PointD2D(wcx + 0, wcy + 2), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntityImpl(new CaveManWorker(new PointD2D(wcx + 1, wcy + 2), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntityImpl(new CaveManWorker(new PointD2D(wcx + 2, wcy + 1), SharedGameState.EntityIDCounter++));
+            TileWorld.AddMobileEntityImpl(new CaveManWorker(new PointD2D(wcx + 2, wcy + 0), SharedGameState.EntityIDCounter++));
         }
 
         protected void InitBuildings()
@@ -119,32 +119,32 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             var wcx = TileWorld.TileWidth / 2;
             var wcy = TileWorld.TileHeight / 2;
 
-            TileWorld.AddImmobileEntity(new House(new PointD2D(wcx - 0.5, wcy - 4), SharedGameState.EntityIDCounter++));
-            TileWorld.AddImmobileEntity(new Sign(new PointD2D(wcx + 5, wcy + 1), SharedGameState.EntityIDCounter++, "Welcome to the game!"));
-            TileWorld.AddImmobileEntity(new GoldOre(new PointD2D(wcx - 10, wcy + 5), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntityImpl(new House(new PointD2D(wcx - 0.5, wcy - 4), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntityImpl(new Sign(new PointD2D(wcx + 5, wcy + 1), SharedGameState.EntityIDCounter++, "Welcome to the game!"));
+            TileWorld.AddImmobileEntityImpl(new GoldOre(new PointD2D(wcx - 10, wcy + 5), SharedGameState.EntityIDCounter++));
             /*
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 4, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Red));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 5, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Blue));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 6, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Green));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 7, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Red));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 8, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Blue));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 3, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Green));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 4, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Red));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 5, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Blue));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 6, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Green));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 7, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Red));
-            TileWorld.AddImmobileEntity(TreeUtils.InitTree(new PointD2D(wcx + 8, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Blue));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 3, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Green));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 4, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Red));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 5, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Pointy, TreeColor.Blue));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 6, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Green));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 7, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Red));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 8, wcy - 4), SharedGameState.GetUniqueEntityID(), TreeSize.Large, TreeStyle.Rounded, TreeColor.Blue));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 3, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Green));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 4, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Red));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 5, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Pointy, TreeColor.Blue));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 6, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Green));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 7, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Red));
+            TileWorld.AddImmobileEntityImpl(TreeUtils.InitTree(new PointD2D(wcx + 8, wcy - 1), SharedGameState.GetUniqueEntityID(), TreeSize.Small, TreeStyle.Rounded, TreeColor.Blue));
             
-            TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy + 5), SharedGameState.EntityIDCounter++));
-            TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy + 0), SharedGameState.EntityIDCounter++));
-            TileWorld.AddImmobileEntity(new Farm(new PointD2D(wcx - 15, wcy - 5), SharedGameState.EntityIDCounter++));
-            TileWorld.AddImmobileEntity(new WaterMill2(new PointD2D(wcx - 30, wcy + 5), SharedGameState.EntityIDCounter++));*/
-            TileWorld.AddImmobileEntity(new Bakery(new PointD2D(wcx - 10, wcy - 15), SharedGameState.EntityIDCounter++));
-            TileWorld.AddImmobileEntity(new Tavern2(new PointD2D(wcx + 10, wcy - 15), SharedGameState.EntityIDCounter++));
-            /*TileWorld.AddImmobileEntity(new Library(new PointD2D(wcx + 30, wcy - 15), SharedGameState.EntityIDCounter++));
-            TileWorld.AddImmobileEntity(new Temple(new PointD2D(wcx + 40, wcy - 15), SharedGameState.EntityIDCounter++));
-            TileWorld.AddImmobileEntity(new LumberMill(new PointD2D(wcx + 10, wcy - 0), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntityImpl(new Farm(new PointD2D(wcx - 15, wcy + 5), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntityImpl(new Farm(new PointD2D(wcx - 15, wcy + 0), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntityImpl(new Farm(new PointD2D(wcx - 15, wcy - 5), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntityImpl(new WaterMill2(new PointD2D(wcx - 30, wcy + 5), SharedGameState.EntityIDCounter++));*/
+            TileWorld.AddImmobileEntityImpl(new Bakery(new PointD2D(wcx - 10, wcy - 15), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntityImpl(new Tavern2(new PointD2D(wcx + 10, wcy - 15), SharedGameState.EntityIDCounter++));
+            /*TileWorld.AddImmobileEntityImpl(new Library(new PointD2D(wcx + 30, wcy - 15), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntityImpl(new Temple(new PointD2D(wcx + 40, wcy - 15), SharedGameState.EntityIDCounter++));
+            TileWorld.AddImmobileEntityImpl(new LumberMill(new PointD2D(wcx + 10, wcy - 0), SharedGameState.EntityIDCounter++));
             */
         }
 
@@ -178,7 +178,7 @@ namespace BaseBuilder.Engine.Logic.WorldGen
                 return;
 
             nextTree.Position = new PointD2D(pos.X, pos.Y);
-            TileWorld.AddImmobileEntity(nextTree);
+            TileWorld.AddImmobileEntityImpl(nextTree);
 
             var tmp = RanGen.Next(3);
             switch (tmp)

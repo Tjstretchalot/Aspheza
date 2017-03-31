@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Screens.Components.ScrollableComponents;
 
-namespace BaseBuilder.Screens.GComponents.ScrollableComponents
+namespace BaseBuilder.Screens.Components.ScrollableComponents
 {
     /// <summary>
     /// Lays children out vertically based on a specified alignment mode, spacing,

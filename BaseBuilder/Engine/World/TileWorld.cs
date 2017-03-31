@@ -50,7 +50,9 @@ namespace BaseBuilder.Engine.World
         protected Dictionary<Tile, List<Entity>> TileToEntities;
 
         public List<MobileEntity> MobileEntitiesQueuedForRemoval;
+        public List<MobileEntity> MobileEntitiesQueuedForAddition;
         public List<ImmobileEntity> ImmobileEntitiesQueuedForRemoval;
+        public List<ImmobileEntity> ImmobileEntitiesQueuedForAddition;
 
         public event EventHandler OnEntityAdded;
         public event EventHandler OnEntityRemoved;
@@ -84,6 +86,8 @@ namespace BaseBuilder.Engine.World
 
             MobileEntitiesQueuedForRemoval = new List<MobileEntity>();
             ImmobileEntitiesQueuedForRemoval = new List<ImmobileEntity>();
+            MobileEntitiesQueuedForAddition = new List<MobileEntity>();
+            ImmobileEntitiesQueuedForAddition = new List<ImmobileEntity>();
 
             TilesThatNeedUpdating = new List<Tile>();
 
@@ -97,10 +101,22 @@ namespace BaseBuilder.Engine.World
         }
 
         /// <summary>
+        /// Queues the mobile entity for addition to the world
+        /// </summary>
+        /// <param name="entity">The entity to add</param>
+        public void AddMobileEntity(MobileEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            MobileEntitiesQueuedForAddition.Add(entity);
+        }
+
+        /// <summary>
         /// Adds a mobile entity to the world
         /// </summary>
         /// <param name="entity">Mobile entity to add to world</param>
-        public void AddMobileEntity(MobileEntity entity)
+        public void AddMobileEntityImpl(MobileEntity entity)
         {
             if (entity == null)
             {
@@ -112,6 +128,11 @@ namespace BaseBuilder.Engine.World
             OnEntityAdded?.Invoke(this, new EntityEventArgs(entity));
         }
 
+        /// <summary>
+        /// Queues removal of a mobile entity at the next appropriate
+        /// time
+        /// </summary>
+        /// <param name="entity">The entity to remove</param>
         public void RemoveMobileEntity(MobileEntity entity)
         {
             if (entity == null)
@@ -146,6 +167,18 @@ namespace BaseBuilder.Engine.World
             {
                 throw new ArgumentNullException(nameof(entity));
             }
+
+            ImmobileEntitiesQueuedForAddition.Add(entity);
+        }
+
+        /// <summary>
+        /// Actually add an immobile entity to the world
+        /// </summary>
+        /// <param name="entity">The entity to add</param>
+        public void AddImmobileEntityImpl(ImmobileEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
 
             ImmobileEntities.Add(entity);
             AddTileCollisions(entity);
@@ -377,6 +410,19 @@ namespace BaseBuilder.Engine.World
                 RemoveImmobileEntityImpl(immobileEntity);
             }
             ImmobileEntitiesQueuedForRemoval.Clear();
+
+
+            foreach (var mobileEntity in MobileEntitiesQueuedForAddition)
+            {
+                AddMobileEntityImpl(mobileEntity);
+            }
+            MobileEntitiesQueuedForAddition.Clear();
+
+            foreach (var immobileEntity in ImmobileEntitiesQueuedForAddition)
+            {
+                AddImmobileEntityImpl(immobileEntity);
+            }
+            ImmobileEntitiesQueuedForAddition.Clear();
         }
 
         public void SimulateTimePassing(SharedGameState gameState, int timeMS)
@@ -494,15 +540,26 @@ namespace BaseBuilder.Engine.World
         /// Finds the entity with the specified id.
         /// </summary>
         /// <param name="targetID">The id</param>
+        /// <param name="hintMobile">Set true if you know the entity will be mobile</param>
+        /// <param name="hintImmobile">Set true if you know the entity will be immobile</param>
         /// <returns>The entity with the specified id</returns>
-        public Entity GetEntityByID(int targetID)
+        public Entity GetEntityByID(int targetID, bool hintMobile = false, bool hintImmobile = false)
         {
-            foreach(var me in MobileEntities)
+            if (hintMobile && hintImmobile)
+                throw new ArgumentException("Can't both hint mobile and hint immobile!");
+
+            if (!hintImmobile)
             {
-                if (me.ID == targetID)
-                    return me;
+                foreach (var me in MobileEntities)
+                {
+                    if (me.ID == targetID)
+                        return me;
+                }
             }
-            
+
+            if (hintMobile)
+                return null;
+
             foreach(var ime in ImmobileEntities)
             {
                 if (ime.ID == targetID)

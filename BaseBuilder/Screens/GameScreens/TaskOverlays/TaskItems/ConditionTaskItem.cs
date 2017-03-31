@@ -15,7 +15,6 @@ using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.World.Entities.EntityTasks.EntityConditionals.InventoryConditionals;
 using BaseBuilder.Engine.State.Resources;
 using BaseBuilder.Screens.Components.ScrollableComponents;
-using BaseBuilder.Screens.GComponents.ScrollableComponents;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {

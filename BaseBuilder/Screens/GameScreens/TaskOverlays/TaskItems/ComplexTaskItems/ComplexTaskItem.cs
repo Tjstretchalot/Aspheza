@@ -15,7 +15,6 @@ using BaseBuilder.Engine.Math2D;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Screens.Components.ScrollableComponents;
-using BaseBuilder.Screens.GComponents.ScrollableComponents;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems.ComplexTaskItems
 {

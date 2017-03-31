@@ -5,7 +5,6 @@ using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.State;
 using BaseBuilder.Screens.Components;
 using BaseBuilder.Screens.Components.ScrollableComponents;
-using BaseBuilder.Screens.GComponents.ScrollableComponents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,6 +68,9 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             return true;
         }
 
+        protected virtual void PreAddButton(RenderContext context, BuildOverlayImpl menu, EventHandler redraw,
+            EventHandler redrawAndReload, string thingName, TextureComponent texture, string description, ScrollableComponentAsLayoutManager layout)
+        { }
         protected IScrollableComponent CreateMenuItemFromTexture(RenderContext context, BuildOverlayImpl menu, EventHandler redraw, 
             EventHandler redrawAndReload, string thingName, TextureComponent texture, string description)
         {
@@ -79,7 +81,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             layout.Children.Add(Wrap(CreateText(context, thingName)));
             layout.Children.Add(Wrap(texture));
             layout.Children.Add(Wrap(CreateText(context, description, true)));
-
+            PreAddButton(context, menu, redraw, redrawAndReload, thingName, texture, description, layout);
             var button = CreateButton(context, redraw, redrawAndReload, "Build");
             button.PressReleased += (sender, args) =>
             {

@@ -173,7 +173,7 @@ namespace BaseBuilder.Engine.World.Entities.EntityTasks
             if (harvested == null || !harvested.ReadyToHarvest(gameState))
                 return EntityTaskStatus.Failure;
 
-            if (!CloseEnough(harvested as MobileEntity, harvester))
+            if (!CloseEnough(harvester as MobileEntity, harvested))
                 return EntityTaskStatus.Failure;
 
             if (ThingToHarvest == null)

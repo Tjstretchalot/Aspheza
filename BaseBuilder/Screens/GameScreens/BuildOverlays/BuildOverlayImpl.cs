@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Screens.Components.ScrollableComponents;
 using BaseBuilder.Engine.Math2D;
-using BaseBuilder.Screens.GComponents.ScrollableComponents;
 using BaseBuilder.Engine.State;
 using Microsoft.Xna.Framework.Input;
 using BaseBuilder.Engine.Math2D.Double;

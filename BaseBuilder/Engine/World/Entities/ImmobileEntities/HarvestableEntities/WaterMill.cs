@@ -95,7 +95,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
 
             AnimationRenderer = new AnimationRendererBuilder(context.Content)
 
-            .BeginAnimation(Direction.Down, AnimationType.Idle, new PointD2D(0, 0), defaultSourceTexture: sourceFile, defualtWidth: 180, defaultHeight: 100)
+            .BeginAnimation(Direction.Down, AnimationType.Idle, new PointD2D(0, 0), defaultSourceTexture: sourceFile, defaultWidth: 180, defaultHeight: 100)
             .AddFrame()
             .AddFrame(x: 180)
             .AddFrame(x: 360)

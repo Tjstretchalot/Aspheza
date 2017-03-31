@@ -15,7 +15,6 @@ using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Screens.Components.ScrollableComponents;
-using BaseBuilder.Screens.GComponents.ScrollableComponents;
 
 namespace BaseBuilder.Screens.GameScreens.TaskOverlays.TaskItems
 {
