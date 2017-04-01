@@ -12,6 +12,8 @@ using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.State.Resources;
 using System.IO;
+using BaseBuilder.Engine.World.Entities.Utilities.Animations;
+using Microsoft.Xna.Framework.Content;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
@@ -62,6 +64,27 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
             Renderer.Render(context, (int)screenTopLeft.X, (int)screenTopLeft.Y, 100 / 32.0, 132 / 32.0, overlay);
+        }
+
+        public override SpriteSheetAnimationRenderer GetInprogressRenderable(ContentManager content)
+        {
+            return new AnimationRendererBuilder(content)
+                .BeginAnimation(null, AnimationType.Idle, defaultWidth: 100, defaultSourceTexture: "Temple")
+                    .AddFrame(y: 132 - 20, height: 20, topLeftDif: new PointD2D(0, -112))
+                .EndAnimation()
+                .BeginAnimation(null, AnimationType.Unbuilt, defaultWidth: 100, defaultSourceTexture: "Temple")
+                    .AddFrame(y: 132 - 20, height: 20, topLeftDif: new PointD2D(0, -112))
+                .EndAnimation()
+                .BeginAnimation(null, AnimationType.UnbuiltThirty, defaultWidth: 100, defaultSourceTexture: "Temple")
+                    .AddFrame(y: 132 - 59, height: 59, topLeftDif: new PointD2D(0, -73))
+                .EndAnimation()
+                .BeginAnimation(null, AnimationType.UnbuiltSixty, defaultWidth: 100, defaultSourceTexture: "Temple")
+                    .AddFrame(y: 132 - 99, height: 99, topLeftDif: new PointD2D(0, -33))
+                .EndAnimation()
+                .BeginAnimation(null, AnimationType.UnbuiltNinety, defaultWidth: 100, defaultSourceTexture: "Temple")
+                    .AddFrame(y: 0, height: 132, topLeftDif: new PointD2D(0, 0))
+                .EndAnimation()
+                .Build();
         }
     }
 }

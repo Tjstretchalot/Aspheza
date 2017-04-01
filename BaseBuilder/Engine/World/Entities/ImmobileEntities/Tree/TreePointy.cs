@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World.Entities.Utilities;
+using Microsoft.Xna.Framework.Content;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 {
@@ -60,6 +62,11 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
             message.Write(ID);
 
             WriteTasks(message);
+        }
+
+        public override SpriteSheetAnimationRenderer GetInprogressRenderable(ContentManager content)
+        {
+            throw new NotImplementedException();
         }
     }
 }

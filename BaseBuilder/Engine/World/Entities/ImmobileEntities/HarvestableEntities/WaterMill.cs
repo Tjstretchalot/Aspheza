@@ -11,10 +11,11 @@ using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.World.Entities.Utilities.Animations;
 using BaseBuilder.Engine.State;
 using Lidgren.Network;
+using Microsoft.Xna.Framework.Content;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
 {
-    class WaterMill : HarvestableEntity
+    public class WaterMill : HarvestableEntity
     {
         protected static CollisionMeshD2D _CollisionMesh;
         protected static List<HarvestableRecipe> _Recipes;
@@ -102,6 +103,32 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.HarvestableEntities
             .EndAnimation()
 
             .Build();
+        }
+
+        public override SpriteSheetAnimationRenderer GetInprogressRenderable(ContentManager content)
+        {
+            const int width = 170;
+            const int height = 94;
+            const int x = 4;
+            const int y = 2;
+            const string img = "WaterMill";
+            return new AnimationRendererBuilder(content)
+                .BeginAnimation(null, AnimationType.Idle, defaultWidth: width, defaultSourceTexture: img)
+                    .AddFrame(x: x, y: y + height - (int)(height * 0.1), height: (int)(height * 0.1), topLeftDif: new PointD2D(0, (int)(height * 0.1) - height))
+                .EndAnimation()
+                .BeginAnimation(null, AnimationType.Unbuilt, defaultWidth: width, defaultSourceTexture: img)
+                    .AddFrame(x: x, y: y + height - (int)(height * 0.1), height: (int)(height * 0.1), topLeftDif: new PointD2D(0, (int)(height * 0.1) - height))
+                .EndAnimation()
+                .BeginAnimation(null, AnimationType.UnbuiltThirty, defaultWidth: width, defaultSourceTexture: img)
+                    .AddFrame(x: x, y: y + height - (int)(height * 0.3), height: (int)(height * 0.3), topLeftDif: new PointD2D(0, (int)(height * 0.3) - height))
+                .EndAnimation()
+                .BeginAnimation(null, AnimationType.UnbuiltSixty, defaultWidth: width, defaultSourceTexture: img)
+                    .AddFrame(x: x, y: y + height - (int)(height * 0.6), height: (int)(height * 0.6), topLeftDif: new PointD2D(0, (int)(height * 0.6) - height))
+                .EndAnimation()
+                .BeginAnimation(null, AnimationType.UnbuiltNinety, defaultWidth: width, defaultSourceTexture: img)
+                    .AddFrame(x: x, y: y, height: height, topLeftDif: new PointD2D(0, 0))
+                .EndAnimation()
+                .Build();
         }
     }
 }

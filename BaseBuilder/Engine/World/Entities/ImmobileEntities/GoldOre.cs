@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.State.Resources;
+using Microsoft.Xna.Framework.Content;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
@@ -70,6 +71,11 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         public void TryHarvest(SharedGameState sharedGameState, Container reciever)
         {
             reciever.Inventory.AddMaterial(Material.GoldOre, 1);
+        }
+
+        public override SpriteSheetAnimationRenderer GetInprogressRenderable(ContentManager content)
+        {
+            throw new NotImplementedException();
         }
     }
 }

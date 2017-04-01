@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.World.Entities.Utilities;
 using BaseBuilder.Engine.State.Resources;
 using BaseBuilder.Engine.Math2D;
+using Microsoft.Xna.Framework.Content;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
 {
@@ -192,6 +193,11 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities.Tree
                 default:
                     throw new InvalidProgramException();
             }
+        }
+
+        public override SpriteSheetAnimationRenderer GetInprogressRenderable(ContentManager content)
+        {
+            throw new NotImplementedException();
         }
     }
 }

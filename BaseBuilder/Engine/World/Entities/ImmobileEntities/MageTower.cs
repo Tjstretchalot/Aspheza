@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.Math2D;
 using BaseBuilder.Engine.State;
+using BaseBuilder.Engine.World.Entities.Utilities;
+using Microsoft.Xna.Framework.Content;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
@@ -59,6 +61,11 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         }
 
         public override void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SpriteSheetAnimationRenderer GetInprogressRenderable(ContentManager content)
         {
             throw new NotImplementedException();
         }

@@ -8,6 +8,8 @@ using BaseBuilder.Engine.Math2D.Double;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Engine.State;
 using Lidgren.Network;
+using BaseBuilder.Engine.World.Entities.Utilities;
+using Microsoft.Xna.Framework.Content;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
@@ -68,6 +70,11 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         {
             Text = text;
             _HoverText = text;
+        }
+
+        public override SpriteSheetAnimationRenderer GetInprogressRenderable(ContentManager content)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -12,7 +12,7 @@ using BaseBuilder.Engine.State;
 
 namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 {
-     public class SpriteSheetBuilding : ImmobileEntity
+     public abstract class SpriteSheetBuilding : ImmobileEntity
     {
         protected List<Tuple<Rectangle, PointD2D>> SourceRectsToOffsetLocations;
         private string _SheetName;

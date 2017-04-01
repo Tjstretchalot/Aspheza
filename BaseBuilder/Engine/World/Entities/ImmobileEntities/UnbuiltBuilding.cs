@@ -345,24 +345,12 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
         protected SpriteSheetAnimationRenderer GetRenderer(ContentManager content)
         {
-            // TODO
-            return new AnimationRendererBuilder(content)
-                .BeginAnimation(null, AnimationType.Idle, defaultWidth: 100, defaultSourceTexture: "Temple")
-                    .AddFrame(y: 132 - 20, height: 20, topLeftDif: new PointD2D(0, -112))
-                .EndAnimation()
-                .BeginAnimation(null, AnimationType.Unbuilt, defaultWidth: 100, defaultSourceTexture: "Temple")
-                    .AddFrame(y: 132 - 20, height: 20, topLeftDif: new PointD2D(0, -112))
-                .EndAnimation()
-                .BeginAnimation(null, AnimationType.UnbuiltThirty, defaultWidth: 100, defaultSourceTexture: "Temple")
-                    .AddFrame(y: 132 - 59, height: 59, topLeftDif: new PointD2D(0, -73))
-                .EndAnimation()
-                .BeginAnimation(null, AnimationType.UnbuiltSixty, defaultWidth: 100, defaultSourceTexture: "Temple")
-                    .AddFrame(y: 132 - 99, height: 99, topLeftDif: new PointD2D(0, -33))
-                .EndAnimation()
-                .BeginAnimation(null, AnimationType.UnbuiltNinety, defaultWidth: 100, defaultSourceTexture: "Temple")
-                    .AddFrame(y: 0, height: 132, topLeftDif: new PointD2D(0, 0))
-                .EndAnimation()
-                .Build();
+            return BuiltBuildingEntity.GetInprogressRenderable(content);
+        }
+
+        public override SpriteSheetAnimationRenderer GetInprogressRenderable(ContentManager content)
+        {
+            throw new NotImplementedException();
         }
     }
 }
