@@ -4,6 +4,8 @@ using BaseBuilder.Engine.Math2D.Double;
 using BaseBuilder.Engine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using BaseBuilder.Screens.Components;
+using Microsoft.Xna.Framework.Content;
 
 namespace BaseBuilder.Engine.State.Resources
 {
@@ -71,6 +73,7 @@ namespace BaseBuilder.Engine.State.Resources
         public string HoverText { get; }
 
         private string SpriteName;
+        private Texture2D Texture;
         private Rectangle SourceRect;
 
         private Material(string spriteName, Rectangle sourceRect, string name, string hoverText, int id)
@@ -84,11 +87,25 @@ namespace BaseBuilder.Engine.State.Resources
 
         public void Render(RenderContext context, PointD2D screenTopLeft, Color overlay)
         {
-            var texture = context.Content.Load<Texture2D>(SpriteName);
+            if(Texture == null)
+                Texture = context.Content.Load<Texture2D>(SpriteName);
 
             var destRect = new Rectangle((int)screenTopLeft.X, (int)screenTopLeft.Y, 32, 32);
 
-            context.SpriteBatch.Draw(texture, sourceRectangle: SourceRect, destinationRectangle: destRect, color: overlay);
+            context.SpriteBatch.Draw(Texture, sourceRectangle: SourceRect, destinationRectangle: destRect, color: overlay);
+        }
+
+        /// <summary>
+        /// Get as a texture component located at 0,0. The result may be modified.
+        /// </summary>
+        /// <param name="content">The content manager</param>
+        /// <returns>The texture component</returns>
+        public TextureComponent GetAsTextureComponent(ContentManager content)
+        {
+            if (Texture == null)
+                Texture = content.Load<Texture2D>(SpriteName);
+
+            return new TextureComponent(Texture, new Rectangle(0, 0, 32, 32), SourceRect, false);
         }
 
         public static Material GetMaterialByID(int id)

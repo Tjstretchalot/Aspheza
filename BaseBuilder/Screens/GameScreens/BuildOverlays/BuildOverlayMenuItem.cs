@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using BaseBuilder.Screens.Components.ScrollableComponents.Distinguishers;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
@@ -68,9 +69,31 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
             return true;
         }
 
+        protected virtual IScrollableComponent CreateMaterialCostsDisplay(RenderContext context, EventHandler redraw, EventHandler redrawAndReload, 
+            params Tuple<Material, int>[] materials)
+        {
+            var layout = new VerticalFlowScrollableComponent(VerticalFlowScrollableComponent.VerticalAlignmentMode.CenteredSuggested, 7);
+
+            ScrollableComponentAsLayoutManager current = null;
+            for(int i = 0; i < materials.Length; i++)
+            {
+                var tup = materials[i];
+                if(i % 3 == 0)
+                {
+                    current = new HorizontalFlowScrollableComponent(HorizontalFlowScrollableComponent.HorizontalAlignmentMode.CenterAlignSuggested, 7);
+                    layout.Children.Add(current);
+                }
+
+                current.Children.Add(Label(context, tup.Item2.ToString(), Wrap(tup.Item1.GetAsTextureComponent(context.Content)), false));
+            }
+
+            return layout;
+        }
+
         protected virtual void PreAddButton(RenderContext context, BuildOverlayImpl menu, EventHandler redraw,
             EventHandler redrawAndReload, string thingName, TextureComponent texture, string description, ScrollableComponentAsLayoutManager layout)
         { }
+
         protected IScrollableComponent CreateMenuItemFromTexture(RenderContext context, BuildOverlayImpl menu, EventHandler redraw, 
             EventHandler redrawAndReload, string thingName, TextureComponent texture, string description)
         {

@@ -14,6 +14,7 @@ using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using BaseBuilder.Engine.Math2D;
 using Microsoft.Xna.Framework;
+using BaseBuilder.Engine.State.Resources;
 
 namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
@@ -28,9 +29,18 @@ chickens produce
 eggs.");
         }
 
+
         public override UnbuiltImmobileEntity CreateUnbuiltImmobileEntity(SharedGameState gameState)
         {
-            return new UnbuiltImmobileEntityAsDelegator(() => new ChickenCoop(new PointD2D(0, 0), -1));
+            var built = new ChickenCoop(new PointD2D(0, 0), -1);
+            return new UnbuiltImmobileEntityAsDelegator(() => new UnbuiltBuilding(new PointD2D(0, 0), -1,
+                new List<Tuple<Material, int>> { Tuple.Create(Material.Wood, 10), Tuple.Create(Material.Bread, 5), Tuple.Create(Material.CarrotSeed, 5) }, built, 100000));
+        }
+
+        protected override void PreAddButton(RenderContext context, BuildOverlayImpl menu, EventHandler redraw, EventHandler redrawAndReload, string thingName, TextureComponent texture, string description, ScrollableComponentAsLayoutManager parent)
+        {
+            parent.Children.Add(CreateMaterialCostsDisplay(context, redraw, redrawAndReload, Tuple.Create(Material.Wood, 10), Tuple.Create(Material.Bread, 5),
+                Tuple.Create(Material.CarrotSeed, 5)));
         }
     }
 }

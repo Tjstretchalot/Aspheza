@@ -13,6 +13,8 @@ using Microsoft.Xna.Framework.Content;
 using BaseBuilder.Engine.Context;
 using BaseBuilder.Engine.World.Entities.ImmobileEntities;
 using Microsoft.Xna.Framework;
+using BaseBuilder.Engine.State.Resources;
+using BaseBuilder.Engine.World.Entities.Utilities;
 
 namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 {
@@ -26,9 +28,17 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 hold a lot of items.");
         }
 
+
         public override UnbuiltImmobileEntity CreateUnbuiltImmobileEntity(SharedGameState gameState)
         {
-            return new UnbuiltImmobileEntityAsDelegator(() => new StorageBarn(new PointD2D(0, 0), -1, Engine.World.Entities.Utilities.Direction.Left));
+            var built = new StorageBarn(new PointD2D(0, 0), -1, Direction.Left);
+            return new UnbuiltImmobileEntityAsDelegator(() => new UnbuiltBuilding(new PointD2D(0, 0), -1,
+                new List<Tuple<Material, int>> { Tuple.Create(Material.Wood, 30) }, built, 100000));
+        }
+
+        protected override void PreAddButton(RenderContext context, BuildOverlayImpl menu, EventHandler redraw, EventHandler redrawAndReload, string thingName, TextureComponent texture, string description, ScrollableComponentAsLayoutManager parent)
+        {
+            parent.Children.Add(CreateMaterialCostsDisplay(context, redraw, redrawAndReload, Tuple.Create(Material.Wood, 30)));
         }
     }
 }

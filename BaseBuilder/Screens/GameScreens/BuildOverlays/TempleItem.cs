@@ -30,19 +30,12 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         {
             var built = new Temple(new PointD2D(0, 0), -1);
             return new UnbuiltImmobileEntityAsDelegator(() => new UnbuiltBuilding(new PointD2D(0, 0), -1,
-                new List<Tuple<Material, int>> { Tuple.Create(Material.Wood, 10) }, built, new List<Tuple<double, AnimationType>>
-                {
-                    Tuple.Create(0.0, AnimationType.Unbuilt),
-                    Tuple.Create(0.3, AnimationType.UnbuiltThirty),
-                    Tuple.Create(0.6, AnimationType.UnbuiltSixty),
-                    Tuple.Create(0.9, AnimationType.UnbuiltNinety),
-                }, 100000));
+                new List<Tuple<Material, int>> { Tuple.Create(Material.Wood, 10) }, built, 100000));
         }
 
         protected override void PreAddButton(RenderContext context, BuildOverlayImpl menu, EventHandler redraw, EventHandler redrawAndReload, string thingName, TextureComponent texture, string description, ScrollableComponentAsLayoutManager parent)
         {
-            var woodTexture = CreateTexture(context, "materials", new PointI2D(32, 32), new Rectangle(66, 33, 32, 32), false);
-            parent.Children.Add(Label(context, "10", Wrap(woodTexture), false));
+            parent.Children.Add(CreateMaterialCostsDisplay(context, redraw, redrawAndReload, Tuple.Create(Material.Wood, 10)));
         }
     }
 }

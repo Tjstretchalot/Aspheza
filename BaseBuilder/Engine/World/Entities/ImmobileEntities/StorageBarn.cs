@@ -119,7 +119,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
 
             return new AnimationRendererBuilder(content)
                 .BeginAnimation(null, AnimationType.Idle, defaultWidth: width, defaultSourceTexture: img)
-                    .AddFrame(x: x, y: y + height - (int)(height * 0.1), height: (int)(height * 0.1), topLeftDif: new PointD2D(0, (int)(height * 0.1) - height))
+                    .AddFrame(x: x, y: y, height: height, topLeftDif: new PointD2D(0, 0))
                 .EndAnimation()
                 .BeginAnimation(null, AnimationType.Unbuilt, defaultWidth: width, defaultSourceTexture: img)
                     .AddFrame(x: x, y: y + height - (int)(height * 0.1), height: (int)(height * 0.1), topLeftDif: new PointD2D(0, (int)(height * 0.1) - height))

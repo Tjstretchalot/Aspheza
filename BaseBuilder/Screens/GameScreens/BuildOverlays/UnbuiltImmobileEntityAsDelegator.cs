@@ -22,6 +22,10 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
         {
             EntityCreator = entityCreator;
             CurrentEntity = entityCreator();
+
+            var tmp = CurrentEntity as UnbuiltBuilding;
+            if (tmp != null)
+                tmp.Unplaced = true;
         }
 
         public CollisionMeshD2D CollisionMesh
@@ -38,6 +42,10 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
 
         public ImmobileEntity CreateEntity(PointD2D location)
         {
+            var tmp2 = CurrentEntity as UnbuiltBuilding;
+            if (tmp2 != null)
+                tmp2.Unplaced = false;
+
             var tmp = CurrentEntity;
             tmp.Position.X = location.X;
             tmp.Position.Y = location.Y;

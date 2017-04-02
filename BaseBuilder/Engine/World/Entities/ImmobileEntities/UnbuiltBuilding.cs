@@ -21,7 +21,7 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
     /// A building that is inprogress. Goes through two phases - acquiring
     /// resources and actually building. Building requires worker time.
     /// </summary>
-    public class UnbuiltBuilding : ImmobileEntity, Container, Aidable
+    public class UnbuiltBuilding : ImmobileEntity, Container, Aidable, Directional
     {
         /// <summary>
         /// Describes the state / phase we are currently in
@@ -87,6 +87,39 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                 return result.ToString();
             }
         }
+
+        public Direction Direction
+        {
+            get
+            {
+                var child = BuiltBuildingEntity as Directional;
+                if (child == null)
+                    return Direction.Left;
+                return child.Direction;
+            }
+
+            set
+            {
+                var child = BuiltBuildingEntity as Directional;
+                if (child == null)
+                    return;
+                child.Direction = value;
+            }
+        }
+
+        protected bool _Unplaced;
+        public bool Unplaced
+        {
+            get
+            {
+                return _Unplaced;
+            }
+
+            set
+            {
+                _Unplaced = value;
+            }
+        }
         /// <summary>
         /// The renderer that is used.
         /// </summary>
@@ -138,9 +171,20 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
         }
 
         public UnbuiltBuilding(PointD2D position, int id, List<Tuple<Material, int>> requiredResources, 
-            ImmobileEntity builtEntity, List<Tuple<double, AnimationType>> progToNewAnim, 
-            int buildTimeMS) : base(position, builtEntity.CollisionMesh, id)
+            ImmobileEntity builtEntity, int buildTimeMS,
+            List<Tuple<double, AnimationType>> progToNewAnim = null) : base(position, builtEntity.CollisionMesh, id)
         {
+            if(progToNewAnim == null)
+            {
+                progToNewAnim = new List<Tuple<double, AnimationType>>
+                {
+                    Tuple.Create(0.0, AnimationType.Unbuilt),
+                    Tuple.Create(0.3, AnimationType.UnbuiltThirty),
+                    Tuple.Create(0.6, AnimationType.UnbuiltSixty),
+                    Tuple.Create(0.9, AnimationType.UnbuiltNinety),
+                };
+            }
+
             RequiredResources = requiredResources;
             BuiltBuildingEntity = builtEntity;
             ProgressToNewAnimations = progToNewAnim;
@@ -190,6 +234,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             BuildTimeRemainingMS = message.ReadInt32();
             Phase = (BuildPhase)message.ReadInt32();
 
+            Unplaced = message.ReadBoolean();
+
             TasksFromMessage(gameState, message);
 
             InitNonnetworkableParts();
@@ -221,6 +267,8 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
             message.Write(BuildTimeInitialMS);
             message.Write(BuildTimeRemainingMS);
             message.Write((int)Phase);
+
+            message.Write(Unplaced);
 
             WriteTasks(message);
         }
@@ -304,7 +352,14 @@ namespace BaseBuilder.Engine.World.Entities.ImmobileEntities
                 FindNextBestChoice(currentProgress);
             }
 
-            Renderer.Render(context, overlay, screenTopLeft, 1);
+            if (!Unplaced)
+            {
+                Renderer.Render(context, overlay, screenTopLeft, 1);
+            }else
+            {
+                BuiltBuildingEntity.Render(context, screenTopLeft, overlay);
+            }
+
         }
 
         public void Aid(MobileEntity aider, int aidTimeMS)
