@@ -45,6 +45,7 @@ namespace BaseBuilder.Engine.World.Entities
             Register(typeof(LumberMill), 1013);
             Register(typeof(ChickenCoop), 1014);
             Register(typeof(UnbuiltBuilding), 1015);
+            Register(typeof(MarketPlace), 1016);
         }
 
         public static void Register(Type entityType, short id)

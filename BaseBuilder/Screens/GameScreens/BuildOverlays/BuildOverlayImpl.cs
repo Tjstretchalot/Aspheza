@@ -42,6 +42,7 @@ namespace BaseBuilder.Screens.GameScreens.BuildOverlays
                 new FarmItem(),
                 new LibraryItem(),
                 new LumberMillItem(),
+                new MarketPlaceItem(),
                 new SaplingItem(),
                 new TavernItem(),
                 new TempleItem(),
