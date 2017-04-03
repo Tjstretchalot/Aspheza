@@ -1260,6 +1260,7 @@ specific type.", true)));
 
         protected void LoadRestrictorsFromTask(RenderContext context, EntityTransferItemTask task)
         {
+            Restrictors.Clear();
             if (task.Restrictors == null)
                 return;
 

@@ -140,8 +140,8 @@ namespace BaseBuilder.Engine.Logic.WorldGen
             TileWorld.AddImmobileEntityImpl(new Farm(new PointD2D(wcx - 15, wcy + 0), SharedGameState.EntityIDCounter++));
             TileWorld.AddImmobileEntityImpl(new Farm(new PointD2D(wcx - 15, wcy - 5), SharedGameState.EntityIDCounter++));
             TileWorld.AddImmobileEntityImpl(new WaterMill2(new PointD2D(wcx - 30, wcy + 5), SharedGameState.EntityIDCounter++));*/
-            TileWorld.AddImmobileEntityImpl(new Bakery(new PointD2D(wcx - 10, wcy - 15), SharedGameState.EntityIDCounter++));
-            TileWorld.AddImmobileEntityImpl(new Tavern2(new PointD2D(wcx + 10, wcy - 15), SharedGameState.EntityIDCounter++));
+            //TileWorld.AddImmobileEntityImpl(new Bakery(new PointD2D(wcx - 10, wcy - 15), SharedGameState.EntityIDCounter++));
+            //TileWorld.AddImmobileEntityImpl(new Tavern2(new PointD2D(wcx + 10, wcy - 15), SharedGameState.EntityIDCounter++));
             /*TileWorld.AddImmobileEntityImpl(new Library(new PointD2D(wcx + 30, wcy - 15), SharedGameState.EntityIDCounter++));
             TileWorld.AddImmobileEntityImpl(new Temple(new PointD2D(wcx + 40, wcy - 15), SharedGameState.EntityIDCounter++));
             TileWorld.AddImmobileEntityImpl(new LumberMill(new PointD2D(wcx + 10, wcy - 0), SharedGameState.EntityIDCounter++));
